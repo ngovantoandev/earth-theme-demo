@@ -13,10 +13,13 @@
   "sections": {
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "menu": "main-menu",
+        "customer_account_menu": "customer-account-main-menu"
+      }
     }
   },
   "order": [
     "header"
-  ],
+  ]
 }
