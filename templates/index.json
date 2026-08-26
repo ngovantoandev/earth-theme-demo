@@ -12,9 +12,15 @@
     "main": {
       "type": "hello-world",
       "settings": {}
+    },
+    "custom_section_xcPUAX": {
+      "type": "custom-section",
+      "name": "t:general.custom_section",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "custom_section_xcPUAX"
   ]
 }
