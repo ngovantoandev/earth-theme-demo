@@ -18,7 +18,7 @@
         "type": "font_picker",
         "id": "type_primary_font",
         "default": "dm_sans_n4",        
-        "label": "t:general.primary"
+        "label": "t:general.font"
       }
     ]
   },
