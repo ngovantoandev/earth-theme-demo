@@ -12,12 +12,12 @@
     "settings": [
       {
         "type": "header",
-        "content": "t:general.fonts"
+        "content": "t:general.headings"        
       },
       {
         "type": "font_picker",
         "id": "type_primary_font",
-        "default": "work_sans_n4",
+        "default": "dm_sans_n4",        
         "label": "t:general.primary"
       }
     ]
