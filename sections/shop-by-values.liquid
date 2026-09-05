@@ -1,0 +1,889 @@
+<section class="earth-values earth-values-{{ section.id }} full-width" id="earthValuesSection-{{ section.id }}">
+  <div class="earth-values__container">
+    
+    <!-- 1. Section Header -->
+    <div class="earth-values__header">
+      <h2 class="earth-values__title">
+        <svg class="earth-values__leaf-icon earth-values__leaf-icon--left" width="32" height="29" viewBox="0 0 41 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M36.5053 0C31.3399 8.60515 23.6183 8.25605 18.7209 16.5435C18.1501 17.5098 17.7216 18.4694 17.4006 19.4141C17.9201 19.9982 18.4198 20.6252 18.8896 21.3102C21.8992 25.6864 22.0051 29.5861 21.469 32.2433C28.2393 23.9243 33.6728 14.439 36.3796 4.02875C33.8597 15.1885 28.2277 25.4233 21.1299 34.3842C24.0269 34.7664 31.8942 34.8442 37.1803 25.7609C44.5942 13.0194 36.5053 0 36.5053 0Z" fill="currentColor"/>
+          <path d="M18.1567 21.8148C12.4933 13.5753 2.73161 13.3403 0 13.4462C1.99535 16.7238 2.37093 19.7351 2.73492 22.652C3.11711 25.7112 3.4778 28.6 5.61213 31.7518C9.73022 37.8305 16.8298 37.081 18.3536 36.8378C14.5465 28.4031 9.27192 20.5375 2.15915 14.5548C9.4109 20.1818 14.9651 27.7198 19.1229 35.9047C20.435 33.7439 22.6801 28.3931 18.1567 21.8148Z" fill="currentColor"/>
+        </svg>
+        <span>{{ section.settings.title | default: 'Shop by Values' }}</span>
+        <svg class="earth-values__leaf-icon earth-values__leaf-icon--right" width="32" height="29" viewBox="0 0 41 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M36.5053 0C31.3399 8.60515 23.6183 8.25605 18.7209 16.5435C18.1501 17.5098 17.7216 18.4694 17.4006 19.4141C17.9201 19.9982 18.4198 20.6252 18.8896 21.3102C21.8992 25.6864 22.0051 29.5861 21.469 32.2433C28.2393 23.9243 33.6728 14.439 36.3796 4.02875C33.8597 15.1885 28.2277 25.4233 21.1299 34.3842C24.0269 34.7664 31.8942 34.8442 37.1803 25.7609C44.5942 13.0194 36.5053 0 36.5053 0Z" fill="currentColor"/>
+          <path d="M18.1567 21.8148C12.4933 13.5753 2.73161 13.3403 0 13.4462C1.99535 16.7238 2.37093 19.7351 2.73492 22.652C3.11711 25.7112 3.4778 28.6 5.61213 31.7518C9.73022 37.8305 16.8298 37.081 18.3536 36.8378C14.5465 28.4031 9.27192 20.5375 2.15915 14.5548C9.4109 20.1818 14.9651 27.7198 19.1229 35.9047C20.435 33.7439 22.6801 28.3931 18.1567 21.8148Z" fill="currentColor"/>
+        </svg>
+      </h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="earth-values__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    <!-- 2. Slider Showcase Area -->
+    <div class="earth-values__slider-wrapper" id="earthValuesSliderWrapper-{{ section.id }}">
+      
+      <!-- Horizontal Slider Track -->
+      <div class="earth-values__track" id="earthValuesTrack-{{ section.id }}">
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            <div class="earth-values__slide" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+              <div class="earth-values__card">
+                <div class="earth-values__media-box">
+                  {%- if block.settings.image != blank -%}
+                    {{ block.settings.image | image_url: width: 800 | image_tag: alt: block.settings.title, class: 'earth-values__img', loading: 'lazy' }}
+                  {%- else -%}
+                    {%- case forloop.index0 -%}
+                      {%- when 0 -%}
+                        <img src="{{ 'cat-organic.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                      {%- when 1 -%}
+                        <img src="{{ 'cat-ocean.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                      {%- when 2 -%}
+                        <img src="{{ 'earth-3.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                      {%- when 3 -%}
+                        <img src="{{ 'cat-activewear.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                      {%- else -%}
+                        <img src="{{ 'earth-4.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                    {%- endcase -%}
+                  {%- endif -%}
+                </div>
+
+                <div class="earth-values__info-box">
+                  <h3 class="earth-values__item-title">{{ block.settings.title }}</h3>
+                  
+                  {%- if block.settings.badge != blank -%}
+                    <div class="earth-values__badge-wrap">
+                      <span class="earth-values__badge">{{ block.settings.badge }}</span>
+                    </div>
+                  {%- endif -%}
+
+                  {%- if block.settings.highlight != blank -%}
+                    <div class="earth-values__highlight">
+                      <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                      <span>{{ block.settings.highlight }}</span>
+                    </div>
+                  {%- endif -%}
+
+                  {%- if block.settings.desc != blank -%}
+                    <p class="earth-values__description">{{ block.settings.desc }}</p>
+                  {%- endif -%}
+
+                  <div class="earth-values__cta-wrap">
+                    {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: block.settings.link, theme: 'dark' %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <!-- Default 5 Values Slides -->
+          <!-- Slide 1: Organic Cotton -->
+          <div class="earth-values__slide" data-index="0">
+            <div class="earth-values__card">
+              <div class="earth-values__media-box">
+                <img src="{{ 'cat-organic.jpg' | asset_url }}" alt="Organic Cotton" class="earth-values__img" width="600" height="600" loading="lazy">
+              </div>
+              <div class="earth-values__info-box">
+                <h3 class="earth-values__item-title">Organic Cotton</h3>
+                <div class="earth-values__badge-wrap">
+                  <span class="earth-values__badge">GOTS Certified Organic</span>
+                </div>
+                <div class="earth-values__highlight">
+                  <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                  <span>100% Pesticide & GMO Free</span>
+                </div>
+                <p class="earth-values__description">Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton.</p>
+                <div class="earth-values__cta-wrap">
+                  {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2: Recycled Materials -->
+          <div class="earth-values__slide" data-index="1">
+            <div class="earth-values__card">
+              <div class="earth-values__media-box">
+                <img src="{{ 'cat-ocean.jpg' | asset_url }}" alt="Recycled Materials" class="earth-values__img" width="600" height="600" loading="lazy">
+              </div>
+              <div class="earth-values__info-box">
+                <h3 class="earth-values__item-title">Recycled Materials</h3>
+                <div class="earth-values__badge-wrap">
+                  <span class="earth-values__badge">Ocean & Land Waste Diverted</span>
+                </div>
+                <div class="earth-values__highlight">
+                  <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                  <span>7.8 plastic bottles per garment</span>
+                </div>
+                <p class="earth-values__description">Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments.</p>
+                <div class="earth-values__cta-wrap">
+                  {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3: Fair Trade -->
+          <div class="earth-values__slide" data-index="2">
+            <div class="earth-values__card">
+              <div class="earth-values__media-box">
+                <img src="{{ 'earth-3.jpg' | asset_url }}" alt="Fair Trade" class="earth-values__img" width="600" height="600" loading="lazy">
+              </div>
+              <div class="earth-values__info-box">
+                <h3 class="earth-values__item-title">Fair Trade</h3>
+                <div class="earth-values__badge-wrap">
+                  <span class="earth-values__badge">Ethical wages guaranteed</span>
+                </div>
+                <div class="earth-values__highlight">
+                  <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                  <span>100% worker-owned cooperatives</span>
+                </div>
+                <p class="earth-values__description">Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p>
+                <div class="earth-values__cta-wrap">
+                  {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 4: Carbon Neutral -->
+          <div class="earth-values__slide" data-index="3">
+            <div class="earth-values__card">
+              <div class="earth-values__media-box">
+                <img src="{{ 'cat-activewear.jpg' | asset_url }}" alt="Carbon Neutral" class="earth-values__img" width="600" height="600" loading="lazy">
+              </div>
+              <div class="earth-values__info-box">
+                <h3 class="earth-values__item-title">Carbon Neutral</h3>
+                <div class="earth-values__badge-wrap">
+                  <span class="earth-values__badge">Net-Zero Supply Chain</span>
+                </div>
+                <div class="earth-values__highlight">
+                  <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                  <span>100% renewable energy powered</span>
+                </div>
+                <p class="earth-values__description">Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery.</p>
+                <div class="earth-values__cta-wrap">
+                  {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 5: Vegan & Cruelty-Free -->
+          <div class="earth-values__slide" data-index="4">
+            <div class="earth-values__card">
+              <div class="earth-values__media-box">
+                <img src="{{ 'earth-4.jpg' | asset_url }}" alt="Vegan & Cruelty-Free" class="earth-values__img" width="600" height="600" loading="lazy">
+              </div>
+              <div class="earth-values__info-box">
+                <h3 class="earth-values__item-title">Vegan & Cruelty-Free</h3>
+                <div class="earth-values__badge-wrap">
+                  <span class="earth-values__badge">PETA Approved Vegan</span>
+                </div>
+                <div class="earth-values__highlight">
+                  <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                  <span>Zero animal testing or materials</span>
+                </div>
+                <p class="earth-values__description">100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living.</p>
+                <div class="earth-values__cta-wrap">
+                  {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Navigation Controls (Positioned at bottom-right corner) -->
+      <div class="earth-values__nav-controls">
+        <button type="button" class="earth-values__nav-btn earth-values__nav-btn--prev" id="earthValuesPrev-{{ section.id }}" aria-label="Previous value">
+          <img src="{{ 'prev-left.svg' | asset_url }}" width="15" height="15" alt="" class="earth-values__icon-arrow earth-values__icon-arrow--prev">
+        </button>
+        <button type="button" class="earth-values__nav-btn earth-values__nav-btn--next" id="earthValuesNext-{{ section.id }}" aria-label="Next value">
+          <img src="{{ 'next-right.svg' | asset_url }}" width="15" height="15" alt="" class="earth-values__icon-arrow earth-values__icon-arrow--next">
+        </button>
+      </div>
+
+    </div>
+
+    <!-- 3. Bottom Values Navigation Tabs -->
+    <div class="earth-values__tabs-wrapper">
+      <div class="earth-values__tabs" id="earthValuesTabs-{{ section.id }}" role="tablist">
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            <button 
+              type="button" 
+              class="earth-values__tab {% if forloop.first %}earth-values__tab--active{% endif %}" 
+              data-index="{{ forloop.index0 }}"
+              role="tab"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <span class="earth-values__tab-line"></span>
+              <span class="earth-values__tab-text">{{ block.settings.title }}</span>
+            </button>
+          {%- endfor -%}
+        {%- else -%}
+          <button type="button" class="earth-values__tab earth-values__tab--active" data-index="0" role="tab" aria-selected="true">
+            <span class="earth-values__tab-line"></span>
+            <span class="earth-values__tab-text">Organic Cotton</span>
+          </button>
+          <button type="button" class="earth-values__tab" data-index="1" role="tab" aria-selected="false">
+            <span class="earth-values__tab-line"></span>
+            <span class="earth-values__tab-text">Recycled Materials</span>
+          </button>
+          <button type="button" class="earth-values__tab" data-index="2" role="tab" aria-selected="false">
+            <span class="earth-values__tab-line"></span>
+            <span class="earth-values__tab-text">Fair Trade</span>
+          </button>
+          <button type="button" class="earth-values__tab" data-index="3" role="tab" aria-selected="false">
+            <span class="earth-values__tab-line"></span>
+            <span class="earth-values__tab-text">Carbon Neutral</span>
+          </button>
+          <button type="button" class="earth-values__tab" data-index="4" role="tab" aria-selected="false">
+            <span class="earth-values__tab-line"></span>
+            <span class="earth-values__tab-text">Vegan & Cruelty-Free</span>
+          </button>
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .earth-values-{{ section.id }} {
+    --values-bg: {{ section.settings.bg_color | default: '#224E09' }};
+    --values-text: {{ section.settings.text_color | default: '#F8F9DC' }};
+    --values-card-bg: {{ section.settings.card_bg_color | default: '#F8F9DC' }};
+    --values-card-text: {{ section.settings.card_text_color | default: '#003225' }};
+    --values-tab-inactive: {{ section.settings.tab_inactive_color | default: '#EAE060' }};
+    --values-tab-active: {{ section.settings.tab_active_color | default: '#F8F9DC' }};
+
+    grid-column: 1 / -1 !important;
+    width: 100%;
+    background-color: var(--values-bg);
+    color: var(--values-text);
+    padding: clamp(60px, 7vw, 100px) 0 clamp(64px, 8vw, 110px);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .earth-values-{{ section.id }} .earth-values__container {
+    width: min(1380px, calc(100% - clamp(32px, 5vw, 80px)));
+    margin: 0 auto;
+  }
+
+  /* 1. Header */
+  .earth-values-{{ section.id }} .earth-values__header {
+    text-align: center;
+    margin-bottom: clamp(36px, 5vw, 56px);
+  }
+  .earth-values-{{ section.id }} .earth-values__title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 800;
+    color: var(--values-text);
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  .earth-values-{{ section.id }} .earth-values__leaf-icon {
+    color: var(--values-tab-inactive, var(--color-accent, #EAE060));
+    width: clamp(24px, 3vw, 32px);
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .earth-values-{{ section.id }} .earth-values__leaf-icon--right {
+    transform: scaleX(-1);
+  }
+  .earth-values-{{ section.id }} .earth-values__subtitle {
+    font-size: clamp(15px, 1.3vw, 18px);
+    color: var(--values-text);
+    opacity: 0.9;
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* 2. Slider Showcase Track */
+  .earth-values-{{ section.id }} .earth-values__slider-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: clamp(36px, 4.5vw, 56px);
+  }
+
+  .earth-values-{{ section.id }} .earth-values__track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: clamp(20px, 3vw, 32px);
+    padding: 10px 0;
+    box-sizing: border-box;
+  }
+  .earth-values-{{ section.id }} .earth-values__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Each Value Slide */
+  .earth-values-{{ section.id }} .earth-values__slide {
+    flex: 0 0 85%;
+    min-width: 320px;
+    max-width: 1050px;
+    scroll-snap-align: center;
+    box-sizing: border-box;
+    transition: transform 0.3s ease;
+  }
+
+  /* Split Card (Left: Square Image 1:1, Right: Info Box) */
+  .earth-values-{{ section.id }} .earth-values__card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: var(--values-card-bg);
+    box-sizing: border-box;
+    overflow: hidden;
+    height: 100%;
+    align-items: stretch;
+  }
+
+  /* Square Image (1:1 Aspect Ratio) */
+  .earth-values-{{ section.id }} .earth-values__media-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: #1e3a10;
+  }
+  .earth-values-{{ section.id }} .earth-values__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .earth-values-{{ section.id }} .earth-values__card:hover .earth-values__img {
+    transform: scale(1.04);
+  }
+
+  /* Info Box */
+  .earth-values-{{ section.id }} .earth-values__info-box {
+    padding: clamp(28px, 4vw, 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    color: var(--values-card-text);
+    box-sizing: border-box;
+  }
+  .earth-values-{{ section.id }} .earth-values__item-title {
+    font-size: clamp(28px, 3.2vw, 42px);
+    font-weight: 800;
+    color: var(--values-card-text);
+    margin: 0 0 16px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  
+  .earth-values-{{ section.id }} .earth-values__badge-wrap {
+    margin-bottom: 16px;
+  }
+  .earth-values-{{ section.id }} .earth-values__badge,
+  .earth-values__badge {
+    display: inline-block;
+    background-color: var(--color-black, #003225);
+    color: var(--color-accent, #EAE060);
+    font-size: 15px;
+    font-weight: 400;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+  }
+
+  .earth-values-{{ section.id }} .earth-values__highlight,
+  .earth-values__highlight {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--color-primary, #224E09);
+    margin-bottom: 16px;
+  }
+  .earth-values-{{ section.id }} .earth-values__highlight-icon {
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .earth-values-{{ section.id }} .earth-values__description {
+    font-size: clamp(15px, 1.2vw, 17px);
+    color: var(--values-card-text);
+    line-height: 1.6;
+    margin: 0 0 28px;
+    opacity: 0.92;
+  }
+
+  /* Reusable Arrow Button (Snippet Styles) */
+  .earth-values-{{ section.id }} .earth-btn-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 4px;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+  }
+  .earth-values-{{ section.id }} .earth-btn-arrow__text {
+    line-height: 1;
+  }
+  .earth-values-{{ section.id }} .earth-btn-arrow__icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+  .earth-values-{{ section.id }} .earth-btn-arrow:hover .earth-btn-arrow__icon-circle {
+    transform: translateX(4px);
+  }
+  .earth-values-{{ section.id }} .earth-btn-arrow--dark {
+    color: var(--values-card-text);
+  }
+  .earth-values-{{ section.id }} .earth-btn-arrow--dark .earth-btn-arrow__icon-circle {
+    background-color: var(--values-card-text);
+    color: var(--values-card-bg);
+  }
+  .earth-values-{{ section.id }} .earth-btn-arrow--dark .earth-btn-arrow__icon-circle img {
+    filter: brightness(0) invert(1);
+    width: 12px;
+    height: 10px;
+  }
+
+  /* 3. Corner Navigation Controls (Matching Screenshot at Bottom-Right) */
+  .earth-values-{{ section.id }} .earth-values__nav-controls {
+    position: absolute;
+    bottom: clamp(16px, 2.5vw, 28px);
+    right: clamp(16px, 2.5vw, 28px);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .earth-values-{{ section.id }} .earth-values__nav-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--values-card-bg);
+    border: 1.5px solid var(--values-card-bg);
+    color: var(--values-card-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 50, 37, 0.16);
+    opacity: 1;
+    visibility: visible;
+    transition: transform 0.2s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .earth-values-{{ section.id }} .earth-values__nav-btn:hover {
+    background-color: var(--color-secondary, #71CC3B);
+    border-color: var(--color-secondary, #71CC3B);
+    transform: scale(1.08);
+  }
+
+  .earth-values-{{ section.id }} .earth-values__icon-arrow {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .earth-values-{{ section.id }} .earth-values__icon-arrow--next {
+    transform: rotate(0deg);
+  }
+  .earth-values-{{ section.id }} .earth-values__nav-btn--next:hover .earth-values__icon-arrow--next {
+    transform: rotate(45deg);
+  }
+  .earth-values-{{ section.id }} .earth-values__icon-arrow--prev {
+    transform: rotate(0deg);
+  }
+  .earth-values-{{ section.id }} .earth-values__nav-btn--prev:hover .earth-values__icon-arrow--prev {
+    transform: rotate(-45deg);
+  }
+
+  /* 4. Bottom Values Navigation Tabs */
+  .earth-values-{{ section.id }} .earth-values__tabs-wrapper {
+    width: 100%;
+    padding-top: 12px;
+  }
+  .earth-values-{{ section.id }} .earth-values__tabs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: clamp(16px, 3vw, 40px);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .earth-values-{{ section.id }} .earth-values__tab {
+    background: none;
+    border: none;
+    color: var(--values-tab-inactive) !important;
+    padding: 12px 0 0;
+    cursor: pointer;
+    position: relative;
+    text-align: left;
+    transition: color 0.25s ease;
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .earth-values-{{ section.id }} .earth-values__tab-line {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--values-tab-active);
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .earth-values-{{ section.id }} .earth-values__tab-text {
+    font-size: clamp(16px, 1.4vw, 20px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    display: block;
+    white-space: nowrap;
+    color: inherit;
+  }
+  .earth-values-{{ section.id }} .earth-values__tab:hover,
+  .earth-values-{{ section.id }} .earth-values__tab:hover .earth-values__tab-text {
+    color: var(--values-tab-active) !important;
+  }
+  .earth-values-{{ section.id }} .earth-values__tab--active,
+  .earth-values-{{ section.id }} .earth-values__tab.earth-values__tab--active .earth-values__tab-text {
+    color: var(--values-tab-active) !important;
+  }
+  .earth-values-{{ section.id }} .earth-values__tab--active .earth-values__tab-line {
+    width: 100%;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .earth-values-{{ section.id }} .earth-values__slide {
+      flex: 0 0 92%;
+    }
+    .earth-values-{{ section.id }} .earth-values__tabs {
+      overflow-x: auto;
+      scrollbar-width: none;
+      justify-content: flex-start;
+      gap: 28px;
+    }
+    .earth-values-{{ section.id }} .earth-values__tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .earth-values-{{ section.id }} .earth-values__tab {
+      flex: 0 0 auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .earth-values-{{ section.id }} {
+      padding: 50px 0 60px;
+    }
+    .earth-values-{{ section.id }} .earth-values__container {
+      width: calc(100% - 32px);
+    }
+    .earth-values-{{ section.id }} .earth-values__slide {
+      flex: 0 0 100%;
+    }
+    .earth-values-{{ section.id }} .earth-values__card {
+      grid-template-columns: 1fr;
+    }
+    .earth-values-{{ section.id }} .earth-values__info-box {
+      padding: 24px 20px;
+    }
+    .earth-values-{{ section.id }} .earth-values__nav-btn {
+      display: none;
+    }
+    .earth-values-{{ section.id }} .earth-values__tab-text {
+      font-size: 16px;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    function initShopByValuesSlider() {
+      var sectionId = '{{ section.id }}';
+      var track = document.getElementById('earthValuesTrack-' + sectionId);
+      var tabsContainer = document.getElementById('earthValuesTabs-' + sectionId);
+      var prevBtn = document.getElementById('earthValuesPrev-' + sectionId);
+      var nextBtn = document.getElementById('earthValuesNext-' + sectionId);
+
+      if (!track) return;
+
+      var slides = track.querySelectorAll('.earth-values__slide');
+      if (slides.length === 0) return;
+
+      function updateActiveTab(index) {
+        if (!tabsContainer) return;
+        var tabs = tabsContainer.querySelectorAll('.earth-values__tab');
+        tabs.forEach(function(tab, i) {
+          if (i === index) {
+            tab.classList.add('earth-values__tab--active');
+            tab.classList.add('is-active');
+            tab.setAttribute('aria-selected', 'true');
+          } else {
+            tab.classList.remove('earth-values__tab--active');
+            tab.classList.remove('is-active');
+            tab.setAttribute('aria-selected', 'false');
+          }
+        });
+      }
+
+      function scrollToSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= slides.length) index = slides.length - 1;
+        var targetSlide = slides[index];
+        if (targetSlide) {
+          track.scrollTo({
+            left: targetSlide.offsetLeft - track.offsetLeft,
+            behavior: 'smooth'
+          });
+          updateActiveTab(index);
+        }
+      }
+
+      // Tab clicks
+      if (tabsContainer) {
+        tabsContainer.addEventListener('click', function(e) {
+          var tab = e.target.closest('.earth-values__tab');
+          if (tab) {
+            var idx = parseInt(tab.getAttribute('data-index'), 10);
+            if (!isNaN(idx)) {
+              scrollToSlide(idx);
+            }
+          }
+        });
+      }
+
+      // Prev / Next button clicks
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+          var currentScroll = track.scrollLeft;
+          var slideWidth = slides[0].offsetWidth;
+          var currentIdx = Math.round(currentScroll / slideWidth);
+          scrollToSlide(currentIdx - 1);
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+          var currentScroll = track.scrollLeft;
+          var slideWidth = slides[0].offsetWidth;
+          var currentIdx = Math.round(currentScroll / slideWidth);
+          scrollToSlide(currentIdx + 1);
+        });
+      }
+
+      // Scroll listener to update tabs on drag/swipe
+      var scrollTimeout;
+      track.addEventListener('scroll', function() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+          var currentScroll = track.scrollLeft;
+          var slideWidth = slides[0].offsetWidth;
+          var currentIdx = Math.round(currentScroll / slideWidth);
+          if (currentIdx >= 0 && currentIdx < slides.length) {
+            updateActiveTab(currentIdx);
+          }
+        }, 80);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initShopByValuesSlider);
+    } else {
+      initShopByValuesSlider();
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Shop by Values",
+  "class": "earth-values-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop by Values"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Find fashion that matches your ethics – filter by what matters most to you"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background Color",
+      "default": "#224E09"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Section Text Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Card Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "tab_inactive_color",
+      "label": "Inactive Tab Text Color",
+      "default": "#EAE060"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_color",
+      "label": "Active Tab Text Color",
+      "default": "#F8F9DC"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value_item",
+      "name": "Value Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Value Title",
+          "default": "Fair Trade"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Pill Badge Text",
+          "default": "Ethical wages guaranteed"
+        },
+        {
+          "type": "text",
+          "id": "highlight",
+          "label": "Highlight Text",
+          "default": "100% worker-owned cooperatives"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon File (Asset)",
+          "default": "handshake.svg"
+        },
+        {
+          "type": "textarea",
+          "id": "desc",
+          "label": "Description",
+          "default": "Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Explore Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Value Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop by Values",
+      "blocks": [
+        {
+          "type": "value_item",
+          "settings": {
+            "title": "Organic Cotton",
+            "badge": "GOTS Certified Organic",
+            "highlight": "100% Pesticide & GMO Free",
+            "icon": "handshake.svg",
+            "desc": "Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton."
+          }
+        },
+        {
+          "type": "value_item",
+          "settings": {
+            "title": "Recycled Materials",
+            "badge": "Ocean & Land Waste Diverted",
+            "highlight": "7.8 plastic bottles per garment",
+            "icon": "handshake.svg",
+            "desc": "Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments."
+          }
+        },
+        {
+          "type": "value_item",
+          "settings": {
+            "title": "Fair Trade",
+            "badge": "Ethical wages guaranteed",
+            "highlight": "100% worker-owned cooperatives",
+            "icon": "handshake.svg",
+            "desc": "Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans."
+          }
+        },
+        {
+          "type": "value_item",
+          "settings": {
+            "title": "Carbon Neutral",
+            "badge": "Net-Zero Supply Chain",
+            "highlight": "100% renewable energy powered",
+            "icon": "handshake.svg",
+            "desc": "Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery."
+          }
+        },
+        {
+          "type": "value_item",
+          "settings": {
+            "title": "Vegan & Cruelty-Free",
+            "badge": "PETA Approved Vegan",
+            "highlight": "Zero animal testing or materials",
+            "icon": "handshake.svg",
+            "desc": "100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

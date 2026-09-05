@@ -1,0 +1,17 @@
+{% comment %}
+  Reusable Arrow Link Button Component
+  Accepts:
+  - text: {String} Button label text
+  - url: {String} Link destination URL
+  - theme: {String} 'dark' (default on light bg) or 'light' (on dark image bg)
+  - class: {String} Additional classes
+{% endcomment %}
+
+{%- assign btn_theme = theme | default: 'dark' -%}
+
+<a href="{{ url | default: routes.all_products_collection_url }}" class="earth-btn-arrow earth-btn-arrow--{{ btn_theme }} {{ class }}">
+  <span class="earth-btn-arrow__text">{{ text }}</span>
+  <span class="earth-btn-arrow__icon-circle" aria-hidden="true">
+    <img src="{{ 'arrow-right.svg' | asset_url }}" width="12" height="10" alt="" loading="lazy">
+  </span>
+</a>

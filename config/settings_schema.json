@@ -8,17 +8,341 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
-    "name": "t:general.typography",
-    "settings": [
-      {
-        "type": "header",
-        "content": "t:general.headings"        
-      },
-      {
-        "type": "font_picker",
-        "id": "type_primary_font",
-        "default": "dm_sans_n4",        
-        "label": "t:general.font"
+        "name": "t:general.typography.name",
+        "settings": [
+            {
+                "type": "header",
+                "content": "t:general.typography.headings.header"
+            },
+            {
+                "type": "font_picker",
+                "id": "type_primary_font",
+                "default": "dm_sans_n4",
+                "label": "t:general.typography.headings.font.label"
+            },
+            {
+                "type": "range",
+                "id": "heading_line_height",
+                "min": 0.8,
+                "max": 1.6,
+                "step": 0.1,
+                "default": 1,
+                "label": "t:general.typography.headings.line_height.label"
+            },
+            {
+                "type": "range",
+                "id": "heading_letter_spacing",
+                "min": -100,
+                "max": 100,
+                "step": 5,
+                "default": -15,
+                "label": "t:general.typography.headings.letter_spacing.label",
+                "info": "t:general.typography.headings.letter_spacing.info"
+            },
+            {
+                "type": "select",
+                "id": "heading_font_weight",
+                "options": [
+                    {
+                        "value": "300",
+                        "label": "t:general.typography.font_weight.options_1.label"
+                    },
+                    {
+                        "value": "400",
+                        "label": "t:general.typography.font_weight.options_2.label"
+                    },
+                    {
+                        "value": "500",
+                        "label": "t:general.typography.font_weight.options_3.label"
+                    },
+                    {
+                        "value": "600",
+                        "label": "t:general.typography.font_weight.options_4.label"
+                    },
+                    {
+                        "value": "700",
+                        "label": "t:general.typography.font_weight.options_5.label"
+                    },
+                    {
+                        "value": "800",
+                        "label": "t:general.typography.font_weight.options_6.label"
+                    }
+                ],
+                "default": "700",
+                "label": "t:general.typography.font_weight.label"
+            },
+            {
+                "type": "checkbox",
+                "id": "heading_capitalize",
+                "default": false,
+                "label": "t:general.typography.headings.capitalize.label"
+            },
+            {
+                "type": "header",
+                "content": "t:general.typography.body.header"
+            },
+            {
+                "type": "font_picker",
+                "id": "type_body_font",
+                "default": "dm_sans_n4",
+                "label": "t:general.typography.body.font.label"
+            },
+            {
+                "type": "range",
+                "id": "body_base_size",
+                "min": 12,
+                "max": 24,
+                "step": 1,
+                "unit": "px",
+                "default": 18,
+                "label": "t:general.typography.body.base_size.label"
+            },
+            {
+                "type": "range",
+                "id": "body_line_height",
+                "min": 0.8,
+                "max": 2,
+                "step": 0.1,
+                "default": 1.6,
+                "label": "t:general.typography.body.line_height.label"
+            },
+            {
+                "type": "range",
+                "id": "body_letter_spacing",
+                "min": -100,
+                "max": 100,
+                "step": 5,
+                "default": -5,
+                "label": "t:general.typography.body.letter_spacing.label",
+                "info": "t:general.typography.body.letter_spacing.info"
+            },
+            {
+                "type": "select",
+                "id": "body_font_weight",
+                "options": [
+                    {
+                        "value": "300",
+                        "label": "t:general.typography.font_weight.options_1.label"
+                    },
+                    {
+                        "value": "400",
+                        "label": "t:general.typography.font_weight.options_2.label"
+                    },
+                    {
+                        "value": "500",
+                        "label": "t:general.typography.font_weight.options_3.label"
+                    },
+                    {
+                        "value": "600",
+                        "label": "t:general.typography.font_weight.options_4.label"
+                    },
+                    {
+                        "value": "700",
+                        "label": "t:general.typography.font_weight.options_5.label"
+                    },
+                    {
+                        "value": "800",
+                        "label": "t:general.typography.font_weight.options_6.label"
+                    }
+                ],
+                "default": "400",
+                "label": "t:general.typography.font_weight.label"
+            },
+            {
+                "type": "header",
+                "content": "t:general.typography.accent.header"
+            },
+            {
+                "type": "select",
+                "id": "nav_font",
+                "options": [
+                    {
+                        "value": "body",
+                        "label": "t:general.typography.accent.font_source.options_1.label"
+                    },
+                    {
+                        "value": "heading",
+                        "label": "t:general.typography.accent.font_source.options_2.label"
+                    }
+                ],
+                "default": "body",
+                "label": "t:general.typography.accent.navigation.font.label"
+            },
+            {
+                "type": "select",
+                "id": "nav_font_weight",
+                "options": [
+                    {
+                        "value": "300",
+                        "label": "t:general.typography.font_weight.options_1.label"
+                    },
+                    {
+                        "value": "400",
+                        "label": "t:general.typography.font_weight.options_2.label"
+                    },
+                    {
+                        "value": "500",
+                        "label": "t:general.typography.font_weight.options_3.label"
+                    },
+                    {
+                        "value": "600",
+                        "label": "t:general.typography.font_weight.options_4.label"
+                    },
+                    {
+                        "value": "700",
+                        "label": "t:general.typography.font_weight.options_5.label"
+                    },
+                    {
+                        "value": "800",
+                        "label": "t:general.typography.font_weight.options_6.label"
+                    }
+                ],
+                "default": "600",
+                "label": "t:general.typography.accent.navigation.font_weight.label"
+            },
+            {
+                "type": "range",
+                "id": "nav_base_size",
+                "min": 10,
+                "max": 24,
+                "step": 1,
+                "unit": "px",
+                "default": 18,
+                "label": "t:general.typography.accent.navigation.base_size.label"
+            },
+            {
+                "type": "checkbox",
+                "id": "nav_capitalize",
+                "default": false,
+                "label": "t:general.typography.accent.navigation.capitalize.label"
+            },
+            {
+                "type": "select",
+                "id": "buttons_font",
+                "options": [
+                    {
+                        "value": "body",
+                        "label": "t:general.typography.accent.font_source.options_1.label"
+                    },
+                    {
+                        "value": "heading",
+                        "label": "t:general.typography.accent.font_source.options_2.label"
+                    }
+                ],
+                "default": "body",
+                "label": "t:general.typography.accent.buttons.font.label"
+            },
+            {
+                "type": "select",
+                "id": "buttons_font_weight",
+                "options": [
+                    {
+                        "value": "300",
+                        "label": "t:general.typography.font_weight.options_1.label"
+                    },
+                    {
+                        "value": "400",
+                        "label": "t:general.typography.font_weight.options_2.label"
+                    },
+                    {
+                        "value": "500",
+                        "label": "t:general.typography.font_weight.options_3.label"
+                    },
+                    {
+                        "value": "600",
+                        "label": "t:general.typography.font_weight.options_4.label"
+                    },
+                    {
+                        "value": "700",
+                        "label": "t:general.typography.font_weight.options_5.label"
+                    },
+                    {
+                        "value": "800",
+                        "label": "t:general.typography.font_weight.options_6.label"
+                    }
+                ],
+                "default": "600",
+                "label": "t:general.typography.accent.buttons.font_weight.label"
+            },
+            {
+                "type": "range",
+                "id": "buttons_base_size",
+                "min": 10,
+                "max": 24,
+                "step": 1,
+                "unit": "px",
+                "default": 16,
+                "label": "t:general.typography.accent.buttons.base_size.label"
+            },
+            {
+                "type": "checkbox",
+                "id": "buttons_capitalize",
+                "default": false,
+                "label": "t:general.typography.accent.buttons.capitalize.label"
+            },
+            {
+                "type": "select",
+                "id": "product_grid_font",
+                "options": [
+                    {
+                        "value": "body",
+                        "label": "t:general.typography.accent.font_source.options_1.label"
+                    },
+                    {
+                        "value": "heading",
+                        "label": "t:general.typography.accent.font_source.options_2.label"
+                    }
+                ],
+                "default": "body",
+                "label": "t:general.typography.accent.product_grid.font.label"
+            },
+            {
+                "type": "select",
+                "id": "product_grid_font_weight",
+                "options": [
+                    {
+                        "value": "300",
+                        "label": "t:general.typography.font_weight.options_1.label"
+                    },
+                    {
+                        "value": "400",
+                        "label": "t:general.typography.font_weight.options_2.label"
+                    },
+                    {
+                        "value": "500",
+                        "label": "t:general.typography.font_weight.options_3.label"
+                    },
+                    {
+                        "value": "600",
+                        "label": "t:general.typography.font_weight.options_4.label"
+                    },
+                    {
+                        "value": "700",
+                        "label": "t:general.typography.font_weight.options_5.label"
+                    },
+                    {
+                        "value": "800",
+                        "label": "t:general.typography.font_weight.options_6.label"
+                    }
+                ],
+                "default": "600",
+                "label": "t:general.typography.accent.product_grid.font_weight.label"
+            },
+            {
+                "type": "range",
+                "id": "product_grid_base_size",
+                "min": 10,
+                "max": 24,
+                "step": 1,
+                "unit": "px",
+                "default": 16,
+                "label": "t:general.typography.accent.product_grid.base_size.label"
+            },
+            {
+                "type": "checkbox",
+                "id": "product_grid_capitalize",
+                "default": false,
+                "label": "t:general.typography.accent.product_grid.capitalize.label"
       }
     ]
   },
@@ -54,29 +378,57 @@
     ]
   },
   {
-    "name": "t:general.colors",
+    "name": "Colors",
     "settings": [
+      {
+        "type": "header",
+        "content": "Theme Color Palette"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "default": "#224E09",
+        "label": "Primary Color (Forest Green)"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "default": "#71CC3B",
+        "label": "Secondary / Accent Color (Leaf Green)"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "default": "#EAE060",
+        "label": "Highlight Color (Sunlight Yellow)"
+      },
+      {
+        "type": "color",
+        "id": "color_white",
+        "default": "#F8F9DC",
+        "label": "Light / Cream Background"
+      },
+      {
+        "type": "color",
+        "id": "color_black",
+        "default": "#003225",
+        "label": "Dark / Pine Green"
+      },
+      {
+        "type": "header",
+        "content": "Global Defaults"
+      },
       {
         "type": "color",
         "id": "background_color",
-        "default": "#FFFFFF",
-        "label": "t:labels.background"
+        "default": "#003225",
+        "label": "Default Background Color"
       },
       {
         "type": "color",
         "id": "foreground_color",
-        "default": "#333333",
-        "label": "t:labels.foreground"
-      },
-      {
-        "type": "range",
-        "id": "input_corner_radius",
-        "min": 0,
-        "max": 10,
-        "step": 1,
-        "unit": "px",
-        "label": "t:labels.input_corner_radius",
-        "default": 4
+        "default": "#F8F9DC",
+        "label": "Default Foreground / Text Color"
       }
     ]
   }

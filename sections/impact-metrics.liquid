@@ -1,0 +1,480 @@
+{% comment %}
+  Impact Metrics Section - Our Real Impact & Personal Sustainability Impact
+  Matching exact design with top green cards + middle CTA + bottom outlined cards
+{% endcomment %}
+
+<section class="earth-impact-section full-width" id="earthImpact-{{ section.id }}">
+  <div class="earth-impact__container">
+    <!-- 1. Top Section Header -->
+    <div class="earth-impact__header">
+      <h2 class="earth-impact__main-title">
+        <img src="{{ 'leaf-2.svg' | asset_url }}" width="32" height="32" alt="" class="earth-impact__leaf earth-impact__leaf--left">
+        <span>{{ section.settings.title | default: 'Our Real Impact' }}</span>
+        <img src="{{ 'leaf-2.svg' | asset_url }}" width="32" height="32" alt="" class="earth-impact__leaf earth-impact__leaf--right">
+      </h2>
+      <p class="earth-impact__main-subtitle">
+        {{ section.settings.subtitle | default: 'Transparency is at the heart of everything we do. Track our environmental and social impact in real-time.' }}
+      </p>
+    </div>
+
+    <!-- 2. Top Dark Green Cards Grid -->
+    <div class="earth-impact__grid-top">
+      <!-- Card 1: Trees Planted -->
+      <div class="earth-impact__dark-card">
+        <div class="earth-impact__watermark" aria-hidden="true">
+          <img src="{{ 'ecology.svg' | asset_url }}" width="226" height="219" alt="" loading="lazy">
+        </div>
+        <div class="earth-impact__icon-box">
+          <img src="{{ 'tree.svg' | asset_url }}" width="32" height="32" alt="Trees Planted">
+        </div>
+        <span class="earth-impact__dark-number">100000+</span>
+        <h3 class="earth-impact__dark-title">Trees Planted</h3>
+        <p class="earth-impact__dark-note">80% of 2025 goal reached</p>
+      </div>
+
+      <!-- Card 2: CO2 Saved -->
+      <div class="earth-impact__dark-card">
+        <div class="earth-impact__watermark" aria-hidden="true">
+          <img src="{{ 'ecology.svg' | asset_url }}" width="226" height="219" alt="" loading="lazy">
+        </div>
+        <div class="earth-impact__icon-box">
+          <img src="{{ 'zero-emissions.svg' | asset_url }}" width="36" height="36" alt="CO2 Saved">
+        </div>
+        <span class="earth-impact__dark-number">500T</span>
+        <h3 class="earth-impact__dark-title">CO₂ Saved</h3>
+        <p class="earth-impact__dark-note">≠ Equal to 2,500 cars off the road yearly</p>
+      </div>
+
+      <!-- Card 3: Fair Trade Certified -->
+      <div class="earth-impact__dark-card">
+        <div class="earth-impact__watermark" aria-hidden="true">
+          <img src="{{ 'ecology.svg' | asset_url }}" width="226" height="219" alt="" loading="lazy">
+        </div>
+        <div class="earth-impact__icon-box">
+          <img src="{{ 'quality.svg' | asset_url }}" width="36" height="36" alt="Fair Trade">
+        </div>
+        <span class="earth-impact__dark-number">100%</span>
+        <h3 class="earth-impact__dark-title">Fair Trade Certified</h3>
+        <div class="earth-impact__pill-group">
+          <span class="earth-impact__pill">GOTS</span>
+          <span class="earth-impact__pill">B Corp</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Water Saved -->
+      <div class="earth-impact__dark-card">
+        <div class="earth-impact__watermark" aria-hidden="true">
+          <img src="{{ 'ecology.svg' | asset_url }}" width="226" height="219" alt="" loading="lazy">
+        </div>
+        <div class="earth-impact__icon-box">
+          <img src="{{ 'Drop.svg' | asset_url }}" width="28" height="32" alt="Water Saved">
+        </div>
+        <span class="earth-impact__dark-number">1,000,159</span>
+        <h3 class="earth-impact__dark-title">Liters Water Saved</h3>
+        <p class="earth-impact__dark-note">• Live update</p>
+      </div>
+    </div>
+
+    <!-- 3. Middle Personal Impact Header & CTA -->
+    <div class="earth-impact__middle">
+      <h2 class="earth-impact__middle-title">
+        {{ section.settings.personal_title | default: 'Your Personal Sustainability Impact' }}
+      </h2>
+      <p class="earth-impact__middle-subtitle">
+        {{ section.settings.personal_subtitle | default: 'Connect your account to see how you contribute to sustainability goals.' }}
+      </p>
+
+      <div class="earth-impact__cta-wrap">
+        {%- assign impact_btn_text = section.settings.button_text | default: 'TRACK MY IMPACT' -%}
+        {%- assign impact_btn_url = section.settings.button_link | default: routes.account_url -%}
+        {% render 'btn',
+          text: impact_btn_text,
+          url: impact_btn_url
+        %}
+      </div>
+    </div>
+
+    <!-- 4. Bottom Outlined Stats Grid -->
+    <div class="earth-impact__grid-bottom">
+      <!-- Outlined 1 -->
+      <div class="earth-impact__outline-card">
+        <span class="earth-impact__outline-number">95%</span>
+        <h3 class="earth-impact__outline-title">Organic Cotton</h3>
+        <p class="earth-impact__outline-note">of materials used</p>
+      </div>
+
+      <!-- Outlined 2 -->
+      <div class="earth-impact__outline-card">
+        <span class="earth-impact__outline-number">2,500+</span>
+        <h3 class="earth-impact__outline-title">Factory Workers</h3>
+        <p class="earth-impact__outline-note">earning fair wages</p>
+      </div>
+
+      <!-- Outlined 3 -->
+      <div class="earth-impact__outline-card">
+        <span class="earth-impact__outline-number">40%</span>
+        <h3 class="earth-impact__outline-title">Recycled Materials</h3>
+        <p class="earth-impact__outline-note">in our products</p>
+      </div>
+
+      <!-- Outlined 4 -->
+      <div class="earth-impact__outline-card">
+        <span class="earth-impact__outline-number">2026</span>
+        <h3 class="earth-impact__outline-title">Carbon Neutral</h3>
+        <p class="earth-impact__outline-note">achieved</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  /* ==========================================================================
+     Our Real Impact Section Styles
+     ========================================================================== */
+  .earth-impact-section {
+    background-color: var(--color-white, #F8F9DC);
+    padding: clamp(56px, 7vw, 96px) 24px clamp(64px, 8vw, 110px);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .earth-impact__container {
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* 1. Top Section Header */
+  .earth-impact__header {
+    text-align: center;
+    margin-bottom: clamp(36px, 5vw, 56px);
+  }
+  .earth-impact__main-title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-size: clamp(2rem, 3.8vw, 3.2rem);
+    font-weight: 800;
+    color: var(--color-black, #003225);
+    letter-spacing: -0.03em;
+    margin: 0 0 16px 0;
+    line-height: 1.15;
+  }
+  .earth-impact__leaf {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    display: inline-block;
+  }
+  .earth-impact__leaf--right {
+    transform: scaleX(-1);
+  }
+  .earth-impact__main-subtitle {
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    color: var(--color-primary, #224E09);
+    max-width: 550px;
+    margin: 0 auto;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  /* 2. Top Dark Green Cards Grid */
+  .earth-impact__grid-top {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .earth-impact__dark-card {
+    background-color: var(--color-primary, #224E09);
+    color: #ffffff;
+    padding: 38px 20px 34px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 250px;
+    box-sizing: border-box;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .earth-impact__dark-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 50, 37, 0.2);
+  }
+  .earth-impact__watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px;
+    height: 210px;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-impact__watermark img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .earth-impact__icon-box {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .earth-impact__icon-box img {
+    max-height: 38px;
+    width: auto;
+    object-fit: contain;
+  }
+  .earth-impact__dark-number {
+    font-size: clamp(1.8rem, 2.4vw, 2.3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-white);
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+  }
+  .earth-impact__dark-title {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--color-white);
+    margin: 0 0 6px 0;
+    position: relative;
+    z-index: 1;
+    letter-spacing: -0.01em;
+  }
+  .earth-impact__dark-note {
+    font-size: 16px;
+    color: var(--color-white);
+    margin: 0;
+    line-height: 1.35;
+    position: relative;
+    z-index: 1;
+  }
+  .earth-impact__pill-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .earth-impact__pill {
+    background-color: var(--color-accent, #EAE060);
+    color: var(--color-black, #003225);
+    font-size: 15px;
+    font-weight: 400;
+    padding: 3px 10px;
+    border-radius: 12px;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+
+  /* 3. Middle Personal Impact Section */
+  .earth-impact__middle {
+    text-align: center;
+    margin: 64px 0;
+  }
+  .earth-impact__middle-title {
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 800;
+    color: var(--color-black, #003225);
+    letter-spacing: -0.03em;
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+  }
+  .earth-impact__middle-subtitle {
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    color: var(--color-primary, #224E09);
+    max-width: 504px;
+    margin: 0 auto 28px;
+    line-height: 1.45;
+  }
+  .earth-impact__cta-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* 4. Bottom Outlined Stats Grid */
+  .earth-impact__grid-bottom {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .earth-impact__outline-card {
+    background-color: transparent;
+    border: 1.5px solid var(--color-primary, #224E09);
+    padding: 34px 18px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    transition: transform 0.25s ease, background-color 0.25s ease;
+  }
+  .earth-impact__outline-card:hover {
+    transform: translateY(-3px);
+    background-color: rgba(34, 78, 9, 0.03);
+  }
+  .earth-impact__outline-number {
+    font-size: clamp(1.8rem, 2.4vw, 2.2rem);
+    font-weight: 800;
+    color: var(--color-black, #003225);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .earth-impact__outline-title {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--color-black, #224E09);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.01em;
+  }
+  .earth-impact__outline-note {
+    font-size: 15px;
+    color: var(--color-primary, #224E09);
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .earth-impact__grid-top,
+    .earth-impact__grid-bottom {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .earth-impact-section {
+      padding: 40px 20px 56px;
+      overflow: hidden;
+    }
+    /* Hide leaf icons on mobile */
+    .earth-impact__leaf {
+      display: none !important;
+    }
+    .earth-impact__main-title {
+      font-size: 28px;
+    }
+    .earth-impact__main-subtitle {
+      font-size: 15px;
+    }
+    .earth-impact__middle {
+      margin: 48px 0 36px;
+    }
+    .earth-impact__middle-title {
+      font-size: 26px;
+    }
+    .earth-impact__middle-subtitle {
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    /* Horizontal Swipeable Track on Mobile */
+    .earth-impact__grid-top,
+    .earth-impact__grid-bottom {
+      display: flex !important;
+      overflow-x: auto !important;
+      scroll-snap-type: x mandatory !important;
+      -webkit-overflow-scrolling: touch !important;
+      scrollbar-width: none !important;
+      gap: 14px !important;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 6px;
+    }
+    .earth-impact__grid-top::-webkit-scrollbar,
+    .earth-impact__grid-bottom::-webkit-scrollbar {
+      display: none !important;
+    }
+
+    .earth-impact__dark-card {
+      flex: 0 0 78% !important;
+      min-width: 250px;
+      max-width: 300px;
+      min-height: 230px;
+      padding: 28px 18px 24px;
+      scroll-snap-align: start;
+      box-sizing: border-box;
+    }
+
+    .earth-impact__outline-card {
+      flex: 0 0 78% !important;
+      min-width: 250px;
+      max-width: 300px;
+      padding: 24px 18px;
+      scroll-snap-align: start;
+      box-sizing: border-box;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Impact Metrics",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Top Section Header"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Our Real Impact"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Transparency is at the heart of everything we do. Track our environmental and social impact in real-time."
+    },
+    {
+      "type": "header",
+      "content": "Middle Section Header & CTA"
+    },
+    {
+      "type": "text",
+      "id": "personal_title",
+      "label": "Personal Impact Title",
+      "default": "Your Personal Sustainability Impact"
+    },
+    {
+      "type": "textarea",
+      "id": "personal_subtitle",
+      "label": "Personal Impact Subtitle",
+      "default": "Connect your account to see how you contribute to sustainability goals."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "TRACK MY IMPACT"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Impact Metrics"
+    }
+  ]
+}
+{% endschema %}

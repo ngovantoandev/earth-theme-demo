@@ -10,8 +10,13 @@
 {
   "current": {
     "type_primary_font": "dm_sans_n4",
+    "color_primary": "#224E09",
+    "color_secondary": "#71CC3B",
+    "color_accent": "#EAE060",
+    "color_white": "#F8F9DC",
+    "color_black": "#003225",
     "background_color": "#003225",
-    "foreground_color": "#224E09",
+    "foreground_color": "#F8F9DC",
     "content_for_index": []
   }
 }

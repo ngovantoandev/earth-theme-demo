@@ -1,0 +1,765 @@
+{% comment %}
+  Sustainability Journey Section
+  Interactive timeline with connected milestones, call-to-action box, reusable action buttons, and sustainability pillars.
+  Fully responsive on Desktop, Tablet, and Mobile with Full-Width Layout (34px padding)
+{% endcomment %}
+
+<section class="sustainability-journey full-width" id="sustainabilityJourney-{{ section.id }}" style="--journey-bg: {{ section.settings.bg_color | default: '#F1F4D8' }}; --journey-color: {{ section.settings.text_color | default: '#003225' }};">
+  <div class="sustainability-journey__container">
+    
+    <!-- 1. Section Header -->
+    <div class="sustainability-journey__header">
+      <h2 class="sustainability-journey__title">
+        <span class="sustainability-journey__leaf sustainability-journey__leaf--left" aria-hidden="true">
+          <img src="{{ 'leaf-2.svg' | asset_url }}" width="36" height="36" alt="" loading="lazy">
+        </span>
+        <span>{{ section.settings.title | default: 'Our Sustainability Journey' }}</span>
+        <span class="sustainability-journey__leaf sustainability-journey__leaf--right" aria-hidden="true">
+          <img src="{{ 'leaf-2.svg' | asset_url }}" width="36" height="36" alt="" loading="lazy">
+        </span>
+      </h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="sustainability-journey__subtitle">
+          {{ section.settings.subtitle }}
+        </p>
+      {%- endif -%}
+    </div>
+
+    <!-- 2. Timeline Milestones Grid / Track -->
+    <div class="sustainability-journey__timeline-wrapper">
+      <div class="sustainability-journey__timeline-line" aria-hidden="true"></div>
+      <div class="sustainability-journey__milestones" role="region" aria-label="Sustainability Milestones">
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            <div class="sustainability-journey__milestone-item" {{ block.shopify_attributes }}>
+              
+              <!-- Top Circle Badge -->
+              <div class="sustainability-journey__node-badge" aria-hidden="true">
+                <div class="sustainability-journey__icon-inner">
+                  {%- if block.settings.icon_name != blank -%}
+                    <img src="{{ block.settings.icon_name | asset_url }}" width="28" height="28" alt="" loading="lazy">
+                  {%- elsif block.settings.custom_icon != blank -%}
+                    <img src="{{ block.settings.custom_icon | image_url: width: 64 }}" width="28" height="28" alt="" loading="lazy">
+                  {%- else -%}
+                    <img src="{{ 'tree.svg' | asset_url }}" width="28" height="28" alt="" loading="lazy">
+                  {%- endif -%}
+                </div>
+              </div>
+
+              <!-- Year Label -->
+              <span class="sustainability-journey__year">{{ block.settings.year }}</span>
+
+              <!-- Outlined Card -->
+              <div class="sustainability-journey__card">
+                <h3 class="sustainability-journey__card-title">{{ block.settings.title }}</h3>
+                <p class="sustainability-journey__card-desc">{{ block.settings.description }}</p>
+              </div>
+
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <!-- Default Fallback Milestones (5 steps) -->
+          <!-- 1. 2018 -->
+          <div class="sustainability-journey__milestone-item">
+            <div class="sustainability-journey__node-badge" aria-hidden="true">
+              <div class="sustainability-journey__icon-inner">
+                <img src="{{ 'idea.svg' | asset_url }}" width="28" height="28" alt="" loading="lazy">
+              </div>
+            </div>
+            <span class="sustainability-journey__year">2018</span>
+            <div class="sustainability-journey__card">
+              <h3 class="sustainability-journey__card-title">The Beginning</h3>
+              <p class="sustainability-journey__card-desc">Founded in Hanoi with mission to source 100% organic cotton from local farms</p>
+            </div>
+          </div>
+
+          <!-- 2. 2020 -->
+          <div class="sustainability-journey__milestone-item">
+            <div class="sustainability-journey__node-badge" aria-hidden="true">
+              <div class="sustainability-journey__icon-inner">
+                <img src="{{ 'handshake.svg' | asset_url }}" width="28" height="28" alt="" loading="lazy">
+              </div>
+            </div>
+            <span class="sustainability-journey__year">2020</span>
+            <div class="sustainability-journey__card">
+              <h3 class="sustainability-journey__card-title">Fair Trade Partnership</h3>
+              <p class="sustainability-journey__card-desc">Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans</p>
+            </div>
+          </div>
+
+          <!-- 3. 2022 -->
+          <div class="sustainability-journey__milestone-item">
+            <div class="sustainability-journey__node-badge" aria-hidden="true">
+              <div class="sustainability-journey__icon-inner">
+                <img src="{{ 'tree.svg' | asset_url }}" width="28" height="28" alt="" loading="lazy">
+              </div>
+            </div>
+            <span class="sustainability-journey__year">2022</span>
+            <div class="sustainability-journey__card">
+              <h3 class="sustainability-journey__card-title">Reforestation Initiative</h3>
+              <p class="sustainability-journey__card-desc">Launched "1 Tree Per Product" – planted 50K trees in Vietnam reforestation</p>
+            </div>
+          </div>
+
+          <!-- 4. 2024 -->
+          <div class="sustainability-journey__milestone-item">
+            <div class="sustainability-journey__node-badge" aria-hidden="true">
+              <div class="sustainability-journey__icon-inner">
+                <img src="{{ 'badge.svg' | asset_url }}" width="28" height="28" alt="" loading="lazy">
+              </div>
+            </div>
+            <span class="sustainability-journey__year">2024</span>
+            <div class="sustainability-journey__card">
+              <h3 class="sustainability-journey__card-title">Carbon Neutral</h3>
+              <p class="sustainability-journey__card-desc">Achieved B Corp certification and full carbon-neutral shipping</p>
+            </div>
+          </div>
+
+          <!-- 5. 2026 -->
+          <div class="sustainability-journey__milestone-item">
+            <div class="sustainability-journey__node-badge" aria-hidden="true">
+              <div class="sustainability-journey__icon-inner">
+                <img src="{{ 'repost.svg' | asset_url }}" width="28" height="28" alt="" loading="lazy">
+              </div>
+            </div>
+            <span class="sustainability-journey__year">2026</span>
+            <div class="sustainability-journey__card">
+              <h3 class="sustainability-journey__card-title">Circular Economy</h3>
+              <p class="sustainability-journey__card-desc">Closed-loop recycling: turn old clothes into new collections</p>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- 3. Bottom Call-to-Action Box -->
+    <div class="sustainability-journey__cta-box">
+      <h3 class="sustainability-journey__cta-title">
+        {{ section.settings.cta_title | default: 'Be part of our story' }}
+      </h3>
+      
+      {%- if section.settings.cta_subtitle != blank -%}
+        <p class="sustainability-journey__cta-subtitle">
+          {{ section.settings.cta_subtitle }}
+        </p>
+      {%- endif -%}
+
+      <!-- Reusable Action Buttons Group -->
+      <div class="sustainability-journey__btn-group">
+        {%- if section.settings.primary_btn_text != blank -%}
+          {% render 'btn-action',
+            text: section.settings.primary_btn_text,
+            url: section.settings.primary_btn_url,
+            variant: 'solid'
+          %}
+        {%- endif -%}
+
+        {%- if section.settings.secondary_btn_text != blank -%}
+          {% render 'btn-action',
+            text: section.settings.secondary_btn_text,
+            url: section.settings.secondary_btn_url,
+            variant: 'outline'
+          %}
+        {%- endif -%}
+      </div>
+
+      <!-- 3 Pillars / Badges Row -->
+      <div class="sustainability-journey__pillars">
+        <!-- Pillar 1 -->
+        <div class="sustainability-journey__pillar-item">
+          <div class="sustainability-journey__pillar-icon-wrap" aria-hidden="true">
+            <img src="{{ 'plant-based.svg' | asset_url }}" width="30" height="30" alt="" loading="lazy">
+          </div>
+          <span class="sustainability-journey__pillar-label">{{ section.settings.pillar_1_label | default: '100% ORGANIC' }}</span>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="sustainability-journey__pillar-item">
+          <div class="sustainability-journey__pillar-icon-wrap" aria-hidden="true">
+            <img src="{{ 'plant-based-1.svg' | asset_url }}" width="30" height="24" alt="" loading="lazy">
+          </div>
+          <span class="sustainability-journey__pillar-label">{{ section.settings.pillar_2_label | default: 'CARBON NEUTRAL' }}</span>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="sustainability-journey__pillar-item">
+          <div class="sustainability-journey__pillar-icon-wrap" aria-hidden="true">
+            <img src="{{ 'Fair Wages.svg' | asset_url }}" width="30" height="30" alt="" loading="lazy">
+          </div>
+          <span class="sustainability-journey__pillar-label">{{ section.settings.pillar_3_label | default: 'FAIR WAGES' }}</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  /* ==========================================================================
+     Sustainability Journey Section Styles
+     ========================================================================== */
+  .sustainability-journey {
+    grid-column: 1 / -1 !important;
+    width: 100%;
+    background-color: var(--journey-bg, #F1F4D8);
+    color: var(--journey-color, #003225);
+    padding: 115px 34px 115px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .sustainability-journey__container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  /* 1. Header */
+  .sustainability-journey__header {
+    text-align: center;
+    margin-bottom: clamp(40px, 5.5vw, 68px);
+  }
+
+  .sustainability-journey__title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--journey-color, #003225);
+    margin: 0 0 16px 0;
+  }
+
+  .sustainability-journey__leaf {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(28px, 2.5vw, 36px);
+    height: clamp(28px, 2.5vw, 36px);
+    flex-shrink: 0;
+  }
+  .sustainability-journey__leaf img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .sustainability-journey__leaf--right img {
+    transform: scaleX(-1);
+  }
+
+  .sustainability-journey__subtitle {
+    font-size: clamp(15.5px, 1.25vw, 18px);
+    line-height: 1.5;
+    color: var(--journey-color, #003225);
+    opacity: 0.92;
+    max-width: 780px;
+    margin: 0 auto;
+    letter-spacing: -0.01em;
+  }
+
+  /* 2. Timeline Milestones */
+  .sustainability-journey__timeline-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: clamp(48px, 6vw, 76px);
+  }
+
+  /* Continuous horizontal connector line aligned with cards and container boundaries */
+  .sustainability-journey__timeline-line {
+    position: absolute;
+    top: 32px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--journey-color, #003225);
+    z-index: 1;
+    pointer-events: none;
+    display: block !important;
+  }
+
+  .sustainability-journey__milestones {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: clamp(12px, 1.6vw, 24px);
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+
+  .sustainability-journey__milestone-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Circular Badge with solid dark green background centered on line */
+  .sustainability-journey__node-badge {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--journey-color, #003225);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+    z-index: 3;
+    flex-shrink: 0;
+  }
+
+  .sustainability-journey__icon-inner {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sustainability-journey__icon-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    display: block;
+  }
+
+  /* Year */
+  .sustainability-journey__year {
+    display: block;
+    font-size: clamp(20px, 1.6vw, 24px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--journey-color, #003225);
+    margin: 14px 0 16px;
+    line-height: 1.2;
+  }
+
+  /* Card */
+  .sustainability-journey__card {
+    border: 1.5px solid var(--journey-color, #003225);
+    background-color: transparent;
+    padding: clamp(20px, 2vw, 28px) clamp(14px, 1.4vw, 20px);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .sustainability-journey__card-title {
+    font-size: clamp(16px, 1.2vw, 18.5px);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--journey-color, #003225);
+    margin: 0 0 10px 0;
+  }
+
+  .sustainability-journey__card-desc {
+    font-size: clamp(13.5px, 1.05vw, 15px);
+    line-height: 1.45;
+    color: var(--journey-color, #003225);
+    opacity: 0.9;
+    margin: 0;
+  }
+
+  /* 3. Bottom CTA Box */
+  .sustainability-journey__cta-box {
+    border: 1.5px solid var(--journey-color, #003225);
+    background-color: transparent;
+    padding: clamp(42px, 5.5vw, 68px) clamp(20px, 4vw, 56px);
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sustainability-journey__cta-title {
+    font-size: clamp(2rem, 3.2vw, 2.9rem);
+    font-weight: 800;
+    line-height: 1.18;
+    letter-spacing: -0.03em;
+    color: var(--journey-color, #003225);
+    margin: 0 0 14px 0;
+  }
+
+  .sustainability-journey__cta-subtitle {
+    font-size: clamp(15.5px, 1.2vw, 18px);
+    line-height: 1.5;
+    color: var(--journey-color, #003225);
+    opacity: 0.92;
+    max-width: 650px;
+    margin: 0 auto clamp(28px, 3.5vw, 38px);
+    letter-spacing: -0.01em;
+  }
+
+  .sustainability-journey__btn-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: clamp(36px, 4.5vw, 56px);
+  }
+
+  /* 3 Pillars */
+  .sustainability-journey__pillars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(32px, 6.5vw, 96px);
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .sustainability-journey__pillar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sustainability-journey__pillar-icon-wrap {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background-color: var(--color-secondary, #71CC3B);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .sustainability-journey__pillar-icon-wrap img {
+    max-width: 30px;
+    max-height: 30px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .sustainability-journey__pillar-label {
+    font-size: clamp(13px, 1.05vw, 14.5px);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--journey-color, #003225);
+    line-height: 1.2;
+  }
+
+  /* ==========================================================================
+     Responsive Breakpoints
+     ========================================================================== */
+  @media (max-width: 1024px) {
+    .sustainability-journey {
+      padding: 80px 24px;
+    }
+
+    .sustainability-journey__timeline-line {
+      display: none !important;
+    }
+
+    .sustainability-journey__timeline-wrapper {
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 12px;
+      position: relative;
+    }
+    .sustainability-journey__timeline-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sustainability-journey__milestones {
+      display: flex;
+      width: max-content;
+      gap: 16px;
+      position: relative;
+    }
+
+    .sustainability-journey__milestones::before {
+      content: "";
+      position: absolute;
+      top: 32px;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--journey-color, #003225);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .sustainability-journey__milestone-item {
+      flex: 0 0 240px;
+      scroll-snap-align: start;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sustainability-journey {
+      padding: 60px 20px 70px;
+    }
+
+    .sustainability-journey__title {
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    /* Hide heading leaf icons on mobile */
+    .sustainability-journey__leaf {
+      display: none !important;
+    }
+
+    .sustainability-journey__subtitle {
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .sustainability-journey__milestone-item {
+      flex: 0 0 220px;
+    }
+
+    .sustainability-journey__cta-box {
+      padding: 36px 20px 44px;
+    }
+
+    .sustainability-journey__cta-title {
+      font-size: 26px;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .sustainability-journey__cta-subtitle {
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    .sustainability-journey__btn-group {
+      flex-direction: column;
+      width: 100%;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .sustainability-journey__btn-group .earth-btn-action {
+      width: 100%;
+    }
+
+    /* Vertical stacked pillars on mobile */
+    .sustainability-journey__pillars {
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .sustainability-journey__pillar-item {
+      gap: 10px;
+    }
+
+    .sustainability-journey__pillar-icon-wrap {
+      width: 54px;
+      height: 54px;
+    }
+
+    .sustainability-journey__pillar-label {
+      font-size: 13.5px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Sustainability Journey",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Our Sustainability Journey"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "From a small organic farm to global impact – our story unfolds through transparent milestones and unwavering commitment to the planet"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F1F4D8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "header",
+      "content": "Call-to-Action Card"
+    },
+    {
+      "type": "text",
+      "id": "cta_title",
+      "label": "CTA Title",
+      "default": "Be part of our story"
+    },
+    {
+      "type": "textarea",
+      "id": "cta_subtitle",
+      "label": "CTA Subtitle",
+      "default": "Your choices define the future of fashion. Join a movement that celebrates beauty without compromise."
+    },
+    {
+      "type": "text",
+      "id": "primary_btn_text",
+      "label": "Primary Button Text",
+      "default": "SHOP COLLECTION"
+    },
+    {
+      "type": "url",
+      "id": "primary_btn_url",
+      "label": "Primary Button Link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_btn_text",
+      "label": "Secondary Button Text",
+      "default": "EXPLORE JOURNAL"
+    },
+    {
+      "type": "url",
+      "id": "secondary_btn_url",
+      "label": "Secondary Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Pillars"
+    },
+    {
+      "type": "text",
+      "id": "pillar_1_label",
+      "label": "Pillar 1 Label",
+      "default": "100% ORGANIC"
+    },
+    {
+      "type": "text",
+      "id": "pillar_2_label",
+      "label": "Pillar 2 Label",
+      "default": "CARBON NEUTRAL"
+    },
+    {
+      "type": "text",
+      "id": "pillar_3_label",
+      "label": "Pillar 3 Label",
+      "default": "FAIR WAGES"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "Milestone Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "year",
+          "label": "Year",
+          "default": "2024"
+        },
+        {
+          "type": "text",
+          "id": "icon_name",
+          "label": "Icon SVG Asset Name",
+          "default": "tree.svg"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom Icon Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Milestone Title",
+          "default": "Milestone Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Milestone Description",
+          "default": "Description of this sustainability milestone."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sustainability Journey",
+      "blocks": [
+        {
+          "type": "milestone",
+          "settings": {
+            "year": "2018",
+            "icon_name": "idea.svg",
+            "title": "The Beginning",
+            "description": "Founded in Hanoi with mission to source 100% organic cotton from local farms"
+          }
+        },
+        {
+          "type": "milestone",
+          "settings": {
+            "year": "2020",
+            "icon_name": "handshake.svg",
+            "title": "Fair Trade Partnership",
+            "description": "Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans"
+          }
+        },
+        {
+          "type": "milestone",
+          "settings": {
+            "year": "2022",
+            "icon_name": "tree.svg",
+            "title": "Reforestation Initiative",
+            "description": "Launched \"1 Tree Per Product\" – planted 50K trees in Vietnam reforestation"
+          }
+        },
+        {
+          "type": "milestone",
+          "settings": {
+            "year": "2024",
+            "icon_name": "badge.svg",
+            "title": "Carbon Neutral",
+            "description": "Achieved B Corp certification and full carbon-neutral shipping"
+          }
+        },
+        {
+          "type": "milestone",
+          "settings": {
+            "year": "2026",
+            "icon_name": "repost.svg",
+            "title": "Circular Economy",
+            "description": "Closed-loop recycling: turn old clothes into new collections"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

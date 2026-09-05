@@ -1,0 +1,21 @@
+{% comment %}
+  Reusable Earth Theme Action Button Component
+  Accepts:
+  - text: {String} Button label (e.g. 'SHOP COLLECTION')
+  - url: {String} Link destination
+  - variant: {String} 'solid' (default, dark green filled) | 'outline' (transparent with dark green border) | 'accent' (lime green filled)
+  - class: {String} Additional custom classes
+  - aria_label: {String} Accessibility label
+  - target: {String} e.g. '_blank'
+{% endcomment %}
+
+{%- assign btn_variant = variant | default: 'solid' -%}
+
+<a 
+  href="{{ url | default: routes.all_products_collection_url }}" 
+  class="earth-btn-action earth-btn-action--{{ btn_variant }} {{ class }}" 
+  {% if aria_label != blank %}aria-label="{{ aria_label }}"{% endif %}
+  {% if target != blank %}target="{{ target }}" rel="noopener noreferrer"{% endif %}
+>
+  <span class="earth-btn-action__text">{{ text | default: 'SHOP NOW' }}</span>
+</a>

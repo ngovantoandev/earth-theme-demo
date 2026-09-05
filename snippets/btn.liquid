@@ -1,0 +1,12 @@
+{% comment %}
+  Reusable Earth Theme Button Snippet
+  Accepts:
+  - text: {String} Button label
+  - url: {String} Link URL
+  - class: {String} Additional custom classes
+  - aria_label: {String} Accessibility label
+{% endcomment %}
+
+<a href="{{ url | default: routes.all_products_collection_url }}" class="earth-btn {{ class }}" {% if aria_label != blank %}aria-label="{{ aria_label }}"{% endif %}>
+  {{ text | default: 'SHOP NOW' }}
+</a>

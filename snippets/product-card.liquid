@@ -1,0 +1,176 @@
+{% comment %}
+  Reusable Earth Product Card Component
+  Accepts:
+  - product: {Object} Shopify Product drop
+  - fallback_image: {String} Fallback asset filename (e.g. 'prod-denim.jpg')
+  - title: {String} Custom title if product is blank
+  - material: {String} Material subtitle
+  - impact_score: {String} e.g. '97% Impact'
+  - water_saved: {String} e.g. '3,200 L'
+  - co2_saved: {String} e.g. '5.5 kg'
+  - origin: {String} e.g. 'Vietnam'
+  - badges: {Array or String} Comma-separated badges (e.g. 'Organic Cotton, Recycled Materials')
+  - discount_text: {String} e.g. '52% Off (Price as Marked)'
+  - price: {Number or String} Custom price if product is blank
+  - compare_price: {Number or String} Custom compare price if product is blank
+{% endcomment %}
+
+{%- assign prod_title = product.title | default: title | default: 'Sustainable Essential' -%}
+{%- assign prod_url = product.url | default: '#' -%}
+{%- assign prod_variant = product.selected_or_first_available_variant -%}
+{%- assign prod_material = product.metafields.custom.material.value | default: product.type | default: material | default: '100% Organic Cotton' -%}
+{%- assign prod_origin = product.metafields.custom.origin.value | default: origin | default: 'Vietnam' -%}
+
+{%- if product != blank -%}
+  {%- assign mod_score = product.id | modulo: 8 | plus: 92 -%}
+  {%- assign prod_impact_def = mod_score | append: '% Impact' -%}
+  {%- assign prod_impact = product.metafields.custom.impact_score.value | default: impact_score | default: prod_impact_def -%}
+
+  {%- assign mod_water = product.id | modulo: 1500 | plus: 1800 -%}
+  {%- assign prod_water_def = mod_water | append: ' L' -%}
+  {%- assign prod_water = product.metafields.custom.water_saved.value | default: water_saved | default: prod_water_def -%}
+
+  {%- assign mod_co2 = product.id | modulo: 4 | plus: 3 | append: '.5 kg' -%}
+  {%- assign prod_co2 = product.metafields.custom.co2_saved.value | default: co2_saved | default: mod_co2 -%}
+{%- else -%}
+  {%- assign prod_impact = impact_score | default: '95% Impact' -%}
+  {%- assign prod_water = water_saved | default: '2,100 L' -%}
+  {%- assign prod_co2 = co2_saved | default: '3.8 kg' -%}
+{%- endif -%}
+
+<div class="earth-prod-card">
+  <!-- 1. Product Image & Badges -->
+  <div class="earth-prod-card__media">
+    <a href="{{ prod_url }}" class="earth-prod-card__image-link" aria-label="{{ prod_title }}">
+      {%- if product.featured_image != blank -%}
+        {{ product.featured_image | image_url: width: 800 | image_tag: class: 'earth-prod-card__img', loading: 'lazy', alt: prod_title }}
+      {%- elsif fallback_image != blank -%}
+        <img src="{{ fallback_image | asset_url }}" width="600" height="800" alt="{{ prod_title }}" class="earth-prod-card__img" loading="lazy">
+      {%- else -%}
+        <img src="{{ 'prod-denim.jpg' | asset_url }}" width="600" height="800" alt="{{ prod_title }}" class="earth-prod-card__img" loading="lazy">
+      {%- endif -%}
+    </a>
+
+    <!-- Dark Hover Overlay -->
+    <div class="earth-prod-card__overlay" aria-hidden="true"></div>
+
+    <!-- Top Left Impact Score Badge -->
+    <div class="earth-prod-card__impact-badge">
+      <img src="{{ 'sustainability.svg' | asset_url }}" width="14" height="15" alt="" class="earth-prod-card__badge-icon">
+      <span>{{ prod_impact }}</span>
+    </div>
+
+    <!-- Bottom Left Metric Badges (Water & CO2) -->
+    <div class="earth-prod-card__metrics">
+      <span class="earth-prod-card__metric-pill">
+        <img src="{{ 'Drop.svg' | asset_url }}" width="12" height="13" alt="" class="earth-prod-card__metric-icon">
+        <span>{{ prod_water }}</span>
+      </span>
+      <span class="earth-prod-card__metric-pill">
+        <img src="{{ 'windy.svg' | asset_url }}" width="14" height="10" alt="" class="earth-prod-card__metric-icon">
+        <span>{{ prod_co2 }}</span>
+      </span>
+    </div>
+
+    <!-- Center Hover Quick View Button -->
+    <a href="{{ prod_url }}" class="earth-prod-card__quick-view" aria-label="Quick View {{ prod_title }}">
+      <svg width="18" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span>QUICK VIEW</span>
+    </a>
+  </div>
+
+  <!-- 2. Product Information -->
+  <div class="earth-prod-card__content">
+    <h3 class="earth-prod-card__title">
+      <a href="{{ prod_url }}">{{ prod_title }}</a>
+    </h3>
+
+    <p class="earth-prod-card__material">{{ prod_material }}</p>
+
+    <!-- Material & Quality Tag Pills -->
+    <div class="earth-prod-card__tags">
+      {%- if badges != blank -%}
+        {%- assign badge_list = badges | split: ',' -%}
+        {%- for b in badge_list -%}
+          {%- assign clean_badge = b | strip -%}
+          {%- if clean_badge != blank -%}
+            <span class="earth-prod-card__tag-pill">{{ clean_badge }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- elsif product.tags.size > 0 -%}
+        {%- for tag in product.tags limit: 2 -%}
+          <span class="earth-prod-card__tag-pill">{{ tag }}</span>
+        {%- endfor -%}
+      {%- else -%}
+        <span class="earth-prod-card__tag-pill">Organic Cotton</span>
+        <span class="earth-prod-card__tag-pill">Recycled Materials</span>
+      {%- endif -%}
+    </div>
+
+    <!-- Origin & Promotion Meta -->
+    <div class="earth-prod-card__meta-row">
+      <div class="earth-prod-card__origin">
+        <img src="{{ 'location.svg' | asset_url }}" width="10" height="14" alt="" class="earth-prod-card__meta-icon">
+        <span>Made in {{ prod_origin }}</span>
+      </div>
+
+      {%- if discount_text != blank -%}
+        <div class="earth-prod-card__discount">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+          <span>{{ discount_text }}</span>
+        </div>
+      {%- elsif product.compare_at_price > product.price -%}
+        {%- assign saved_percent = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+        <div class="earth-prod-card__discount">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+          <span>{{ saved_percent }}% Off (Price as Marked)</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- 3. Integrated Action Unit (Price Box + Add to Cart) -->
+    <div class="earth-prod-card__action-group">
+      <!-- Price Display Box -->
+      <div class="earth-prod-card__price-box">
+        {%- if product != blank -%}
+          {%- if product.compare_at_price > product.price -%}
+            <span class="earth-prod-card__compare-price">{{ product.compare_at_price | money_without_trailing_zeros }}</span>
+            <span class="earth-prod-card__price">{{ product.price | money_without_trailing_zeros }}</span>
+          {%- else -%}
+            <span class="earth-prod-card__price">{{ product.price | money_without_trailing_zeros }}</span>
+          {%- endif -%}
+        {%- elsif compare_price != blank -%}
+          <span class="earth-prod-card__compare-price">${{ compare_price }}</span>
+          <span class="earth-prod-card__price">${{ price | default: '68' }}</span>
+        {%- else -%}
+          <span class="earth-prod-card__price">${{ price | default: '110' }}</span>
+        {%- endif -%}
+      </div>
+
+      <!-- Add to Cart Form Button -->
+      {%- if product != blank and prod_variant != blank -%}
+        <form method="post" action="{{ routes.cart_add_url }}" class="earth-prod-card__form">
+          <input type="hidden" name="id" value="{{ prod_variant.id }}">
+          <button type="submit" class="earth-prod-card__add-btn" aria-label="Add {{ prod_title }} to cart" {% unless prod_variant.available %}disabled{% endunless %}>
+            <img src="{{ 'add-icon.svg' | asset_url }}" width="15" height="15" alt="" class="earth-prod-card__add-icon">
+            <span>{% if prod_variant.available %}ADD TO CART{% else %}SOLD OUT{% endif %}</span>
+          </button>
+        </form>
+      {%- else -%}
+        <a href="{{ prod_url }}" class="earth-prod-card__add-btn">
+          <img src="{{ 'add-icon.svg' | asset_url }}" width="15" height="15" alt="" class="earth-prod-card__add-icon">
+          <span>ADD TO CART</span>
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

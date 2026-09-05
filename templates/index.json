@@ -1,26 +1,453 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
+    "hero_banner": {
+      "type": "hero-banner",
+      "settings": {
+        "heading_line_1": "Earth–Core",
+        "heading_line_2": "Sustainable Fashion",
+        "subtitle": "One tree planted per product – 100K+ Trees Planted",
+        "button_text": "SHOP NOW"
+      }
     },
-    "custom_section_xcPUAX": {
-      "type": "custom-section",
-      "name": "t:general.custom_section",
-      "settings": {}
+    "impact_metrics": {
+      "type": "impact-metrics",
+      "settings": {
+        "title": "Our Real Impact",
+        "subtitle": "Transparency is at the heart of everything we do. Track our environmental and social impact in real-time.",
+        "personal_title": "Your Personal Sustainability Impact",
+        "personal_subtitle": "Connect your account to see how you contribute to sustainability goals.",
+        "button_text": "TRACK MY IMPACT"
+      }
+    },
+    "featured_collections": {
+      "type": "featured-collections",
+      "settings": {
+        "title": "Featured Eco Essentials",
+        "subtitle": "Where fashion meets purpose: recycled fabrics, reduced impact, endless wear.",
+        "header_button_text": "SHOP COLLECTION"
+      }
+    },
+    "sustainable_essentials": {
+      "type": "sustainable-essentials",
+      "settings": {
+        "title": "Sustainable Essentials",
+        "subtitle": "Every piece designed with purpose – discover the full impact story behind each garment",
+        "products_to_show": 8
+      }
+    },
+    "text_marquee": {
+      "type": "text-marquee",
+      "blocks": {
+        "item_1": {
+          "type": "marquee_text",
+          "settings": {
+            "text": "SUSTAINABLE FABRICS"
+          }
+        },
+        "item_2": {
+          "type": "marquee_text",
+          "settings": {
+            "text": "FEEL GOOD CLOTHES"
+          }
+        },
+        "item_3": {
+          "type": "marquee_text",
+          "settings": {
+            "text": "SUSTAINABLE FABRICS"
+          }
+        },
+        "item_4": {
+          "type": "marquee_text",
+          "settings": {
+            "text": "FEEL GOOD CLOTHES"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4"
+      ],
+      "settings": {
+        "bg_color": "#F8F9DC",
+        "text_color": "#003225",
+        "speed": 24
+      }
+    },
+    "shop_by_values": {
+      "type": "shop-by-values",
+      "blocks": {
+        "val_1": {
+          "type": "value_item",
+          "settings": {
+            "title": "Organic Cotton",
+            "badge": "GOTS Certified Organic",
+            "highlight": "100% Pesticide & GMO Free",
+            "icon": "handshake.svg",
+            "desc": "Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton."
+          }
+        },
+        "val_2": {
+          "type": "value_item",
+          "settings": {
+            "title": "Recycled Materials",
+            "badge": "Ocean & Land Waste Diverted",
+            "highlight": "7.8 plastic bottles per garment",
+            "icon": "handshake.svg",
+            "desc": "Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments."
+          }
+        },
+        "val_3": {
+          "type": "value_item",
+          "settings": {
+            "title": "Fair Trade",
+            "badge": "Ethical wages guaranteed",
+            "highlight": "100% worker-owned cooperatives",
+            "icon": "handshake.svg",
+            "desc": "Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans."
+          }
+        },
+        "val_4": {
+          "type": "value_item",
+          "settings": {
+            "title": "Carbon Neutral",
+            "badge": "Net-Zero Supply Chain",
+            "highlight": "100% renewable energy powered",
+            "icon": "handshake.svg",
+            "desc": "Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery."
+          }
+        },
+        "val_5": {
+          "type": "value_item",
+          "settings": {
+            "title": "Vegan & Cruelty-Free",
+            "badge": "PETA Approved Vegan",
+            "highlight": "Zero animal testing or materials",
+            "icon": "handshake.svg",
+            "desc": "100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living."
+          }
+        }
+      },
+      "block_order": [
+        "val_1",
+        "val_2",
+        "val_3",
+        "val_4",
+        "val_5"
+      ],
+      "settings": {
+        "title": "Shop by Values",
+        "subtitle": "Find fashion that matches your ethics – filter by what matters most to you"
+      }
+    },
+    "background_video": {
+      "type": "background-video",
+      "settings": {
+        "heading": "From organic farms to your wardrobe",
+        "subtext": "WATCH THE 30S ORIGIN STORY",
+        "video_url": "https://www.youtube.com/watch?v=jUxMoX4HKVQ",
+        "overlay_opacity": 20
+      }
+    },
+    "farmer_stories": {
+      "type": "farmer-stories",
+      "blocks": {
+        "story_1": {
+          "type": "farmer_story",
+          "settings": {
+            "name": "Ananya R.",
+            "role_location": "Organic Farmer, Gujarat",
+            "badge": "Regenerative Practice",
+            "quote": "I grow this cotton for my children, so they may inherit a soil that is healthy and full of life."
+          }
+        },
+        "story_2": {
+          "type": "farmer_story",
+          "settings": {
+            "name": "Mateo S.",
+            "role_location": "Master Weaver, Peru",
+            "badge": "Fair Trade Certified",
+            "quote": "Every thread is a silent conversation between my hands and the fibers of the Earth."
+          }
+        },
+        "story_3": {
+          "type": "farmer_story",
+          "settings": {
+            "name": "Elias K.",
+            "role_location": "Flax Cultivator, Belgium",
+            "badge": "Zero Chemical",
+            "quote": "Sustainability is not a modern trend to us; it is the only way we know how to work with flax — patiently and respectfully."
+          }
+        },
+        "story_4": {
+          "type": "farmer_story",
+          "settings": {
+            "name": "Sophia L.",
+            "role_location": "Botanical Dye Specialist, Portugal",
+            "badge": "Non-Toxic Dyes",
+            "quote": "Colors harvested from nature contain a soul and softness that synthetic chemicals can never replicate."
+          }
+        },
+        "story_5": {
+          "type": "farmer_story",
+          "settings": {
+            "name": "Hiroshi T.",
+            "role_location": "Organic Denim Artisan, Japan",
+            "badge": "Zero Waste Artisan",
+            "quote": "True circular denim begins with reverence for the harvest and ends with garments crafted to outlast a lifetime."
+          }
+        },
+        "story_6": {
+          "type": "farmer_story",
+          "settings": {
+            "name": "Nadia B.",
+            "role_location": "Regenerative Wool Shepherd, New Zealand",
+            "badge": "Animal Welfare",
+            "quote": "Protecting pasture biodiversity ensures our sheep thrive naturally without harming water systems."
+          }
+        }
+      },
+      "block_order": [
+        "story_1",
+        "story_2",
+        "story_3",
+        "story_4",
+        "story_5",
+        "story_6"
+      ],
+      "settings": {
+        "title": "The hands that hold the harvest",
+        "subtitle": "Meet the farmers and artisans who cultivate our materials with generations of wisdom and care for the earth."
+      }
+    },
+    "measurable_impact": {
+      "type": "measurable-impact",
+      "blocks": {
+        "metric_1": {
+          "type": "metric",
+          "settings": {
+            "number": "50k+",
+            "icon_position": "right",
+            "show_smile": true,
+            "text": "Liters of water saved compared to traditional manufacturing processes."
+          }
+        },
+        "metric_2": {
+          "type": "metric",
+          "settings": {
+            "number": "100%",
+            "icon_position": "left",
+            "show_smile": true,
+            "text": "Plastic-free packaging. Every box we ship returns to the earth as compost."
+          }
+        },
+        "metric_3": {
+          "type": "metric",
+          "settings": {
+            "number": "12,400",
+            "icon_position": "right",
+            "show_smile": true,
+            "text": "Native trees planted across our partner organic farms this year."
+          }
+        }
+      },
+      "block_order": [
+        "metric_1",
+        "metric_2",
+        "metric_3"
+      ],
+      "settings": {
+        "eyebrow": "Measurable Change",
+        "heading": "Our footprint is small, but our impact is deep.",
+        "bg_color": "#F1F4D8",
+        "text_color": "#003225"
+      }
+    },
+    "sustainability_journey": {
+      "type": "sustainability-journey",
+      "blocks": {
+        "m_2018": {
+          "type": "milestone",
+          "settings": {
+            "year": "2018",
+            "icon_name": "idea.svg",
+            "title": "The Beginning",
+            "description": "Founded in Hanoi with mission to source 100% organic cotton from local farms"
+          }
+        },
+        "m_2020": {
+          "type": "milestone",
+          "settings": {
+            "year": "2020",
+            "icon_name": "handshake.svg",
+            "title": "Fair Trade Partnership",
+            "description": "Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans"
+          }
+        },
+        "m_2022": {
+          "type": "milestone",
+          "settings": {
+            "year": "2022",
+            "icon_name": "tree.svg",
+            "title": "Reforestation Initiative",
+            "description": "Launched \"1 Tree Per Product\" – planted 50K trees in Vietnam reforestation"
+          }
+        },
+        "m_2024": {
+          "type": "milestone",
+          "settings": {
+            "year": "2024",
+            "icon_name": "badge.svg",
+            "title": "Carbon Neutral",
+            "description": "Achieved B Corp certification and full carbon-neutral shipping"
+          }
+        },
+        "m_2026": {
+          "type": "milestone",
+          "settings": {
+            "year": "2026",
+            "icon_name": "repost.svg",
+            "title": "Circular Economy",
+            "description": "Closed-loop recycling: turn old clothes into new collections"
+          }
+        }
+      },
+      "block_order": [
+        "m_2018",
+        "m_2020",
+        "m_2022",
+        "m_2024",
+        "m_2026"
+      ],
+      "settings": {
+        "title": "Our Sustainability Journey",
+        "subtitle": "From a small organic farm to global impact – our story unfolds through transparent milestones and unwavering commitment to the planet",
+        "bg_color": "#F1F4D8",
+        "text_color": "#003225",
+        "cta_title": "Be part of our story",
+        "cta_subtitle": "Your choices define the future of fashion. Join a movement that celebrates beauty without compromise.",
+        "primary_btn_text": "SHOP COLLECTION",
+        "secondary_btn_text": "EXPLORE JOURNAL",
+        "pillar_1_label": "100% ORGANIC",
+        "pillar_2_label": "CARBON NEUTRAL",
+        "pillar_3_label": "FAIR WAGES"
+      }
+    },
+    "knowledge_first_thread": {
+      "type": "knowledge-first-thread",
+      "blocks": {
+        "topic_1": {
+          "type": "topic_item",
+          "settings": {
+            "title": "Why Sustainable Fashion?",
+            "subtitle": "Understanding the real cost of fast fashion",
+            "icon_name": "heart.svg",
+            "default_open": true,
+            "show_comparison": true,
+            "fast_heading": "FAST FASHION",
+            "fast_point_1": "Average 1–7 wears before disposal",
+            "fast_point_2": "92 million tons → landfill yearly",
+            "fast_point_3": "High water pollution from synthetic dyes",
+            "fast_point_4": "Exploitative labor practices",
+            "sustainable_heading": "SUSTAINABLE FASHION",
+            "sust_point_1": "Average 20+ wears, recyclable design",
+            "sust_point_2": "Circular economy reduces 80% waste",
+            "sust_point_3": "Natural/recycled materials, low-impact dyes",
+            "sust_point_4": "Fair wages, safe working conditions",
+            "info_title": "Did You Know?",
+            "info_text": "The fashion industry produces 10% of global CO2 emissions—more than international flights and maritime shipping combined. By choosing sustainable fashion, you can reduce your personal fashion footprint by up to 73%."
+          }
+        },
+        "topic_2": {
+          "type": "topic_item",
+          "settings": {
+            "title": "Material Guide",
+            "subtitle": "Choose fabrics by their environmental impact",
+            "icon_name": "eco.svg",
+            "default_open": false,
+            "show_comparison": false,
+            "info_title": "Material Insights",
+            "info_text": "Organic cotton uses 91% less water and zero harmful synthetic pesticides compared to conventional cotton."
+          }
+        },
+        "topic_3": {
+          "type": "topic_item",
+          "settings": {
+            "title": "Impact Calculator Teaser",
+            "subtitle": "See the real impact of your choices",
+            "icon_name": "caculator.svg",
+            "default_open": false,
+            "show_comparison": false,
+            "info_title": "Measure Your Impact",
+            "info_text": "Every conscious switch from fast fashion saves an average of 2,400 liters of fresh water per garment."
+          }
+        },
+        "topic_4": {
+          "type": "topic_item",
+          "settings": {
+            "title": "Care Instructions",
+            "subtitle": "Extend garment life by 3x with proper care",
+            "icon_name": "washing.svg",
+            "default_open": false,
+            "show_comparison": false,
+            "info_title": "Longevity Tip",
+            "info_text": "Washing on cold and air drying reduces microplastic shedding by 70% and cuts laundry energy use in half."
+          }
+        },
+        "topic_5": {
+          "type": "topic_item",
+          "settings": {
+            "title": "Circular Fashion 101",
+            "subtitle": "From your closet back to ours—zero waste",
+            "icon_name": "get-dressed.svg",
+            "default_open": false,
+            "show_comparison": false,
+            "info_title": "Closed Loop Movement",
+            "info_text": "Recycled cotton and fiber recovery programs keep 95% of wearable clothing out of landfills."
+          }
+        },
+        "topic_6": {
+          "type": "topic_item",
+          "settings": {
+            "title": "Myth Busting",
+            "subtitle": "Debunking common sustainable fashion misconceptions",
+            "icon_name": "sparkle.svg",
+            "default_open": false,
+            "show_comparison": false,
+            "info_title": "True Cost vs Sticker Price",
+            "info_text": "Cost-per-wear of high-quality sustainable basics is 40% lower over 3 years than disposable fast-fashion trends."
+          }
+        }
+      },
+      "block_order": [
+        "topic_1",
+        "topic_2",
+        "topic_3",
+        "topic_4",
+        "topic_5",
+        "topic_6"
+      ],
+      "settings": {
+        "eyebrow": "Education & Ethos",
+        "title": "Knowledge First Thread",
+        "subtitle": "Everything to know about making conscious fashion choices expand topics deeper into sustainable style.",
+        "bg_color": "#224E09",
+        "text_color": "#F8F9DC"
+      }
     }
   },
   "order": [
-    "main",
-    "custom_section_xcPUAX"
+    "hero_banner",
+    "impact_metrics",
+    "featured_collections",
+    "sustainable_essentials",
+    "text_marquee",
+    "shop_by_values",
+    "background_video",
+    "farmer_stories",
+    "measurable_impact",
+    "sustainability_journey",
+    "knowledge_first_thread"
   ]
 }

@@ -1,0 +1,937 @@
+{% comment %}
+  Knowledge First Thread Section
+  Educational accordion showcasing sustainable vs fast fashion with comparison cards and fact boxes.
+  Fully responsive on Desktop, Tablet, and Mobile.
+{% endcomment %}
+
+<section class="knowledge-thread full-width" id="knowledgeThread-{{ section.id }}" style="--kt-bg: {{ section.settings.bg_color | default: '#224E09' }}; --kt-text: {{ section.settings.text_color | default: '#F8F9DC' }};">
+  <div class="knowledge-thread__container">
+    
+    <!-- 1. Header Area: 2-column layout on Desktop, stacked on Mobile -->
+    <div class="knowledge-thread__header">
+      <div class="knowledge-thread__header-left">
+        {%- if section.settings.eyebrow != blank -%}
+          <div class="knowledge-thread__eyebrow">
+            <span class="knowledge-thread__sparkle" aria-hidden="true">✨</span>
+            <span>{{ section.settings.eyebrow }}</span>
+          </div>
+        {%- endif -%}
+        <h2 class="knowledge-thread__title">
+          <span class="knowledge-thread__title-leaf" aria-hidden="true">
+            <img src="{{ 'leaf-2.svg' | asset_url }}" width="36" height="36" alt="" loading="lazy">
+          </span>
+          <span>{{ section.settings.title | default: 'Knowledge First Thread' }}</span>
+        </h2>
+      </div>
+
+      <div class="knowledge-thread__header-right">
+        {%- if section.settings.subtitle != blank -%}
+          <p class="knowledge-thread__subtitle">
+            {{ section.settings.subtitle }}
+          </p>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- 2. Accordion List -->
+    <div class="knowledge-thread__accordion-list" role="region" aria-label="Knowledge Topics">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- assign is_open = false -%}
+          {%- if forloop.first or block.settings.default_open -%}
+            {%- assign is_open = true -%}
+          {%- endif -%}
+
+          <div class="knowledge-thread__item {% if is_open %}is-open{% endif %}" {{ block.shopify_attributes }} data-accordion-item>
+            
+            <!-- Accordion Trigger Header -->
+            <button type="button" class="knowledge-thread__trigger" aria-expanded="{% if is_open %}true{% else %}false{% endif %}" aria-controls="kt-content-{{ block.id }}">
+              <div class="knowledge-thread__trigger-main">
+                <div class="knowledge-thread__trigger-top">
+                  <div class="knowledge-thread__trigger-header-left">
+                    <!-- Yellow Rounded Icon Badge -->
+                    <div class="knowledge-thread__badge" aria-hidden="true">
+                      {%- if block.settings.icon_name != blank -%}
+                        <img src="{{ block.settings.icon_name | asset_url }}" width="24" height="24" alt="" loading="lazy">
+                      {%- elsif block.settings.custom_icon != blank -%}
+                        <img src="{{ block.settings.custom_icon | image_url: width: 64 }}" width="24" height="24" alt="" loading="lazy">
+                      {%- else -%}
+                        <img src="{{ 'heart.svg' | asset_url }}" width="24" height="24" alt="" loading="lazy">
+                      {%- endif -%}
+                    </div>
+                    <!-- Title -->
+                    <h3 class="knowledge-thread__item-title">{{ block.settings.title }}</h3>
+                  </div>
+
+                  <!-- Animated Arrow Indicator -->
+                  <div class="knowledge-thread__trigger-arrow" aria-hidden="true">
+                    <img src="{{ 'next-right.svg' | asset_url }}" width="15" height="15" alt="" loading="lazy">
+                  </div>
+                </div>
+
+                <!-- Subtitle (Full-width beneath top row) -->
+                {%- if block.settings.subtitle != blank -%}
+                  <p class="knowledge-thread__item-subtitle">{{ block.settings.subtitle }}</p>
+                {%- endif -%}
+              </div>
+            </button>
+
+            <!-- Expandable Accordion Body -->
+            <div class="knowledge-thread__content" id="kt-content-{{ block.id }}" {% unless is_open %}style="display: none;"{% endunless %}>
+              <div class="knowledge-thread__content-inner">
+                
+                {%- if block.settings.show_comparison -%}
+                  <!-- 2 Comparison Columns -->
+                  <div class="knowledge-thread__comparison-grid">
+                    
+                    <!-- Left Card: Fast Fashion -->
+                    <div class="knowledge-thread__compare-card knowledge-thread__compare-card--fast">
+                      <h4 class="knowledge-thread__compare-heading">{{ block.settings.fast_heading | default: 'FAST FASHION' }}</h4>
+                      <ul class="knowledge-thread__compare-list">
+                        {%- if block.settings.fast_point_1 != blank -%}
+                          <li class="knowledge-thread__compare-item">
+                            <span class="knowledge-thread__compare-icon" aria-hidden="true">
+                              <img src="{{ 'close.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                            </span>
+                            <span>{{ block.settings.fast_point_1 }}</span>
+                          </li>
+                        {%- endif -%}
+                        {%- if block.settings.fast_point_2 != blank -%}
+                          <li class="knowledge-thread__compare-item">
+                            <span class="knowledge-thread__compare-icon" aria-hidden="true">
+                              <img src="{{ 'close.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                            </span>
+                            <span>{{ block.settings.fast_point_2 }}</span>
+                          </li>
+                        {%- endif -%}
+                        {%- if block.settings.fast_point_3 != blank -%}
+                          <li class="knowledge-thread__compare-item">
+                            <span class="knowledge-thread__compare-icon" aria-hidden="true">
+                              <img src="{{ 'close.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                            </span>
+                            <span>{{ block.settings.fast_point_3 }}</span>
+                          </li>
+                        {%- endif -%}
+                        {%- if block.settings.fast_point_4 != blank -%}
+                          <li class="knowledge-thread__compare-item">
+                            <span class="knowledge-thread__compare-icon" aria-hidden="true">
+                              <img src="{{ 'close.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                            </span>
+                            <span>{{ block.settings.fast_point_4 }}</span>
+                          </li>
+                        {%- endif -%}
+                      </ul>
+                    </div>
+
+                    <!-- Right Card: Sustainable Fashion -->
+                    <div class="knowledge-thread__compare-card knowledge-thread__compare-card--sustainable">
+                      <h4 class="knowledge-thread__compare-heading">{{ block.settings.sustainable_heading | default: 'SUSTAINABLE FASHION' }}</h4>
+                      <ul class="knowledge-thread__compare-list">
+                        {%- if block.settings.sust_point_1 != blank -%}
+                          <li class="knowledge-thread__compare-item">
+                            <span class="knowledge-thread__compare-icon" aria-hidden="true">
+                              <img src="{{ 'check.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                            </span>
+                            <span>{{ block.settings.sust_point_1 }}</span>
+                          </li>
+                        {%- endif -%}
+                        {%- if block.settings.sust_point_2 != blank -%}
+                          <li class="knowledge-thread__compare-item">
+                            <span class="knowledge-thread__compare-icon" aria-hidden="true">
+                              <img src="{{ 'check.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                            </span>
+                            <span>{{ block.settings.sust_point_2 }}</span>
+                          </li>
+                        {%- endif -%}
+                        {%- if block.settings.sust_point_3 != blank -%}
+                          <li class="knowledge-thread__compare-item">
+                            <span class="knowledge-thread__compare-icon" aria-hidden="true">
+                              <img src="{{ 'check.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                            </span>
+                            <span>{{ block.settings.sust_point_3 }}</span>
+                          </li>
+                        {%- endif -%}
+                        {%- if block.settings.sust_point_4 != blank -%}
+                          <li class="knowledge-thread__compare-item">
+                            <span class="knowledge-thread__compare-icon" aria-hidden="true">
+                              <img src="{{ 'check.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                            </span>
+                            <span>{{ block.settings.sust_point_4 }}</span>
+                          </li>
+                        {%- endif -%}
+                      </ul>
+                    </div>
+
+                  </div>
+                {%- endif -%}
+
+                <!-- Bottom Info Box: Did You Know? -->
+                {%- if block.settings.info_text != blank -%}
+                  <div class="knowledge-thread__info-box">
+                    <div class="knowledge-thread__info-icon-wrap" aria-hidden="true">
+                      <img src="{{ 'info.svg' | asset_url }}" width="20" height="20" alt="" loading="lazy">
+                    </div>
+                    <div class="knowledge-thread__info-content">
+                      {%- if block.settings.info_title != blank -%}
+                        <h5 class="knowledge-thread__info-title">{{ block.settings.info_title }}</h5>
+                      {%- endif -%}
+                      <p class="knowledge-thread__info-text">{{ block.settings.info_text }}</p>
+                    </div>
+                  </div>
+                {%- endif -%}
+
+                <!-- Optional Custom Content (Rich text) -->
+                {%- if block.settings.custom_content != blank -%}
+                  <div class="knowledge-thread__custom-content rte">
+                    {{ block.settings.custom_content }}
+                  </div>
+                {%- endif -%}
+
+              </div>
+            </div>
+
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  /* ==========================================================================
+     Knowledge First Thread Section Styles
+     ========================================================================== */
+  .knowledge-thread {
+    grid-column: 1 / -1 !important;
+    width: 100%;
+    background-color: var(--kt-bg, #224E09);
+    color: var(--kt-text, #F8F9DC);
+    padding: clamp(64px, 8vw, 110px) 34px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .knowledge-thread__container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  /* 1. Header Area */
+  .knowledge-thread__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+    margin-bottom: clamp(36px, 5vw, 56px);
+  }
+
+  .knowledge-thread__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .knowledge-thread__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--kt-text, #F8F9DC);
+    opacity: 0.9;
+  }
+  .knowledge-thread__sparkle {
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .knowledge-thread__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--kt-text, #F8F9DC);
+    margin: 0;
+  }
+
+  .knowledge-thread__title-leaf {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(28px, 2.5vw, 36px);
+    height: clamp(28px, 2.5vw, 36px);
+    flex-shrink: 0;
+  }
+  .knowledge-thread__title-leaf img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+
+  .knowledge-thread__header-right {
+    max-width: 460px;
+    text-align: right;
+  }
+
+  .knowledge-thread__subtitle {
+    font-size: clamp(15px, 1.25vw, 17.5px);
+    line-height: 1.5;
+    color: var(--kt-text, #F8F9DC);
+    opacity: 0.92;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  /* 2. Accordion List */
+  .knowledge-thread__accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  /* Accordion Item Card with Lime Green Outline */
+  .knowledge-thread__item {
+    border: 1.5px solid var(--color-accent, #EAE060);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+  }
+
+  /* Trigger Button */
+  .knowledge-thread__trigger {
+    width: 100%;
+    display: block;
+    padding: clamp(20px, 2.5vw, 28px) clamp(20px, 2.5vw, 32px);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+  }
+
+  .knowledge-thread__trigger-main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .knowledge-thread__trigger-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .knowledge-thread__trigger-header-left {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 1.8vw, 20px);
+    min-width: 0;
+  }
+
+  /* Yellow Circle Badge with Dark Icon */
+  .knowledge-thread__badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--color-accent, #EAE060);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .knowledge-thread__badge img {
+    max-width: 24px;
+    max-height: 24px;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%) invert(13%) sepia(35%) saturate(2335%) hue-rotate(125deg) brightness(94%) contrast(106%);
+  }
+
+  .knowledge-thread__item-title {
+    font-size: clamp(20px, 1.8vw, 24px);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--kt-text, #F8F9DC);
+    margin: 0;
+  }
+
+  .knowledge-thread__item-subtitle {
+    font-size: clamp(14px, 1.1vw, 15.5px);
+    line-height: 1.45;
+    color: var(--kt-text, #F8F9DC);
+    opacity: 0.85;
+    margin: 14px 0 0 0;
+  }
+
+  /* Diagonal Arrow with Smooth Rotation (Down-right when closed, Top-right when open) */
+  .knowledge-thread__trigger-arrow {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transform: rotate(90deg);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .knowledge-thread__item.is-open .knowledge-thread__trigger-arrow {
+    transform: rotate(0deg);
+  }
+
+  .knowledge-thread__trigger-arrow img {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+
+  /* Accordion Body */
+  .knowledge-thread__content {
+    padding: 0 clamp(18px, 2.5vw, 32px) clamp(22px, 2.8vw, 32px);
+    box-sizing: border-box;
+  }
+
+  .knowledge-thread__content-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 8px;
+  }
+
+  /* 2 Comparison Cards (Side-by-Side on Desktop, Stacked on Mobile) */
+  .knowledge-thread__comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(16px, 2vw, 24px);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .knowledge-thread__compare-card {
+    padding: clamp(20px, 2.5vw, 30px);
+    border-radius: 2px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Fast Fashion Card (Yellow background with dark green text) */
+  .knowledge-thread__compare-card--fast {
+    background-color: var(--color-accent, #EAE060);
+    color: var(--color-black, #003225);
+  }
+  .knowledge-thread__compare-card--fast .knowledge-thread__compare-heading {
+    color: var(--color-black, #003225);
+  }
+  .knowledge-thread__compare-card--fast .knowledge-thread__compare-item {
+    color: var(--color-black, #003225);
+  }
+
+  /* Sustainable Fashion Card (Deep Pine Green with Cream text) */
+  .knowledge-thread__compare-card--sustainable {
+    background-color: #00281E;
+    color: var(--kt-text, #F8F9DC);
+  }
+  .knowledge-thread__compare-card--sustainable .knowledge-thread__compare-heading {
+    color: var(--kt-text, #F8F9DC);
+  }
+  .knowledge-thread__compare-card--sustainable .knowledge-thread__compare-item {
+    color: var(--kt-text, #F8F9DC);
+  }
+
+  .knowledge-thread__compare-heading {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 18px 0;
+    line-height: 1.2;
+  }
+
+  .knowledge-thread__compare-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+
+  .knowledge-thread__compare-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .knowledge-thread__compare-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .knowledge-thread__compare-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Bottom Info Box (Did You Know?) */
+  .knowledge-thread__info-box {
+    background-color: var(--color-primary, #224E09);
+    border: 1px solid var(--color-secondary, #71CC3B);
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    border-radius: 2px;
+    box-sizing: border-box;
+  }
+
+  .knowledge-thread__info-icon-wrap {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .knowledge-thread__info-icon-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .knowledge-thread__info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .knowledge-thread__info-title {
+    font-size: 15.5px;
+    font-weight: 800;
+    color: var(--kt-text, #F8F9DC);
+    margin: 0;
+    line-height: 1.25;
+  }
+
+  .knowledge-thread__info-text {
+    font-size: clamp(13.5px, 1.05vw, 14.5px);
+    line-height: 1.5;
+    color: var(--kt-text, #F8F9DC);
+    opacity: 0.9;
+    margin: 0;
+  }
+
+  .knowledge-thread__custom-content {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--kt-text, #F8F9DC);
+  }
+
+  /* ==========================================================================
+     Responsive Breakpoints
+     ========================================================================== */
+  @media (max-width: 1024px) {
+    .knowledge-thread {
+      padding: 70px 24px;
+    }
+    .knowledge-thread__header {
+      gap: 24px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .knowledge-thread {
+      padding: 56px 20px 64px;
+    }
+
+    /* Stack Header on Mobile */
+    .knowledge-thread__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .knowledge-thread__title {
+      font-size: 26px;
+      line-height: 1.2;
+    }
+
+    .knowledge-thread__title-leaf {
+      display: none !important;
+    }
+
+    .knowledge-thread__header-right {
+      max-width: 100%;
+      text-align: left;
+    }
+
+    .knowledge-thread__subtitle {
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .knowledge-thread__trigger {
+      padding: 18px 16px;
+    }
+
+    .knowledge-thread__badge {
+      width: 42px;
+      height: 42px;
+    }
+    .knowledge-thread__badge img {
+      max-width: 20px;
+      max-height: 20px;
+    }
+
+    .knowledge-thread__item-title {
+      font-size: 19px;
+    }
+
+    .knowledge-thread__item-subtitle {
+      font-size: 13.5px;
+      margin-top: 10px;
+    }
+
+    .knowledge-thread__content {
+      padding: 0 16px 20px;
+    }
+
+    /* Stack 2 comparison cards on Mobile */
+    .knowledge-thread__comparison-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .knowledge-thread__compare-card {
+      padding: 20px 18px;
+    }
+
+    .knowledge-thread__compare-item {
+      font-size: 14px;
+    }
+
+    .knowledge-thread__info-box {
+      padding: 16px 18px;
+      gap: 12px;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  (function() {
+    function initKnowledgeThread() {
+      var section = document.getElementById('knowledgeThread-{{ section.id }}');
+      if (!section) return;
+
+      var items = section.querySelectorAll('[data-accordion-item]');
+      items.forEach(function(item) {
+        var trigger = item.querySelector('.knowledge-thread__trigger');
+        var content = item.querySelector('.knowledge-thread__content');
+        if (!trigger || !content) return;
+
+        trigger.addEventListener('click', function() {
+          var isOpen = item.classList.contains('is-open');
+
+          if (isOpen) {
+            // Close
+            item.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
+            content.style.display = 'none';
+          } else {
+            // Open
+            item.classList.add('is-open');
+            trigger.setAttribute('aria-expanded', 'true');
+            content.style.display = 'block';
+          }
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initKnowledgeThread);
+    } else {
+      initKnowledgeThread();
+    }
+
+    document.addEventListener('shopify:section:load', initKnowledgeThread);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Knowledge First Thread",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "Education & Ethos"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Knowledge First Thread"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Everything to know about making conscious fashion choices expand topics deeper into sustainable style."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#224E09"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#F8F9DC"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "topic_item",
+      "name": "Topic Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Topic Title",
+          "default": "Why Sustainable Fashion?"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Topic Subtitle",
+          "default": "Understanding the real cost of fast fashion"
+        },
+        {
+          "type": "text",
+          "id": "icon_name",
+          "label": "Icon SVG Asset Name",
+          "default": "heart.svg"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom Icon Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "default_open",
+          "label": "Open by Default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Comparison Cards"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_comparison",
+          "label": "Show Fast vs Sustainable Comparison",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "fast_heading",
+          "label": "Fast Fashion Heading",
+          "default": "FAST FASHION"
+        },
+        {
+          "type": "text",
+          "id": "fast_point_1",
+          "label": "Fast Fashion Point 1",
+          "default": "Average 1–7 wears before disposal"
+        },
+        {
+          "type": "text",
+          "id": "fast_point_2",
+          "label": "Fast Fashion Point 2",
+          "default": "92 million tons → landfill yearly"
+        },
+        {
+          "type": "text",
+          "id": "fast_point_3",
+          "label": "Fast Fashion Point 3",
+          "default": "High water pollution from synthetic dyes"
+        },
+        {
+          "type": "text",
+          "id": "fast_point_4",
+          "label": "Fast Fashion Point 4",
+          "default": "Exploitative labor practices"
+        },
+        {
+          "type": "text",
+          "id": "sustainable_heading",
+          "label": "Sustainable Heading",
+          "default": "SUSTAINABLE FASHION"
+        },
+        {
+          "type": "text",
+          "id": "sust_point_1",
+          "label": "Sustainable Point 1",
+          "default": "Average 20+ wears, recyclable design"
+        },
+        {
+          "type": "text",
+          "id": "sust_point_2",
+          "label": "Sustainable Point 2",
+          "default": "Circular economy reduces 80% waste"
+        },
+        {
+          "type": "text",
+          "id": "sust_point_3",
+          "label": "Sustainable Point 3",
+          "default": "Natural/recycled materials, low-impact dyes"
+        },
+        {
+          "type": "text",
+          "id": "sust_point_4",
+          "label": "Sustainable Point 4",
+          "default": "Fair wages, safe working conditions"
+        },
+        {
+          "type": "header",
+          "content": "Info Box (Did You Know?)"
+        },
+        {
+          "type": "text",
+          "id": "info_title",
+          "label": "Info Box Title",
+          "default": "Did You Know?"
+        },
+        {
+          "type": "textarea",
+          "id": "info_text",
+          "label": "Info Box Description",
+          "default": "The fashion industry produces 10% of global CO2 emissions—more than international flights and maritime shipping combined. By choosing sustainable fashion, you can reduce your personal fashion footprint by up to 73%."
+        },
+        {
+          "type": "richtext",
+          "id": "custom_content",
+          "label": "Alternative Rich Text Content"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Knowledge First Thread",
+      "blocks": [
+        {
+          "type": "topic_item",
+          "settings": {
+            "title": "Why Sustainable Fashion?",
+            "subtitle": "Understanding the real cost of fast fashion",
+            "icon_name": "heart.svg",
+            "default_open": true,
+            "show_comparison": true,
+            "fast_heading": "FAST FASHION",
+            "fast_point_1": "Average 1–7 wears before disposal",
+            "fast_point_2": "92 million tons → landfill yearly",
+            "fast_point_3": "High water pollution from synthetic dyes",
+            "fast_point_4": "Exploitative labor practices",
+            "sustainable_heading": "SUSTAINABLE FASHION",
+            "sust_point_1": "Average 20+ wears, recyclable design",
+            "sust_point_2": "Circular economy reduces 80% waste",
+            "sust_point_3": "Natural/recycled materials, low-impact dyes",
+            "sust_point_4": "Fair wages, safe working conditions",
+            "info_title": "Did You Know?",
+            "info_text": "The fashion industry produces 10% of global CO2 emissions—more than international flights and maritime shipping combined. By choosing sustainable fashion, you can reduce your personal fashion footprint by up to 73%."
+          }
+        },
+        {
+          "type": "topic_item",
+          "settings": {
+            "title": "Material Guide",
+            "subtitle": "Choose fabrics by their environmental impact",
+            "icon_name": "eco.svg",
+            "default_open": false,
+            "show_comparison": false,
+            "info_title": "Material Insights",
+            "info_text": "Organic cotton uses 91% less water and zero harmful synthetic pesticides compared to conventional cotton."
+          }
+        },
+        {
+          "type": "topic_item",
+          "settings": {
+            "title": "Impact Calculator Teaser",
+            "subtitle": "See the real impact of your choices",
+            "icon_name": "caculator.svg",
+            "default_open": false,
+            "show_comparison": false,
+            "info_title": "Measure Your Impact",
+            "info_text": "Every conscious switch from fast fashion saves an average of 2,400 liters of fresh water per garment."
+          }
+        },
+        {
+          "type": "topic_item",
+          "settings": {
+            "title": "Care Instructions",
+            "subtitle": "Extend garment life by 3x with proper care",
+            "icon_name": "washing.svg",
+            "default_open": false,
+            "show_comparison": false,
+            "info_title": "Longevity Tip",
+            "info_text": "Washing on cold and air drying reduces microplastic shedding by 70% and cuts laundry energy use in half."
+          }
+        },
+        {
+          "type": "topic_item",
+          "settings": {
+            "title": "Circular Fashion 101",
+            "subtitle": "From your closet back to ours—zero waste",
+            "icon_name": "get-dressed.svg",
+            "default_open": false,
+            "show_comparison": false,
+            "info_title": "Closed Loop Movement",
+            "info_text": "Recycled cotton and fiber recovery programs keep 95% of wearable clothing out of landfills."
+          }
+        },
+        {
+          "type": "topic_item",
+          "settings": {
+            "title": "Myth Busting",
+            "subtitle": "Debunking common sustainable fashion misconceptions",
+            "icon_name": "sparkle.svg",
+            "default_open": false,
+            "show_comparison": false,
+            "info_title": "True Cost vs Sticker Price",
+            "info_text": "Cost-per-wear of high-quality sustainable basics is 40% lower over 3 years than disposable fast-fashion trends."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

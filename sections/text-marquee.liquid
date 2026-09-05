@@ -1,0 +1,206 @@
+<section class="earth-marquee earth-marquee-{{ section.id }} full-width" style="--marquee-speed: {{ section.settings.speed }}s; --marquee-bg: {{ section.settings.bg_color }}; --marquee-color: {{ section.settings.text_color }};">
+  <div class="earth-marquee__track">
+    {%- for i in (1..4) -%}
+      <div class="earth-marquee__group" {% if i > 1 %}aria-hidden="true"{% endif %}>
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            <span class="earth-marquee__item" {% if i == 1 %}{{ block.shopify_attributes }}{% endif %}>
+              <span class="earth-marquee__text">{{ block.settings.text | escape }}</span>
+              <img 
+                src="{{ 'flower.svg' | asset_url }}" 
+                class="earth-marquee__flower" 
+                alt="flower" 
+                width="24" 
+                height="22" 
+                loading="lazy"
+              >
+            </span>
+          {%- endfor -%}
+        {%- else -%}
+          <span class="earth-marquee__item">
+            <span class="earth-marquee__text">SUSTAINABLE FABRICS</span>
+            <img src="{{ 'flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="24" height="22" loading="lazy">
+          </span>
+          <span class="earth-marquee__item">
+            <span class="earth-marquee__text">FEEL GOOD CLOTHES</span>
+            <img src="{{ 'flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="24" height="22" loading="lazy">
+          </span>
+          <span class="earth-marquee__item">
+            <span class="earth-marquee__text">SUSTAINABLE FABRICS</span>
+            <img src="{{ 'flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="24" height="22" loading="lazy">
+          </span>
+          <span class="earth-marquee__item">
+            <span class="earth-marquee__text">FEEL GOOD CLOTHES</span>
+            <img src="{{ 'flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="24" height="22" loading="lazy">
+          </span>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .earth-marquee {
+    grid-column: 1 / -1 !important;
+    overflow: hidden;
+    width: 100%;
+    user-select: none;
+    background-color: var(--marquee-bg, var(--color-white, #F8F9DC));
+    padding: 0 0 96px 0;
+    margin-top: -1px;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+
+  .earth-marquee__track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    animation: earthMarqueeScroll var(--marquee-speed, 22s) linear infinite;
+  }
+
+  .earth-marquee__track:hover {
+    animation-play-state: paused;
+    cursor: default;
+  }
+
+  .earth-marquee__group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 32px;
+    padding-right: 32px;
+  }
+
+  .earth-marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 32px;
+    white-space: nowrap;
+  }
+
+  .earth-marquee__text {
+    color: var(--marquee-color, var(--color-black, #003225));
+    font-size: 22px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-family: inherit;
+  }
+
+  .earth-marquee__flower {
+    width: 24px;
+    height: auto;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  @keyframes earthMarqueeScroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .earth-marquee {
+      padding: 0 0 64px 0;
+    }
+    .earth-marquee__text {
+      font-size: 22px;
+    }
+    .earth-marquee__flower {
+      width: 22px;
+    }
+    .earth-marquee__group,
+    .earth-marquee__item {
+      gap: 24px;
+      padding-right: 24px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Text Marquee",
+  "class": "earth-marquee-section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 10,
+      "max": 60,
+      "step": 2,
+      "unit": "s",
+      "label": "Scroll Speed",
+      "default": 24
+    }
+  ],
+  "blocks": [
+    {
+      "type": "marquee_text",
+      "name": "Marquee Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "SUSTAINABLE FABRICS"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Text Marquee",
+      "blocks": [
+        {
+          "type": "marquee_text",
+          "settings": {
+            "text": "SUSTAINABLE FABRICS"
+          }
+        },
+        {
+          "type": "marquee_text",
+          "settings": {
+            "text": "FEEL GOOD CLOTHES"
+          }
+        },
+        {
+          "type": "marquee_text",
+          "settings": {
+            "text": "SUSTAINABLE FABRICS"
+          }
+        },
+        {
+          "type": "marquee_text",
+          "settings": {
+            "text": "FEEL GOOD CLOTHES"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

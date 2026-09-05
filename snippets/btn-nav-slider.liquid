@@ -1,0 +1,33 @@
+{% comment %}
+  Reusable Circular Slider Navigation Arrows Component
+  Accepts:
+  - prev_id: {String} Unique ID for Prev button
+  - next_id: {String} Unique ID for Next button
+  - theme: {String} 'green' (default: bright green #71CC3B with dark green icon) or 'light' (cream #F8F9DC with dark icon)
+  - class: {String} Additional wrapper class
+  - prev_label: {String} Accessible label for Prev button
+  - next_label: {String} Accessible label for Next button
+{% endcomment %}
+
+{%- assign nav_theme = theme | default: 'green' -%}
+{%- # theme-check-disable ValidScopedCSSClass -%}
+<div class="earth-slider-nav earth-slider-nav--{{ nav_theme }} {{ class }}">
+  <button 
+    type="button" 
+    class="earth-slider-nav__btn earth-slider-nav__btn--prev" 
+    {% if prev_id != blank %}id="{{ prev_id }}"{% endif %}
+    aria-label="{{ prev_label | default: 'Previous slide' }}"
+  >
+    <img src="{{ 'prev-left.svg' | asset_url }}" width="15" height="15" alt="" class="earth-slider-nav__icon earth-slider-nav__icon--prev" loading="lazy">
+  </button>
+
+  <button 
+    type="button" 
+    class="earth-slider-nav__btn earth-slider-nav__btn--next" 
+    {% if next_id != blank %}id="{{ next_id }}"{% endif %}
+    aria-label="{{ next_label | default: 'Next slide' }}"
+  >
+    <img src="{{ 'next-right.svg' | asset_url }}" width="15" height="15" alt="" class="earth-slider-nav__icon earth-slider-nav__icon--next" loading="lazy">
+  </button>
+</div>
+{%- # theme-check-enable ValidScopedCSSClass -%}

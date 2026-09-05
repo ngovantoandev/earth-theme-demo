@@ -1,0 +1,537 @@
+{% comment %}
+  Measurable Impact / Metrics Section
+  Matching exact design with Left Column (Eyebrow, Heading, Metrics with Smile icon)
+  and Right Column (Asymmetric 4-image grid)
+  Fully responsive on Desktop, Tablet, and Mobile with Full-Width Layout (34px padding)
+{% endcomment %}
+
+<section class="measurable-impact-section full-width" id="measurableImpact-{{ section.id }}" style="--mi-bg-color: {{ section.settings.bg_color | default: '#F1F4D8' }}; --mi-text-color: {{ section.settings.text_color | default: '#003225' }};">
+  <div class="measurable-impact__container">
+    
+    <!-- Left Column: Content & Metrics -->
+    <div class="measurable-impact__left">
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="measurable-impact__eyebrow">
+          <svg class="measurable-impact__sparkle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="#C29D38"/>
+            <path d="M19 17L20.2 20.8L24 22L20.2 23.2L19 27L17.8 23.2L14 22L17.8 20.8L19 17Z" fill="#C29D38" transform="scale(0.6) translate(10, -8)"/>
+          </svg>
+          <span>{{ section.settings.eyebrow }}</span>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h2 class="measurable-impact__heading">
+          {{ section.settings.heading }}
+        </h2>
+      {%- endif -%}
+
+      <!-- Metrics List -->
+      <div class="measurable-impact__metrics-list">
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            <div class="measurable-impact__metric-item" {{ block.shopify_attributes }}>
+              <div class="measurable-impact__metric-header measurable-impact__metric-header--{{ block.settings.icon_position | default: 'right' }}">
+                {%- if block.settings.icon_position == 'left' -%}
+                  {%- if block.settings.show_smile -%}
+                    <span class="measurable-impact__smile-icon">
+                      {%- if block.settings.custom_icon != blank -%}
+                        <img src="{{ block.settings.custom_icon | image_url: width: 120 }}" width="52" height="52" alt="" loading="lazy">
+                      {%- else -%}
+                        <img src="{{ 'smile.svg' | asset_url }}" width="52" height="52" alt="Smile icon" loading="lazy">
+                      {%- endif -%}
+                    </span>
+                  {%- endif -%}
+                  <span class="measurable-impact__metric-number">{{ block.settings.number }}</span>
+                {%- else -%}
+                  <span class="measurable-impact__metric-number">{{ block.settings.number }}</span>
+                  {%- if block.settings.show_smile -%}
+                    <span class="measurable-impact__smile-icon">
+                      {%- if block.settings.custom_icon != blank -%}
+                        <img src="{{ block.settings.custom_icon | image_url: width: 120 }}" width="52" height="52" alt="" loading="lazy">
+                      {%- else -%}
+                        <img src="{{ 'smile.svg' | asset_url }}" width="52" height="52" alt="Smile icon" loading="lazy">
+                      {%- endif -%}
+                    </span>
+                  {%- endif -%}
+                {%- endif -%}
+              </div>
+              {%- if block.settings.text != blank -%}
+                <p class="measurable-impact__metric-text">
+                  {{ block.settings.text }}
+                </p>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <!-- Default Fallback Metrics if no blocks configured -->
+          <div class="measurable-impact__metric-item">
+            <div class="measurable-impact__metric-header measurable-impact__metric-header--right">
+              <span class="measurable-impact__metric-number">50k+</span>
+              <span class="measurable-impact__smile-icon">
+                <img src="{{ 'smile.svg' | asset_url }}" width="52" height="52" alt="Smile icon" loading="lazy">
+              </span>
+            </div>
+            <p class="measurable-impact__metric-text">
+              Liters of water saved compared to traditional manufacturing processes.
+            </p>
+          </div>
+
+          <div class="measurable-impact__metric-item">
+            <div class="measurable-impact__metric-header measurable-impact__metric-header--left">
+              <span class="measurable-impact__smile-icon">
+                <img src="{{ 'smile.svg' | asset_url }}" width="52" height="52" alt="Smile icon" loading="lazy">
+              </span>
+              <span class="measurable-impact__metric-number">100%</span>
+            </div>
+            <p class="measurable-impact__metric-text">
+              Plastic-free packaging. Every box we ship returns to the earth as compost.
+            </p>
+          </div>
+
+          <div class="measurable-impact__metric-item">
+            <div class="measurable-impact__metric-header measurable-impact__metric-header--right">
+              <span class="measurable-impact__metric-number">12,400</span>
+              <span class="measurable-impact__smile-icon">
+                <img src="{{ 'smile.svg' | asset_url }}" width="52" height="52" alt="Smile icon" loading="lazy">
+              </span>
+            </div>
+            <p class="measurable-impact__metric-text">
+              Native trees planted across our partner organic farms this year.
+            </p>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Right Column: Asymmetric 4-Image Grid -->
+    <div class="measurable-impact__right">
+      <div class="measurable-impact__gallery-grid">
+        
+        <!-- Subcolumn 1 (Left): Tall Image 1 (Top) + Landscape Image 3 (Bottom) -->
+        <div class="measurable-impact__gallery-col measurable-impact__gallery-col--left">
+          <div class="measurable-impact__image-card--tall">
+            {%- if section.settings.image_1 != blank -%}
+              <img src="{{ section.settings.image_1 | image_url: width: 1000 }}" width="600" height="810" alt="{{ section.settings.image_1.alt | default: 'Sustainable fashion model in nature' }}" loading="lazy">
+            {%- else -%}
+              <img src="{{ 'impact-1.jpg' | asset_url }}" width="600" height="810" alt="Sustainable fashion model in linen dress" loading="lazy">
+            {%- endif -%}
+          </div>
+
+          <div class="measurable-impact__image-card--landscape">
+            {%- if section.settings.image_3 != blank -%}
+              <img src="{{ section.settings.image_3 | image_url: width: 1000 }}" width="600" height="510" alt="{{ section.settings.image_3.alt | default: 'Folded organic knitwear sweaters' }}" loading="lazy">
+            {%- else -%}
+              <img src="{{ 'impact-3.jpg' | asset_url }}" width="600" height="510" alt="Folded organic wool knitwear sweaters" loading="lazy">
+            {%- endif -%}
+          </div>
+        </div>
+
+        <!-- Subcolumn 2 (Right): Shorter Image 2 (Top) + Portrait Image 4 (Bottom) -->
+        <div class="measurable-impact__gallery-col measurable-impact__gallery-col--right">
+          <div class="measurable-impact__image-card--medium">
+            {%- if section.settings.image_2 != blank -%}
+              <img src="{{ section.settings.image_2 | image_url: width: 1000 }}" width="600" height="510" alt="{{ section.settings.image_2.alt | default: 'Man in sustainable polo' }}" loading="lazy">
+            {%- else -%}
+              <img src="{{ 'impact-2.jpg' | asset_url }}" width="600" height="510" alt="Man in olive organic polo shirt" loading="lazy">
+            {%- endif -%}
+          </div>
+
+          <div class="measurable-impact__image-card--portrait">
+            {%- if section.settings.image_4 != blank -%}
+              <img src="{{ section.settings.image_4 | image_url: width: 1000 }}" width="600" height="810" alt="{{ section.settings.image_4.alt | default: 'Couple walking in organic clothes' }}" loading="lazy">
+            {%- else -%}
+              <img src="{{ 'impact-4.jpg' | asset_url }}" width="600" height="810" alt="Couple walking outdoors in sustainable clothing" loading="lazy">
+            {%- endif -%}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  /* ==========================================================================
+     Measurable Impact Section (Full Width with 34px edge padding)
+     ========================================================================== */
+  .measurable-impact-section {
+    grid-column: 1 / -1 !important;
+    width: 100%;
+    background-color: var(--mi-bg-color, #F1F4D8);
+    color: var(--mi-text-color, #003225);
+    padding: 115px 34px 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .measurable-impact__container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: clamp(40px, 6vw, 100px);
+    align-items: start;
+    box-sizing: border-box;
+  }
+
+  /* Left Column Styling */
+  .measurable-impact__left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 600px;
+  }
+
+  .measurable-impact__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: clamp(15px, 1.1vw, 17px);
+    font-weight: 500;
+    color: #556B3A;
+    margin-bottom: clamp(18px, 2.2vw, 28px);
+    letter-spacing: -0.01em;
+  }
+
+  .measurable-impact__sparkle-icon {
+    flex-shrink: 0;
+  }
+
+  .measurable-impact__heading {
+    font-size: clamp(2.4rem, 4vw, 3.85rem);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+    color: var(--mi-text-color, #003225);
+    margin: 0 0 clamp(36px, 4.5vw, 56px) 0;
+    max-width: 540px;
+  }
+
+  /* Metrics List */
+  .measurable-impact__metrics-list {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(30px, 4vw, 48px);
+  }
+
+  .measurable-impact__metric-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .measurable-impact__metric-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .measurable-impact__metric-number {
+    font-size: clamp(2.8rem, 4.4vw, 4.2rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--mi-text-color, #003225);
+  }
+
+  .measurable-impact__smile-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(44px, 3.8vw, 56px);
+    height: clamp(44px, 3.8vw, 56px);
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .measurable-impact__smile-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .measurable-impact__metric-item:hover .measurable-impact__smile-icon {
+    transform: rotate(12deg) scale(1.08);
+  }
+
+  .measurable-impact__metric-text {
+    font-size: clamp(15px, 1.2vw, 17.5px);
+    line-height: 1.45;
+    color: var(--mi-text-color, #003225);
+    margin: 0;
+    max-width: 460px;
+    letter-spacing: -0.01em;
+    opacity: 0.92;
+  }
+
+  /* Right Column: Photo Mosaic Grid */
+  .measurable-impact__right {
+    width: 100%;
+  }
+
+  .measurable-impact__gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(16px, 2vw, 28px);
+    align-items: stretch;
+  }
+
+  .measurable-impact__gallery-col {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 2vw, 28px);
+  }
+
+  .measurable-impact__image-card,
+  [class*="measurable-impact__image-card--"] {
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(0, 50, 37, 0.05);
+    width: 100%;
+  }
+
+  .measurable-impact__image-card img,
+  [class*="measurable-impact__image-card--"] img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Specific Aspect Ratios (4:5 and 1:1) */
+  /* Left Column: 4:5 Top + 1:1 Bottom */
+  .measurable-impact__image-card--tall {
+    aspect-ratio: 4 / 5;
+  }
+
+  .measurable-impact__image-card--landscape {
+    aspect-ratio: 1 / 1;
+  }
+
+  /* Right Column: 1:1 Top + 4:5 Bottom */
+  .measurable-impact__image-card--medium {
+    aspect-ratio: 1 / 1;
+  }
+
+  .measurable-impact__image-card--portrait {
+    aspect-ratio: 4 / 5;
+  }
+
+  /* ==========================================================================
+     Responsive Breakpoints
+     ========================================================================== */
+  @media (max-width: 1024px) {
+    .measurable-impact-section {
+      padding: 60px 34px 70px;
+    }
+
+    .measurable-impact__container {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+
+    .measurable-impact__left {
+      max-width: 100%;
+    }
+
+    .measurable-impact__heading {
+      max-width: 100%;
+    }
+
+    .measurable-impact__metrics-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .measurable-impact__metric-text {
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .measurable-impact-section {
+      padding: 48px 20px 56px;
+    }
+
+    .measurable-impact__container {
+      gap: 36px;
+    }
+
+    .measurable-impact__heading {
+      font-size: 28px;
+      line-height: 1.18;
+      margin-bottom: 28px;
+    }
+
+    .measurable-impact__metrics-list {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .measurable-impact__metric-number {
+      font-size: 38px;
+    }
+
+    .measurable-impact__smile-icon {
+      width: 42px;
+      height: 42px;
+    }
+
+    .measurable-impact__metric-text {
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .measurable-impact__gallery-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .measurable-impact__gallery-col {
+      gap: 16px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Measurable Impact",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "Measurable Change"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our footprint is small, but our impact is deep."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F1F4D8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "header",
+      "content": "Images Grid"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1 (Top Left - Tall)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2 (Top Right - Medium)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3 (Bottom Left - Landscape)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4",
+      "label": "Image 4 (Bottom Right - Portrait)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "metric",
+      "name": "Metric Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Metric Number / Stat",
+          "default": "50k+"
+        },
+        {
+          "type": "select",
+          "id": "icon_position",
+          "label": "Smile Icon Position",
+          "options": [
+            {
+              "value": "right",
+              "label": "Right of number"
+            },
+            {
+              "value": "left",
+              "label": "Left of number"
+            }
+          ],
+          "default": "right"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_smile",
+          "label": "Show Smile Icon",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom Icon (Optional override)"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description Text",
+          "default": "Liters of water saved compared to traditional manufacturing processes."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Measurable Impact",
+      "blocks": [
+        {
+          "type": "metric",
+          "settings": {
+            "number": "50k+",
+            "icon_position": "right",
+            "show_smile": true,
+            "text": "Liters of water saved compared to traditional manufacturing processes."
+          }
+        },
+        {
+          "type": "metric",
+          "settings": {
+            "number": "100%",
+            "icon_position": "left",
+            "show_smile": true,
+            "text": "Plastic-free packaging. Every box we ship returns to the earth as compost."
+          }
+        },
+        {
+          "type": "metric",
+          "settings": {
+            "number": "12,400",
+            "icon_position": "right",
+            "show_smile": true,
+            "text": "Native trees planted across our partner organic farms this year."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
