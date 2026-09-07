@@ -144,10 +144,6 @@
     object-fit: cover;
     display: block;
     pointer-events: none; /* Prevents ghost image drag */
-    transition: transform 0.4s ease;
-  }
-  .earth-hero__slide:hover .earth-hero__image {
-    transform: scale(1.02);
   }
 
   /* Navigation Arrows */
@@ -253,6 +249,9 @@
 
   /* Responsive Design */
   @media (max-width: 1024px) {
+    .earth-hero__content-area {
+      padding: 36px 24px;
+    }
     .earth-hero__heading {
       font-size: clamp(3.2rem, 8vw, 5.5rem);
     }
@@ -263,6 +262,9 @@
   }
 
   @media (max-width: 768px) {
+    .earth-hero__content-area {
+      padding: 28px 20px;
+    }
     .earth-hero__slide {
       flex: 0 0 75%;
       min-width: 260px;

@@ -266,11 +266,25 @@
   .sustainability-journey__timeline-wrapper {
     position: relative;
     width: 100%;
-    margin-bottom: clamp(48px, 6vw, 76px);
+    margin-bottom: 8px;
   }
 
-  /* Continuous horizontal connector line aligned with cards and container boundaries */
+  /* Continuous horizontal connector line running through all milestone nodes */
   .sustainability-journey__timeline-line {
+    display: none;
+  }
+
+  .sustainability-journey__milestones {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+
+  .sustainability-journey__milestones::before {
+    content: "";
     position: absolute;
     top: 32px;
     left: 0;
@@ -280,16 +294,7 @@
     background-color: var(--journey-color, #003225);
     z-index: 1;
     pointer-events: none;
-    display: block !important;
-  }
-
-  .sustainability-journey__milestones {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: clamp(12px, 1.6vw, 24px);
-    position: relative;
-    z-index: 2;
-    width: 100%;
+    transform: translateY(-50%);
   }
 
   .sustainability-journey__milestone-item {
@@ -478,10 +483,9 @@
       scrollbar-width: none;
       padding-bottom: 12px;
       position: relative;
-      margin: 0 -20px;
-      padding-left: 20px;
-      padding-right: 0;
-      scroll-padding: 0 20px;
+      margin: 0;
+      padding: 0;
+      width: 100%;
     }
     .sustainability-journey__timeline-wrapper::-webkit-scrollbar {
       display: none;
@@ -490,41 +494,35 @@
     .sustainability-journey__milestones {
       display: flex;
       width: max-content;
-      gap: 16px;
+      gap: 8px;
       position: relative;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     .sustainability-journey__milestones::before {
       content: "";
       position: absolute;
       top: 32px;
-      left: 120px;
-      right: 140px;
-      width: auto;
+      left: 0;
+      right: 0;
+      width: 100%;
       height: 2px;
       background-color: var(--journey-color, #003225);
       z-index: 1;
       pointer-events: none;
+      transform: translateY(-50%);
     }
 
     .sustainability-journey__milestone-item {
       flex: 0 0 240px;
       scroll-snap-align: start;
     }
-
-    .sustainability-journey__milestone-item:last-child {
-      margin-right: 20px !important;
-    }
   }
 
   @media (max-width: 768px) {
     .sustainability-journey {
       padding: 60px 20px 70px;
-    }
-
-    .sustainability-journey__milestones::before {
-      left: 110px;
-      right: 130px;
     }
 
     .sustainability-journey__title {
@@ -592,6 +590,9 @@
       font-size: 16px;
       font-weight: 800;
       letter-spacing: 0.04em;
+    }
+    .sustainability-journey__timeline-wrapper {
+      margin-bottom: 8px;
     }
   }
 {% endstylesheet %}

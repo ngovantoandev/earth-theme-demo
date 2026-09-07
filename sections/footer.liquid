@@ -496,13 +496,13 @@
   /* ==========================================================================
      Responsive Design (Tablet & Mobile)
      ========================================================================== */
-  @media screen and (max-width: 991px) {
+  @media (max-width: 1024px) {
     .earth-footer__newsletter {
-      padding: clamp(32px, 4vw, 44px) 28px;
+      padding: clamp(32px, 4vw, 44px) 24px;
     }
 
     .earth-footer__main {
-      padding: clamp(40px, 4.5vw, 60px) 28px 32px;
+      padding: clamp(40px, 4.5vw, 60px) 24px 32px;
     }
 
     .earth-footer__nav-grid {
@@ -517,7 +517,7 @@
     }
   }
 
-  @media screen and (max-width: 767px) {
+  @media (max-width: 768px) {
     .earth-footer__newsletter {
       padding: 36px 20px;
     }
@@ -602,12 +602,10 @@
     .earth-footer__accordion-content {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
     }
 
     .earth-footer__nav-col--open .earth-footer__accordion-content {
       max-height: 500px;
-      transition: max-height 0.35s ease-in-out;
       padding-bottom: 18px;
     }
 
@@ -643,9 +641,15 @@
     }
 
     .earth-footer__copyright {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 8px;
+    }
+
+    .earth-footer__lower-title {
+      font-size: 17px;
     }
   }
 {%- endstyle -%}
@@ -974,7 +978,7 @@
 <script>
   (function () {
     function initFooterAccordions() {
-      if (window.innerWidth > 767) return;
+      if (window.innerWidth > 768) return;
 
       const cols = document.querySelectorAll('.earth-footer__nav-col');
       cols.forEach((col) => {

@@ -74,9 +74,81 @@ p:empty {
 
 /** Theme styles below */
 body {
-  font-family: var(--font-primary--family);
-  background-color: var(--color-black, #003225);
-  color: var(--color-foreground, #F8F9DC);
+  font-family: var(--font-body--family, var(--font-primary--family));
+  font-size: var(--font-body--size, 18px);
+  line-height: var(--font-body--line-height, 1.6);
+  font-weight: var(--font-body--weight, 400);
+  letter-spacing: var(--font-body--letter-spacing, -0.005em);
+  background-color: var(--color-background, var(--color-black, #003225));
+  color: var(--color-foreground, var(--color-white, #F8F9DC));
+}
+
+/* Base Headings mapped to theme typography settings */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--font-heading--family, var(--font-primary--family));
+  font-weight: var(--font-heading--weight, 700);
+  line-height: var(--font-heading--line-height, 1.15);
+  letter-spacing: var(--font-heading--letter-spacing, -0.015em);
+  text-transform: var(--font-heading--transform, none);
+  color: inherit;
+}
+
+h1, .h1 {
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+}
+
+h2, .h2 {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+}
+
+h3, .h3 {
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+}
+
+h4, .h4 {
+  font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+}
+
+h5, .h5 {
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+}
+
+h6, .h6 {
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+}
+
+/* Base Paragraphs and Body Copy */
+p, li, blockquote, dd, dt {
+  font-family: var(--font-body--family, var(--font-primary--family));
+  font-size: var(--font-body--size, 18px);
+  line-height: var(--font-body--line-height, 1.6);
+  font-weight: var(--font-body--weight, 400);
+  letter-spacing: var(--font-body--letter-spacing, -0.005em);
+}
+
+/* Navigation Links */
+nav, .nav, .menu, .header__nav, .nav-item {
+  font-family: var(--font-nav--family, var(--font-body--family));
+  font-size: var(--font-nav--size, 18px);
+  font-weight: var(--font-nav--weight, 600);
+  text-transform: var(--font-nav--transform, none);
+}
+
+/* Buttons & Inputs */
+button, .btn, input[type="button"], input[type="submit"], input[type="reset"] {
+  font-family: var(--font-button--family, var(--font-primary--family));
+  font-size: var(--font-button--size, 16px);
+  font-weight: var(--font-button--weight, 600);
+  text-transform: var(--font-button--transform, uppercase);
+}
+
+/* Product Card & Grid Typography */
+.product-card__title, .product-grid-title, .product-title, .product-item__title {
+  font-family: var(--font-product-grid--family, var(--font-body--family));
+  font-size: var(--font-product-grid--size, 16px);
+  font-weight: var(--font-product-grid--weight, 600);
+  text-transform: var(--font-product-grid--transform, none);
 }
 
 /** Section layout utilities */
@@ -120,8 +192,8 @@ body {
   gap: 12px;
 }
 .earth-slider-nav__btn {
-  width: 48px;
-  height: 48px;
+  width: var(--slider-nav-btn-size, 48px);
+  height: var(--slider-nav-btn-size, 48px);
   border-radius: 50%;
   background-color: var(--color-secondary, #71CC3B);
   border: 1.5px solid var(--color-secondary, #71CC3B);
@@ -138,8 +210,8 @@ body {
   box-shadow: 0 6px 18px rgba(113, 204, 59, 0.4);
 }
 .earth-slider-nav__icon {
-  width: 15px;
-  height: 15px;
+  width: var(--slider-nav-icon-size, 15px);
+  height: var(--slider-nav-icon-size, 15px);
   object-fit: contain;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
@@ -174,14 +246,15 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-primary--family);
-  font-size: clamp(14px, 1.05vw, 15px);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-family: var(--font-button--family, var(--font-primary--family));
+  font-size: var(--font-button--size, clamp(14px, 1.05vw, 15px));
+  font-weight: var(--font-button--weight, 700);
+  letter-spacing: var(--button-letter-spacing, 0.04em);
+  text-transform: var(--font-button--transform, uppercase);
   text-decoration: none;
   padding: 14px 28px;
   line-height: 1.2;
+  border-radius: var(--button-border-radius, 0px);
   cursor: pointer;
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
   white-space: nowrap;

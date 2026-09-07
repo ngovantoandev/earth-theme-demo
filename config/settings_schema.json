@@ -413,22 +413,6 @@
         "id": "color_black",
         "default": "#003225",
         "label": "Dark / Pine Green"
-      },
-      {
-        "type": "header",
-        "content": "Global Defaults"
-      },
-      {
-        "type": "color",
-        "id": "background_color",
-        "default": "#003225",
-        "label": "Default Background Color"
-      },
-      {
-        "type": "color",
-        "id": "foreground_color",
-        "default": "#F8F9DC",
-        "label": "Default Foreground / Text Color"
       }
     ]
   }

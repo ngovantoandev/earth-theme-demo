@@ -1,0 +1,637 @@
+{% comment %}
+  Announcement Bar Section
+  Standalone announcement bar with desktop/mobile navigation arrows toggle,
+  multi-announcement carousel/slider, optional close button, and customizable colors.
+{% endcomment %}
+
+{%- if section.blocks.size > 0 or section.settings.text != blank -%}
+  {%- assign close_pos = section.settings.close_btn_position | default: 'right' -%}
+  <aside 
+    class="earth-announcement-section full-width{% if section.settings.enable_vertical_carousel %} earth-announcement-section--vertical{% endif %}" 
+    id="earthAnnouncement-{{ section.id }}"
+    style="--announcement-bg: {{ section.settings.bg_color | default: '#224E09' }}; --announcement-color: {{ section.settings.text_color | default: '#F8F9DC' }};"
+    aria-label="Announcement"
+  >
+    <div class="earth-announcement__container">
+      
+      <!-- Optional Close Button (Left Position) -->
+      {%- if section.settings.show_close_btn and close_pos == 'left' -%}
+        <button 
+          type="button" 
+          class="earth-announcement__close earth-announcement__close--left" 
+          aria-label="Close announcement"
+          onclick="this.closest('.earth-announcement-section').style.display='none'"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      {%- endif -%}
+
+      <!-- Navigation Arrow: Prev -->
+      {%- if section.blocks.size > 1 -%}
+        <button 
+          type="button" 
+          class="earth-announcement__arrow earth-announcement__arrow--prev{% unless section.settings.show_arrows_desktop %} earth-announcement__arrow--mobile-only{% endunless %}" 
+          aria-label="Previous announcement"
+          id="announcementPrev-{{ section.id }}"
+        >
+          <img src="{{ 'arrow-right.svg' | asset_url }}" width="12" height="10" alt="" loading="lazy" class="earth-announcement__arrow-icon earth-announcement__arrow-icon--prev">
+        </button>
+      {%- endif -%}
+
+      <!-- Announcement Slider Track -->
+      <div class="earth-announcement__slider{% if section.settings.enable_vertical_carousel %} earth-announcement__slider--vertical{% endif %}" id="announcementSlider-{{ section.id }}">
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            <div 
+              class="earth-announcement__slide{% if forloop.first %} earth-announcement__slide--active{% endif %}" 
+              data-index="{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}" class="earth-announcement__link">
+                  <span>{{ block.settings.text }}</span>
+                </a>
+              {%- else -%}
+                <span class="earth-announcement__text">{{ block.settings.text }}</span>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="earth-announcement__slide earth-announcement__slide--active" data-index="0">
+            {%- if section.settings.link != blank -%}
+              <a href="{{ section.settings.link }}" class="earth-announcement__link">
+                <span>{{ section.settings.text | default: '15% off Sale: SUNNYDAY15' }}</span>
+              </a>
+            {%- else -%}
+              <span class="earth-announcement__text">{{ section.settings.text | default: '15% off Sale: SUNNYDAY15' }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Navigation Arrow: Next -->
+      {%- if section.blocks.size > 1 -%}
+        <button 
+          type="button" 
+          class="earth-announcement__arrow earth-announcement__arrow--next{% unless section.settings.show_arrows_desktop %} earth-announcement__arrow--mobile-only{% endunless %}" 
+          aria-label="Next announcement"
+          id="announcementNext-{{ section.id }}"
+        >
+          <img src="{{ 'arrow-right.svg' | asset_url }}" width="12" height="10" alt="" loading="lazy" class="earth-announcement__arrow-icon earth-announcement__arrow-icon--next">
+        </button>
+      {%- endif -%}
+
+      <!-- Optional Close Button (Right Position) -->
+      {%- if section.settings.show_close_btn and close_pos == 'right' -%}
+        <button 
+          type="button" 
+          class="earth-announcement__close earth-announcement__close--right" 
+          aria-label="Close announcement"
+          onclick="this.closest('.earth-announcement-section').style.display='none'"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      {%- endif -%}
+
+    </div>
+  </aside>
+
+  {% style %}
+    .earth-announcement-section {
+      width: 100%;
+      background-color: var(--announcement-bg, #224E09);
+      color: var(--announcement-color, #F8F9DC);
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 40;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .earth-announcement__container {
+      width: 100%;
+      max-width: 100%;
+      padding: 8px clamp(16px, 3vw, 48px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      box-sizing: border-box;
+      gap: 16px;
+    }
+
+    /* Slider Container */
+    .earth-announcement__slider {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 26px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .earth-announcement__slide {
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      text-align: center;
+      font-size: clamp(13px, 1.1vw, 15px);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.35;
+      color: inherit;
+    }
+
+    /* Keyframe Animations for Vertical Carousel (Bottom to Top) */
+    @keyframes earthSlideInFromBottom {
+      0% {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes earthSlideOutToTop {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+    }
+
+    @keyframes earthSlideInFromTop {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes earthSlideOutToBottom {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+    }
+
+    /* Standard (Non-vertical) Mode */
+    .earth-announcement__slider:not(.earth-announcement__slider--vertical) .earth-announcement__slide {
+      display: none;
+    }
+
+    .earth-announcement__slider:not(.earth-announcement__slider--vertical) .earth-announcement__slide.earth-announcement__slide--active {
+      display: flex;
+    }
+
+    /* Vertical Carousel Animation */
+    .earth-announcement__slider--vertical {
+      height: 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .earth-announcement__slider--vertical .earth-announcement__slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .earth-announcement__slider--vertical .earth-announcement__slide.earth-announcement__slide--active {
+      display: flex;
+      transform: translateY(0);
+      opacity: 1;
+      z-index: 2;
+    }
+
+    /* Next / Auto-rotate: Incoming from bottom, outgoing to top */
+    .earth-announcement__slider--vertical .earth-announcement__slide.earth-announcement__slide--anim-in-up {
+      display: flex;
+      animation: earthSlideInFromBottom 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      z-index: 2;
+    }
+
+    .earth-announcement__slider--vertical .earth-announcement__slide.earth-announcement__slide--anim-out-up {
+      display: flex;
+      animation: earthSlideOutToTop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      z-index: 1;
+    }
+
+    /* Prev: Incoming from top, outgoing to bottom */
+    .earth-announcement__slider--vertical .earth-announcement__slide.earth-announcement__slide--anim-in-down {
+      display: flex;
+      animation: earthSlideInFromTop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      z-index: 2;
+    }
+
+    .earth-announcement__slider--vertical .earth-announcement__slide.earth-announcement__slide--anim-out-down {
+      display: flex;
+      animation: earthSlideOutToBottom 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      z-index: 1;
+    }
+
+    .earth-announcement__link {
+      color: inherit;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .earth-announcement__link:hover {
+      opacity: 0.85;
+      text-decoration: underline;
+    }
+
+    .earth-announcement__text {
+      color: inherit;
+      display: inline-block;
+    }
+
+    /* Navigation Arrows */
+    .earth-announcement__arrow {
+      background: transparent;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      opacity: 0.9;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      flex-shrink: 0;
+      z-index: 3;
+    }
+
+    .earth-announcement__arrow:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .earth-announcement__arrow-icon {
+      width: 12px;
+      height: 10px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .earth-announcement__arrow-icon--prev {
+      transform: scaleX(-1);
+    }
+
+    .earth-announcement__arrow--mobile-only {
+      display: none;
+    }
+
+    /* Close Button */
+    .earth-announcement__close {
+      background: transparent;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 8px;
+      opacity: 0.85;
+      transition: opacity 0.2s ease;
+      flex-shrink: 0;
+      z-index: 3;
+    }
+
+    .earth-announcement__close:hover {
+      opacity: 1;
+    }
+
+    .earth-announcement__close--right {
+      position: absolute;
+      right: clamp(16px, 3vw, 48px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .earth-announcement__close--left {
+      position: absolute;
+      left: clamp(16px, 3vw, 48px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    @media (max-width: 1024px) {
+      .earth-announcement__container {
+        padding: 10px 24px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .earth-announcement__container {
+        padding: 8px 20px;
+        gap: 8px;
+      }
+      .earth-announcement__slide {
+        font-size: 13px;
+      }
+      .earth-announcement__arrow {
+        display: inline-flex !important;
+        padding: 4px 6px;
+      }
+      .earth-announcement__close {
+        display: none !important;
+      }
+    }
+  {% endstyle %}
+
+  {%- if section.blocks.size > 1 -%}
+    <script>
+      (function() {
+        function initAnnouncementSlider() {
+          var container = document.getElementById('earthAnnouncement-{{ section.id }}');
+          if (!container || container.__sliderInitialized) return;
+          container.__sliderInitialized = true;
+
+          var slides = container.querySelectorAll('.earth-announcement__slide');
+          if (slides.length <= 1) return;
+
+          var isVertical = container.classList.contains('earth-announcement-section--vertical');
+          var currentIndex = 0;
+          var isAnimating = false;
+          var prevBtn = document.getElementById('announcementPrev-{{ section.id }}');
+          var nextBtn = document.getElementById('announcementNext-{{ section.id }}');
+          var autoRotate = {{ section.settings.auto_rotate | default: false }};
+          var rotateInterval = ({{ section.settings.rotate_interval | default: 5 }}) * 1000;
+          var timer = null;
+
+          function showSlide(newIndex, direction) {
+            if (newIndex === currentIndex || isAnimating) return;
+            var outgoing = slides[currentIndex];
+            var incoming = slides[newIndex];
+
+            if (isVertical) {
+              isAnimating = true;
+              slides.forEach(function(s, idx) {
+                if (idx !== currentIndex && idx !== newIndex) {
+                  s.className = 'earth-announcement__slide';
+                }
+              });
+
+              if (direction === 'prev') {
+                outgoing.className = 'earth-announcement__slide earth-announcement__slide--anim-out-down';
+                incoming.className = 'earth-announcement__slide earth-announcement__slide--anim-in-down';
+              } else {
+                // Next / Auto-rotate: Text under moves up (ở dưới đi lên)
+                outgoing.className = 'earth-announcement__slide earth-announcement__slide--anim-out-up';
+                incoming.className = 'earth-announcement__slide earth-announcement__slide--anim-in-up';
+              }
+
+              setTimeout(function() {
+                slides.forEach(function(s, idx) {
+                  if (idx === newIndex) {
+                    s.className = 'earth-announcement__slide earth-announcement__slide--active';
+                  } else {
+                    s.className = 'earth-announcement__slide';
+                  }
+                });
+                isAnimating = false;
+              }, 460);
+            } else {
+              slides.forEach(function(s, idx) {
+                if (idx === newIndex) {
+                  s.classList.add('earth-announcement__slide--active');
+                } else {
+                  s.classList.remove('earth-announcement__slide--active');
+                }
+              });
+            }
+            currentIndex = newIndex;
+          }
+
+          function nextSlide() {
+            var next = (currentIndex + 1) % slides.length;
+            showSlide(next, 'next');
+          }
+
+          function prevSlide() {
+            var prev = (currentIndex - 1 + slides.length) % slides.length;
+            showSlide(prev, 'prev');
+          }
+
+          if (prevBtn) {
+            prevBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              prevSlide();
+              resetTimer();
+            });
+          }
+
+          if (nextBtn) {
+            nextBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              nextSlide();
+              resetTimer();
+            });
+          }
+
+          function startTimer() {
+            if (autoRotate && !timer) {
+              timer = setInterval(nextSlide, rotateInterval);
+            }
+          }
+
+          function stopTimer() {
+            if (timer) {
+              clearInterval(timer);
+              timer = null;
+            }
+          }
+
+          function resetTimer() {
+            stopTimer();
+            startTimer();
+          }
+
+          if (autoRotate) {
+            startTimer();
+            container.addEventListener('mouseenter', stopTimer);
+            container.addEventListener('mouseleave', startTimer);
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initAnnouncementSlider);
+        } else {
+          initAnnouncementSlider();
+        }
+
+        if (window.Shopify && window.Shopify.designMode) {
+          document.addEventListener('shopify:section:load', initAnnouncementSlider);
+        }
+      })();
+    </script>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Announcement Bar Content"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Fallback Announcement Text",
+      "default": "15% off Sale: SUNNYDAY15",
+      "info": "Used if no announcement blocks are added"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Fallback Link"
+    },
+    {
+      "type": "header",
+      "content": "Navigation & Controls"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_vertical_carousel",
+      "label": "Enable Vertical Carousel Animation",
+      "default": true,
+      "info": "Slides announcement messages with a smooth vertical carousel transition effect"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows_desktop",
+      "label": "Show navigation arrows on desktop",
+      "default": false,
+      "info": "Mobile will always show navigation arrows and hide the close button by default when multiple announcements exist."
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Auto-rotate announcements",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "rotate_interval",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Change slides every",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Close Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_close_btn",
+      "label": "Show close button (×)",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "close_btn_position",
+      "label": "Close button position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#224E09"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#F8F9DC"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Announcement Text",
+          "default": "15% off Sale: SUNNYDAY15"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar",
+      "blocks": [
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "15% off Sale: SUNNYDAY15"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "Extra 15% off Sale with code: SUNNYDAY15"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

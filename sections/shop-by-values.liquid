@@ -337,7 +337,6 @@
     max-width: 1050px;
     scroll-snap-align: center;
     box-sizing: border-box;
-    transition: transform 0.3s ease;
   }
 
   /* Split Card (Left: Square Image 1:1, Right: Info Box) */
@@ -364,10 +363,6 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .earth-values-{{ section.id }} .earth-values__card:hover .earth-values__img {
-    transform: scale(1.04);
   }
 
   /* Info Box */
@@ -551,7 +546,6 @@
     cursor: pointer;
     position: relative;
     text-align: left;
-    transition: color 0.25s ease;
     flex: 1;
     -webkit-appearance: none;
     appearance: none;
@@ -564,7 +558,6 @@
     width: 0;
     height: 2px;
     background-color: var(--values-tab-active);
-    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .earth-values-{{ section.id }} .earth-values__tab-text {
     font-size: clamp(16px, 1.4vw, 20px);
@@ -588,6 +581,9 @@
 
   /* Responsive Design */
   @media (max-width: 1024px) {
+    .earth-values-{{ section.id }} .earth-values__header-container {
+      padding: 0 24px !important;
+    }
     .earth-values-{{ section.id }} .earth-values__slide {
       flex: 0 0 92%;
     }
@@ -608,10 +604,10 @@
       width: max-content !important;
       min-width: 100% !important;
       justify-content: flex-start !important;
-      padding-left: 20px !important;
-      padding-right: 20px !important;
-      scroll-padding-left: 20px !important;
-      scroll-padding-right: 20px !important;
+      padding-left: 24px !important;
+      padding-right: 24px !important;
+      scroll-padding-left: 24px !important;
+      scroll-padding-right: 24px !important;
       gap: 28px !important;
       overflow: visible !important;
       box-sizing: border-box !important;

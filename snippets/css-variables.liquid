@@ -1,17 +1,82 @@
 {% style %}
-  {% # Loads all font variantions with display: swap %}
+  {% # Loads primary and body font variations with display: swap %}
   {{ settings.type_primary_font | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
+  {% if settings.type_body_font and settings.type_body_font.family != settings.type_primary_font.family %}
+    {{ settings.type_body_font | font_face: font_display: 'swap' }}
+    {{ settings.type_body_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+    {{ settings.type_body_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+    {{ settings.type_body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {% endif %}
+
   :root {
-    /* Fonts & Core */
+    /* ==========================================================================
+       Typography System (from Theme Settings)
+       ========================================================================== */
     --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
     --font-primary--style: {{ settings.type_primary_font.style }};
     --font-primary--weight: {{ settings.type_primary_font.weight }};
-    --page-width: {{ settings.max_page_width | default: '1440px' }};
-    --page-margin: {{ settings.min_page_margin | default: 0 }}px;
+
+    {%- assign body_font = settings.type_body_font | default: settings.type_primary_font -%}
+    --font-body--family: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --font-body--weight: {{ settings.body_font_weight | default: '400' }};
+    --font-body--size: {{ settings.body_base_size | default: 18 }}px;
+    --font-body--line-height: {{ settings.body_line_height | default: 1.6 }};
+    --font-body--letter-spacing: {{ settings.body_letter_spacing | default: -5 | divided_by: 1000.0 }}em;
+
+    /* Headings */
+    --font-heading--family: var(--font-primary--family);
+    --font-heading--weight: {{ settings.heading_font_weight | default: '700' }};
+    --font-heading--line-height: {{ settings.heading_line_height | default: 1 }};
+    --font-heading--letter-spacing: {{ settings.heading_letter_spacing | default: -15 | divided_by: 1000.0 }}em;
+    --font-heading--transform: {% if settings.heading_capitalize %}uppercase{% else %}none{% endif %};
+
+    /* Navigation */
+    --font-nav--family: {% if settings.nav_font == 'heading' %}var(--font-heading--family){% else %}var(--font-body--family){% endif %};
+    --font-nav--weight: {{ settings.nav_font_weight | default: '600' }};
+    --font-nav--size: {{ settings.nav_base_size | default: 18 }}px;
+    --font-nav--transform: {% if settings.nav_capitalize %}uppercase{% else %}none{% endif %};
+
+    /* Buttons */
+    --font-button--family: {% if settings.buttons_font == 'heading' %}var(--font-heading--family){% else %}var(--font-body--family){% endif %};
+    --font-button--weight: {{ settings.buttons_font_weight | default: '600' }};
+    --font-button--size: {{ settings.buttons_base_size | default: 16 }}px;
+    --font-button--transform: {% if settings.buttons_capitalize %}uppercase{% else %}none{% endif %};
+
+    /* Product Grid */
+    --font-product-grid--family: {% if settings.product_grid_font == 'heading' %}var(--font-heading--family){% else %}var(--font-body--family){% endif %};
+    --font-product-grid--weight: {{ settings.product_grid_font_weight | default: '600' }};
+    --font-product-grid--size: {{ settings.product_grid_base_size | default: 16 }}px;
+    --font-product-grid--transform: {% if settings.product_grid_capitalize %}uppercase{% else %}none{% endif %};
+
+    /* Layout */
+    --page-width: {{ settings.max_page_width | default: '90rem' }};
+    --page-margin: {{ settings.min_page_margin | default: 20 }}px;
+
+    /* ==========================================================================
+       Global Component Design Tokens
+       ========================================================================== */
+    /* Buttons */
+    --button-border-radius: {{ settings.button_border_radius | default: 0 }}px;
+    --button-letter-spacing: {{ settings.button_letter_spacing | default: 40 | divided_by: 1000.0 }}em;
+
+    /* Cards & Badges */
+    --card-border-radius: {{ settings.card_border_radius | default: 0 }}px;
+    --badge-border-radius: {{ settings.badge_border_radius | default: 20 }}px;
+    --badge-font-size: {{ settings.badge_font_size | default: 13 }}px;
+
+    /* Responsive Container Padding */
+    --container-padding-desktop: {{ settings.container_padding_desktop | default: 34 }}px;
+    --container-padding-tablet: {{ settings.container_padding_tablet | default: 28 }}px;
+    --container-padding-mobile: {{ settings.container_padding_mobile | default: 20 }}px;
+    --container-padding: var(--container-padding-desktop);
+
+    /* Slider & Controls */
+    --slider-nav-btn-size: {{ settings.slider_nav_btn_size | default: 48 }}px;
+    --slider-nav-icon-size: {{ settings.slider_nav_icon_size | default: 15 }}px;
 
     /* ==========================================================================
        Earth Theme Official Color Palette (from Theme Settings)
@@ -22,6 +87,11 @@
     --color-white: {{ settings.color_white | default: '#F8F9DC' }};
     --color-black: {{ settings.color_black | default: '#003225' }};
     --color-cactus: {{ settings.color_cactus | default: '#34601B' }};
+
+    /* Global Background & Foreground */
+    --color-background: var(--color-black);
+    --color-foreground: var(--color-white);
+    --color-text-main: var(--color-primary);
 
     /* Gray Scale */
     --color-gray-50: #EBF7BE;
@@ -34,7 +104,17 @@
     --color-gray-700: #6B7B10;
     --color-gray-800: #556113;
     --color-gray-900: #34601B;
+  }
 
-    --color-text-main: var(--color-primary);
+  /* Responsive Container Padding helper */
+  @media screen and (max-width: 1024px) {
+    :root {
+      --container-padding: var(--container-padding-tablet);
+    }
+  }
+  @media screen and (max-width: 768px) {
+    :root {
+      --container-padding: var(--container-padding-mobile);
+    }
   }
 {% endstyle %}
