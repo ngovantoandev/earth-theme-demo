@@ -14,17 +14,17 @@
       <p class="earth-sus__subtitle">
         {{ section.settings.subtitle | default: 'Every piece designed with purpose – discover the full impact story behind each garment' }}
       </p>
+    </div>
 
-      <!-- Category Filter Tabs -->
-      <div class="earth-sus__tabs-wrapper">
-        <nav class="earth-sus__tabs" aria-label="Product categories">
-          <button type="button" class="earth-sus__tab is-active" data-tab="all">All</button>
-          <button type="button" class="earth-sus__tab" data-tab="mens">Men's</button>
-          <button type="button" class="earth-sus__tab" data-tab="womens">Women's</button>
-          <button type="button" class="earth-sus__tab" data-tab="new-arrivals">New Arrivals</button>
-          <button type="button" class="earth-sus__tab" data-tab="sale">Sale</button>
-        </nav>
-      </div>
+    <!-- Category Filter Tabs -->
+    <div class="earth-sus__tabs-wrapper">
+      <nav class="earth-sus__tabs" aria-label="Product categories">
+        <button type="button" class="earth-sus__tab is-active" data-tab="all">All</button>
+        <button type="button" class="earth-sus__tab" data-tab="mens">Men's</button>
+        <button type="button" class="earth-sus__tab" data-tab="womens">Women's</button>
+        <button type="button" class="earth-sus__tab" data-tab="new-arrivals">New Arrivals</button>
+        <button type="button" class="earth-sus__tab" data-tab="sale">Sale</button>
+      </nav>
     </div>
 
     <!-- 2. Product Slider Track Area -->
@@ -125,6 +125,7 @@
      Sustainable Essentials Section & Product Card Styles
      ========================================================================== */
   .earth-sustainable-essentials {
+    grid-column: 1 / -1 !important;
     background-color: var(--color-white, #F8F9DC);
     padding: clamp(56px, 7vw, 96px) 0 clamp(64px, 8vw, 110px);
     width: 100%;
@@ -139,8 +140,8 @@
   /* 1. Header */
   .earth-sus__header {
     text-align: center;
-    padding: 0 24px;
-    margin-bottom: clamp(36px, 5vw, 52px);
+    padding: 0 34px;
+    margin-bottom: clamp(24px, 3vw, 36px);
   }
   .earth-sus__main-title {
     display: inline-flex;
@@ -167,7 +168,7 @@
     font-size: clamp(1rem, 1.4vw, 1.15rem);
     color: var(--color-black, #003225);
     max-width: 620px;
-    margin: 0 auto 32px;
+    margin: 0 auto;
     line-height: 1.45;
   }
 
@@ -178,6 +179,8 @@
   justify-content: center;
   position: relative;
   box-sizing: border-box;
+  padding: 0 34px;
+  margin-bottom: clamp(36px, 4.5vw, 52px);
 }
 
 .earth-sus__tabs {
@@ -219,19 +222,21 @@
 
   /* 2. Slider Track */
   .earth-sus__slider-wrapper {
-    margin-left: 34px;
     position: relative;
-    width: calc(100% - 34px);
+    width: 100%;
+    margin-top: 0;
   }
   .earth-sus__track {
     display: flex;
     align-items: stretch;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    scroll-padding-left: 34px;
+    scroll-padding-right: 34px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     gap: 20px;
-    padding: 0 34px 20px 0;
+    padding: 0 34px 20px 34px;
     box-sizing: border-box;
   }
   .earth-sus__track::-webkit-scrollbar {
@@ -581,6 +586,10 @@
     .earth-sustainable-essentials {
       padding: 44px 0 60px;
     }
+    .earth-sus__header {
+      padding: 0 20px !important;
+      margin-bottom: 24px !important;
+    }
     .earth-sus__leaf {
       display: none !important;
     }
@@ -589,46 +598,69 @@
     }
     .earth-sus__subtitle {
       font-size: 15px;
-      margin-bottom: 24px;
+      margin: 0 auto !important;
     }
     .earth-sus__tabs-wrapper {
-      width: 100%;
-      overflow-x: auto;
+      width: 100% !important;
+      overflow-x: auto !important;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
-      margin-bottom: 28px;
+      padding: 0 !important;
+      margin: 0 0 28px 0 !important;
+      display: block !important;
+      box-sizing: border-box !important;
     }
     .earth-sus__tabs-wrapper::-webkit-scrollbar {
       display: none;
     }
     .earth-sus__tabs {
-      display: flex;
-      min-width: 100%;
-      width: max-content;
-      justify-content: flex-start;
-      padding: 0;
-      margin: 0;
-      gap: 0;
-      position: relative;
+      display: flex !important;
+      min-width: 100% !important;
+      width: max-content !important;
+      justify-content: flex-start !important;
+      padding-left: 20px !important;
+      padding-right: 0 !important;
+      scroll-padding-left: 20px !important;
+      scroll-padding-right: 20px !important;
+      margin: 0 !important;
+      gap: 0 !important;
+      position: relative !important;
+      box-sizing: border-box !important;
+      border-bottom: none !important;
+    }
+    .earth-sus__tabs::before {
+      display: none !important;
     }
     .earth-sus__tabs::after {
-      content: '';
-      flex: 1;
-      min-width: 40px;
-      border-bottom: 1px solid var(--color-black, #003225);
+      content: '' !important;
+      display: block !important;
+      flex: 0 0 20px !important;
+      min-width: 20px !important;
+      width: 20px !important;
+      height: 1px;
+      margin: 0 !important;
+      border: none !important;
+      pointer-events: none;
     }
     .earth-sus__tab {
-      padding: 8px clamp(14px, 3.8vw, 22px) 12px;
-      flex-shrink: 0;
-      position: relative;
-      margin: 0;
-      box-sizing: border-box;
-      text-align: center;
-      border: none;
-      border-bottom: 1px solid var(--color-black, #003225);
-      background: transparent;
+      background: none !important;
+      border: none !important;
+      border-bottom: 1px solid var(--color-black, #003225) !important;
+      font-size: 18px !important;
+      font-weight: 700 !important;
+      color: var(--color-black, #003225) !important;
+      padding: 10px clamp(16px, 2.5vw, 32px) 14px !important;
+      cursor: pointer !important;
+      position: relative !important;
+      transition: color 0.2s ease, border-color 0.2s ease !important;
+      white-space: nowrap !important;
+      text-align: center !important;
+      box-sizing: border-box !important;
+      flex: 0 0 auto !important;
+      margin: 0 !important;
     }
     .earth-sus__tab.is-active {
+      font-weight: 700 !important;
       color: var(--color-secondary, #71CC3B) !important;
       border-bottom: 1px solid var(--color-secondary, #71CC3B) !important;
     }
@@ -661,7 +693,7 @@
       scroll-padding-right: 20px !important;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      padding: 0 20px 16px !important;
+      padding: 0 0 16px 20px !important;
       margin: 0 !important;
       gap: 16px !important;
     }
@@ -673,9 +705,11 @@
     }
     .earth-sus__track::after {
       content: '' !important;
-      flex: 0 0 1px !important;
-      min-width: 1px !important;
+      flex: 0 0 20px !important;
+      min-width: 20px !important;
+      width: 20px !important;
       height: 1px;
+      margin-left: -16px;
       display: block !important;
       pointer-events: none;
     }
@@ -728,10 +762,17 @@
 
       // Tab switcher filter simulation / interaction
       var tabs = document.querySelectorAll('#earthEssentials-{{ section.id }} .earth-sus__tab');
+      var tabsWrapper = document.querySelector('#earthEssentials-{{ section.id }} .earth-sus__tabs-wrapper');
       tabs.forEach(function(tab) {
         tab.addEventListener('click', function() {
           tabs.forEach(function(t) { t.classList.remove('is-active'); });
           tab.classList.add('is-active');
+          if (tabsWrapper && window.innerWidth <= 768) {
+            tabsWrapper.scrollTo({
+              left: Math.max(0, tab.offsetLeft - 20),
+              behavior: 'smooth'
+            });
+          }
         });
       });
     }

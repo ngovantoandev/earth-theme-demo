@@ -393,9 +393,12 @@
       -webkit-overflow-scrolling: touch !important;
       scrollbar-width: none !important;
       gap: 14px !important;
-      padding-left: 20px;
-      padding-right: 20px;
-      padding-bottom: 6px;
+      margin-left: -20px !important;
+      margin-right: -20px !important;
+      padding-left: 20px !important;
+      padding-right: 0 !important;
+      padding-bottom: 6px !important;
+      scroll-padding: 0 20px !important;
     }
     .earth-impact__grid-top::-webkit-scrollbar,
     .earth-impact__grid-bottom::-webkit-scrollbar {
@@ -410,6 +413,11 @@
       padding: 28px 18px 24px;
       scroll-snap-align: start;
       box-sizing: border-box;
+    }
+
+    .earth-impact__dark-card:last-child,
+    .earth-impact__outline-card:last-child {
+      margin-right: 20px !important;
     }
 
     .earth-impact__outline-card {

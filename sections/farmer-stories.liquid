@@ -14,24 +14,16 @@
           <p class="earth-farmers__subtitle">{{ section.settings.subtitle }}</p>
         {%- endif -%}
       </div>
-
-      <!-- Reusable Slider Navigation Arrows Snippet -->
-      <div class="earth-farmers__header-right">
-        {%- assign prev_id_str = 'earthFarmersPrev-' | append: section.id -%}
-        {%- assign next_id_str = 'earthFarmersNext-' | append: section.id -%}
-        {% render 'btn-nav-slider', 
-          prev_id: prev_id_str, 
-          next_id: next_id_str, 
-          theme: 'green',
-          prev_label: 'Previous artisan story',
-          next_label: 'Next artisan story'
-        %}
-      </div>
     </div>
   </div>
 
   <!-- 2. Full-Width Edge-to-Edge Slider Track (34px Padding & Gap) -->
   <div class="earth-farmers__slider-wrapper">
+    <!-- Left Floating Navigation Arrow (Appears on hover) -->
+    <button type="button" class="earth-farmers__nav-btn earth-farmers__nav-btn--prev" id="earthFarmersPrev-{{ section.id }}" aria-label="Previous artisan story">
+      <img src="{{ 'prev-left.svg' | asset_url }}" width="15" height="15" alt="" class="earth-farmers__icon-arrow earth-farmers__icon-arrow--prev">
+    </button>
+
     <div class="earth-farmers__track" id="earthFarmersTrack-{{ section.id }}" tabindex="0" role="region" aria-label="Artisan Stories Slider">
       
       {%- if section.blocks.size > 0 -%}
@@ -220,6 +212,11 @@
       {%- endif -%}
 
     </div>
+
+    <!-- Right Floating Navigation Arrow (Appears on hover) -->
+    <button type="button" class="earth-farmers__nav-btn earth-farmers__nav-btn--next" id="earthFarmersNext-{{ section.id }}" aria-label="Next artisan story">
+      <img src="{{ 'next-right.svg' | asset_url }}" width="15" height="15" alt="" class="earth-farmers__icon-arrow earth-farmers__icon-arrow--next">
+    </button>
   </div>
 </section>
 
@@ -286,6 +283,65 @@
     position: relative;
     width: 100%;
     margin-top: clamp(36px, 4.5vw, 52px);
+  }
+
+  /* Floating Navigation Arrows (Visible on hover of slider wrapper) */
+  .earth-farmers__nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--color-white, #F8F9DC);
+    border: 1.5px solid var(--color-white, #F8F9DC);
+    color: var(--color-black, #003225);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 50, 37, 0.16);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s ease, background-color 0.25s ease, border-color 0.25s ease;
+  }
+  .earth-farmers__slider-wrapper:hover .earth-farmers__nav-btn {
+    opacity: 1;
+    visibility: visible;
+  }
+  .earth-farmers__nav-btn:hover {
+    background-color: var(--color-secondary, #71CC3B);
+    border-color: var(--color-secondary, #71CC3B);
+    transform: translateY(-50%) scale(1.06);
+  }
+  .earth-farmers__nav-btn--prev {
+    left: clamp(16px, 2.5vw, 36px);
+  }
+  .earth-farmers__nav-btn--next {
+    right: clamp(16px, 2.5vw, 36px);
+  }
+
+  /* Smooth Icon Rotation on Hover */
+  .earth-farmers__icon-arrow {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .earth-farmers__icon-arrow--next {
+    transform: rotate(0deg);
+  }
+  .earth-farmers__nav-btn--next:hover .earth-farmers__icon-arrow--next {
+    transform: rotate(45deg);
+  }
+  .earth-farmers__icon-arrow--prev {
+    transform: rotate(0deg);
+  }
+  .earth-farmers__nav-btn--prev:hover .earth-farmers__icon-arrow--prev {
+    transform: rotate(-45deg);
   }
 
   .earth-farmers__track {
@@ -433,17 +489,42 @@
     }
     .earth-farmers__slider-wrapper {
       margin-top: 24px;
+      width: 100% !important;
+      overflow: visible;
+    }
+    .earth-farmers__nav-btn {
+      display: none;
     }
     .earth-farmers__track {
-      padding-left: 20px;
-      padding-right: 20px;
-      scroll-padding-left: 20px;
-      scroll-padding-right: 20px;
-      gap: 20px;
+      display: flex !important;
+      overflow-x: auto !important;
+      scroll-snap-type: x mandatory !important;
+      scroll-padding-left: 20px !important;
+      scroll-padding-right: 20px !important;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 0 0 10px 20px !important;
+      margin: 0 !important;
+      gap: 16px !important;
+    }
+    .earth-farmers__track::-webkit-scrollbar {
+      display: none !important;
     }
     .earth-farmers__slide {
-      flex: 0 0 85%;
-      min-width: 270px;
+      flex: 0 0 85% !important;
+      min-width: 270px !important;
+      scroll-snap-align: start !important;
+      margin: 0 !important;
+    }
+    .earth-farmers__track::after {
+      content: '' !important;
+      flex: 0 0 20px !important;
+      min-width: 20px !important;
+      width: 20px !important;
+      height: 1px;
+      margin-left: -16px;
+      display: block !important;
+      pointer-events: none;
     }
     .earth-farmers__quote {
       font-size: 16px;

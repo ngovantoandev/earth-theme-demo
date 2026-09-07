@@ -168,15 +168,15 @@
                 <!-- Bottom Info Box: Did You Know? -->
                 {%- if block.settings.info_text != blank -%}
                   <div class="knowledge-thread__info-box">
-                    <div class="knowledge-thread__info-icon-wrap" aria-hidden="true">
-                      <img src="{{ 'info.svg' | asset_url }}" width="20" height="20" alt="" loading="lazy">
-                    </div>
-                    <div class="knowledge-thread__info-content">
+                    <div class="knowledge-thread__info-header">
+                      <span class="knowledge-thread__info-icon-wrap" aria-hidden="true">
+                        <img src="{{ 'info.svg' | asset_url }}" width="24" height="24" alt="" loading="lazy">
+                      </span>
                       {%- if block.settings.info_title != blank -%}
                         <h5 class="knowledge-thread__info-title">{{ block.settings.info_title }}</h5>
                       {%- endif -%}
-                      <p class="knowledge-thread__info-text">{{ block.settings.info_text }}</p>
                     </div>
+                    <p class="knowledge-thread__info-text">{{ block.settings.info_text }}</p>
                   </div>
                 {%- endif -%}
 
@@ -311,7 +311,7 @@
     width: 100%;
     display: block;
     padding: clamp(20px, 2.5vw, 28px) clamp(20px, 2.5vw, 32px);
-    background: transparent;
+    background: var(--color-cactus, #34601B);
     border: none;
     cursor: pointer;
     text-align: left;
@@ -402,6 +402,7 @@
   .knowledge-thread__content {
     padding: 0 clamp(18px, 2.5vw, 32px) clamp(22px, 2.8vw, 32px);
     box-sizing: border-box;
+    background: var(--color-cactus, #34601B);
   }
 
   .knowledge-thread__content-inner {
@@ -453,7 +454,7 @@
   }
 
   .knowledge-thread__compare-heading {
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -496,51 +497,51 @@
 
   /* Bottom Info Box (Did You Know?) */
   .knowledge-thread__info-box {
-    background-color: var(--color-primary, #224E09);
-    border: 1px solid var(--color-secondary, #71CC3B);
-    padding: 20px 24px;
+    background-color: var(--color-primary, #00281E);
+    border-left: 4px solid var(--color-secondary, #71CC3B);
+    padding: clamp(20px, 2.5vw, 26px) clamp(20px, 2.5vw, 28px);
     display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    border-radius: 2px;
+    flex-direction: column;
+    gap: 12px;
+    border-radius: 0;
     box-sizing: border-box;
   }
 
+  .knowledge-thread__info-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   .knowledge-thread__info-icon-wrap {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    margin-top: 2px;
   }
 
   .knowledge-thread__info-icon-wrap img {
-    width: 100%;
-    height: 100%;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
   }
 
-  .knowledge-thread__info-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
   .knowledge-thread__info-title {
-    font-size: 15.5px;
-    font-weight: 800;
+    font-size: clamp(17px, 1.4vw, 19px);
+    font-weight: 700;
     color: var(--kt-text, #F8F9DC);
     margin: 0;
-    line-height: 1.25;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   }
 
   .knowledge-thread__info-text {
-    font-size: clamp(13.5px, 1.05vw, 14.5px);
-    line-height: 1.5;
+    font-size: clamp(14.5px, 1.15vw, 16px);
+    line-height: 1.55;
     color: var(--kt-text, #F8F9DC);
-    opacity: 0.9;
+    opacity: 0.95;
     margin: 0;
   }
 

@@ -15,8 +15,6 @@
     "color_accent": "#EAE060",
     "color_white": "#F8F9DC",
     "color_black": "#003225",
-    "background_color": "#003225",
-    "foreground_color": "#F8F9DC",
     "content_for_index": []
   }
 }

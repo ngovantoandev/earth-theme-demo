@@ -435,6 +435,65 @@
         "bg_color": "#224E09",
         "text_color": "#F8F9DC"
       }
+    },
+    "transparency_spotlight": {
+      "type": "transparency-spotlight",
+      "blocks": {
+        "m_1": {
+          "type": "metric",
+          "settings": {
+            "value": "94%",
+            "label": "Traceable Origin"
+          }
+        },
+        "m_2": {
+          "type": "metric",
+          "settings": {
+            "value": "0%",
+            "label": "Plastic Packaging"
+          }
+        },
+        "m_3": {
+          "type": "metric",
+          "settings": {
+            "value": "100+",
+            "label": "Fair Wage Artisans"
+          }
+        },
+        "m_4": {
+          "type": "metric",
+          "settings": {
+            "value": "B-Corp",
+            "label": "Pending Status"
+          }
+        }
+      },
+      "block_order": [
+        "m_1",
+        "m_2",
+        "m_3",
+        "m_4"
+      ],
+      "settings": {
+        "eyebrow": "Our Commitment",
+        "title": "Transparency Spotlight",
+        "subtitle": "We believe you deserve to know where your clothes come from—materials, people, and areas we're improving.",
+        "bg_color": "#F8F9DC",
+        "text_color": "#003225",
+        "card1_title": "Material Sourcing",
+        "card1_tagline": "\"Organic & Recycled\"",
+        "card1_desc": "We prioritize regenerative fibers that restore soil health and recycled synthetics that divert waste from our oceans. Every thread has a purpose.",
+        "card1_badge1_text": "GOTS Certified",
+        "card1_badge2_text": "Fair Trade",
+        "card1_btn_text": "LEARN OUR MATERIALS",
+        "card2_title": "Supply Chain",
+        "card2_desc": "Ethical Manufacturing: Seen from within our atelier.",
+        "card2_btn_text": "VIEW OUR PRODUCTION",
+        "banner_eyebrow": "The Unfiltered Truth",
+        "banner_title": "Real Growth, Real Challenges",
+        "banner_quote": "\"True sustainability is hard. We aren't 100% there yet, but we refuse to hide our hurdles. From logistics carbon footprints to dye-house water usage, we are iterating every day.\"",
+        "banner_btn_text": "HONESTY COMMITMENT"
+      }
     }
   },
   "order": [
@@ -448,6 +507,7 @@
     "farmer_stories",
     "measurable_impact",
     "sustainability_journey",
-    "knowledge_first_thread"
+    "knowledge_first_thread",
+    "transparency_spotlight"
   ]
 }

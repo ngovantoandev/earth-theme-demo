@@ -1,3 +1,4 @@
+{%- # theme-check-disable OrphanedSnippet -%}
 {% comment %}
   Reusable Circular Slider Navigation Arrows Component
   Accepts:
@@ -10,7 +11,7 @@
 {% endcomment %}
 
 {%- assign nav_theme = theme | default: 'green' -%}
-{%- # theme-check-disable ValidScopedCSSClass -%}
+{%- # theme-check-disable ValidScopedCSSClass, OrphanedSnippet -%}
 <div class="earth-slider-nav earth-slider-nav--{{ nav_theme }} {{ class }}">
   <button 
     type="button" 

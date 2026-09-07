@@ -21,6 +21,7 @@
     --color-accent: {{ settings.color_accent | default: '#EAE060' }};
     --color-white: {{ settings.color_white | default: '#F8F9DC' }};
     --color-black: {{ settings.color_black | default: '#003225' }};
+    --color-cactus: {{ settings.color_cactus | default: '#34601B' }};
 
     /* Gray Scale */
     --color-gray-50: #EBF7BE;
@@ -34,9 +35,6 @@
     --color-gray-800: #556113;
     --color-gray-900: #34601B;
 
-    /* Semantic Defaults */
-    --color-background: {{ settings.background_color | default: settings.color_black | default: '#003225' }};
-    --color-foreground: {{ settings.foreground_color | default: settings.color_white | default: '#F8F9DC' }};
     --color-text-main: var(--color-primary);
   }
 {% endstyle %}

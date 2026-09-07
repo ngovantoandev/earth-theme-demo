@@ -1,7 +1,6 @@
 <section class="earth-values earth-values-{{ section.id }} full-width" id="earthValuesSection-{{ section.id }}">
-  <div class="earth-values__container">
-    
-    <!-- 1. Section Header -->
+  <!-- 1. Section Header -->
+  <div class="earth-values__header-container">
     <div class="earth-values__header">
       <h2 class="earth-values__title">
         <svg class="earth-values__leaf-icon earth-values__leaf-icon--left" width="32" height="29" viewBox="0 0 41 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -18,10 +17,15 @@
         <p class="earth-values__subtitle">{{ section.settings.subtitle }}</p>
       {%- endif -%}
     </div>
+  </div>
 
-    <!-- 2. Slider Showcase Area -->
+  <!-- 2. Slider Showcase Area -->
     <div class="earth-values__slider-wrapper" id="earthValuesSliderWrapper-{{ section.id }}">
-      
+      <!-- Left Floating Navigation Arrow (Appears on hover) -->
+      <button type="button" class="earth-values__nav-btn earth-values__nav-btn--prev" id="earthValuesPrev-{{ section.id }}" aria-label="Previous value">
+        <img src="{{ 'prev-left.svg' | asset_url }}" width="15" height="15" alt="" class="earth-values__icon-arrow earth-values__icon-arrow--prev">
+      </button>
+
       <!-- Horizontal Slider Track -->
       <div class="earth-values__track" id="earthValuesTrack-{{ section.id }}">
         {%- if section.blocks.size > 0 -%}
@@ -193,15 +197,10 @@
         {%- endif -%}
       </div>
 
-      <!-- Navigation Controls (Positioned at bottom-right corner) -->
-      <div class="earth-values__nav-controls">
-        <button type="button" class="earth-values__nav-btn earth-values__nav-btn--prev" id="earthValuesPrev-{{ section.id }}" aria-label="Previous value">
-          <img src="{{ 'prev-left.svg' | asset_url }}" width="15" height="15" alt="" class="earth-values__icon-arrow earth-values__icon-arrow--prev">
-        </button>
-        <button type="button" class="earth-values__nav-btn earth-values__nav-btn--next" id="earthValuesNext-{{ section.id }}" aria-label="Next value">
-          <img src="{{ 'next-right.svg' | asset_url }}" width="15" height="15" alt="" class="earth-values__icon-arrow earth-values__icon-arrow--next">
-        </button>
-      </div>
+      <!-- Right Floating Navigation Arrow (Appears on hover) -->
+      <button type="button" class="earth-values__nav-btn earth-values__nav-btn--next" id="earthValuesNext-{{ section.id }}" aria-label="Next value">
+        <img src="{{ 'next-right.svg' | asset_url }}" width="15" height="15" alt="" class="earth-values__icon-arrow earth-values__icon-arrow--next">
+      </button>
 
     </div>
 
@@ -246,9 +245,7 @@
         {%- endif -%}
       </div>
     </div>
-
-  </div>
-</section>
+  </section>
 
 <style>
   .earth-values-{{ section.id }} {
@@ -268,9 +265,10 @@
     overflow: hidden;
   }
 
-  .earth-values-{{ section.id }} .earth-values__container {
-    width: min(1380px, calc(100% - clamp(32px, 5vw, 80px)));
-    margin: 0 auto;
+  .earth-values-{{ section.id }} .earth-values__header-container {
+    width: 100%;
+    padding: 0 34px;
+    box-sizing: border-box;
   }
 
   /* 1. Header */
@@ -320,10 +318,12 @@
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
+    scroll-padding-left: 34px;
+    scroll-padding-right: 34px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     gap: clamp(20px, 3vw, 32px);
-    padding: 10px 0;
+    padding: 10px 34px;
     box-sizing: border-box;
   }
   .earth-values-{{ section.id }} .earth-values__track::-webkit-scrollbar {
@@ -471,36 +471,41 @@
     height: 10px;
   }
 
-  /* 3. Corner Navigation Controls (Matching Screenshot at Bottom-Right) */
-  .earth-values-{{ section.id }} .earth-values__nav-controls {
-    position: absolute;
-    bottom: clamp(16px, 2.5vw, 28px);
-    right: clamp(16px, 2.5vw, 28px);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  /* 3. Floating Navigation Arrows (Visible on hover of slider wrapper) */
   .earth-values-{{ section.id }} .earth-values__nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background-color: var(--values-card-bg);
-    border: 1.5px solid var(--values-card-bg);
-    color: var(--values-card-text);
+    background-color: var(--color-white, #F8F9DC);
+    border: 1.5px solid var(--color-white, #F8F9DC);
+    color: var(--color-black, #003225);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 4px 16px rgba(0, 50, 37, 0.16);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s ease, background-color 0.25s ease, border-color 0.25s ease;
+  }
+  .earth-values-{{ section.id }} .earth-values__slider-wrapper:hover .earth-values__nav-btn {
     opacity: 1;
     visibility: visible;
-    transition: transform 0.2s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   }
   .earth-values-{{ section.id }} .earth-values__nav-btn:hover {
     background-color: var(--color-secondary, #71CC3B);
     border-color: var(--color-secondary, #71CC3B);
-    transform: scale(1.08);
+    transform: translateY(-50%) scale(1.06);
+  }
+  .earth-values-{{ section.id }} .earth-values__nav-btn--prev {
+    left: clamp(16px, 2.5vw, 36px);
+  }
+  .earth-values-{{ section.id }} .earth-values__nav-btn--next {
+    right: clamp(16px, 2.5vw, 36px);
   }
 
   .earth-values-{{ section.id }} .earth-values__icon-arrow {
@@ -527,7 +532,8 @@
   /* 4. Bottom Values Navigation Tabs */
   .earth-values-{{ section.id }} .earth-values__tabs-wrapper {
     width: 100%;
-    padding-top: 12px;
+    padding: 12px 34px 0;
+    box-sizing: border-box;
   }
   .earth-values-{{ section.id }} .earth-values__tabs {
     display: flex;
@@ -585,17 +591,33 @@
     .earth-values-{{ section.id }} .earth-values__slide {
       flex: 0 0 92%;
     }
-    .earth-values-{{ section.id }} .earth-values__tabs {
-      overflow-x: auto;
-      scrollbar-width: none;
-      justify-content: flex-start;
-      gap: 28px;
+    .earth-values-{{ section.id }} .earth-values__tabs-wrapper {
+      width: 100% !important;
+      padding: 12px 0 0 !important;
+      overflow-x: auto !important;
+      scrollbar-width: none !important;
+      -webkit-overflow-scrolling: touch;
+      display: block !important;
+      box-sizing: border-box !important;
     }
-    .earth-values-{{ section.id }} .earth-values__tabs::-webkit-scrollbar {
-      display: none;
+    .earth-values-{{ section.id }} .earth-values__tabs-wrapper::-webkit-scrollbar {
+      display: none !important;
+    }
+    .earth-values-{{ section.id }} .earth-values__tabs {
+      display: flex !important;
+      width: max-content !important;
+      min-width: 100% !important;
+      justify-content: flex-start !important;
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+      scroll-padding-left: 20px !important;
+      scroll-padding-right: 20px !important;
+      gap: 28px !important;
+      overflow: visible !important;
+      box-sizing: border-box !important;
     }
     .earth-values-{{ section.id }} .earth-values__tab {
-      flex: 0 0 auto;
+      flex: 0 0 auto !important;
     }
   }
 
@@ -603,11 +625,44 @@
     .earth-values-{{ section.id }} {
       padding: 50px 0 60px;
     }
-    .earth-values-{{ section.id }} .earth-values__container {
-      width: calc(100% - 32px);
+    .earth-values-{{ section.id }} .earth-values__header-container {
+      padding: 0 20px !important;
+    }
+    .earth-values-{{ section.id }} .earth-values__slider-wrapper {
+      margin-bottom: 28px !important;
+      width: 100% !important;
+      overflow: visible;
+    }
+    .earth-values-{{ section.id }} .earth-values__track {
+      display: flex !important;
+      overflow-x: auto !important;
+      scroll-snap-type: x mandatory !important;
+      scroll-padding-left: 20px !important;
+      scroll-padding-right: 20px !important;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 10px 0 10px 20px !important;
+      margin: 0 !important;
+      gap: 16px !important;
+    }
+    .earth-values-{{ section.id }} .earth-values__track::-webkit-scrollbar {
+      display: none !important;
     }
     .earth-values-{{ section.id }} .earth-values__slide {
-      flex: 0 0 100%;
+      flex: 0 0 86% !important;
+      min-width: 280px !important;
+      scroll-snap-align: start !important;
+      margin: 0 !important;
+    }
+    .earth-values-{{ section.id }} .earth-values__track::after {
+      content: '' !important;
+      flex: 0 0 20px !important;
+      min-width: 20px !important;
+      width: 20px !important;
+      height: 1px;
+      margin-left: -16px;
+      display: block !important;
+      pointer-events: none;
     }
     .earth-values-{{ section.id }} .earth-values__card {
       grid-template-columns: 1fr;
@@ -617,6 +672,46 @@
     }
     .earth-values-{{ section.id }} .earth-values__nav-btn {
       display: none;
+    }
+    .earth-values-{{ section.id }} .earth-values__tabs-wrapper {
+      width: 100% !important;
+      padding: 12px 0 0 !important;
+      overflow-x: auto !important;
+      scrollbar-width: none !important;
+      -webkit-overflow-scrolling: touch;
+      display: block !important;
+      box-sizing: border-box !important;
+    }
+    .earth-values-{{ section.id }} .earth-values__tabs-wrapper::-webkit-scrollbar {
+      display: none !important;
+    }
+    .earth-values-{{ section.id }} .earth-values__tabs {
+      display: flex !important;
+      width: max-content !important;
+      min-width: 100% !important;
+      justify-content: flex-start !important;
+      padding-left: 20px !important;
+      padding-right: 0 !important;
+      scroll-padding-left: 20px !important;
+      scroll-padding-right: 20px !important;
+      gap: 20px !important;
+      overflow: visible !important;
+      box-sizing: border-box !important;
+    }
+    .earth-values-{{ section.id }} .earth-values__tabs::before {
+      display: none !important;
+    }
+    .earth-values-{{ section.id }} .earth-values__tabs::after {
+      content: '' !important;
+      flex: 0 0 20px !important;
+      min-width: 20px !important;
+      width: 20px !important;
+      height: 1px;
+      display: block !important;
+      pointer-events: none;
+    }
+    .earth-values-{{ section.id }} .earth-values__tab {
+      flex: 0 0 auto !important;
     }
     .earth-values-{{ section.id }} .earth-values__tab-text {
       font-size: 16px;
@@ -646,6 +741,14 @@
             tab.classList.add('earth-values__tab--active');
             tab.classList.add('is-active');
             tab.setAttribute('aria-selected', 'true');
+            var tabsWrapper = tabsContainer.closest('.earth-values__tabs-wrapper');
+            if (tabsWrapper && window.innerWidth <= 1024) {
+              var tabLeft = tab.offsetLeft;
+              tabsWrapper.scrollTo({
+                left: Math.max(0, tabLeft - 20),
+                behavior: 'smooth'
+              });
+            }
           } else {
             tab.classList.remove('earth-values__tab--active');
             tab.classList.remove('is-active');
@@ -660,7 +763,7 @@
         var targetSlide = slides[index];
         if (targetSlide) {
           track.scrollTo({
-            left: targetSlide.offsetLeft - track.offsetLeft,
+            left: targetSlide.offsetLeft - (window.innerWidth <= 768 ? 20 : track.offsetLeft),
             behavior: 'smooth'
           });
           updateActiveTab(index);

@@ -1,0 +1,1018 @@
+{% comment %}
+  Transparency Spotlight Section
+  Matching exact design with Header (Title + Leaf + Subtitle),
+  Top 2-Column Cards (Material Sourcing with GOTS & Fair Trade Badges + Supply Chain with Atelier Image),
+  Middle Forest Green Banner (Real Growth, Real Challenges + Honesty Commitment Action Button),
+  and Bottom 4-Column Metrics Row.
+  Fully responsive on Desktop, Tablet, and Mobile with Full-Width Layout.
+{% endcomment %}
+
+<section 
+  class="earth-transparency full-width" 
+  id="earthTransparency-{{ section.id }}"
+  style="--transparency-bg: {{ section.settings.bg_color | default: '#F8F9DC' }}; --transparency-text: {{ section.settings.text_color | default: '#003225' }};"
+>
+  <div class="earth-transparency__container">
+
+    <!-- 1. Header (Left: Eyebrow + Title with Leaf, Right: Description) -->
+    <div class="earth-transparency__header">
+      <div class="earth-transparency__header-left">
+        {%- if section.settings.eyebrow != blank -%}
+          <div class="earth-transparency__eyebrow">
+            <svg class="earth-transparency__sparkle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="#C29D38"/>
+              <path d="M19 17L20.2 20.8L24 22L20.2 23.2L19 27L17.8 23.2L14 22L17.8 20.8L19 17Z" fill="#C29D38" transform="scale(0.6) translate(10, -8)"/>
+            </svg>
+            <span>{{ section.settings.eyebrow }}</span>
+          </div>
+        {%- endif -%}
+
+        <h2 class="earth-transparency__title">
+          <span class="earth-transparency__title-icon" aria-hidden="true">
+            <img src="{{ 'leaf-2.svg' | asset_url }}" width="36" height="36" alt="" loading="lazy">
+          </span>
+          <span>{{ section.settings.title | default: 'Transparency Spotlight' }}</span>
+        </h2>
+      </div>
+
+      {%- if section.settings.subtitle != blank -%}
+        <div class="earth-transparency__header-right">
+          <p class="earth-transparency__subtitle">{{ section.settings.subtitle }}</p>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- 2. Feature Cards Grid (2 Columns) -->
+    <div class="earth-transparency__cards-grid">
+      
+      <!-- Card 1: Material Sourcing (Yellow Accent Card) -->
+      <div class="earth-transparency__card earth-transparency__card--materials">
+        <!-- Decorative Watermark Leaf -->
+        <div class="earth-transparency__watermark" aria-hidden="true">
+          <img src="{{ 'leaf-2.svg' | asset_url }}" width="240" height="240" alt="" loading="lazy">
+        </div>
+
+        <div class="earth-transparency__card-top">
+          <!-- Heading with Leaf Icon -->
+          <div class="earth-transparency__card-header">
+            <span class="earth-transparency__card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#003225" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+              </svg>
+            </span>
+            <h3 class="earth-transparency__card-title">{{ section.settings.card1_title | default: 'Material Sourcing' }}</h3>
+          </div>
+
+          {%- if section.settings.card1_tagline != blank -%}
+            <p class="earth-transparency__card-tagline">{{ section.settings.card1_tagline }}</p>
+          {%- endif -%}
+
+          {%- if section.settings.card1_desc != blank -%}
+            <p class="earth-transparency__card-desc">{{ section.settings.card1_desc }}</p>
+          {%- endif -%}
+
+          <!-- Certification Badges -->
+          <div class="earth-transparency__badges-group">
+            <div class="earth-transparency__badge">
+              <img src="{{ 'GOTS Certified.svg' | asset_url }}" width="17" height="16" alt="GOTS Certified" loading="lazy" class="earth-transparency__badge-icon">
+              <span>{{ section.settings.card1_badge1_text | default: 'GOTS Certified' }}</span>
+            </div>
+            <div class="earth-transparency__badge">
+              <img src="{{ 'Fair-Trade.svg' | asset_url }}" width="16" height="14" alt="Fair Trade" loading="lazy" class="earth-transparency__badge-icon">
+              <span>{{ section.settings.card1_badge2_text | default: 'Fair Trade' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="earth-transparency__card-action">
+          {%- assign card1_btn_label = section.settings.card1_btn_text | default: 'LEARN OUR MATERIALS' -%}
+          {% render 'btn-arrow', text: card1_btn_label, url: section.settings.card1_btn_url, theme: 'dark' %}
+        </div>
+      </div>
+
+      <!-- Card 2: Supply Chain (Atelier Image Card) -->
+      <div class="earth-transparency__card earth-transparency__card--supply">
+        <div class="earth-transparency__card-media">
+          {%- if section.settings.card2_image != blank -%}
+            <img 
+              src="{{ section.settings.card2_image | image_url: width: 900 }}" 
+              alt="{{ section.settings.card2_title | default: 'Supply Chain Atelier' }}"
+              class="earth-transparency__bg-img"
+              width="900"
+              height="600"
+              loading="lazy"
+            >
+          {%- else -%}
+            <img 
+              src="{{ 'atelier-workshop.jpg' | asset_url }}" 
+              alt="Supply Chain Atelier"
+              class="earth-transparency__bg-img"
+              width="900"
+              height="600"
+              loading="lazy"
+            >
+          {%- endif -%}
+          <div class="earth-transparency__card-overlay" aria-hidden="true"></div>
+        </div>
+
+        <div class="earth-transparency__card-content">
+          <h3 class="earth-transparency__supply-title">{{ section.settings.card2_title | default: 'Supply Chain' }}</h3>
+          {%- if section.settings.card2_desc != blank -%}
+            <p class="earth-transparency__supply-desc">{{ section.settings.card2_desc }}</p>
+          {%- endif -%}
+          
+          <div class="earth-transparency__card-action">
+            {%- assign card2_btn_label = section.settings.card2_btn_text | default: 'VIEW OUR PRODUCTION' -%}
+            {% render 'btn-arrow', text: card2_btn_label, url: section.settings.card2_btn_url, theme: 'light' %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3. Middle Forest Green Banner: Real Growth, Real Challenges -->
+    <div class="earth-transparency__banner">
+      <div class="earth-transparency__banner-left">
+        {%- if section.settings.banner_eyebrow != blank -%}
+          <div class="earth-transparency__banner-eyebrow">
+            <svg class="earth-transparency__sparkle-icon-gold" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="#EAE060"/>
+              <path d="M19 17L20.2 20.8L24 22L20.2 23.2L19 27L17.8 23.2L14 22L17.8 20.8L19 17Z" fill="#EAE060" transform="scale(0.6) translate(10, -8)"/>
+            </svg>
+            <span>{{ section.settings.banner_eyebrow }}</span>
+          </div>
+        {%- endif -%}
+
+        <h3 class="earth-transparency__banner-title">
+          {{ section.settings.banner_title | default: 'Real Growth, Real Challenges' }}
+        </h3>
+      </div>
+
+      <div class="earth-transparency__banner-right">
+        {%- if section.settings.banner_quote != blank -%}
+          <p class="earth-transparency__banner-quote">{{ section.settings.banner_quote }}</p>
+        {%- endif -%}
+
+        <div class="earth-transparency__banner-action">
+          {%- assign banner_btn_label = section.settings.banner_btn_text | default: 'HONESTY COMMITMENT' -%}
+          {% render 'btn-action', text: banner_btn_label, url: section.settings.banner_btn_url, variant: 'light' %}
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Bottom Metrics Row -->
+    <div class="earth-transparency__metrics-row">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          <div class="earth-transparency__metric-item" {{ block.shopify_attributes }}>
+            <span class="earth-transparency__metric-val">{{ block.settings.value }}</span>
+            <span class="earth-transparency__metric-label">{{ block.settings.label }}</span>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="earth-transparency__metric-item">
+          <span class="earth-transparency__metric-val">94%</span>
+          <span class="earth-transparency__metric-label">Traceable Origin</span>
+        </div>
+        <div class="earth-transparency__metric-item">
+          <span class="earth-transparency__metric-val">0%</span>
+          <span class="earth-transparency__metric-label">Plastic Packaging</span>
+        </div>
+        <div class="earth-transparency__metric-item">
+          <span class="earth-transparency__metric-val">100+</span>
+          <span class="earth-transparency__metric-label">Fair Wage Artisans</span>
+        </div>
+        <div class="earth-transparency__metric-item">
+          <span class="earth-transparency__metric-val">B-Corp</span>
+          <span class="earth-transparency__metric-label">Pending Status</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .earth-transparency {
+    grid-column: 1 / -1 !important;
+    width: 100%;
+    background-color: var(--transparency-bg, #F8F9DC);
+    color: var(--transparency-text, #003225);
+    padding: clamp(60px, 6.5vw, 96px) 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .earth-transparency__container {
+    width: 100%;
+    padding: 0 34px;
+    box-sizing: border-box;
+  }
+
+  /* 1. Header */
+  .earth-transparency__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: clamp(24px, 4vw, 64px);
+    margin-bottom: clamp(36px, 4vw, 48px);
+  }
+
+  .earth-transparency__header-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .earth-transparency__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #224E09;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .earth-transparency__sparkle-icon {
+    flex-shrink: 0;
+  }
+
+  .earth-transparency__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: clamp(28px, 3.2vw, 44px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--transparency-text, #003225);
+    margin: 0;
+  }
+
+  .earth-transparency__title-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .earth-transparency__title-icon img {
+    width: clamp(28px, 2.5vw, 36px);
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  .earth-transparency__header-right {
+    flex: 0 0 clamp(320px, 35%, 480px);
+    max-width: 480px;
+  }
+
+  .earth-transparency__subtitle {
+    font-size: 21px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--transparency-text, #003225);
+    margin: 0;
+    opacity: 0.95;
+  }
+
+  /* 2. Feature Cards Grid (2 Columns) */
+  .earth-transparency__cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(20px, 2.5vw, 32px);
+    margin-bottom: clamp(24px, 3vw, 40px);
+  }
+
+  .earth-transparency__card {
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    min-height: 440px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* Material Sourcing Card (Yellow) */
+  .earth-transparency__card--materials {
+    background-color: var(--color-accent, #EAE060);
+    color: #003225;
+    padding: clamp(32px, 3.5vw, 44px);
+  }
+
+  .earth-transparency__watermark {
+    position: absolute;
+    right: 24px;
+    bottom: 15px;
+    width: 213px;
+    height: 195px;
+    opacity: 0.22;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+  }
+
+  .earth-transparency__watermark img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .earth-transparency__card-top {
+    position: relative;
+    z-index: 2;
+  }
+
+  .earth-transparency__card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .earth-transparency__card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .earth-transparency__card-title {
+    font-size: clamp(24px, 2.2vw, 32px);
+    font-weight: 800;
+    color: #003225;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+
+  .earth-transparency__card-tagline {
+    font-size: 17px;
+    font-weight: 700;
+    color: #003225;
+    margin: 0 0 16px 0;
+  }
+
+  .earth-transparency__card-desc {
+    font-size: clamp(14.5px, 1.05vw, 16px);
+    line-height: 1.55;
+    color: #003225;
+    margin: 0 0 24px 0;
+    max-width: 460px;
+    opacity: 0.95;
+  }
+
+  .earth-transparency__badges-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .earth-transparency__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #003225;
+    color: var(--color-accent, #EAE060);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 7px 15px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .earth-transparency__badge-icon {
+    object-fit: contain;
+    display: block;
+  }
+
+  .earth-transparency__card-action {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    display: flex;
+  }
+
+  /* Supply Chain Card (Image Background) */
+  .earth-transparency__card--supply {
+    padding: clamp(32px, 3.5vw, 44px);
+    color: var(--color-white, #F8F9DC);
+    justify-content: flex-end;
+  }
+
+  .earth-transparency__card-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .earth-transparency__bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .earth-transparency__card--supply:hover .earth-transparency__bg-img {
+    transform: scale(1.04);
+  }
+
+  .earth-transparency__card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 30, 20, 0.15) 0%, rgba(0, 35, 23, 0.85) 100%);
+    z-index: 2;
+  }
+
+  .earth-transparency__card-content {
+    position: relative;
+    z-index: 3;
+    margin-top: auto;
+  }
+
+  .earth-transparency__supply-title {
+    font-size: clamp(24px, 2.2vw, 32px);
+    font-weight: 800;
+    color: var(--color-white, #F8F9DC);
+    letter-spacing: -0.015em;
+    margin: 0 0 10px 0;
+  }
+
+  .earth-transparency__supply-desc {
+    font-size: clamp(14.5px, 1.05vw, 16px);
+    line-height: 1.5;
+    color: var(--color-white, #F8F9DC);
+    opacity: 0.92;
+    margin: 0 0 28px 0;
+    max-width: 440px;
+  }
+
+  /* Reusable Arrow Button Styles in Section */
+  .earth-transparency .earth-btn-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 4px;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+  }
+
+  .earth-transparency .earth-btn-arrow:hover {
+    opacity: 0.85;
+  }
+
+  .earth-transparency .earth-btn-arrow__text {
+    line-height: 1;
+  }
+
+  .earth-transparency .earth-btn-arrow__icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .earth-transparency .earth-btn-arrow:hover .earth-btn-arrow__icon-circle {
+    transform: translateX(4px);
+  }
+
+  .earth-transparency .earth-btn-arrow--dark {
+    color: #003225;
+  }
+
+  .earth-transparency .earth-btn-arrow--dark .earth-btn-arrow__icon-circle {
+    background-color: #003225;
+    color: var(--color-white, #F8F9DC);
+  }
+
+  .earth-transparency .earth-btn-arrow--dark .earth-btn-arrow__icon-circle img {
+    filter: brightness(0) invert(1);
+    width: 12px;
+    height: 10px;
+  }
+
+  .earth-transparency .earth-btn-arrow--light {
+    color: var(--color-white, #F8F9DC);
+  }
+
+  .earth-transparency .earth-btn-arrow--light .earth-btn-arrow__icon-circle {
+    background-color: var(--color-white, #F8F9DC);
+    color: #003225;
+  }
+
+  .earth-transparency .earth-btn-arrow--light .earth-btn-arrow__icon-circle img {
+    filter: brightness(0);
+    width: 12px;
+    height: 10px;
+  }
+
+  /* 3. Middle Forest Green Banner */
+  .earth-transparency__banner {
+    background: linear-gradient(135deg, #18420C 0%, #225310 50%, #2E6516 100%);
+    border-radius: 4px;
+    padding: clamp(36px, 4.5vw, 56px) clamp(28px, 4vw, 52px);
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    align-items: center;
+    gap: clamp(32px, 4vw, 64px);
+    margin-bottom: clamp(36px, 4.5vw, 52px);
+    box-sizing: border-box;
+    color: var(--color-white, #F8F9DC);
+  }
+
+  .earth-transparency__banner-eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-accent, #EAE060);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .earth-transparency__banner-title {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-white, #F8F9DC);
+    margin: 0;
+  }
+
+  .earth-transparency__banner-quote {
+    font-size: clamp(15px, 1.15vw, 18px);
+    line-height: 1.6;
+    color: var(--color-white, #F8F9DC);
+    opacity: 0.95;
+    margin: 0 0 28px 0;
+  }
+
+  .earth-transparency__banner-action {
+    display: flex;
+  }
+
+  .earth-transparency__banner-action .earth-btn-action {
+    background-color: var(--color-white, #F8F9DC);
+    color: #003225;
+    border: 1.5px solid var(--color-white, #F8F9DC);
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 14px 28px;
+    border-radius: 2px;
+  }
+
+  .earth-transparency__banner-action .earth-btn-action:hover {
+    background-color: var(--color-secondary, #71CC3B);
+    color: #003225;
+    border-color: var(--color-secondary, #71CC3B);
+  }
+
+  /* 4. Bottom Metrics Row */
+  .earth-transparency__metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(16px, 2.5vw, 36px);
+    text-align: center;
+    padding-top: clamp(12px, 2vw, 24px);
+  }
+
+  .earth-transparency__metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .earth-transparency__metric-val {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--color-black, #003225);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .earth-transparency__metric-label {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--color-primary, #003225);
+    opacity: 0.88;
+    line-height: 1.3;
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 1024px) {
+    .earth-transparency {
+      padding: 48px 0;
+    }
+    .earth-transparency__container {
+      padding: 0 28px;
+    }
+    .earth-transparency__banner {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .earth-transparency__header {
+      gap: 32px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .earth-transparency {
+      padding: 36px 0 44px;
+    }
+    .earth-transparency__container {
+      padding: 0 20px;
+    }
+    .earth-transparency__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .earth-transparency__eyebrow {
+      font-size: 14.5px;
+      margin-bottom: 6px;
+      color: #224E09;
+    }
+    .earth-transparency__title {
+      font-size: 34px;
+      line-height: 1.12;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      max-width: 280px;
+    }
+    .earth-transparency__title-icon {
+      display: none;
+    }
+    .earth-transparency__header-right {
+      max-width: 100%;
+      flex: 1 1 100%;
+    }
+    .earth-transparency__subtitle {
+      font-size: 15px;
+      line-height: 1.45;
+      margin-top: 4px;
+    }
+    .earth-transparency__cards-grid {
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .earth-transparency__card {
+      min-height: 380px;
+      padding: 28px 20px 24px 20px;
+      border-radius: 0;
+    }
+    .earth-transparency__card-title {
+      font-size: 24px;
+    }
+    .earth-transparency__card-tagline {
+      font-size: 15.5px;
+      margin: 0 0 14px 0;
+    }
+    .earth-transparency__card-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      max-width: 100%;
+    }
+    .earth-transparency__badges-group {
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .earth-transparency__badge {
+      font-size: 12px;
+      padding: 6px 13px;
+    }
+    .earth-transparency__watermark {
+      width: 175px;
+      height: 160px;
+      right: 10px;
+      bottom: 6px;
+      opacity: 0.22;
+    }
+    .earth-transparency__card--supply {
+      min-height: 380px;
+      padding: 28px 20px 24px 20px;
+      border-radius: 0;
+    }
+    .earth-transparency__supply-title {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .earth-transparency__supply-desc {
+      font-size: 14px;
+      line-height: 1.45;
+      margin-bottom: 22px;
+      max-width: 100%;
+    }
+    .earth-transparency__banner {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 30px 20px 26px 20px;
+      margin-bottom: 28px;
+      border-radius: 0;
+      background: linear-gradient(180deg, #1b470f 0%, #12340a 100%);
+    }
+    .earth-transparency__banner-eyebrow {
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .earth-transparency__banner-title {
+      font-size: 32px;
+      line-height: 1.12;
+      max-width: 220px;
+    }
+    .earth-transparency__banner-quote {
+      font-size: 14px;
+      line-height: 1.55;
+      margin: 0 0 20px 0;
+    }
+    .earth-transparency__banner-action {
+      display: flex;
+    }
+    .earth-transparency__banner-action .earth-btn-action {
+      width: auto;
+      display: inline-block;
+      padding: 12px 22px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      border-radius: 0;
+      background-color: var(--color-white, #F8F9DC);
+      color: #003225;
+      border: 1.5px solid var(--color-white, #F8F9DC);
+    }
+    /* Horizontal Scrolling Metrics Row on Mobile */
+    .earth-transparency__metrics-row {
+      display: flex;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      gap: 32px;
+      text-align: left;
+      margin: 0 -20px;
+      padding: 10px 20px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      scroll-padding: 0 20px;
+    }
+    .earth-transparency__metrics-row::-webkit-scrollbar {
+      display: none;
+    }
+    .earth-transparency__metrics-row::after {
+      content: '';
+      flex: 0 0 1px;
+      margin-left: -32px;
+      padding-right: 20px;
+    }
+    .earth-transparency__metric-item {
+      flex: 0 0 auto;
+      align-items: flex-start;
+      min-width: 110px;
+    }
+    .earth-transparency__metric-val {
+      font-size: 28px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .earth-transparency__metric-label {
+      font-size: 13.5px;
+      white-space: nowrap;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Transparency Spotlight",
+  "tag": "section",
+  "class": "section-transparency-spotlight",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "Our Commitment"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Main Heading",
+      "default": "Transparency Spotlight"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle Description",
+      "default": "We believe you deserve to know where your clothes come from—materials, people, and areas we're improving."
+    },
+    {
+      "type": "header",
+      "content": "Card 1: Material Sourcing"
+    },
+    {
+      "type": "text",
+      "id": "card1_title",
+      "label": "Card 1 Title",
+      "default": "Material Sourcing"
+    },
+    {
+      "type": "text",
+      "id": "card1_tagline",
+      "label": "Card 1 Tagline",
+      "default": "\"Organic & Recycled\""
+    },
+    {
+      "type": "textarea",
+      "id": "card1_desc",
+      "label": "Card 1 Description",
+      "default": "We prioritize regenerative fibers that restore soil health and recycled synthetics that divert waste from our oceans. Every thread has a purpose."
+    },
+    {
+      "type": "text",
+      "id": "card1_badge1_text",
+      "label": "Badge 1 Label",
+      "default": "GOTS Certified"
+    },
+    {
+      "type": "text",
+      "id": "card1_badge2_text",
+      "label": "Badge 2 Label",
+      "default": "Fair Trade"
+    },
+    {
+      "type": "text",
+      "id": "card1_btn_text",
+      "label": "Card 1 Button Text",
+      "default": "LEARN OUR MATERIALS"
+    },
+    {
+      "type": "url",
+      "id": "card1_btn_url",
+      "label": "Card 1 Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Card 2: Supply Chain"
+    },
+    {
+      "type": "image_picker",
+      "id": "card2_image",
+      "label": "Card 2 Background Image"
+    },
+    {
+      "type": "text",
+      "id": "card2_title",
+      "label": "Card 2 Title",
+      "default": "Supply Chain"
+    },
+    {
+      "type": "text",
+      "id": "card2_desc",
+      "label": "Card 2 Description",
+      "default": "Ethical Manufacturing: Seen from within our atelier."
+    },
+    {
+      "type": "text",
+      "id": "card2_btn_text",
+      "label": "Card 2 Button Text",
+      "default": "VIEW OUR PRODUCTION"
+    },
+    {
+      "type": "url",
+      "id": "card2_btn_url",
+      "label": "Card 2 Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Middle Banner"
+    },
+    {
+      "type": "text",
+      "id": "banner_eyebrow",
+      "label": "Banner Eyebrow",
+      "default": "The Unfiltered Truth"
+    },
+    {
+      "type": "text",
+      "id": "banner_title",
+      "label": "Banner Title",
+      "default": "Real Growth, Real Challenges"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_quote",
+      "label": "Banner Quote",
+      "default": "\"True sustainability is hard. We aren't 100% there yet, but we refuse to hide our hurdles. From logistics carbon footprints to dye-house water usage, we are iterating every day.\""
+    },
+    {
+      "type": "text",
+      "id": "banner_btn_text",
+      "label": "Banner Button Text",
+      "default": "HONESTY COMMITMENT"
+    },
+    {
+      "type": "url",
+      "id": "banner_btn_url",
+      "label": "Banner Button Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "metric",
+      "name": "Metric Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Metric Value",
+          "default": "94%"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Metric Label",
+          "default": "Traceable Origin"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Transparency Spotlight",
+      "blocks": [
+        {
+          "type": "metric",
+          "settings": {
+            "value": "94%",
+            "label": "Traceable Origin"
+          }
+        },
+        {
+          "type": "metric",
+          "settings": {
+            "value": "0%",
+            "label": "Plastic Packaging"
+          }
+        },
+        {
+          "type": "metric",
+          "settings": {
+            "value": "100+",
+            "label": "Fair Wage Artisans"
+          }
+        },
+        {
+          "type": "metric",
+          "settings": {
+            "value": "B-Corp",
+            "label": "Pending Status"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
