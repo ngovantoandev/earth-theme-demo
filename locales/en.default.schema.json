@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
 	"general": {
 		"typography": {
@@ -109,6 +118,30 @@
 				}
 			}
 		},
+		"colors": {
+			"name": "Colors",
+			"palette": {
+				"header": "Theme Color Palette",
+				"primary": {
+					"label": "Primary Color"
+				},
+				"secondary": {
+					"label": "Secondary Color"
+				},
+				"highlight": {
+					"label": "Highlight Color"
+				}
+			},
+			"global_defaults": {
+				"header": "Global",
+				"background": {
+					"label": "Background Color"
+				},
+				"foreground": {
+					"label": "Foreground Color"
+				}
+			}
+		},
 		"404": "Not found",
 		"article": "Article",
 		"block": "Block",
@@ -118,7 +151,6 @@
 		"collections": "Collections",
 		"collection_card": "Collection card",
 		"collections_grid": "Collections grid",
-		"colors": "Colors",
 		"column": "Column",
 		"content": "Content",
 		"custom_section": "Custom section",
@@ -180,6 +212,97 @@
 			"title": "Title",
 			"subtitle": "Subtitle",
 			"normal": "Normal text"
+		}
+	},
+	"sections": {
+		"announcement_bar": {
+			"name": "Announcement bar",
+			"settings": {
+				"general": {
+					"content": "General"
+				},
+				"enable_announcement_bar": {
+					"label": "Show announcement bar"
+				},
+				"appearance": {
+					"content": "Appearance"
+				},
+				"background_color": {
+					"label": "Background color"
+				},
+				"text_color": {
+					"label": "Text color"
+				},
+				"height": {
+					"label": "Height"
+				},
+				"typography": {
+					"content": "Typography"
+				},
+				"font_size_desktop": {
+					"label": "Desktop font size"
+				},
+				"font_size_mobile": {
+					"label": "Mobile font size"
+				},
+				"rotation": {
+					"content": "Rotation"
+				},
+				"autoplay": {
+					"label": "Automatically rotate announcements"
+				},
+				"autoplay_speed": {
+					"label": "Change announcement every"
+				},
+				"transition_effect": {
+					"label": "Transition effect",
+					"options": {
+						"slide": "Slide",
+						"fade": "Fade"
+					}
+				},
+				"transition_speed": {
+					"label": "Transition speed"
+				},
+				"rewind": {
+					"label": "Repeat announcements"
+				},
+				"close_button": {
+					"content": "Close button"
+				},
+				"show_close_button": {
+					"label": "Show close button"
+				},
+				"close_icon_size": {
+					"label": "Close icon size"
+				},
+				"close_persistence": {
+					"label": "Remember closed state",
+					"options": {
+						"none": "Do not remember",
+						"session": "Remember for this session"
+					}
+				}
+			},
+			"blocks": {
+				"announcement": {
+					"name": "Announcement",
+					"settings": {
+						"enable": {
+							"label": "Enable announcement"
+						},
+						"text": {
+							"label": "Announcement text"
+						},
+						"link": {
+							"label": "Link"
+						}
+					}
+				}
+			},
+			"presets": {
+				"name": "Announcement bar"
+			}
 		}
 	}
 }

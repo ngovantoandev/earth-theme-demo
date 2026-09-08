@@ -13,31 +13,47 @@
   "sections": {
     "announcement-bar": {
       "type": "announcement-bar",
-      "blocks": {
-        "announcement-1": {
-          "type": "announcement",
-          "settings": {
-            "text": "15% off Sale: SUNNYDAY15"
-          }
-        },
-        "announcement-2": {
-          "type": "announcement",
-          "settings": {
-            "text": "Extra 15% off Sale with code: SUNNYDAY15"
-          }
-        }
-      },
+			"settings": {
+				"background_color": "#224E09",
+				"text_color": "#F8F9DC",
+				"height": 40,
+				"font_size_desktop": 16,
+				"font_size_mobile": 15,
+				"autoplay": true,
+				"autoplay_speed": 3,
+				"transition_effect": "fade",
+				"rewind": true,
+				"show_close_button": true,
+				"close_persistence": "session"
+			},
+			"blocks": {
+				"announcement-one": {
+					"type": "announcement",
+					"settings": {
+						"enable": true,
+						"text": "Free shipping over $100"
+					}
+				},
+				"announcement-two": {
+					"type": "announcement",
+					"settings": {
+						"enable": true,
+						"text": "Save 15% code SUNNYDAY15"
+					}
+				},
+				"announcement-three": {
+					"type": "announcement",
+					"settings": {
+						"enable": true,
+						"text": "Easy returns within 30 days"
+					}
+				}
+			},
       "block_order": [
-        "announcement-1",
-        "announcement-2"
-      ],
-      "settings": {
-        "show_arrows_desktop": false,
-        "show_close_btn": true,
-        "close_btn_position": "right",
-        "bg_color": "#224E09",
-        "text_color": "#F8F9DC"
-      }
+				"announcement-one",
+				"announcement-two",
+				"announcement-three"
+			]
     },
     "header": {
       "type": "header",

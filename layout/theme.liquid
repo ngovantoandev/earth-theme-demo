@@ -18,7 +18,14 @@
     {% endunless %}
 
     {% # Load and preload the critical CSS %}
-    {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+    {{ 'theme.css' | asset_url | stylesheet_tag: preload: true }}
+    
+    {% # Load and preload the swiper CSS %}
+    {{ 'swiper-bundle.min.css' | asset_url | stylesheet_tag }}
+
+    {% # Load and preload the swiperjs %}
+    
+    <script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer="defer"></script>
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}

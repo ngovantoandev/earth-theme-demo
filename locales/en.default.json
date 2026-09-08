@@ -8,6 +8,14 @@
  * ------------------------------------------------------------
  */
 {
+	"accessibility": {
+		"announcement_bar": "Announcements",
+		"previous_announcement": "Previous announcement",
+		"next_announcement": "Next announcement",
+		"pause_announcements": "Pause announcements",
+		"play_announcements": "Play announcements",
+		"close_announcement": "Close announcement"
+	},
   "404": {
     "title": "404",
     "not_found": "Page not found.",

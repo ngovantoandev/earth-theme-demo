@@ -19,10 +19,8 @@
       <div class="earth-transparency__header-left">
         {%- if section.settings.eyebrow != blank -%}
           <div class="earth-transparency__eyebrow">
-            <svg class="earth-transparency__sparkle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="#C29D38"/>
-              <path d="M19 17L20.2 20.8L24 22L20.2 23.2L19 27L17.8 23.2L14 22L17.8 20.8L19 17Z" fill="#C29D38" transform="scale(0.6) translate(10, -8)"/>
-            </svg>
+            <span class="earth-transparency__sparkle-icon" aria-hidden="true">✨</span>
+            
             <span>{{ section.settings.eyebrow }}</span>
           </div>
         {%- endif -%}
@@ -136,10 +134,7 @@
       <div class="earth-transparency__banner-left">
         {%- if section.settings.banner_eyebrow != blank -%}
           <div class="earth-transparency__banner-eyebrow">
-            <svg class="earth-transparency__sparkle-icon-gold" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="#EAE060"/>
-              <path d="M19 17L20.2 20.8L24 22L20.2 23.2L19 27L17.8 23.2L14 22L17.8 20.8L19 17Z" fill="#EAE060" transform="scale(0.6) translate(10, -8)"/>
-            </svg>
+            <span class="earth-transparency__sparkle-icon-gold" aria-hidden="true">✨</span>
             <span>{{ section.settings.banner_eyebrow }}</span>
           </div>
         {%- endif -%}
@@ -537,9 +532,9 @@
   }
 
   .earth-transparency__banner-eyebrow {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--color-accent, #EAE060);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--color-white, #F8F9DC);
     display: inline-flex;
     align-items: center;
     gap: 8px;

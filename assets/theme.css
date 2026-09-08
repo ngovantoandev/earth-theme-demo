@@ -1,0 +1,227 @@
+/** Critical CSS for the theme. This file is included on every page. */
+
+/* Reset styles inspired by https://www.joshwcomeau.com/css/custom-css-reset/ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  min-height: 100svh;
+}
+
+html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
+  overflow: hidden;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  border-radius: var(--style-border-radius-inputs, 2px);
+}
+
+select {
+  background-color: var(--color-background);
+  color: currentcolor;
+}
+
+dialog {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+p {
+  text-wrap: pretty;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+p:empty {
+  display: none;
+}
+
+:is(p, h1, h2, h3, h4, h5, h6):first-child,
+:empty:first-child + :where(p, h1, h2, h3, h4, h5, h6) {
+  margin-block-start: 0;
+}
+
+:is(p, h1, h2, h3, h4, h5, h6):last-child,
+:where(p, h1, h2, h3, h4, h5, h6) + :has(+ :empty:last-child) {
+  margin-block-end: 0;
+}
+
+/** Theme styles below */
+body {
+  font-family: var(--font-primary--family);
+  background-color: var(--color-black, #003225);
+  color: var(--color-foreground, #F8F9DC);
+}
+
+/** Section layout utilities */
+
+/**
+ * Setup a grid that enables both full-width and constrained layouts
+ * depending on the class of the child elements.
+ *
+ * By default, a minimum content margin is set on the left and right
+ * sides of the section and the content is centered in the viewport to
+ * not exceed the maximum page width.
+ *
+ * When a child element is given the `full-width` class, it will span
+ * the entire viewport.
+ */
+.shopify-section {
+  --content-width: min(
+    calc(var(--page-width) - var(--page-margin) * 2),
+    calc(100% - var(--page-margin) * 2)
+  );
+  --content-margin: minmax(var(--page-margin), 1fr);
+  --content-grid: var(--content-margin) var(--content-width) var(--content-margin);
+
+  /* This is required to make <img> elements work as background images */
+  position: relative;
+  grid-template-columns: var(--content-grid);
+  display: grid;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  gap: var(--grid-gap);
+}
+
+/* Reusable Slider Nav Arrow Buttons Component */
+.earth-slider-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.earth-slider-nav__btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--color-secondary, #71CC3B);
+  border: 1.5px solid var(--color-secondary, #71CC3B);
+  color: var(--color-black, #003225);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+.earth-slider-nav__btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(113, 204, 59, 0.4);
+}
+.earth-slider-nav__icon {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.earth-slider-nav__btn--prev:hover .earth-slider-nav__icon--prev {
+  transform: rotate(-45deg);
+}
+.earth-slider-nav__btn--next:hover .earth-slider-nav__icon--next {
+  transform: rotate(45deg);
+}
+.earth-slider-nav--light .earth-slider-nav__btn {
+  background-color: var(--color-white, #F8F9DC);
+  border-color: var(--color-white, #F8F9DC);
+}
+.earth-slider-nav--light .earth-slider-nav__btn:hover {
+  background-color: var(--color-secondary, #71CC3B);
+  border-color: var(--color-secondary, #71CC3B);
+}
+
+/* Child elements, by default, are constrained to the central column of the grid. */
+.shopify-section > * {
+  grid-column: 2;
+}
+
+/* Child elements that use the full-width utility class span the entire viewport. */
+.shopify-section > .full-width {
+  grid-column: 1 / -1;
+}
+
+/* Reusable Action Button Component */
+.earth-btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary--family);
+  font-size: clamp(14px, 1.05vw, 15px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 14px 28px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+/* Solid Variant (Default: Filled -> Hover: Outline) */
+.earth-btn-action--solid {
+  background-color: var(--color-black, #003225);
+  color: var(--color-white, #F8F9DC);
+  border: 1.5px solid var(--color-black, #003225);
+}
+.earth-btn-action--solid:hover {
+  background-color: transparent;
+  color: var(--color-black, #003225);
+  border-color: var(--color-black, #003225);
+}
+
+/* Outline Variant (Default: Outline -> Hover: Filled) */
+.earth-btn-action--outline {
+  background-color: transparent;
+  color: var(--color-black, #003225);
+  border: 1.5px solid var(--color-black, #003225);
+}
+.earth-btn-action--outline:hover {
+  background-color: var(--color-black, #003225);
+  color: var(--color-white, #F8F9DC);
+  border-color: var(--color-black, #003225);
+}
+
+/* Accent Variant */
+.earth-btn-action--accent {
+  background-color: var(--color-secondary, #71CC3B);
+  color: var(--color-black, #003225);
+  border: 1.5px solid var(--color-secondary, #71CC3B);
+}
+.earth-btn-action--accent:hover {
+  background-color: var(--color-black, #003225);
+  color: var(--color-white, #F8F9DC);
+  border-color: var(--color-black, #003225);
+}
+
+

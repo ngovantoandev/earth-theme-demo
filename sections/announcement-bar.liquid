@@ -4,630 +4,1131 @@
   multi-announcement carousel/slider, optional close button, and customizable colors.
 {% endcomment %}
 
-{%- if section.blocks.size > 0 or section.settings.text != blank -%}
-  {%- assign close_pos = section.settings.close_btn_position | default: 'right' -%}
-  <aside 
-    class="earth-announcement-section full-width{% if section.settings.enable_vertical_carousel %} earth-announcement-section--vertical{% endif %}" 
-    id="earthAnnouncement-{{ section.id }}"
-    style="--announcement-bg: {{ section.settings.bg_color | default: '#224E09' }}; --announcement-color: {{ section.settings.text_color | default: '#F8F9DC' }};"
-    aria-label="Announcement"
+{%- liquid
+  assign enabled_blocks_count = 0
+
+  for block in section.blocks
+    if block.settings.enable
+      assign enabled_blocks_count = enabled_blocks_count | plus: 1
+    endif
+  endfor
+-%}
+
+{% if enabled_blocks_count > 0 and section.settings.enable_announcement_bar %}
+  <div
+    id="announcement-bar-{{ section.id }}"
+    class="announcement-bar full-width"
+    data-announcement-bar
+
+    data-section-id="{{ section.id }}"
+    data-autoplay="{{ section.settings.autoplay }}"
+    data-autoplay-speed="{{ section.settings.autoplay_speed | times: 1000 }}"
+    data-transition-effect="{{ section.settings.transition_effect }}"
+    data-transition-speed="{{ section.settings.transition_speed }}"
+    data-rewind="{{ section.settings.rewind }}"
+    data-design-mode="{{ request.design_mode }}"
+    data-close-persistence="{{ section.settings.close_persistence }}"
+
+    style="
+      --announcement-bar-background: {{ section.settings.background_color }};
+      --announcement-bar-text: {{ section.settings.text_color }};
+      --announcement-bar-height: {{ section.settings.height }}px;
+      --announcement-bar-font-size-desktop: {{ section.settings.font_size_desktop }}px;
+      --announcement-bar-font-size-mobile: {{ section.settings.font_size_mobile }}px;
+      --announcement-bar-close-icon-size: {{ section.settings.close_icon_size }}px;
+    "
   >
-    <div class="earth-announcement__container">
-      
-      <!-- Optional Close Button (Left Position) -->
-      {%- if section.settings.show_close_btn and close_pos == 'left' -%}
-        <button 
-          type="button" 
-          class="earth-announcement__close earth-announcement__close--left" 
-          aria-label="Close announcement"
-          onclick="this.closest('.earth-announcement-section').style.display='none'"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      {%- endif -%}
-
-      <!-- Navigation Arrow: Prev -->
-      {%- if section.blocks.size > 1 -%}
-        <button 
-          type="button" 
-          class="earth-announcement__arrow earth-announcement__arrow--prev{% unless section.settings.show_arrows_desktop %} earth-announcement__arrow--mobile-only{% endunless %}" 
-          aria-label="Previous announcement"
-          id="announcementPrev-{{ section.id }}"
-        >
-          <img src="{{ 'arrow-right.svg' | asset_url }}" width="12" height="10" alt="" loading="lazy" class="earth-announcement__arrow-icon earth-announcement__arrow-icon--prev">
-        </button>
-      {%- endif -%}
-
-      <!-- Announcement Slider Track -->
-      <div class="earth-announcement__slider{% if section.settings.enable_vertical_carousel %} earth-announcement__slider--vertical{% endif %}" id="announcementSlider-{{ section.id }}">
-        {%- if section.blocks.size > 0 -%}
+    <div class="announcement-bar__inner">
+      <div
+        class="announcement-bar__slideshow swiper"
+        data-announcement-swiper
+        aria-roledescription="carousel"
+        aria-label="{{ 'accessibility.announcement_bar' | t }}"
+      >
+        <div class="swiper-wrapper">
           {%- for block in section.blocks -%}
-            <div 
-              class="earth-announcement__slide{% if forloop.first %} earth-announcement__slide--active{% endif %}" 
-              data-index="{{ forloop.index0 }}"
-              {{ block.shopify_attributes }}
-            >
-              {%- if block.settings.link != blank -%}
-                <a href="{{ block.settings.link }}" class="earth-announcement__link">
-                  <span>{{ block.settings.text }}</span>
-                </a>
-              {%- else -%}
-                <span class="earth-announcement__text">{{ block.settings.text }}</span>
-              {%- endif -%}
-            </div>
-          {%- endfor -%}
-        {%- else -%}
-          <div class="earth-announcement__slide earth-announcement__slide--active" data-index="0">
-            {%- if section.settings.link != blank -%}
-              <a href="{{ section.settings.link }}" class="earth-announcement__link">
-                <span>{{ section.settings.text | default: '15% off Sale: SUNNYDAY15' }}</span>
-              </a>
-            {%- else -%}
-              <span class="earth-announcement__text">{{ section.settings.text | default: '15% off Sale: SUNNYDAY15' }}</span>
+            {%- if block.settings.enable -%}
+              <div
+                class="announcement-bar__slide swiper-slide"
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.link != blank -%}
+                  <a
+                    class="announcement-bar__link"
+                    href="{{ block.settings.link }}"
+                  >
+                    <span class="announcement-bar__text">
+                      {{ block.settings.text | escape }}
+                    </span>
+                  </a>
+
+                {%- else -%}
+                  <span class="announcement-bar__text">
+                    {{ block.settings.text | escape }}
+                  </span>
+                {%- endif -%}
+              </div>
             {%- endif -%}
-          </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if enabled_blocks_count > 1 -%}
+          <button
+            class="
+              announcement-bar__button
+              announcement-bar__button--previous
+            "
+            type="button"
+            data-announcement-previous
+            aria-label="{{ 'accessibility.previous_announcement' | t }}"
+          >
+            <span
+              class="announcement-bar__previous-icon"
+              aria-hidden="true"
+            >
+              {{ 'icon-arrow-left.svg' | inline_asset_content }}
+            </span>
+          </button>
+
+          <button
+            class="
+              announcement-bar__button
+              announcement-bar__button--next
+            "
+            type="button"
+            data-announcement-next
+            aria-label="{{ 'accessibility.next_announcement' | t }}"
+          >
+            <span
+              class="announcement-bar__next-icon"
+              aria-hidden="true"
+            >
+              {{ 'icon-arrow-right.svg' | inline_asset_content }}
+            </span>
+          </button>
         {%- endif -%}
       </div>
 
-      <!-- Navigation Arrow: Next -->
-      {%- if section.blocks.size > 1 -%}
-        <button 
-          type="button" 
-          class="earth-announcement__arrow earth-announcement__arrow--next{% unless section.settings.show_arrows_desktop %} earth-announcement__arrow--mobile-only{% endunless %}" 
-          aria-label="Next announcement"
-          id="announcementNext-{{ section.id }}"
+      {%- if enabled_blocks_count > 1 and section.settings.autoplay -%}
+        <button
+          class="
+            announcement-bar__button
+            announcement-bar__button--playback
+          "
+          type="button"
+          data-announcement-playback
+          aria-pressed="false"
+          aria-label="{{ 'accessibility.pause_announcements' | t }}"
         >
-          <img src="{{ 'arrow-right.svg' | asset_url }}" width="12" height="10" alt="" loading="lazy" class="earth-announcement__arrow-icon earth-announcement__arrow-icon--next">
+          <span
+            class="announcement-bar__play-icon"
+            aria-hidden="true"
+          >
+            {{ 'icon-play.svg' | inline_asset_content }}
+          </span>
+
+          <span
+            class="announcement-bar__pause-icon"
+            aria-hidden="true"
+            hidden
+          >
+            {{ 'icon-pause.svg' | inline_asset_content }}
+          </span>
         </button>
       {%- endif -%}
 
-      <!-- Optional Close Button (Right Position) -->
-      {%- if section.settings.show_close_btn and close_pos == 'right' -%}
-        <button 
-          type="button" 
-          class="earth-announcement__close earth-announcement__close--right" 
-          aria-label="Close announcement"
-          onclick="this.closest('.earth-announcement-section').style.display='none'"
+      {%- if section.settings.show_close_button -%}
+        <button
+          class="
+            announcement-bar__button
+            announcement-bar__button--close
+          "
+          type="button"
+          data-announcement-close
+          aria-label="{{ 'accessibility.close_announcement' | t }}"
         >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <span
+            class="announcement-bar__close-icon"
+            aria-hidden="true"
+          >
+            {{ 'icon-close.svg' | inline_asset_content }}
+          </span>
         </button>
       {%- endif -%}
-
     </div>
-  </aside>
-
-  {% style %}
-    .earth-announcement-section {
-      width: 100%;
-      background-color: var(--announcement-bg, #224E09);
-      color: var(--announcement-color, #F8F9DC);
-      min-height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      z-index: 40;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-
-    .earth-announcement__container {
-      width: 100%;
-      max-width: 100%;
-      padding: 8px clamp(16px, 3vw, 48px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: relative;
-      box-sizing: border-box;
-      gap: 16px;
-    }
-
-    /* Slider Container */
-    .earth-announcement__slider {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      min-height: 26px;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .earth-announcement__slide {
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      text-align: center;
-      font-size: clamp(13px, 1.1vw, 15px);
-      font-weight: 500;
-      letter-spacing: -0.01em;
-      line-height: 1.35;
-      color: inherit;
-    }
-
-    /* Keyframe Animations for Vertical Carousel (Bottom to Top) */
-    @keyframes earthSlideInFromBottom {
-      0% {
-        transform: translateY(100%);
-        opacity: 0;
-      }
-      100% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    @keyframes earthSlideOutToTop {
-      0% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100%);
-        opacity: 0;
-      }
-    }
-
-    @keyframes earthSlideInFromTop {
-      0% {
-        transform: translateY(-100%);
-        opacity: 0;
-      }
-      100% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    @keyframes earthSlideOutToBottom {
-      0% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100%);
-        opacity: 0;
-      }
-    }
-
-    /* Standard (Non-vertical) Mode */
-    .earth-announcement__slider:not(.earth-announcement__slider--vertical) .earth-announcement__slide {
-      display: none;
-    }
-
-    .earth-announcement__slider:not(.earth-announcement__slider--vertical) .earth-announcement__slide.earth-announcement__slide--active {
-      display: flex;
-    }
-
-    /* Vertical Carousel Animation */
-    .earth-announcement__slider--vertical {
-      height: 26px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .earth-announcement__slider--vertical .earth-announcement__slide {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .earth-announcement__slider--vertical .earth-announcement__slide.earth-announcement__slide--active {
-      display: flex;
-      transform: translateY(0);
-      opacity: 1;
-      z-index: 2;
-    }
-
-    /* Next / Auto-rotate: Incoming from bottom, outgoing to top */
-    .earth-announcement__slider--vertical .earth-announcement__slide.earth-announcement__slide--anim-in-up {
-      display: flex;
-      animation: earthSlideInFromBottom 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      z-index: 2;
-    }
-
-    .earth-announcement__slider--vertical .earth-announcement__slide.earth-announcement__slide--anim-out-up {
-      display: flex;
-      animation: earthSlideOutToTop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      z-index: 1;
-    }
-
-    /* Prev: Incoming from top, outgoing to bottom */
-    .earth-announcement__slider--vertical .earth-announcement__slide.earth-announcement__slide--anim-in-down {
-      display: flex;
-      animation: earthSlideInFromTop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      z-index: 2;
-    }
-
-    .earth-announcement__slider--vertical .earth-announcement__slide.earth-announcement__slide--anim-out-down {
-      display: flex;
-      animation: earthSlideOutToBottom 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      z-index: 1;
-    }
-
-    .earth-announcement__link {
-      color: inherit;
-      text-decoration: none;
-      transition: opacity 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .earth-announcement__link:hover {
-      opacity: 0.85;
-      text-decoration: underline;
-    }
-
-    .earth-announcement__text {
-      color: inherit;
-      display: inline-block;
-    }
-
-    /* Navigation Arrows */
-    .earth-announcement__arrow {
-      background: transparent;
-      border: none;
-      color: inherit;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 10px;
-      opacity: 0.9;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      flex-shrink: 0;
-      z-index: 3;
-    }
-
-    .earth-announcement__arrow:hover {
-      opacity: 1;
-      transform: scale(1.1);
-    }
-
-    .earth-announcement__arrow-icon {
-      width: 12px;
-      height: 10px;
-      display: block;
-      object-fit: contain;
-    }
-
-    .earth-announcement__arrow-icon--prev {
-      transform: scaleX(-1);
-    }
-
-    .earth-announcement__arrow--mobile-only {
-      display: none;
-    }
-
-    /* Close Button */
-    .earth-announcement__close {
-      background: transparent;
-      border: none;
-      color: inherit;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 8px;
-      opacity: 0.85;
-      transition: opacity 0.2s ease;
-      flex-shrink: 0;
-      z-index: 3;
-    }
-
-    .earth-announcement__close:hover {
-      opacity: 1;
-    }
-
-    .earth-announcement__close--right {
-      position: absolute;
-      right: clamp(16px, 3vw, 48px);
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .earth-announcement__close--left {
-      position: absolute;
-      left: clamp(16px, 3vw, 48px);
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    @media (max-width: 1024px) {
-      .earth-announcement__container {
-        padding: 10px 24px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .earth-announcement__container {
-        padding: 8px 20px;
-        gap: 8px;
-      }
-      .earth-announcement__slide {
-        font-size: 13px;
-      }
-      .earth-announcement__arrow {
-        display: inline-flex !important;
-        padding: 4px 6px;
-      }
-      .earth-announcement__close {
-        display: none !important;
-      }
-    }
-  {% endstyle %}
-
-  {%- if section.blocks.size > 1 -%}
-    <script>
-      (function() {
-        function initAnnouncementSlider() {
-          var container = document.getElementById('earthAnnouncement-{{ section.id }}');
-          if (!container || container.__sliderInitialized) return;
-          container.__sliderInitialized = true;
-
-          var slides = container.querySelectorAll('.earth-announcement__slide');
-          if (slides.length <= 1) return;
-
-          var isVertical = container.classList.contains('earth-announcement-section--vertical');
-          var currentIndex = 0;
-          var isAnimating = false;
-          var prevBtn = document.getElementById('announcementPrev-{{ section.id }}');
-          var nextBtn = document.getElementById('announcementNext-{{ section.id }}');
-          var autoRotate = {{ section.settings.auto_rotate | default: false }};
-          var rotateInterval = ({{ section.settings.rotate_interval | default: 5 }}) * 1000;
-          var timer = null;
-
-          function showSlide(newIndex, direction) {
-            if (newIndex === currentIndex || isAnimating) return;
-            var outgoing = slides[currentIndex];
-            var incoming = slides[newIndex];
-
-            if (isVertical) {
-              isAnimating = true;
-              slides.forEach(function(s, idx) {
-                if (idx !== currentIndex && idx !== newIndex) {
-                  s.className = 'earth-announcement__slide';
-                }
-              });
-
-              if (direction === 'prev') {
-                outgoing.className = 'earth-announcement__slide earth-announcement__slide--anim-out-down';
-                incoming.className = 'earth-announcement__slide earth-announcement__slide--anim-in-down';
-              } else {
-                // Next / Auto-rotate: Text under moves up (ở dưới đi lên)
-                outgoing.className = 'earth-announcement__slide earth-announcement__slide--anim-out-up';
-                incoming.className = 'earth-announcement__slide earth-announcement__slide--anim-in-up';
-              }
-
-              setTimeout(function() {
-                slides.forEach(function(s, idx) {
-                  if (idx === newIndex) {
-                    s.className = 'earth-announcement__slide earth-announcement__slide--active';
-                  } else {
-                    s.className = 'earth-announcement__slide';
-                  }
-                });
-                isAnimating = false;
-              }, 460);
-            } else {
-              slides.forEach(function(s, idx) {
-                if (idx === newIndex) {
-                  s.classList.add('earth-announcement__slide--active');
-                } else {
-                  s.classList.remove('earth-announcement__slide--active');
-                }
-              });
-            }
-            currentIndex = newIndex;
-          }
-
-          function nextSlide() {
-            var next = (currentIndex + 1) % slides.length;
-            showSlide(next, 'next');
-          }
-
-          function prevSlide() {
-            var prev = (currentIndex - 1 + slides.length) % slides.length;
-            showSlide(prev, 'prev');
-          }
-
-          if (prevBtn) {
-            prevBtn.addEventListener('click', function(e) {
-              e.preventDefault();
-              prevSlide();
-              resetTimer();
-            });
-          }
-
-          if (nextBtn) {
-            nextBtn.addEventListener('click', function(e) {
-              e.preventDefault();
-              nextSlide();
-              resetTimer();
-            });
-          }
-
-          function startTimer() {
-            if (autoRotate && !timer) {
-              timer = setInterval(nextSlide, rotateInterval);
-            }
-          }
-
-          function stopTimer() {
-            if (timer) {
-              clearInterval(timer);
-              timer = null;
-            }
-          }
-
-          function resetTimer() {
-            stopTimer();
-            startTimer();
-          }
-
-          if (autoRotate) {
-            startTimer();
-            container.addEventListener('mouseenter', stopTimer);
-            container.addEventListener('mouseleave', startTimer);
-          }
-        }
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initAnnouncementSlider);
-        } else {
-          initAnnouncementSlider();
-        }
-
-        if (window.Shopify && window.Shopify.designMode) {
-          document.addEventListener('shopify:section:load', initAnnouncementSlider);
-        }
-      })();
-    </script>
-  {%- endif -%}
+  </div>
 {%- endif -%}
+
+{% stylesheet %}
+  .announcement-bar {
+    position: relative;
+    width: 100%;
+    background: var(--announcement-bar-background);
+    color: var(--announcement-bar-text);
+  }
+
+  .announcement-bar__inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: var(--announcement-bar-height);
+  }
+
+  .announcement-bar__slideshow {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .announcement-bar .swiper-wrapper {
+    align-items: stretch;
+  }
+
+  .announcement-bar__slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--announcement-bar-height);
+    padding: 10px 96px;
+    text-align: center;
+  }
+
+  .announcement-bar__text {
+    display: inline-block;
+    color: var(--announcement-bar-text);
+    font-size: var(--announcement-bar-font-size-desktop);
+    line-height: 1.4;
+  }
+
+  .announcement-bar__link {
+    display: inline-flex;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .announcement-bar__link:hover {
+    text-decoration: underline;
+  }
+
+  .announcement-bar__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--announcement-bar-text);
+    cursor: pointer;
+  }
+
+  .announcement-bar__button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  .announcement-bar__button--previous,
+  .announcement-bar__button--next {
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    transform: translateY(-50%);
+  }
+
+  .announcement-bar__button--previous {
+    left: 12px;
+  }
+
+  .announcement-bar__button--next {
+    right: 12px;
+  }
+
+  .announcement-bar__button--playback {
+    position: absolute;
+    top: 50%;
+    right: 56px;
+    z-index: 5;
+    transform: translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms ease;
+  }
+
+  .announcement-bar__button--playback svg {
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .announcement-bar:hover .announcement-bar__button--playback,
+  .announcement-bar__button--playback:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .announcement-bar__button--close {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--announcement-bar-text);
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .announcement-bar__close-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--announcement-bar-close-icon-size);
+    height: var(--announcement-bar-close-icon-size);
+  }
+
+  .announcement-bar__close-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .announcement-bar__button--close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  .announcement-bar__previous-icon,
+  .announcement-bar__next-icon {
+    width: 14px;
+    height: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Desktop */
+
+  @media screen and (min-width: 750px) {
+    .announcement-bar__button--previous,
+    .announcement-bar__button--next {
+      display: none;
+    }
+  }
+
+  /* Mobile */
+
+  @media screen and (max-width: 749px) {
+    .announcement-bar__slide {
+      padding: 10px 56px;
+    }
+
+    .announcement-bar__text {
+      font-size: var(--announcement-bar-font-size-mobile);
+    }
+
+    .announcement-bar__button--close {
+      display: none;
+    }
+
+    .announcement-bar__button--playback {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .announcement-bar__button--playback {
+      transition: none;
+    }
+    .announcement-bar *,
+    .announcement-bar *::before,
+    .announcement-bar *::after {
+      scroll-behavior: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    'use strict';
+
+    const SELECTOR = '[data-announcement-bar]';
+
+    /**
+     * Get announcement bar from a section event target.
+     */
+    function getAnnouncementBar(target) {
+      if (!target) return null;
+
+      if (target.matches && target.matches(SELECTOR)) {
+        return target;
+      }
+
+      if (target.querySelector) {
+        return target.querySelector(SELECTOR);
+      }
+
+      return null;
+    }
+
+    /**
+     * Generate storage key.
+     */
+    function getStorageKey(section) {
+      return `announcement-bar-closed-${section.dataset.sectionId}`;
+    }
+
+    /**
+     * Check reduced motion preference.
+     */
+    function prefersReducedMotion() {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    /**
+     * Remove focus handlers.
+     */
+    function destroyFocusHandlers(section) {
+      const handlers = section._announcementFocusHandlers;
+
+      if (!handlers) return;
+
+      section.removeEventListener('focusin', handlers.handleFocusIn);
+
+      section.removeEventListener('focusout', handlers.handleFocusOut);
+
+      section._announcementFocusHandlers = null;
+    }
+
+    /**
+     * Remove close button handler.
+     */
+    function destroyCloseHandler(section) {
+      const closeButton = section.querySelector('[data-announcement-close]');
+
+      if (!closeButton || !closeButton._announcementCloseHandler) {
+        return;
+      }
+
+      closeButton.removeEventListener('click', closeButton._announcementCloseHandler);
+
+      closeButton._announcementCloseHandler = null;
+    }
+
+    /**
+     * Remove playback button handler.
+     */
+    function destroyPlaybackHandler(section) {
+      const playbackButton = section.querySelector('[data-announcement-playback]');
+
+      if (!playbackButton || !playbackButton._announcementPlaybackHandler) {
+        return;
+      }
+
+      playbackButton.removeEventListener('click', playbackButton._announcementPlaybackHandler);
+
+      playbackButton._announcementPlaybackHandler = null;
+    }
+
+    /**
+     * Destroy Swiper and all handlers.
+     */
+    function destroyAnnouncementBar(section) {
+      if (!section) return;
+
+      destroyFocusHandlers(section);
+      destroyCloseHandler(section);
+      destroyPlaybackHandler(section);
+
+      if (section.announcementSwiper) {
+        section.announcementSwiper.destroy(true, true);
+
+        section.announcementSwiper = null;
+      }
+    }
+
+    /**
+     * Check whether announcement was closed.
+     */
+    function isAnnouncementClosed(section) {
+      const isDesignMode = section.dataset.designMode === 'true';
+
+      const persistence = section.dataset.closePersistence;
+
+      /**
+       * Never hide the section in Theme Editor
+       * because of session storage.
+       */
+      if (isDesignMode) {
+        return false;
+      }
+
+      if (persistence !== 'session') {
+        return false;
+      }
+
+      try {
+        return Boolean(sessionStorage.getItem(getStorageKey(section)));
+      } catch (error) {
+        return false;
+      }
+    }
+
+    /**
+     * Initialize close button.
+     */
+    function initCloseButton(section) {
+      const closeButton = section.querySelector('[data-announcement-close]');
+
+      if (!closeButton) return;
+
+      const handleClose = () => {
+        const swiper = section.announcementSwiper;
+
+        if (swiper && swiper.autoplay) {
+          swiper.autoplay.stop();
+        }
+
+        section.hidden = true;
+
+        const isDesignMode = section.dataset.designMode === 'true';
+
+        const persistence = section.dataset.closePersistence;
+
+        /**
+         * Don't save closed state
+         * inside Theme Editor.
+         */
+        if (!isDesignMode && persistence === 'session') {
+          try {
+            sessionStorage.setItem(getStorageKey(section), 'true');
+          } catch (error) {
+            // Storage may be unavailable.
+          }
+        }
+      };
+
+      closeButton._announcementCloseHandler = handleClose;
+
+      closeButton.addEventListener('click', handleClose);
+    }
+
+    /**
+     * Initialize play/pause button.
+     */
+    function initPlaybackButton(section, autoplayEnabled) {
+      const button = section.querySelector('[data-announcement-playback]');
+
+      const swiper = section.announcementSwiper;
+
+      if (!button || !swiper || !swiper.autoplay || !autoplayEnabled) {
+        return;
+      }
+
+      const pauseIcon = button.querySelector('.announcement-bar__pause-icon');
+
+      const playIcon = button.querySelector('.announcement-bar__play-icon');
+
+      const pauseLabel = button.dataset.pauseLabel || button.getAttribute('aria-label');
+
+      const playLabel = button.dataset.playLabel || pauseLabel;
+
+      let isPaused = false;
+
+      /**
+       * Update button UI.
+       */
+      function updateButtonState() {
+        button.setAttribute('aria-pressed', String(isPaused));
+
+        if (isPaused) {
+          button.setAttribute('aria-label', playLabel);
+
+          if (pauseIcon) {
+            pauseIcon.hidden = true;
+          }
+
+          if (playIcon) {
+            playIcon.hidden = false;
+          }
+        } else {
+          button.setAttribute('aria-label', pauseLabel);
+
+          if (pauseIcon) {
+            pauseIcon.hidden = false;
+          }
+
+          if (playIcon) {
+            playIcon.hidden = true;
+          }
+        }
+      }
+
+      /**
+       * Toggle autoplay.
+       */
+      const handlePlayback = () => {
+        const currentSwiper = section.announcementSwiper;
+
+        if (!currentSwiper || !currentSwiper.autoplay) {
+          return;
+        }
+
+        isPaused = !isPaused;
+
+        if (isPaused) {
+          currentSwiper.autoplay.stop();
+        } else {
+          currentSwiper.autoplay.start();
+        }
+
+        updateButtonState();
+      };
+
+      button._announcementPlaybackHandler = handlePlayback;
+
+      button.addEventListener('click', handlePlayback);
+
+      updateButtonState();
+    }
+
+    /**
+     * Pause autoplay when keyboard focus
+     * enters the announcement bar.
+     */
+    function initFocusPause(section, autoplayEnabled) {
+      const swiper = section.announcementSwiper;
+
+      if (!swiper || !swiper.autoplay || !autoplayEnabled) {
+        return;
+      }
+
+      const handleFocusIn = () => {
+        swiper.autoplay.stop();
+      };
+
+      const handleFocusOut = (event) => {
+        if (section.contains(event.relatedTarget)) {
+          return;
+        }
+
+        if (autoplayEnabled && !prefersReducedMotion()) {
+          swiper.autoplay.start();
+        }
+      };
+
+      section.addEventListener('focusin', handleFocusIn);
+
+      section.addEventListener('focusout', handleFocusOut);
+
+      section._announcementFocusHandlers = {
+        handleFocusIn,
+        handleFocusOut,
+      };
+    }
+
+    /**
+     * Initialize announcement bar.
+     */
+    function initAnnouncementBar(section) {
+      if (!section) return;
+
+      /**
+       * Prevent duplicate instances.
+       */
+      destroyAnnouncementBar(section);
+
+      /**
+       * Check close persistence.
+       */
+      if (isAnnouncementClosed(section)) {
+        section.hidden = true;
+
+        return;
+      }
+
+      section.hidden = false;
+
+      const swiperElement = section.querySelector('[data-announcement-swiper]');
+
+      if (!swiperElement) {
+        initCloseButton(section);
+
+        return;
+      }
+
+      const slides = swiperElement.querySelectorAll('.swiper-slide');
+
+      const slideCount = slides.length;
+
+      /**
+       * One announcement doesn't need Swiper.
+       */
+      if (slideCount <= 1) {
+        initCloseButton(section);
+
+        return;
+      }
+
+      /**
+       * Make sure Swiper exists.
+       */
+      if (typeof window.Swiper === 'undefined') {
+        console.warn('Swiper is required for the announcement bar.');
+
+        initCloseButton(section);
+
+        return;
+      }
+
+      /**
+       * AUTOPLAY
+       *
+       * Important:
+       * Do NOT disable autoplay
+       * inside Shopify Theme Editor.
+       *
+       * The editor preview should reflect
+       * the storefront behaviour.
+       */
+      const autoplayEnabled = section.dataset.autoplay === 'true' && !prefersReducedMotion();
+
+      /**
+       * Delay before changing slide.
+       */
+      const autoplaySpeed = Number(section.dataset.autoplaySpeed) || 3000;
+
+      /**
+       * Slide rewind.
+       */
+      const loopEnabled = section.dataset.rewind === 'true';
+
+      /**
+       * Transition effect.
+       */
+      const transitionEffect = section.dataset.transitionEffect === 'fade' ? 'fade' : 'slide';
+
+      /**
+       * Transition duration.
+       */
+      const transitionSpeed = Number(section.dataset.transitionSpeed) || 700;
+
+      const previousButton = section.querySelector('[data-announcement-previous]');
+
+      const nextButton = section.querySelector('[data-announcement-next]');
+
+      /**
+       * Base Swiper options.
+       */
+      const swiperOptions = {
+        slidesPerView: 1,
+
+        effect: transitionEffect,
+
+        speed: prefersReducedMotion() ? 0 : transitionSpeed,
+
+        loop: loopEnabled,
+
+        watchOverflow: true,
+
+        allowTouchMove: true,
+
+        autoplay: autoplayEnabled
+          ? {
+              delay: autoplaySpeed,
+
+              disableOnInteraction: false,
+
+              pauseOnMouseEnter: true,
+            }
+          : false,
+
+        navigation: {
+          prevEl: previousButton,
+
+          nextEl: nextButton,
+        },
+
+        breakpoints: {
+          750: {
+            allowTouchMove: false,
+          },
+        },
+      };
+
+      /**
+       * Fade effect options.
+       */
+      if (transitionEffect === 'fade') {
+        swiperOptions.fadeEffect = {
+          crossFade: true,
+        };
+      }
+
+      /**
+       * Create Swiper.
+       */
+      section.announcementSwiper = new window.Swiper(swiperElement, swiperOptions);
+
+      /**
+       * Initialize controls.
+       */
+      initPlaybackButton(section, autoplayEnabled);
+
+      initFocusPause(section, autoplayEnabled);
+
+      initCloseButton(section);
+    }
+
+    /**
+     * Initialize all announcement bars.
+     */
+    function initAllAnnouncementBars() {
+      document.querySelectorAll(SELECTOR).forEach(initAnnouncementBar);
+    }
+
+    /**
+     * Initial page load.
+     */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAllAnnouncementBars);
+    } else {
+      initAllAnnouncementBars();
+    }
+
+    /**
+     * Shopify Theme Editor:
+     * Section added or re-rendered.
+     *
+     * This is important when merchant changes:
+     *
+     * - Transition effect
+     * - Transition speed
+     * - Autoplay speed
+     * - Rewind
+     */
+    document.addEventListener('shopify:section:load', (event) => {
+      const section = getAnnouncementBar(event.target);
+
+      initAnnouncementBar(section);
+    });
+
+    /**
+     * Shopify Theme Editor:
+     * Section removed or about to be re-rendered.
+     */
+    document.addEventListener('shopify:section:unload', (event) => {
+      const section = getAnnouncementBar(event.target);
+
+      destroyAnnouncementBar(section);
+    });
+
+    /**
+     * Shopify Theme Editor:
+     * Announcement block selected.
+     *
+     * Stop autoplay and display
+     * the selected announcement.
+     */
+    document.addEventListener('shopify:block:select', (event) => {
+      const block = event.target;
+
+      if (!block) return;
+
+      const section = block.closest(SELECTOR);
+
+      if (!section || !section.announcementSwiper) {
+        return;
+      }
+
+      const swiper = section.announcementSwiper;
+
+      const slides = Array.from(section.querySelectorAll('.swiper-slide'));
+
+      const index = slides.indexOf(block);
+
+      if (index < 0) {
+        return;
+      }
+
+      if (swiper.autoplay) {
+        swiper.autoplay.stop();
+      }
+
+      if (swiper.params.loop) {
+        swiper.slideToLoop(index, 0);
+      } else {
+        swiper.slideTo(index, 0);
+      }
+    });
+
+    /**
+     * Shopify Theme Editor:
+     * Block deselected.
+     *
+     * Restart autoplay.
+     */
+    document.addEventListener('shopify:block:deselect', (event) => {
+      const block = event.target;
+
+      if (!block) return;
+
+      const section = block.closest(SELECTOR);
+
+      if (!section || !section.announcementSwiper) {
+        return;
+      }
+
+      const swiper = section.announcementSwiper;
+
+      const autoplayEnabled = section.dataset.autoplay === 'true';
+
+      if (autoplayEnabled && !prefersReducedMotion() && swiper.autoplay) {
+        swiper.autoplay.start();
+      }
+    });
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
-  "name": "Announcement Bar",
+  "name": "t:sections.announcement_bar.name",
+  "tag": "section",
+  "class": "section-announcement-bar",
+  "limit": 1,
+  "max_blocks": 12,
+  "enabled_on": {
+    "groups": ["header"]
+  },
+
   "settings": [
     {
       "type": "header",
-      "content": "Announcement Bar Content"
+      "content": "t:sections.announcement_bar.settings.general.content"
     },
     {
-      "type": "text",
-      "id": "text",
-      "label": "Fallback Announcement Text",
-      "default": "15% off Sale: SUNNYDAY15",
-      "info": "Used if no announcement blocks are added"
+      "type": "checkbox",
+      "id": "enable_announcement_bar",
+      "label": "t:sections.announcement_bar.settings.enable_announcement_bar.label",
+      "default": true
     },
-    {
-      "type": "url",
-      "id": "link",
-      "label": "Fallback Link"
-    },
+
     {
       "type": "header",
-      "content": "Navigation & Controls"
+      "content": "t:sections.announcement_bar.settings.appearance.content"
+    },
+
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:sections.announcement_bar.settings.background_color.label",
+      "default": "#224E09"
+    },
+
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:sections.announcement_bar.settings.text_color.label",
+      "default": "#F8F9DC"
+    },
+
+    {
+      "type": "range",
+      "id": "height",
+      "label": "t:sections.announcement_bar.settings.height.label",
+      "min": 40,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+
+    {
+      "type": "header",
+      "content": "t:sections.announcement_bar.settings.typography.content"
+    },
+
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "label": "t:sections.announcement_bar.settings.font_size_desktop.label",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "t:sections.announcement_bar.settings.font_size_mobile.label",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+
+    {
+      "type": "header",
+      "content": "t:sections.announcement_bar.settings.rotation.content"
     },
     {
       "type": "checkbox",
-      "id": "enable_vertical_carousel",
-      "label": "Enable Vertical Carousel Animation",
-      "default": true,
-      "info": "Slides announcement messages with a smooth vertical carousel transition effect"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_arrows_desktop",
-      "label": "Show navigation arrows on desktop",
-      "default": false,
-      "info": "Mobile will always show navigation arrows and hide the close button by default when multiple announcements exist."
-    },
-    {
-      "type": "checkbox",
-      "id": "auto_rotate",
-      "label": "Auto-rotate announcements",
+      "id": "autoplay",
+      "label": "t:sections.announcement_bar.settings.autoplay.label",
       "default": true
     },
     {
       "type": "range",
-      "id": "rotate_interval",
-      "min": 3,
+      "id": "autoplay_speed",
+      "label": "t:sections.announcement_bar.settings.autoplay_speed.label",
+      "min": 1,
       "max": 10,
       "step": 1,
       "unit": "s",
-      "label": "Change slides every",
-      "default": 5
-    },
-    {
-      "type": "header",
-      "content": "Close Button"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_close_btn",
-      "label": "Show close button (×)",
-      "default": true
+      "default": 3
     },
     {
       "type": "select",
-      "id": "close_btn_position",
-      "label": "Close button position",
+      "id": "transition_effect",
+      "label": "t:sections.announcement_bar.settings.transition_effect.label",
       "options": [
         {
-          "value": "left",
-          "label": "Left"
+          "value": "slide",
+          "label": "t:sections.announcement_bar.settings.transition_effect.options.slide"
         },
         {
-          "value": "right",
-          "label": "Right"
+          "value": "fade",
+          "label": "t:sections.announcement_bar.settings.transition_effect.options.fade"
         }
       ],
-      "default": "right"
+      "default": "fade"
     },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "label": "t:sections.announcement_bar.settings.transition_speed.label",
+      "min": 100,
+      "max": 1500,
+      "step": 100,
+      "unit": "ms",
+      "default": 1000
+    },
+
+    {
+      "type": "checkbox",
+      "id": "rewind",
+      "label": "t:sections.announcement_bar.settings.rewind.label",
+      "default": true
+    },
+
     {
       "type": "header",
-      "content": "Colors"
+      "content": "t:sections.announcement_bar.settings.close_button.content"
     },
+
     {
-      "type": "color",
-      "id": "bg_color",
-      "label": "Background Color",
-      "default": "#224E09"
+      "type": "checkbox",
+      "id": "show_close_button",
+      "label": "t:sections.announcement_bar.settings.show_close_button.label",
+      "default": true
     },
+
     {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text Color",
-      "default": "#F8F9DC"
+      "type": "range",
+      "id": "close_icon_size",
+      "label": "t:sections.announcement_bar.settings.close_icon_size.label",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+
+    {
+      "type": "select",
+      "id": "close_persistence",
+      "label": "t:sections.announcement_bar.settings.close_persistence.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.announcement_bar.settings.close_persistence.options.none"
+        },
+        {
+          "value": "session",
+          "label": "t:sections.announcement_bar.settings.close_persistence.options.session"
+        }
+      ],
+      "default": "session"
     }
   ],
+
   "blocks": [
     {
       "type": "announcement",
-      "name": "Announcement",
+
+      "name": "t:sections.announcement_bar.blocks.announcement.name",
+
       "settings": [
+        {
+          "type": "checkbox",
+          "id": "enable",
+          "label": "t:sections.announcement_bar.blocks.announcement.settings.enable.label",
+          "default": true
+        },
+
         {
           "type": "text",
           "id": "text",
-          "label": "Announcement Text",
-          "default": "15% off Sale: SUNNYDAY15"
+          "label": "t:sections.announcement_bar.blocks.announcement.settings.text.label",
+          "default": "Free shipping over $100"
         },
+
         {
           "type": "url",
           "id": "link",
-          "label": "Link"
+          "label": "t:sections.announcement_bar.blocks.announcement.settings.link.label"
         }
       ]
     }
   ],
+
   "presets": [
     {
-      "name": "Announcement Bar",
+      "name": "t:sections.announcement_bar.presets.name",
+
       "blocks": [
         {
           "type": "announcement",
           "settings": {
-            "text": "15% off Sale: SUNNYDAY15"
+            "text": "Free shipping over $100"
           }
         },
+
         {
           "type": "announcement",
           "settings": {
-            "text": "Extra 15% off Sale with code: SUNNYDAY15"
+            "text": "Save 15% code SUNNYDAY15"
+          }
+        },
+
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "Easy returns within 30 days"
           }
         }
       ]
