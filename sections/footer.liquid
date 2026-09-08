@@ -128,27 +128,23 @@
   }
 
   .earth-footer__brand-logo-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: block;
     width: 100%;
-    gap: clamp(12px, 1.8vw, 28px);
     text-decoration: none;
     line-height: 1;
   }
 
-  .earth-footer__brand-leaf {
-    width: 24.2%;
-    height: auto;
+  .earth-footer__brand-full-logo {
     display: block;
-    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
   }
 
-  .earth-footer__brand-text-svg {
-    width: calc(75.8% - clamp(12px, 1.8vw, 28px));
+  .earth-footer__brand-full-logo svg {
+    width: 100%;
     height: auto;
     display: block;
-    flex-shrink: 0;
   }
 
   .earth-footer__tagline {
@@ -541,14 +537,6 @@
       padding: 36px 20px 28px;
     }
 
-    .earth-footer__brand-leaf {
-      width: 24%;
-    }
-
-    .earth-footer__brand-text-svg {
-      width: calc(76% - 12px);
-    }
-
     .earth-footer__tagline {
       font-size: 21px;
       margin-top: 14px;
@@ -693,22 +681,9 @@
     <!-- Brand Header -->
     <div class="earth-footer__brand">
       <a href="{{ routes.root_url }}" class="earth-footer__brand-logo-wrap" aria-label="Earth Home">
-        <img
-          src="{{ 'icon-leaf-2.svg' | asset_url }}"
-          alt="Earth Leaf Logo"
-          class="earth-footer__brand-leaf"
-          width="108"
-          height="97"
-          loading="lazy"
-        >
-        <img
-          src="{{ 'icon-Earth-logo.svg' | asset_url }}"
-          alt="Earth"
-          class="earth-footer__brand-text-svg"
-          width="336"
-          height="98"
-          loading="lazy"
-        >
+        <span class="earth-footer__brand-full-logo" aria-hidden="true">
+          {{ 'icon-earth-logo copy.svg' | inline_asset_content }}
+        </span>
       </a>
       <p class="earth-footer__tagline">
         {{ section.settings.tagline | default: 'Redefining fashion through sustainable practices, transparent supply chains, and timeless design.' }}
