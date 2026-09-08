@@ -23,7 +23,7 @@
     <div class="earth-values__slider-wrapper" id="earthValuesSliderWrapper-{{ section.id }}">
       <!-- Left Floating Navigation Arrow (Appears on hover) -->
       <button type="button" class="earth-values__nav-btn earth-values__nav-btn--prev" id="earthValuesPrev-{{ section.id }}" aria-label="Previous value">
-        <img src="{{ 'prev-left.svg' | asset_url }}" width="15" height="15" alt="" class="earth-values__icon-arrow earth-values__icon-arrow--prev">
+        <img src="{{ 'icon-prev-left.svg' | asset_url }}" width="15" height="15" alt="" class="earth-values__icon-arrow earth-values__icon-arrow--prev">
       </button>
 
       <!-- Horizontal Slider Track -->
@@ -62,7 +62,7 @@
 
                   {%- if block.settings.highlight != blank -%}
                     <div class="earth-values__highlight">
-                      <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                      <img src="{{ 'icon-handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
                       <span>{{ block.settings.highlight }}</span>
                     </div>
                   {%- endif -%}
@@ -92,7 +92,7 @@
                   <span class="earth-values__badge">GOTS Certified Organic</span>
                 </div>
                 <div class="earth-values__highlight">
-                  <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                  <img src="{{ 'icon-handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
                   <span>100% Pesticide & GMO Free</span>
                 </div>
                 <p class="earth-values__description">Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton.</p>
@@ -115,7 +115,7 @@
                   <span class="earth-values__badge">Ocean & Land Waste Diverted</span>
                 </div>
                 <div class="earth-values__highlight">
-                  <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                  <img src="{{ 'icon-handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
                   <span>7.8 plastic bottles per garment</span>
                 </div>
                 <p class="earth-values__description">Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments.</p>
@@ -138,7 +138,7 @@
                   <span class="earth-values__badge">Ethical wages guaranteed</span>
                 </div>
                 <div class="earth-values__highlight">
-                  <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                  <img src="{{ 'icon-handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
                   <span>100% worker-owned cooperatives</span>
                 </div>
                 <p class="earth-values__description">Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p>
@@ -161,7 +161,7 @@
                   <span class="earth-values__badge">Net-Zero Supply Chain</span>
                 </div>
                 <div class="earth-values__highlight">
-                  <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                  <img src="{{ 'icon-handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
                   <span>100% renewable energy powered</span>
                 </div>
                 <p class="earth-values__description">Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery.</p>
@@ -184,7 +184,7 @@
                   <span class="earth-values__badge">PETA Approved Vegan</span>
                 </div>
                 <div class="earth-values__highlight">
-                  <img src="{{ 'handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
+                  <img src="{{ 'icon-handshake.svg' | asset_url }}" class="earth-values__highlight-icon" alt="" width="18" height="18" loading="lazy">
                   <span>Zero animal testing or materials</span>
                 </div>
                 <p class="earth-values__description">100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living.</p>
@@ -199,7 +199,7 @@
 
       <!-- Right Floating Navigation Arrow (Appears on hover) -->
       <button type="button" class="earth-values__nav-btn earth-values__nav-btn--next" id="earthValuesNext-{{ section.id }}" aria-label="Next value">
-        <img src="{{ 'next-right.svg' | asset_url }}" width="15" height="15" alt="" class="earth-values__icon-arrow earth-values__icon-arrow--next">
+        <img src="{{ 'icon-next-right.svg' | asset_url }}" width="15" height="15" alt="" class="earth-values__icon-arrow earth-values__icon-arrow--next">
       </button>
 
     </div>
@@ -906,7 +906,7 @@
           "type": "text",
           "id": "icon",
           "label": "Icon File (Asset)",
-          "default": "handshake.svg"
+          "default": "icon-handshake.svg"
         },
         {
           "type": "textarea",
@@ -937,7 +937,7 @@
             "title": "Organic Cotton",
             "badge": "GOTS Certified Organic",
             "highlight": "100% Pesticide & GMO Free",
-            "icon": "handshake.svg",
+            "icon": "icon-handshake.svg",
             "desc": "Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton."
           }
         },
@@ -947,7 +947,7 @@
             "title": "Recycled Materials",
             "badge": "Ocean & Land Waste Diverted",
             "highlight": "7.8 plastic bottles per garment",
-            "icon": "handshake.svg",
+            "icon": "icon-handshake.svg",
             "desc": "Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments."
           }
         },
@@ -957,7 +957,7 @@
             "title": "Fair Trade",
             "badge": "Ethical wages guaranteed",
             "highlight": "100% worker-owned cooperatives",
-            "icon": "handshake.svg",
+            "icon": "icon-handshake.svg",
             "desc": "Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans."
           }
         },
@@ -967,7 +967,7 @@
             "title": "Carbon Neutral",
             "badge": "Net-Zero Supply Chain",
             "highlight": "100% renewable energy powered",
-            "icon": "handshake.svg",
+            "icon": "icon-handshake.svg",
             "desc": "Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery."
           }
         },
@@ -977,7 +977,7 @@
             "title": "Vegan & Cruelty-Free",
             "badge": "PETA Approved Vegan",
             "highlight": "Zero animal testing or materials",
-            "icon": "handshake.svg",
+            "icon": "icon-handshake.svg",
             "desc": "100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living."
           }
         }

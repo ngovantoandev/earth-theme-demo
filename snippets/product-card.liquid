@@ -56,18 +56,18 @@
 
     <!-- Top Left Impact Score Badge -->
     <div class="earth-prod-card__impact-badge">
-      <img src="{{ 'sustainability.svg' | asset_url }}" width="14" height="15" alt="" class="earth-prod-card__badge-icon">
+      <img src="{{ 'icon-sustainability.svg' | asset_url }}" width="14" height="15" alt="" class="earth-prod-card__badge-icon">
       <span>{{ prod_impact }}</span>
     </div>
 
     <!-- Bottom Left Metric Badges (Water & CO2) -->
     <div class="earth-prod-card__metrics">
       <span class="earth-prod-card__metric-pill">
-        <img src="{{ 'Drop.svg' | asset_url }}" width="12" height="13" alt="" class="earth-prod-card__metric-icon">
+        <img src="{{ 'icon-Drop.svg' | asset_url }}" width="12" height="13" alt="" class="earth-prod-card__metric-icon">
         <span>{{ prod_water }}</span>
       </span>
       <span class="earth-prod-card__metric-pill">
-        <img src="{{ 'windy.svg' | asset_url }}" width="14" height="10" alt="" class="earth-prod-card__metric-icon">
+        <img src="{{ 'icon-windy.svg' | asset_url }}" width="14" height="10" alt="" class="earth-prod-card__metric-icon">
         <span>{{ prod_co2 }}</span>
       </span>
     </div>
@@ -113,7 +113,7 @@
     <!-- Origin & Promotion Meta -->
     <div class="earth-prod-card__meta-row">
       <div class="earth-prod-card__origin">
-        <img src="{{ 'location.svg' | asset_url }}" width="10" height="14" alt="" class="earth-prod-card__meta-icon">
+        <img src="{{ 'icon-location.svg' | asset_url }}" width="10" height="14" alt="" class="earth-prod-card__meta-icon">
         <span>Made in {{ prod_origin }}</span>
       </div>
 
@@ -161,13 +161,13 @@
         <form method="post" action="{{ routes.cart_add_url }}" class="earth-prod-card__form">
           <input type="hidden" name="id" value="{{ prod_variant.id }}">
           <button type="submit" class="earth-prod-card__add-btn" aria-label="Add {{ prod_title }} to cart" {% unless prod_variant.available %}disabled{% endunless %}>
-            <img src="{{ 'add-icon.svg' | asset_url }}" width="15" height="15" alt="" class="earth-prod-card__add-icon">
+            <img src="{{ 'icon-add-icon.svg' | asset_url }}" width="15" height="15" alt="" class="earth-prod-card__add-icon">
             <span>{% if prod_variant.available %}ADD TO CART{% else %}SOLD OUT{% endif %}</span>
           </button>
         </form>
       {%- else -%}
         <a href="{{ prod_url }}" class="earth-prod-card__add-btn">
-          <img src="{{ 'add-icon.svg' | asset_url }}" width="15" height="15" alt="" class="earth-prod-card__add-icon">
+          <img src="{{ 'icon-add-icon.svg' | asset_url }}" width="15" height="15" alt="" class="earth-prod-card__add-icon">
           <span>ADD TO CART</span>
         </a>
       {%- endif -%}

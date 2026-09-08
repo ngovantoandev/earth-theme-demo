@@ -84,7 +84,7 @@
             "title": "Organic Cotton",
             "badge": "GOTS Certified Organic",
             "highlight": "100% Pesticide & GMO Free",
-            "icon": "handshake.svg",
+            "icon": "icon-handshake.svg",
             "desc": "Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton."
           }
         },
@@ -94,7 +94,7 @@
             "title": "Recycled Materials",
             "badge": "Ocean & Land Waste Diverted",
             "highlight": "7.8 plastic bottles per garment",
-            "icon": "handshake.svg",
+            "icon": "icon-handshake.svg",
             "desc": "Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments."
           }
         },
@@ -104,7 +104,7 @@
             "title": "Fair Trade",
             "badge": "Ethical wages guaranteed",
             "highlight": "100% worker-owned cooperatives",
-            "icon": "handshake.svg",
+            "icon": "icon-handshake.svg",
             "desc": "Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans."
           }
         },
@@ -114,7 +114,7 @@
             "title": "Carbon Neutral",
             "badge": "Net-Zero Supply Chain",
             "highlight": "100% renewable energy powered",
-            "icon": "handshake.svg",
+            "icon": "icon-handshake.svg",
             "desc": "Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery."
           }
         },
@@ -124,7 +124,7 @@
             "title": "Vegan & Cruelty-Free",
             "badge": "PETA Approved Vegan",
             "highlight": "Zero animal testing or materials",
-            "icon": "handshake.svg",
+            "icon": "icon-handshake.svg",
             "desc": "100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living."
           }
         }
@@ -271,7 +271,7 @@
           "type": "milestone",
           "settings": {
             "year": "2018",
-            "icon_name": "idea.svg",
+            "icon_name": "icon-idea.svg",
             "title": "The Beginning",
             "description": "Founded in Hanoi with mission to source 100% organic cotton from local farms"
           }
@@ -280,7 +280,7 @@
           "type": "milestone",
           "settings": {
             "year": "2020",
-            "icon_name": "handshake.svg",
+            "icon_name": "icon-handshake.svg",
             "title": "Fair Trade Partnership",
             "description": "Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans"
           }
@@ -289,7 +289,7 @@
           "type": "milestone",
           "settings": {
             "year": "2022",
-            "icon_name": "tree.svg",
+            "icon_name": "icon-tree.svg",
             "title": "Reforestation Initiative",
             "description": "Launched \"1 Tree Per Product\" – planted 50K trees in Vietnam reforestation"
           }
@@ -298,7 +298,7 @@
           "type": "milestone",
           "settings": {
             "year": "2024",
-            "icon_name": "badge.svg",
+            "icon_name": "icon-badge.svg",
             "title": "Carbon Neutral",
             "description": "Achieved B Corp certification and full carbon-neutral shipping"
           }
@@ -307,7 +307,7 @@
           "type": "milestone",
           "settings": {
             "year": "2026",
-            "icon_name": "repost.svg",
+            "icon_name": "icon-repost.svg",
             "title": "Circular Economy",
             "description": "Closed-loop recycling: turn old clothes into new collections"
           }
@@ -342,7 +342,7 @@
           "settings": {
             "title": "Why Sustainable Fashion?",
             "subtitle": "Understanding the real cost of fast fashion",
-            "icon_name": "heart.svg",
+            "icon_name": "icon-heart.svg",
             "default_open": true,
             "show_comparison": true,
             "fast_heading": "FAST FASHION",
@@ -364,7 +364,7 @@
           "settings": {
             "title": "Material Guide",
             "subtitle": "Choose fabrics by their environmental impact",
-            "icon_name": "eco.svg",
+            "icon_name": "icon-eco.svg",
             "default_open": false,
             "show_comparison": false,
             "info_title": "Material Insights",
@@ -376,7 +376,7 @@
           "settings": {
             "title": "Impact Calculator Teaser",
             "subtitle": "See the real impact of your choices",
-            "icon_name": "caculator.svg",
+            "icon_name": "icon-caculator.svg",
             "default_open": false,
             "show_comparison": false,
             "info_title": "Measure Your Impact",
@@ -388,7 +388,7 @@
           "settings": {
             "title": "Care Instructions",
             "subtitle": "Extend garment life by 3x with proper care",
-            "icon_name": "washing.svg",
+            "icon_name": "icon-washing.svg",
             "default_open": false,
             "show_comparison": false,
             "info_title": "Longevity Tip",
@@ -400,7 +400,7 @@
           "settings": {
             "title": "Circular Fashion 101",
             "subtitle": "From your closet back to ours—zero waste",
-            "icon_name": "get-dressed.svg",
+            "icon_name": "icon-get-dressed.svg",
             "default_open": false,
             "show_comparison": false,
             "info_title": "Closed Loop Movement",
@@ -412,7 +412,7 @@
           "settings": {
             "title": "Myth Busting",
             "subtitle": "Debunking common sustainable fashion misconceptions",
-            "icon_name": "sparkle.svg",
+            "icon_name": "icon-sparkle.svg",
             "default_open": false,
             "show_comparison": false,
             "info_title": "True Cost vs Sticker Price",
