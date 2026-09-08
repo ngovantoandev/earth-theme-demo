@@ -60,14 +60,12 @@
       "settings": {
         "menu": "main-menu",
         "header_layout": "logo_center_menu_left",
-        "enable_language_selector": false,
         "enable_country_selector": true,
         "bg_color": "#f3f6e4",
         "text_color": "#224E09",
         "top_padding": 0,
         "bottom_padding": 0,
-        "full_width": true,
-        "rounded": false
+        "full_width": true
       }
     }
   },

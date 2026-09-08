@@ -8,6 +8,56 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Logo",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 50,
+        "max": 300,
+        "step": 5,
+        "unit": "px",
+        "label": "Desktop logo width",
+        "default": 85
+      },
+      {
+        "type": "header",
+        "content": "Mobile layout"
+      },
+      {
+        "type": "image_picker",
+        "id": "mobile_logo",
+        "label": "Mobile logo"
+      },
+      {
+        "type": "range",
+        "id": "mobile_logo_width",
+        "min": 30,
+        "max": 200,
+        "step": 5,
+        "unit": "px",
+        "label": "Mobile logo width",
+        "info": "Set as a max-width, may appear smaller",
+        "default": 70
+      },
+      {
+        "type": "header",
+        "content": "Favicon"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "Will be scaled down to 32 x 32px"
+      }
+    ]
+  },
+  {
         "name": "t:general.typography.name",
         "settings": [
             {

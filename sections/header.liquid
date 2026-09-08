@@ -1,7 +1,7 @@
 {% comment %}
   Header Section - Earth Shopify Theme
-  Configurable header with multi-layout support, sticky options, icon sizing,
-  language/country selectors, mobile layout options, drawer menu, and styling controls.
+  Clean header with Logo left layout options, sticky controls, icon sizing,
+  drawer menu, and theme logo integration.
 {% endcomment %}
 
 {%- liquid
@@ -11,6 +11,8 @@
   assign icon_size = section.settings.icons_size | default: 'large'
   assign icon_size_class = 'earth-header--icons-' | append: icon_size
   assign sticky_mode = section.settings.sticky_header | default: 'always'
+  assign logo_width = settings.logo_width | default: 85
+  assign mobile_logo_width = settings.mobile_logo_width | default: 70
 -%}
 
 <div 
@@ -21,16 +23,17 @@
     --header-color: {{ section.settings.text_color | default: '#224E09' }};
     --header-pt: {{ section.settings.top_padding | default: 0 }}px;
     --header-pb: {{ section.settings.bottom_padding | default: 0 }}px;
-    --header-radius: {% if section.settings.rounded %}16px{% else %}0px{% endif %};
+    --header-logo-width: {{ logo_width }}px;
+    --header-mobile-logo-width: {{ mobile_logo_width }}px;
   "
 >
-  <header class="earth-main-header earth-header--layout-{{ layout }}{% if section.settings.rounded %} earth-header--rounded{% endif %}">
+  <header class="earth-main-header earth-header--layout-{{ layout }}">
     <div class="earth-header-container{% if section.settings.full_width %} earth-header-container--full{% endif %}">
       
-      <!-- Drawer / Hamburger Button (Mobile + Drawer Layouts) -->
+      <!-- Drawer / Hamburger Button (Mobile) -->
       <button 
         type="button" 
-        class="earth-header__mobile-menu-btn{% if layout == 'logo_left_menu_drawer' or layout == 'logo_center_menu_drawer' %} earth-header__drawer-btn--desktop{% endif %}" 
+        class="earth-header__mobile-menu-btn" 
         id="earthMobileMenuBtn-{{ section.id }}" 
         aria-label="Toggle navigation"
       >
@@ -40,37 +43,40 @@
         {%- endif -%}
       </button>
 
-      <!-- Left Navigation Menu (for logo_center_menu_left, logo_left_menu_left, logo_center_menu_split) -->
-      {%- if layout == 'logo_center_menu_left' or layout == 'logo_left_menu_left' or layout == 'logo_left_menu_center' or layout == 'logo_center_menu_split' -%}
-        <nav class="earth-header__nav-left earth-header__nav--{{ layout }}" aria-label="Main Navigation">
-          {%- if main_menu != blank and main_menu.links.size > 0 -%}
-            {%- if layout == 'logo_center_menu_split' -%}
-              {%- assign half_count = main_menu.links.size | divided_by: 2 -%}
-              {%- for link in main_menu.links limit: half_count -%}
-                <a href="{{ link.url }}" class="earth-header__nav-link">{{ link.title }}</a>
-              {%- endfor -%}
-            {%- else -%}
-              {%- for link in main_menu.links -%}
-                <a href="{{ link.url }}" class="earth-header__nav-link">{{ link.title }}</a>
-              {%- endfor -%}
-            {%- endif -%}
-          {%- else -%}
-            <a href="{{ routes.root_url }}" class="earth-header__nav-link">Home</a>
-            <a href="{{ routes.all_products_collection_url }}" class="earth-header__nav-link">Shop</a>
-            <a href="/blogs/news" class="earth-header__nav-link">Blog</a>
-            <a href="/pages/about" class="earth-header__nav-link">About</a>
-            <a href="/pages/contact" class="earth-header__nav-link">Contact</a>
-          {%- endif -%}
-        </nav>
-      {%- endif -%}
-
       <!-- Logo Area (H1 or DIV for SEO) -->
       {%- capture logo_markup -%}
         <a href="{{ routes.root_url }}" class="earth-header__logo-link" aria-label="{{ shop.name }}">
+          {%- assign desktop_logo_class = 'earth-header__logo-img' -%}
+          {%- if settings.mobile_logo != blank -%}
+            {%- assign desktop_logo_class = desktop_logo_class | append: ' earth-header__logo-img--hide-on-mobile' -%}
+          {%- endif -%}
+
           {%- if settings.logo != blank -%}
-            {{ settings.logo | image_url: width: 300 | image_tag: class: 'earth-header__logo-img', alt: shop.name, loading: 'eager' }}
+            {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+            {%- assign logo_height = logo_width | divided_by: settings.logo.aspect_ratio | round -%}
+            {{ settings.logo | image_url: width: 600 | image_tag: 
+              class: desktop_logo_class, 
+              alt: logo_alt, 
+              width: logo_width,
+              height: logo_height,
+              loading: 'eager',
+              style: 'max-width: var(--header-logo-width, 85px);'
+            }}
           {%- else -%}
-            <img src="{{ 'icon-Earth-logo.svg' | asset_url }}" alt="earth" width="82" height="24" class="earth-header__logo-img" loading="eager">
+            <img src="{{ 'icon-Earth-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="{{ logo_width }}" height="24" class="{{ desktop_logo_class }}" loading="eager" style="max-width: var(--header-logo-width, 85px);">
+          {%- endif -%}
+
+          {%- if settings.mobile_logo != blank -%}
+            {%- assign mobile_logo_alt = settings.mobile_logo.alt | default: shop.name | escape -%}
+            {%- assign mobile_logo_height = mobile_logo_width | divided_by: settings.mobile_logo.aspect_ratio | round -%}
+            {{ settings.mobile_logo | image_url: width: 400 | image_tag: 
+              class: 'earth-header__logo-img earth-header__logo-img--mobile', 
+              alt: mobile_logo_alt, 
+              width: mobile_logo_width,
+              height: mobile_logo_height,
+              loading: 'eager',
+              style: 'max-width: var(--header-mobile-logo-width, 70px);'
+            }}
           {%- endif -%}
         </a>
       {%- endcapture -%}
@@ -85,39 +91,59 @@
         </div>
       {%- endif -%}
 
-      <!-- Split Menu Right Side (for logo_center_menu_split) -->
-      {%- if layout == 'logo_center_menu_split' -%}
-        <nav class="earth-header__nav-split-right" aria-label="Secondary Navigation">
-          {%- if main_menu != blank and main_menu.links.size > 0 -%}
-            {%- assign half_count = main_menu.links.size | divided_by: 2 -%}
-            {%- for link in main_menu.links offset: half_count -%}
-              <a href="{{ link.url }}" class="earth-header__nav-link">{{ link.title }}</a>
-            {%- endfor -%}
-          {%- endif -%}
-        </nav>
-      {%- endif -%}
+      <!-- Navigation Menu (Desktop) -->
+      <nav class="earth-header__nav-left earth-header__nav--{{ layout }}" aria-label="Main Navigation">
+        {%- if main_menu != blank and main_menu.links.size > 0 -%}
+          {%- for link in main_menu.links -%}
+            <a href="{{ link.url }}" class="earth-header__nav-link">{{ link.title }}</a>
+          {%- endfor -%}
+        {%- else -%}
+          <a href="{{ routes.root_url }}" class="earth-header__nav-link">Home</a>
+          <a href="{{ routes.all_products_collection_url }}" class="earth-header__nav-link">Shop</a>
+          <a href="/blogs/news" class="earth-header__nav-link">Blog</a>
+          <a href="/pages/about" class="earth-header__nav-link">About</a>
+          <a href="/pages/contact" class="earth-header__nav-link">Contact</a>
+        {%- endif -%}
+      </nav>
 
       <!-- Right Utility Actions -->
       <div class="earth-header__actions-right">
-        <!-- Desktop Language Selector -->
-        {%- if section.settings.enable_language_selector -%}
-          <div class="earth-header__language-selector">
-            <span class="earth-header__language-label">{{ localization.language.endonym_name | default: 'English' | capitalize }}</span>
-            <img src="{{ 'icon-down.svg' | asset_url }}" width="10" height="5" alt="" class="earth-header__selector-arrow">
-          </div>
-        {%- endif -%}
-
-        <!-- Desktop Country / Region Selector -->
+        <!-- Country / Currency Selector -->
         {%- if section.settings.enable_country_selector -%}
           <div class="earth-header__country-selector">
-            <span class="earth-header__country-label">
-              {%- if localization.country -%}
-                {{ localization.country.name }} ({{ localization.country.currency.iso_code }} {{ localization.country.currency.symbol }})
-              {%- else -%}
-                United States (USD $)
-              {%- endif -%}
-            </span>
-            <img src="{{ 'icon-down.svg' | asset_url }}" width="11" height="6" alt="" class="earth-header__country-arrow">
+            {%- if localization.available_countries.size > 1 -%}
+              {%- form 'localization', id: 'HeaderCountryForm', class: 'earth-header__localization-form' -%}
+                <div class="earth-header__select-wrapper">
+                  <select name="country_code" class="earth-header__country-select" onchange="this.form.submit()" aria-label="Country/region">
+                    {%- for country in localization.available_countries -%}
+                      <option value="{{ country.iso_code }}" {%- if country.iso_code == localization.country.iso_code %} selected{% endif %}>
+                        {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                  <span class="earth-header__select-arrow" aria-hidden="true">
+                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 1L5 5L9 1"/>
+                    </svg>
+                  </span>
+                </div>
+              {%- endform -%}
+            {%- else -%}
+              <div class="earth-header__select-wrapper">
+                <select class="earth-header__country-select" aria-label="Country/region">
+                  <option value="US" selected>{{ localization.country.name | default: 'United States' }} ({{ localization.country.currency.iso_code | default: 'USD' }} {{ localization.country.currency.symbol | default: '$' }})</option>
+                  <option value="CA">Canada (CAD $)</option>
+                  <option value="GB">United Kingdom (GBP £)</option>
+                  <option value="EU">European Union (EUR €)</option>
+                  <option value="AU">Australia (AUD $)</option>
+                </select>
+                <span class="earth-header__select-arrow" aria-hidden="true">
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 1L5 5L9 1"/>
+                  </svg>
+                </span>
+              </div>
+            {%- endif -%}
           </div>
         {%- endif -%}
 
@@ -143,26 +169,23 @@
       </div>
     </div>
 
-    <!-- Below Navigation Bar (for logo_center_menu_below) -->
-    {%- if layout == 'logo_center_menu_below' -%}
-      <div class="earth-header__nav-below-container">
-        <nav class="earth-header__nav-below" aria-label="Main Navigation Below">
-          {%- if main_menu != blank and main_menu.links.size > 0 -%}
-            {%- for link in main_menu.links -%}
-              <a href="{{ link.url }}" class="earth-header__nav-link">{{ link.title }}</a>
-            {%- endfor -%}
-          {%- endif -%}
-        </nav>
-      </div>
-    {%- endif -%}
-
     <!-- Mobile Drawer Menu -->
     <div class="earth-mobile-drawer" id="earthMobileDrawer-{{ section.id }}" aria-hidden="true">
       <div class="earth-mobile-drawer__overlay" id="earthDrawerOverlay-{{ section.id }}"></div>
       <div class="earth-mobile-drawer__panel">
         <div class="earth-mobile-drawer__top">
           <a href="{{ routes.root_url }}">
-            <img src="{{ 'icon-Earth-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="82" height="24">
+            {%- if settings.mobile_logo != blank -%}
+              {%- assign drawer_logo_alt = settings.mobile_logo.alt | default: shop.name | escape -%}
+              {%- assign drawer_logo_height = mobile_logo_width | divided_by: settings.mobile_logo.aspect_ratio | round -%}
+              {{ settings.mobile_logo | image_url: width: 400 | image_tag: class: 'earth-mobile-drawer__logo-img', alt: drawer_logo_alt, width: mobile_logo_width, height: drawer_logo_height, loading: 'lazy', style: 'max-width: var(--header-mobile-logo-width, 70px);' }}
+            {%- elsif settings.logo != blank -%}
+              {%- assign drawer_logo_alt = settings.logo.alt | default: shop.name | escape -%}
+              {%- assign drawer_logo_height = mobile_logo_width | divided_by: settings.logo.aspect_ratio | round -%}
+              {{ settings.logo | image_url: width: 400 | image_tag: class: 'earth-mobile-drawer__logo-img', alt: drawer_logo_alt, width: mobile_logo_width, height: drawer_logo_height, loading: 'lazy', style: 'max-width: var(--header-mobile-logo-width, 70px);' }}
+            {%- else -%}
+              <img src="{{ 'icon-Earth-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="{{ mobile_logo_width }}" height="24" style="max-width: var(--header-mobile-logo-width, 70px);">
+            {%- endif -%}
           </a>
           <button type="button" class="earth-mobile-drawer__close" id="earthDrawerCloseBtn-{{ section.id }}" aria-label="Close menu">
             <svg width="18" height="18" viewBox="0 0 14 14" fill="none">
@@ -199,46 +222,6 @@
             <a href="/pages/contact" class="earth-mobile-drawer__link">Contact</a>
           {%- endif -%}
         </nav>
-
-        <!-- Drawer Footer: Language / Country Selectors & Social Media -->
-        <div class="earth-mobile-drawer__footer">
-          {%- if section.settings.mobile_enable_language_selector -%}
-            <div class="earth-mobile-drawer__selector-row">
-              <span class="earth-mobile-drawer__selector-label">{{ localization.language.endonym_name | default: 'English' | capitalize }}</span>
-              <img src="{{ 'icon-down.svg' | asset_url }}" width="10" height="6" alt="">
-            </div>
-          {%- endif -%}
-
-          {%- if section.settings.mobile_enable_country_selector -%}
-            <div class="earth-mobile-drawer__selector-row">
-              <span class="earth-mobile-drawer__selector-label">
-                {%- if localization.country -%}
-                  {{ localization.country.name }} ({{ localization.country.currency.iso_code }} {{ localization.country.currency.symbol }})
-                {%- else -%}
-                  United States (USD $)
-                {%- endif -%}
-              </span>
-              <img src="{{ 'icon-down.svg' | asset_url }}" width="10" height="6" alt="">
-            </div>
-          {%- endif -%}
-
-          {%- if section.settings.show_social_media_icons -%}
-            <div class="earth-mobile-drawer__social-icons">
-              {%- if settings.social_facebook_link != blank -%}
-                <a href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener" aria-label="Facebook" class="earth-mobile-drawer__social-link">FB</a>
-              {%- endif -%}
-              {%- if settings.social_instagram_link != blank -%}
-                <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener" aria-label="Instagram" class="earth-mobile-drawer__social-link">IG</a>
-              {%- endif -%}
-              {%- if settings.social_twitter_link != blank -%}
-                <a href="{{ settings.social_twitter_link }}" target="_blank" rel="noopener" aria-label="X / Twitter" class="earth-mobile-drawer__social-link">X</a>
-              {%- endif -%}
-              {%- if settings.social_tiktok_link != blank -%}
-                <a href="{{ settings.social_tiktok_link }}" target="_blank" rel="noopener" aria-label="TikTok" class="earth-mobile-drawer__social-link">TT</a>
-              {%- endif -%}
-            </div>
-          {%- endif -%}
-        </div>
       </div>
     </div>
   </header>
@@ -280,7 +263,6 @@
     color: var(--header-color, #224E09);
     border-bottom: 1px solid rgba(34, 78, 9, 0.08);
     width: 100%;
-    border-radius: var(--header-radius, 0px);
     box-sizing: border-box;
     transition: background-color 0.3s ease;
   }
@@ -360,8 +342,9 @@
 
   /* Layout Specific Styles */
   /* Logo Center, Menu Left */
-  .earth-header--layout-logo_center_menu_left .earth-header__nav-left {
-    flex: 1;
+  .earth-header--layout-logo_center_menu_left .earth-header-container {
+    justify-content: space-between;
+    position: relative;
   }
   .earth-header--layout-logo_center_menu_left .earth-header__logo-wrapper {
     position: absolute;
@@ -369,75 +352,29 @@
     top: 50%;
     transform: translate(-50%, -50%);
   }
+  .earth-header--layout-logo_center_menu_left .earth-header__nav-left {
+    flex: 1;
+    justify-content: flex-start;
+  }
 
   /* Logo Left, Menu Left */
   .earth-header--layout-logo_left_menu_left .earth-header-container {
     justify-content: flex-start;
   }
   .earth-header--layout-logo_left_menu_left .earth-header__nav-left {
-    margin-left: 24px;
+    margin-left: 32px;
     flex: 1;
   }
 
   /* Logo Left, Menu Center */
+  .earth-header--layout-logo_left_menu_center .earth-header-container {
+    justify-content: space-between;
+  }
   .earth-header--layout-logo_left_menu_center .earth-header__nav-left {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-  }
-
-  /* Logo Left, Menu Drawer */
-  .earth-header--layout-logo_left_menu_drawer .earth-header__nav-left,
-  .earth-header--layout-logo_center_menu_drawer .earth-header__nav-left {
-    display: none;
-  }
-
-  .earth-header--layout-logo_center_menu_drawer .earth-header__logo-wrapper {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .earth-header__drawer-btn--desktop {
-    display: inline-flex !important;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .earth-header__drawer-btn-label {
-    font-size: 15px;
-    font-weight: 500;
-    color: inherit;
-  }
-
-  /* Logo Center, Menu Split */
-  .earth-header--layout-logo_center_menu_split .earth-header__nav-left {
-    flex: 1;
-    justify-content: flex-end;
-  }
-  .earth-header--layout-logo_center_menu_split .earth-header__nav-split-right {
-    flex: 1;
-    justify-content: flex-start;
-  }
-
-  /* Logo Center, Menu Below */
-  .earth-header--layout-logo_center_menu_below .earth-header__logo-wrapper {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .earth-header__nav-below-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding-bottom: 16px;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
-  }
-  .earth-header__nav-below {
-    padding-top: 12px;
   }
 
   /* Right Actions */
@@ -446,19 +383,63 @@
     align-items: center;
     justify-content: flex-end;
     gap: 20px;
-    flex: 1;
+    flex-shrink: 0;
   }
 
-  .earth-header__language-selector,
   .earth-header__country-selector {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .earth-header__localization-form {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+  }
+
+  .earth-header__select-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .earth-header__country-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    color: inherit;
+    cursor: pointer;
+    padding-right: 16px;
+    padding-left: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    outline: none;
+    line-height: 1.2;
+  }
+
+  .earth-header__select-arrow {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
     color: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    user-select: none;
+  }
+
+  .earth-header__select-arrow svg {
+    width: 9px;
+    height: 6px;
+    display: block;
   }
 
   /* Icon Sizing Modifier Classes */
@@ -551,7 +532,6 @@
     z-index: 999999 !important;
   }
 
-  /* Mobile Drawer */
   .earth-mobile-drawer {
     display: none;
   }
@@ -648,39 +628,8 @@
     text-decoration: none;
   }
 
-  .earth-mobile-drawer__footer {
-    margin-top: auto;
-    padding-top: 20px;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .earth-mobile-drawer__selector-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  .earth-mobile-drawer__social-icons {
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
-  }
-  .earth-mobile-drawer__social-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.06);
-    color: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    text-decoration: none;
+  .earth-header__logo-img--mobile {
+    display: none;
   }
 
   /* Responsive Media Queries */
@@ -689,20 +638,19 @@
       padding-left: 24px;
       padding-right: 24px;
     }
-    .earth-header__nav-left,
-    .earth-header__nav-split-right {
+    .earth-header__nav-left {
       gap: 18px;
     }
-    .earth-header__language-selector,
     .earth-header__country-selector {
-      display: none;
+      display: none !important;
     }
   }
 
   @media (max-width: 768px) {
-    .earth-header__nav-left,
-    .earth-header__nav-split-right,
-    .earth-header__nav-below-container {
+    .earth-header__nav-left {
+      display: none !important;
+    }
+    .earth-header__country-selector {
       display: none !important;
     }
     .earth-header__mobile-menu-btn {
@@ -716,6 +664,16 @@
       padding-right: 20px !important;
       padding-top: 16px !important;
       padding-bottom: 16px !important;
+    }
+    .earth-header__logo-img--hide-on-mobile {
+      display: none !important;
+    }
+    .earth-header__logo-img--mobile {
+      display: block !important;
+      max-width: var(--header-mobile-logo-width, 70px) !important;
+    }
+    .earth-header__logo-img {
+      max-width: var(--header-mobile-logo-width, 70px);
     }
     .earth-header__logo--mobile-left {
       position: static !important;
@@ -843,24 +801,8 @@
           "label": "Logo left, menu center"
         },
         {
-          "value": "logo_left_menu_drawer",
-          "label": "Logo left, menu drawer"
-        },
-        {
           "value": "logo_center_menu_left",
           "label": "Logo center, menu left"
-        },
-        {
-          "value": "logo_center_menu_split",
-          "label": "Logo center, menu split"
-        },
-        {
-          "value": "logo_center_menu_below",
-          "label": "Logo center, menu below"
-        },
-        {
-          "value": "logo_center_menu_drawer",
-          "label": "Logo center, menu drawer"
         }
       ],
       "default": "logo_center_menu_left"
@@ -910,25 +852,6 @@
       "default": "large"
     },
     {
-      "type": "text",
-      "id": "menu_drawer_icon_label",
-      "label": "Menu drawer icon label"
-    },
-    {
-      "type": "header",
-      "content": "Language selector"
-    },
-    {
-      "type": "paragraph",
-      "content": "To add a language, go to your language settings."
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_language_selector",
-      "label": "Enable language selector",
-      "default": false
-    },
-    {
       "type": "header",
       "content": "Country/region selector"
     },
@@ -945,10 +868,6 @@
     {
       "type": "header",
       "content": "Mobile layout"
-    },
-    {
-      "type": "paragraph",
-      "content": "Edit your logo in theme settings."
     },
     {
       "type": "select",
@@ -971,25 +890,6 @@
       "id": "enable_accordion_menu",
       "label": "Enable accordion menu",
       "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_social_media_icons",
-      "label": "Show social media icons",
-      "info": "To display your social media accounts, link them in your theme settings.",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "mobile_enable_language_selector",
-      "label": "Enable language selector",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "mobile_enable_country_selector",
-      "label": "Enable country/region selector",
-      "default": true
     },
     {
       "type": "header",
@@ -1054,12 +954,6 @@
       "id": "full_width",
       "label": "Make section full width",
       "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "rounded",
-      "label": "Make section rounded",
-      "default": false
     }
   ]
 }
