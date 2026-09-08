@@ -242,7 +242,8 @@ button, .btn, input[type="button"], input[type="submit"], input[type="reset"] {
 }
 
 /* Reusable Action Button Component */
-.earth-btn-action {
+.earth-btn-action,
+.earth-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -254,32 +255,42 @@ button, .btn, input[type="button"], input[type="submit"], input[type="reset"] {
   text-decoration: none;
   padding: 14px 28px;
   line-height: 1.2;
-  border-radius: var(--button-border-radius, 0px);
+  border-radius: var(--button-border-radius, 2px);
   cursor: pointer;
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
   white-space: nowrap;
   box-sizing: border-box;
 }
 
-/* Solid Variant (Default: Filled -> Hover: Outline) */
-.earth-btn-action--solid {
+/* Solid Variant (Default: Filled -> Hover: Outline/Line) */
+.earth-btn,
+.earth-btn-action--solid,
+.earth-btn--primary,
+.button--primary {
   background-color: var(--color-black, #003225);
   color: var(--color-white, #F8F9DC);
   border: 1.5px solid var(--color-black, #003225);
 }
-.earth-btn-action--solid:hover {
+.earth-btn:hover,
+.earth-btn-action--solid:hover,
+.earth-btn--primary:hover,
+.button--primary:hover {
   background-color: transparent;
   color: var(--color-black, #003225);
   border-color: var(--color-black, #003225);
 }
 
 /* Outline Variant (Default: Outline -> Hover: Filled) */
-.earth-btn-action--outline {
+.earth-btn-action--outline,
+.earth-btn--outline,
+.button--secondary {
   background-color: transparent;
   color: var(--color-black, #003225);
   border: 1.5px solid var(--color-black, #003225);
 }
-.earth-btn-action--outline:hover {
+.earth-btn-action--outline:hover,
+.earth-btn--outline:hover,
+.button--secondary:hover {
   background-color: var(--color-black, #003225);
   color: var(--color-white, #F8F9DC);
   border-color: var(--color-black, #003225);

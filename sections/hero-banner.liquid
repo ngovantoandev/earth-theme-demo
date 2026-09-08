@@ -228,7 +228,7 @@
   .earth-btn,
   .earth-hero__btn {
     background-color: #003225;
-    color: #ffffff;
+    color: #F8F9DC;
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -237,14 +237,17 @@
     padding: 18px 28px;
     display: inline-block;
     border-radius: 2px;
-    transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
-    box-shadow: 0 4px 14px rgba(0, 50, 37, 0.18);
+    border: 1.5px solid #003225;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
   }
   .earth-btn:hover,
   .earth-hero__btn:hover {
-    background-color: #0d4636;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0, 50, 37, 0.25);
+    background-color: transparent;
+    color: #003225;
+    border-color: #003225;
+    box-shadow: none;
   }
 
   /* Responsive Design */
