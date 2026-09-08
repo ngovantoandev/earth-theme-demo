@@ -294,9 +294,6 @@
     object-fit: contain;
     flex-shrink: 0;
   }
-  .earth-values-{{ section.id }} .earth-values__leaf-icon--right {
-    transform: scaleX(-1);
-  }
   .earth-values-{{ section.id }} .earth-values__subtitle {
     font-size: clamp(15px, 1.3vw, 18px);
     color: var(--values-text);
@@ -322,7 +319,7 @@
     scroll-padding-right: 34px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    gap: clamp(20px, 3vw, 32px);
+    gap: clamp(24px, 2.5vw, 40px);
     padding: 10px 34px;
     box-sizing: border-box;
   }
@@ -332,10 +329,9 @@
 
   /* Each Value Slide */
   .earth-values-{{ section.id }} .earth-values__slide {
-    flex: 0 0 85%;
+    flex: 0 0 clamp(660px, 66vw, 80vw);
     min-width: 320px;
-    max-width: 1050px;
-    scroll-snap-align: center;
+    scroll-snap-align: start;
     box-sizing: border-box;
   }
 
@@ -367,7 +363,7 @@
 
   /* Info Box */
   .earth-values-{{ section.id }} .earth-values__info-box {
-    padding: clamp(28px, 4vw, 48px);
+    padding: clamp(36px, 4.5vw, 64px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -376,16 +372,16 @@
     box-sizing: border-box;
   }
   .earth-values-{{ section.id }} .earth-values__item-title {
-    font-size: clamp(28px, 3.2vw, 42px);
+    font-size: clamp(34px, 3.2vw, 48px);
     font-weight: 800;
     color: var(--values-card-text);
-    margin: 0 0 16px;
+    margin: 0 0 18px;
     letter-spacing: -0.02em;
     line-height: 1.15;
   }
   
   .earth-values-{{ section.id }} .earth-values__badge-wrap {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
   .earth-values-{{ section.id }} .earth-values__badge,
   .earth-values__badge {
@@ -394,7 +390,7 @@
     color: var(--color-accent, #EAE060);
     font-size: 15px;
     font-weight: 400;
-    padding: 6px 14px;
+    padding: 7px 16px;
     border-radius: 20px;
     letter-spacing: 0.02em;
   }
@@ -403,11 +399,11 @@
   .earth-values__highlight {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    font-size: 16px;
+    gap: 10px;
+    font-size: 17px;
     font-weight: 400;
     color: var(--color-primary, #224E09);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
   .earth-values-{{ section.id }} .earth-values__highlight-icon {
     object-fit: contain;
@@ -415,10 +411,10 @@
   }
 
   .earth-values-{{ section.id }} .earth-values__description {
-    font-size: clamp(15px, 1.2vw, 17px);
+    font-size: clamp(16px, 1.3vw, 20px);
     color: var(--values-card-text);
-    line-height: 1.6;
-    margin: 0 0 28px;
+    line-height: 1.55;
+    margin: 0 0 32px;
     opacity: 0.92;
   }
 
