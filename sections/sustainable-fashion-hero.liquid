@@ -51,13 +51,20 @@
               <p 
                 class="earth-hero__subtitle" 
                 {{ block.shopify_attributes }}
-                style="
-                  {% if block.settings.color != blank %}color: {{ block.settings.color }};{% endif %}
-                  {% if block.settings.font_size != blank %}font-size: {{ block.settings.font_size }}px;{% endif %}
-                "
               >
                 {{ block.settings.text | default: 'One tree planted per product – 100K+ Trees Planted' }}
               </p>
+
+            {%- when 'text' -%}
+              <div 
+                class="earth-hero__text earth-block-text earth-block-text--font-{{ block.settings.text_font | default: 'body' }} earth-block-text--size-{{ block.settings.text_size | default: 'medium' }}{% if block.settings.use_secondary_color %} earth-block-text--secondary{% endif %}" 
+                {{ block.shopify_attributes }}
+                {% if block.settings.text_size == 'custom' and block.settings.custom_text_size != blank %}
+                  style="--custom-text-size: {{ block.settings.custom_text_size }}px;"
+                {% endif %}
+              >
+                {{ block.settings.text }}
+              </div>
 
             {%- when 'button' -%}
               {%- if block.settings.button_text != blank -%}
@@ -189,7 +196,7 @@
 
   /* Subtitle Block */
   .earth-hero__subtitle {
-    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    font-size: var(--type-section-subtitle, 1.3125rem);
     font-weight: 500;
     color: var(--hero-subtitle-color, #1a420b);
     margin: 0 0 32px 0;
@@ -224,6 +231,58 @@
     }
   }
 
+  /* Text Block Styles */
+  .earth-block-text {
+    margin: 0 0 24px 0;
+    line-height: 1.5;
+    max-width: 800px;
+    width: 100%;
+    box-sizing: border-box;
+    color: var(--hero-subtitle-color, #1a420b);
+  }
+  .earth-block-text p {
+    margin: 0 0 0.8em 0;
+  }
+  .earth-block-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .earth-block-text--font-body {
+    font-family: inherit;
+    font-weight: 400;
+  }
+  .earth-block-text--font-heading {
+    font-family: inherit;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .earth-block-text--font-subheading {
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .earth-block-text--size-small {
+    font-size: 0.875rem;
+  }
+  .earth-block-text--size-medium {
+    font-size: 1.125rem;
+  }
+  .earth-block-text--size-large {
+    font-size: 1.3125rem;
+  }
+  .earth-block-text--size-x-large {
+    font-size: 1.75rem;
+  }
+  .earth-block-text--size-custom {
+    font-size: var(--custom-text-size, 1.125rem);
+  }
+
+  .earth-block-text--secondary {
+    color: var(--color-primary, #224E09) !important;
+  }
+
   @media (max-width: 768px) {
     .earth-hero__content-area {
       padding: 36px 20px 48px;
@@ -234,9 +293,13 @@
       margin-bottom: 16px;
     }
     .earth-hero__subtitle {
-      font-size: 18px !important;
+      font-size: 1.125rem !important;
       line-height: 1.45;
       margin-bottom: 24px;
+    }
+    .earth-block-text--size-large,
+    .earth-block-text--size-x-large {
+      font-size: 1.125rem !important;
     }
   }
 {% endstylesheet %}

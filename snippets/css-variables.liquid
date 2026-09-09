@@ -102,11 +102,12 @@
     --color-gray-500: #B4C919;
     --color-gray-600: #8EA10F;
     --color-gray-700: #6B7B10;
-    --color-gray-800: #556113;
-    --color-gray-900: #34601B;
+    
+    --type-section-title: 2.625rem;
+    --type-section-subtitle: 1.3125rem;
   }
 
-  /* Responsive Container Padding helper */
+  /* Responsive Container Padding helper & Typography */
   @media screen and (max-width: 1024px) {
     :root {
       --container-padding: var(--container-padding-tablet);
@@ -115,6 +116,8 @@
   @media screen and (max-width: 768px) {
     :root {
       --container-padding: var(--container-padding-mobile);
+      --type-section-title: 2.25rem;
+      --type-section-subtitle: 1.125rem;
     }
   }
 {% endstyle %}

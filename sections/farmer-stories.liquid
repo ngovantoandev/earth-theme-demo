@@ -262,7 +262,7 @@
   }
 
   .earth-farmers__title {
-    font-size: clamp(32px, 4vw, 50px);
+    font-size: var(--type-section-title, 2.625rem);
     font-weight: 800;
     line-height: 1.12;
     letter-spacing: -0.02em;
@@ -271,7 +271,7 @@
   }
 
   .earth-farmers__subtitle {
-    font-size: clamp(15px, 1.25vw, 17px);
+    font-size: var(--type-section-subtitle, 1.3125rem);
     line-height: 1.55;
     color: var(--color-black, #003225);
     opacity: 0.88;
@@ -475,6 +475,12 @@
   @media (max-width: 768px) {
     .earth-farmers {
       padding: 50px 0 60px;
+    }
+    .earth-farmers__title {
+      font-size: 2.25rem !important;
+    }
+    .earth-farmers__subtitle {
+      font-size: 1.125rem;
     }
     .earth-farmers__header-container {
       padding-left: 20px;

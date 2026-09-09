@@ -281,7 +281,7 @@
     align-items: center;
     justify-content: center;
     gap: 14px;
-    font-size: clamp(32px, 4vw, 48px);
+    font-size: var(--type-section-title, 2.625rem);
     font-weight: 800;
     color: var(--values-text);
     letter-spacing: -0.02em;
@@ -295,7 +295,7 @@
     flex-shrink: 0;
   }
   .earth-values-{{ section.id }} .earth-values__subtitle {
-    font-size: clamp(15px, 1.3vw, 18px);
+    font-size: var(--type-section-subtitle, 1.3125rem);
     color: var(--values-text);
     opacity: 0.9;
     max-width: 620px;
@@ -616,6 +616,12 @@
   @media (max-width: 768px) {
     .earth-values-{{ section.id }} {
       padding: 50px 0 60px;
+    }
+    .earth-values-{{ section.id }} .earth-values__title {
+      font-size: 2.25rem !important;
+    }
+    .earth-values-{{ section.id }} .earth-values__subtitle {
+      font-size: 1.125rem;
     }
     .earth-values-{{ section.id }} .earth-values__header-container {
       padding: 0 20px !important;

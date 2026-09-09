@@ -181,12 +181,11 @@
     justify-content: center;
     max-width: 600px;
   }
-
   .measurable-impact__eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: clamp(15px, 1.1vw, 17px);
+    font-size: 1rem;
     font-weight: 500;
     color: #556B3A;
     margin-bottom: clamp(18px, 2.2vw, 28px);
@@ -198,16 +197,14 @@
   }
 
   .measurable-impact__heading {
-    font-size: clamp(2.4rem, 4vw, 3.85rem);
+    font-size: var(--type-section-title, 2.625rem);
     font-weight: 800;
     line-height: 1.12;
     letter-spacing: -0.035em;
     color: var(--mi-text-color, #003225);
     margin: 0 0 clamp(36px, 4.5vw, 56px) 0;
-    max-width: 540px;
   }
 
-  /* Metrics List */
   .measurable-impact__metrics-list {
     display: flex;
     flex-direction: column;
@@ -227,7 +224,7 @@
   }
 
   .measurable-impact__metric-number {
-    font-size: clamp(2.8rem, 4.4vw, 4.2rem);
+    font-size: clamp(2.5rem, 4.4vw, 3.75rem);
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.03em;
@@ -251,7 +248,7 @@
   }
 
   .measurable-impact__metric-text {
-    font-size: clamp(15px, 1.2vw, 17.5px);
+    font-size: clamp(0.9375rem, 1.2vw, 1.09375rem);
     line-height: 1.45;
     color: var(--mi-text-color, #003225);
     margin: 0;
@@ -260,7 +257,6 @@
     opacity: 0.92;
   }
 
-  /* Right Column: Photo Mosaic Grid */
   .measurable-impact__right {
     width: 100%;
   }
@@ -268,54 +264,62 @@
   .measurable-impact__gallery-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: clamp(16px, 2vw, 28px);
-    align-items: stretch;
+    gap: clamp(14px, 1.8vw, 24px);
+    width: 100%;
   }
 
   .measurable-impact__gallery-col {
     display: flex;
     flex-direction: column;
-    gap: clamp(16px, 2vw, 28px);
+    gap: clamp(14px, 1.8vw, 24px);
   }
 
-  .measurable-impact__image-card,
-  [class*="measurable-impact__image-card--"] {
+  .measurable-impact__gallery-item {
     position: relative;
+    border-radius: 4px;
     overflow: hidden;
-    background-color: rgba(0, 50, 37, 0.05);
-    width: 100%;
+    background-color: rgba(0, 50, 37, 0.04);
   }
 
-  .measurable-impact__image-card img,
-  [class*="measurable-impact__image-card--"] img {
+  .measurable-impact__gallery-item--tall {
+    aspect-ratio: 4 / 5.2;
+  }
+
+  .measurable-impact__gallery-item--short {
+    aspect-ratio: 4 / 3.4;
+  }
+
+  .measurable-impact__gallery-item--square {
+    aspect-ratio: 1 / 1;
+  }
+
+  .measurable-impact__gallery-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Specific Aspect Ratios (4:5 and 1:1) */
-  /* Left Column: 4:5 Top + 1:1 Bottom */
-  .measurable-impact__image-card--tall {
-    aspect-ratio: 4 / 5;
+  .measurable-impact__gallery-item:hover img {
+    transform: scale(1.04);
   }
 
-  .measurable-impact__image-card--landscape {
-    aspect-ratio: 1 / 1;
+  .measurable-impact__img-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #E2E8CE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .measurable-impact__img-placeholder svg {
+    width: 48px;
+    height: 48px;
+    opacity: 0.4;
   }
 
-  /* Right Column: 1:1 Top + 4:5 Bottom */
-  .measurable-impact__image-card--medium {
-    aspect-ratio: 1 / 1;
-  }
-
-  .measurable-impact__image-card--portrait {
-    aspect-ratio: 4 / 5;
-  }
-
-  /* ==========================================================================
-     Responsive Breakpoints
-     ========================================================================== */
+  /* Responsive Design */
   @media (max-width: 1024px) {
     .measurable-impact-section {
       padding: 60px 24px 70px;
@@ -326,21 +330,7 @@
       gap: 48px;
     }
 
-    .measurable-impact__left {
-      max-width: 100%;
-    }
-
     .measurable-impact__heading {
-      max-width: 100%;
-    }
-
-    .measurable-impact__metrics-list {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .measurable-impact__metric-text {
       max-width: 100%;
     }
   }
@@ -355,7 +345,7 @@
     }
 
     .measurable-impact__heading {
-      font-size: 28px;
+      font-size: 2.25rem !important;
       line-height: 1.18;
       margin-bottom: 28px;
     }
@@ -367,7 +357,7 @@
     }
 
     .measurable-impact__metric-number {
-      font-size: 38px;
+      font-size: 2.375rem;
     }
 
     .measurable-impact__smile-icon {
@@ -376,7 +366,7 @@
     }
 
     .measurable-impact__metric-text {
-      font-size: 15px;
+      font-size: 0.9375rem;
       line-height: 1.4;
     }
 

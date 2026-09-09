@@ -152,7 +152,7 @@
     align-items: center;
     justify-content: center;
     gap: 14px;
-    font-size: 42px;
+    font-size: var(--type-section-title, 2.625rem);
     font-weight: 800;
     color: var(--color-black, #003225);
     letter-spacing: -0.03em;
@@ -166,7 +166,7 @@
     display: inline-block;
   }
   .earth-impact__main-subtitle {
-    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    font-size: var(--type-section-subtitle, 1.3125rem);
     color: var(--color-primary, #224E09);
     max-width: 550px;
     margin: 0 auto;
@@ -236,7 +236,7 @@
     z-index: 1;
   }
   .earth-impact__dark-title {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 400;
     color: var(--color-white);
     margin: 0 0 6px 0;
@@ -245,7 +245,7 @@
     letter-spacing: -0.01em;
   }
   .earth-impact__dark-note {
-    font-size: 16px;
+    font-size: 1rem;
     color: var(--color-white);
     margin: 0;
     line-height: 1.35;
@@ -264,7 +264,7 @@
   .earth-impact__pill {
     background-color: var(--color-accent, #EAE060);
     color: var(--color-black, #003225);
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 400;
     padding: 3px 10px;
     border-radius: 12px;
@@ -278,7 +278,7 @@
     margin: 64px 0;
   }
   .earth-impact__middle-title {
-    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-size: var(--type-section-title, 2.125rem);
     font-weight: 800;
     color: var(--color-black, #003225);
     letter-spacing: -0.03em;
@@ -286,7 +286,7 @@
     line-height: 1.2;
   }
   .earth-impact__middle-subtitle {
-    font-size: 21px;
+    font-size: 1.3125rem;
     color: var(--color-primary, #224E09);
     max-width: 504px;
     margin: 0 auto 28px;
@@ -305,72 +305,75 @@
   }
   .earth-impact__outline-card {
     background-color: transparent;
-    border: 1.5px solid var(--color-primary, #224E09);
-    padding: 34px 18px;
+    border: 1px solid var(--color-primary, #224E09);
+    padding: 38px 20px 34px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 200px;
     box-sizing: border-box;
   }
   .earth-impact__outline-number {
-    font-size: clamp(1.8rem, 2.4vw, 2.2rem);
+    font-size: clamp(2rem, 2.8vw, 2.6rem);
     font-weight: 800;
     color: var(--color-black, #003225);
     line-height: 1.1;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
     margin-bottom: 8px;
   }
   .earth-impact__outline-title {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 400;
     color: var(--color-primary, #224E09);
-    margin: 0 0 4px 0;
+    margin: 0 0 6px 0;
     letter-spacing: -0.01em;
   }
   .earth-impact__outline-note {
-    font-size: 15px;
+    font-size: 0.938rem;
     color: var(--color-primary, #224E09);
     margin: 0;
-    line-height: 1.35;
   }
 
   /* Responsive Design */
   @media (max-width: 1024px) {
     .earth-impact-section {
-      padding: 60px 24px 70px;
+      padding: 64px 28px 72px;
     }
     .earth-impact__grid-top,
     .earth-impact__grid-bottom {
       grid-template-columns: repeat(2, 1fr);
       gap: 16px;
     }
+    .earth-impact__dark-card {
+      padding: 32px 20px 28px;
+      min-height: 220px;
+    }
   }
 
   @media (max-width: 768px) {
     .earth-impact-section {
-      padding: 40px 20px 56px;
+      padding: 56px 20px 64px;
       overflow: hidden;
     }
-    /* Hide leaf icons on mobile */
     .earth-impact__leaf {
       display: none !important;
     }
     .earth-impact__main-title {
-      font-size: 36px;
+      font-size: 2.25rem !important;
     }
     .earth-impact__main-subtitle {
-      font-size: 15px;
+      font-size: 0.9375rem;
     }
     .earth-impact__middle {
       margin: 48px 0 36px;
     }
     .earth-impact__middle-title {
-      font-size: 26px;
+      font-size: 2.25rem !important;
     }
     .earth-impact__middle-subtitle {
-      font-size: 18px;
+      font-size: 1.125rem;
       margin-bottom: 24px;
     }
 
