@@ -15,6 +15,31 @@
   assign mobile_logo_width = settings.mobile_logo_width | default: 70
 -%}
 
+{% style %}
+  #earthHeaderWrapper-{{ section.id }} {
+    --header-logo-width: {{ logo_width }}px;
+    --header-mobile-logo-width: {{ mobile_logo_width }}px;
+  }
+  #earthHeaderWrapper-{{ section.id }} .earth-header__logo-img {
+    width: {{ logo_width }}px !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  @media (max-width: 768px) {
+    #earthHeaderWrapper-{{ section.id }} .earth-header__logo-img {
+      width: {{ mobile_logo_width }}px !important;
+      max-width: 100% !important;
+      height: auto !important;
+    }
+    #earthHeaderWrapper-{{ section.id }} .earth-header__logo-img--mobile {
+      width: {{ mobile_logo_width }}px !important;
+      max-width: 100% !important;
+      height: auto !important;
+      display: block !important;
+    }
+  }
+{% endstyle %}
+
 <div 
   class="earth-header-wrapper{% if section.settings.full_width %} full-width{% endif %} earth-header--sticky-{{ sticky_mode }} {{ icon_size_class }}"
   id="earthHeaderWrapper-{{ section.id }}"
@@ -59,11 +84,10 @@
               alt: logo_alt, 
               width: logo_width,
               height: logo_height,
-              loading: 'eager',
-              style: 'max-width: var(--header-logo-width, 85px);'
+              loading: 'eager'
             }}
           {%- else -%}
-            <img src="{{ 'icon-Earth-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="{{ logo_width }}" height="24" class="{{ desktop_logo_class }}" loading="eager" style="max-width: var(--header-logo-width, 85px);">
+            <img src="{{ 'icon-Earth-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="{{ logo_width }}" height="24" class="{{ desktop_logo_class }}" loading="eager">
           {%- endif -%}
 
           {%- if settings.mobile_logo != blank -%}
@@ -74,8 +98,7 @@
               alt: mobile_logo_alt, 
               width: mobile_logo_width,
               height: mobile_logo_height,
-              loading: 'eager',
-              style: 'max-width: var(--header-mobile-logo-width, 70px);'
+              loading: 'eager'
             }}
           {%- endif -%}
         </a>
@@ -178,13 +201,13 @@
             {%- if settings.mobile_logo != blank -%}
               {%- assign drawer_logo_alt = settings.mobile_logo.alt | default: shop.name | escape -%}
               {%- assign drawer_logo_height = mobile_logo_width | divided_by: settings.mobile_logo.aspect_ratio | round -%}
-              {{ settings.mobile_logo | image_url: width: 400 | image_tag: class: 'earth-mobile-drawer__logo-img', alt: drawer_logo_alt, width: mobile_logo_width, height: drawer_logo_height, loading: 'lazy', style: 'max-width: var(--header-mobile-logo-width, 70px);' }}
+              {{ settings.mobile_logo | image_url: width: 400 | image_tag: class: 'earth-mobile-drawer__logo-img', alt: drawer_logo_alt, width: mobile_logo_width, height: drawer_logo_height, loading: 'lazy' }}
             {%- elsif settings.logo != blank -%}
               {%- assign drawer_logo_alt = settings.logo.alt | default: shop.name | escape -%}
               {%- assign drawer_logo_height = mobile_logo_width | divided_by: settings.logo.aspect_ratio | round -%}
-              {{ settings.logo | image_url: width: 400 | image_tag: class: 'earth-mobile-drawer__logo-img', alt: drawer_logo_alt, width: mobile_logo_width, height: drawer_logo_height, loading: 'lazy', style: 'max-width: var(--header-mobile-logo-width, 70px);' }}
+              {{ settings.logo | image_url: width: 400 | image_tag: class: 'earth-mobile-drawer__logo-img', alt: drawer_logo_alt, width: mobile_logo_width, height: drawer_logo_height, loading: 'lazy' }}
             {%- else -%}
-              <img src="{{ 'icon-Earth-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="{{ mobile_logo_width }}" height="24" style="max-width: var(--header-mobile-logo-width, 70px);">
+              <img src="{{ 'icon-Earth-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="{{ mobile_logo_width }}" height="24" class="earth-mobile-drawer__logo-img" loading="lazy">
             {%- endif -%}
           </a>
           <button type="button" class="earth-mobile-drawer__close" id="earthDrawerCloseBtn-{{ section.id }}" aria-label="Close menu">
@@ -310,9 +333,9 @@
   }
 
   .earth-header__logo-img {
+    width: var(--header-logo-width, 85px);
+    max-width: 100%;
     height: auto;
-    max-height: 36px;
-    width: auto;
     display: block;
     object-fit: contain;
   }
@@ -570,10 +593,13 @@
     border-bottom: 1px solid rgba(34, 78, 9, 0.12);
     min-height: 36px;
   }
-  .earth-mobile-drawer__top img {
-    height: 24px;
-    width: auto;
+  .earth-mobile-drawer__top img,
+  .earth-mobile-drawer__logo-img {
+    width: var(--header-mobile-logo-width, 70px);
+    max-width: 100%;
+    height: auto;
     display: block;
+    object-fit: contain;
   }
   .earth-mobile-drawer__close {
     background: transparent;
@@ -670,10 +696,14 @@
     }
     .earth-header__logo-img--mobile {
       display: block !important;
-      max-width: var(--header-mobile-logo-width, 70px) !important;
+      width: var(--header-mobile-logo-width, 70px) !important;
+      max-width: 100% !important;
+      height: auto !important;
     }
     .earth-header__logo-img {
-      max-width: var(--header-mobile-logo-width, 70px);
+      width: var(--header-mobile-logo-width, 70px);
+      max-width: 100%;
+      height: auto;
     }
     .earth-header__logo--mobile-left {
       position: static !important;
