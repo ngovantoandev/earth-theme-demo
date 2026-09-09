@@ -1,0 +1,481 @@
+{% comment %}
+  Sustainable Fashion Hero Banner Section
+  Modular block-based layout supporting custom Heading, Subtitle, Action Buttons, Badges, and Spacers.
+{% endcomment %}
+
+<div 
+  class="earth-hero-banner-section{% if section.settings.full_width %} full-width{% endif %}" 
+  id="earthHeroBanner-{{ section.id }}"
+  style="
+    --hero-bg: {{ section.settings.bg_color | default: '#F8F9DC' }};
+    --hero-heading-color: {{ section.settings.heading_color | default: '#003225' }};
+    --hero-subtitle-color: {{ section.settings.subtitle_color | default: '#1a420b' }};
+    --hero-btn-bg: {{ section.settings.button_bg_color | default: '#003225' }};
+    --hero-btn-color: {{ section.settings.button_text_color | default: '#F8F9DC' }};
+    --hero-pt: {{ section.settings.top_padding | default: 36 }}px;
+    --hero-pb: {{ section.settings.bottom_padding | default: 36 }}px;
+  "
+>
+  <div class="earth-hero__content-area">
+    <div class="earth-hero__content-inner">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'badge' -%}
+              <div 
+                class="earth-hero__badge" 
+                {{ block.shopify_attributes }}
+                style="
+                  --badge-bg: {{ block.settings.badge_bg | default: '#224E09' }};
+                  --badge-color: {{ block.settings.badge_text_color | default: '#F8F9DC' }};
+                "
+              >
+                <span>{{ block.settings.badge_text | default: '100% ORGANIC & ETHICAL' }}</span>
+              </div>
+
+            {%- when 'heading' -%}
+              <h1 
+                class="earth-hero__heading earth-hero__heading--{{ block.settings.heading_size | default: 'default' }}" 
+                {{ block.shopify_attributes }}
+                {% if block.settings.heading_color != blank %}style="color: {{ block.settings.heading_color }};"{% endif %}
+              >
+                {%- if block.settings.heading_line_1 != blank -%}
+                  <span class="earth-hero__heading-line">{{ block.settings.heading_line_1 }}</span>
+                {%- endif -%}
+                {%- if block.settings.heading_line_2 != blank -%}
+                  <span class="earth-hero__heading-line">{{ block.settings.heading_line_2 }}</span>
+                {%- endif -%}
+              </h1>
+
+            {%- when 'subtitle' -%}
+              <p 
+                class="earth-hero__subtitle" 
+                {{ block.shopify_attributes }}
+                style="
+                  {% if block.settings.color != blank %}color: {{ block.settings.color }};{% endif %}
+                  {% if block.settings.font_size != blank %}font-size: {{ block.settings.font_size }}px;{% endif %}
+                "
+              >
+                {{ block.settings.text | default: 'One tree planted per product – 100K+ Trees Planted' }}
+              </p>
+
+            {%- when 'button' -%}
+              {%- if block.settings.button_text != blank -%}
+                {%- assign btn_variant = block.settings.variant | default: 'solid' -%}
+                <div 
+                  class="earth-hero__btn-wrapper" 
+                  {{ block.shopify_attributes }}
+                  style="
+                    --btn-custom-bg: {{ block.settings.button_bg_color | default: '#003225' }};
+                    --btn-custom-color: {{ block.settings.button_text_color | default: '#F8F9DC' }};
+                  "
+                >
+                  {% render 'btn-action',
+                    text: block.settings.button_text,
+                    url: block.settings.button_link,
+                    variant: btn_variant
+                  %}
+                </div>
+              {%- endif -%}
+
+            {%- when 'spacer' -%}
+              <div 
+                class="earth-hero__spacer" 
+                {{ block.shopify_attributes }} 
+                style="height: {{ block.settings.height | default: 24 }}px; width: 100%;"
+              ></div>
+
+          {%- endcase -%}
+        {%- endfor -%}
+      {%- else -%}
+        <!-- Fallback Default Content if no blocks added -->
+        <h1 class="earth-hero__heading">
+          <span class="earth-hero__heading-line">{{ section.settings.heading_line_1 | default: 'Earth–Core' }}</span>
+          <span class="earth-hero__heading-line">{{ section.settings.heading_line_2 | default: 'Sustainable Fashion' }}</span>
+        </h1>
+
+        <p class="earth-hero__subtitle">
+          {{ section.settings.subtitle | default: 'One tree planted per product – 100K+ Trees Planted' }}
+        </p>
+
+        {%- if section.settings.button_text != blank -%}
+          <div class="earth-hero__btn-wrapper">
+            {% render 'btn-action',
+              text: section.settings.button_text,
+              url: section.settings.button_link,
+              variant: 'solid'
+            %}
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .earth-hero-banner-section {
+    width: 100%;
+    background-color: var(--hero-bg, #F8F9DC);
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--color-primary, #224E09);
+  }
+
+  .earth-hero__content-area {
+    background-color: var(--hero-bg, #F8F9DC);
+    padding-top: var(--hero-pt, 36px);
+    padding-bottom: var(--hero-pb, 36px);
+    padding-left: clamp(20px, 4vw, 48px);
+    padding-right: clamp(20px, 4vw, 48px);
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .earth-hero__content-inner {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  /* Badge Block */
+  .earth-hero__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background-color: var(--badge-bg, #224E09);
+    color: var(--badge-color, #F8F9DC);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* Heading Block */
+  .earth-hero__heading {
+    width: 100%;
+    font-size: 119px;
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    color: var(--hero-heading-color, #003225);
+    margin: 0 0 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .earth-hero__heading--large {
+    font-size: clamp(48px, 9vw, 136px);
+  }
+  .earth-hero__heading--medium {
+    font-size: clamp(36px, 6.5vw, 92px);
+  }
+  .earth-hero__heading--small {
+    font-size: clamp(28px, 4.5vw, 64px);
+  }
+
+  .earth-hero__heading-line {
+    display: block;
+    white-space: normal;
+  }
+
+  /* Subtitle Block */
+  .earth-hero__subtitle {
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    font-weight: 500;
+    color: var(--hero-subtitle-color, #1a420b);
+    margin: 0 0 32px 0;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+    max-width: 800px;
+  }
+
+  /* Button Block */
+  .earth-hero__btn-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  .earth-hero-banner-section .earth-btn-action--solid,
+  .earth-hero-banner-section .earth-btn {
+    background-color: var(--btn-custom-bg, var(--hero-btn-bg, #003225));
+    color: var(--btn-custom-color, var(--hero-btn-color, #F8F9DC));
+    border-color: var(--btn-custom-bg, var(--hero-btn-bg, #003225));
+  }
+
+  .earth-hero-banner-section .earth-btn-action--solid:hover,
+  .earth-hero-banner-section .earth-btn:hover {
+    background-color: transparent;
+    color: var(--btn-custom-bg, var(--hero-btn-bg, #003225));
+    border-color: var(--btn-custom-bg, var(--hero-btn-bg, #003225));
+  }
+
+  @media (max-width: 1024px) {
+    .earth-hero__heading {
+      font-size: clamp(3.2rem, 8vw, 5.5rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .earth-hero__content-area {
+      padding: 36px 20px 48px;
+    }
+    .earth-hero__heading {
+      font-size: clamp(2.4rem, 11vw, 3.8rem);
+      line-height: 1.08;
+      margin-bottom: 16px;
+    }
+    .earth-hero__subtitle {
+      font-size: 18px !important;
+      line-height: 1.45;
+      margin-bottom: 24px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Sustainable Fashion Hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Appearance"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Content Background",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "range",
+      "id": "top_padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "bottom_padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make section full width",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Fallback Settings (if no blocks)"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_1",
+      "label": "Heading Line 1",
+      "default": "Earth–Core"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_2",
+      "label": "Heading Line 2",
+      "default": "Sustainable Fashion"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "One tree planted per product – 100K+ Trees Planted"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading_line_1",
+          "label": "Heading Line 1",
+          "default": "Earth–Core"
+        },
+        {
+          "type": "text",
+          "id": "heading_line_2",
+          "label": "Heading Line 2",
+          "default": "Sustainable Fashion"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Heading Color",
+          "default": "#003225"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "Heading Size",
+          "options": [
+            { "value": "default", "label": "Default (119px)" },
+            { "value": "large", "label": "Large (136px)" },
+            { "value": "medium", "label": "Medium (92px)" },
+            { "value": "small", "label": "Small (64px)" }
+          ],
+          "default": "default"
+        }
+      ]
+    },
+    {
+      "type": "subtitle",
+      "name": "Subtitle",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Subtitle Text",
+          "default": "One tree planted per product – 100K+ Trees Planted"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Text Color",
+          "default": "#1a420b"
+        },
+        {
+          "type": "range",
+          "id": "font_size",
+          "min": 14,
+          "max": 28,
+          "step": 1,
+          "unit": "px",
+          "label": "Font Size",
+          "default": 18
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "SHOP NOW"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "select",
+          "id": "variant",
+          "label": "Button Style",
+          "options": [
+            { "value": "solid", "label": "Solid Button" },
+            { "value": "outline", "label": "Outline Button" },
+            { "value": "underline", "label": "Underline Link" }
+          ],
+          "default": "solid"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Button Background",
+          "default": "#003225"
+        },
+        {
+          "type": "color",
+          "id": "button_text_color",
+          "label": "Button Text Color",
+          "default": "#F8F9DC"
+        }
+      ]
+    },
+    {
+      "type": "badge",
+      "name": "Badge Tagline",
+      "settings": [
+        {
+          "type": "text",
+          "id": "badge_text",
+          "label": "Badge Text",
+          "default": "100% ORGANIC & ETHICAL"
+        },
+        {
+          "type": "color",
+          "id": "badge_bg",
+          "label": "Badge Background",
+          "default": "#224E09"
+        },
+        {
+          "type": "color",
+          "id": "badge_text_color",
+          "label": "Badge Text Color",
+          "default": "#F8F9DC"
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": [
+        {
+          "type": "range",
+          "id": "height",
+          "min": 8,
+          "max": 64,
+          "step": 4,
+          "unit": "px",
+          "label": "Spacer Height",
+          "default": 24
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sustainable Fashion Hero",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "subtitle"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
