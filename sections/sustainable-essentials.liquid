@@ -7,9 +7,9 @@
     <!-- 1. Top Section Header -->
     <div class="earth-sus__header">
       <h2 class="earth-sus__main-title">
-        <img src="{{ 'icon-leaf-2.svg' | asset_url }}" width="36" height="36" alt="" class="earth-sus__leaf earth-sus__leaf--left" loading="lazy">
+        <span class="earth-sus__leaf earth-sus__leaf--left" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
         <span>{{ section.settings.title | default: 'Sustainable Essentials' }}</span>
-        <img src="{{ 'icon-leaf-2.svg' | asset_url }}" width="36" height="36" alt="" class="earth-sus__leaf earth-sus__leaf--right" loading="lazy">
+        <span class="earth-sus__leaf earth-sus__leaf--right" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
       </h2>
       <p class="earth-sus__subtitle">
         {{ section.settings.subtitle | default: 'Every piece designed with purpose – discover the full impact story behind each garment' }}
@@ -109,12 +109,12 @@
 
       <!-- Left Floating Navigation Arrow (Appears on hover) -->
       <button type="button" class="earth-sus__nav-btn earth-sus__nav-btn--prev" id="earthSusPrev-{{ section.id }}" aria-label="Previous Products">
-        <img src="{{ 'icon-prev-left.svg' | asset_url }}" width="15" height="15" alt="" class="earth-sus__icon-arrow earth-sus__icon-arrow--prev">
+        <span class="earth-sus__icon-arrow earth-sus__icon-arrow--prev" aria-hidden="true">{{ 'icon-prev-left.svg' | inline_asset_content }}</span>
       </button>
 
       <!-- Right Floating Navigation Arrow (Appears on hover) -->
       <button type="button" class="earth-sus__nav-btn earth-sus__nav-btn--next" id="earthSusNext-{{ section.id }}" aria-label="Next Products">
-        <img src="{{ 'icon-next-right.svg' | asset_url }}" width="15" height="15" alt="" class="earth-sus__icon-arrow earth-sus__icon-arrow--next">
+        <span class="earth-sus__icon-arrow earth-sus__icon-arrow--next" aria-hidden="true">{{ 'icon-next-right.svg' | inline_asset_content }}</span>
       </button>
     </div>
   </div>
@@ -159,7 +159,14 @@
     width: 36px;
     height: 36px;
     object-fit: contain;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-sus__leaf svg {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
   .earth-sus__subtitle {
     font-size: var(--type-section-subtitle, 1.3125rem);
@@ -291,9 +298,16 @@
     width: 15px;
     height: 15px;
     object-fit: contain;
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     pointer-events: none;
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .earth-sus__icon-arrow svg {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
   .earth-sus__icon-arrow--next {
     transform: rotate(0deg);
@@ -374,7 +388,15 @@
   .earth-prod-card__badge-icon {
     width: 13px;
     height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     object-fit: contain;
+  }
+  .earth-prod-card__badge-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 
   /* Bottom Left Metrics (Water & CO2) */
@@ -399,8 +421,16 @@
     gap: 5px;
   }
   .earth-prod-card__metric-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     object-fit: contain;
     filter: brightness(0);
+  }
+  .earth-prod-card__metric-icon svg {
+    width: 13px;
+    height: 13px;
+    display: block;
   }
 
   /* Center Hover Quick View Button */
@@ -502,7 +532,15 @@
     gap: 5px;
   }
   .earth-prod-card__meta-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     object-fit: contain;
+  }
+  .earth-prod-card__meta-icon svg {
+    width: 10px;
+    height: 14px;
+    display: block;
   }
 
   /* Action Unit (Joined Price & Add Button on SAME Row) */
@@ -560,6 +598,16 @@
     white-space: nowrap;
     text-align: center;
     box-sizing: border-box;
+  }
+  .earth-prod-card__add-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-prod-card__add-icon svg {
+    width: 15px;
+    height: 15px;
+    display: block;
   }
   .earth-prod-card__add-btn:hover {
     background-color: #dfd452;

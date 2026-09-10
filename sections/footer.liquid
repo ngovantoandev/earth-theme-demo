@@ -91,6 +91,14 @@
   .earth-footer__submit-arrow {
     width: 13px;
     height: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .earth-footer__submit-arrow svg {
+    width: 13px;
+    height: auto;
     display: block;
     filter: brightness(0) saturate(100%) invert(14%) sepia(45%) saturate(1750%) hue-rotate(124deg) brightness(95%) contrast(102%);
   }
@@ -409,6 +417,13 @@
   .earth-footer__badge-img {
     height: 38px;
     width: auto;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .earth-footer__badge-img svg {
+    height: 38px;
+    width: auto;
     display: block;
     object-fit: contain;
   }
@@ -578,9 +593,17 @@
     .earth-footer__accordion-arrow {
       width: 14px;
       height: 14px;
-      display: block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       transform: rotate(90deg);
       transition: none;
+    }
+
+    .earth-footer__accordion-arrow svg {
+      width: 14px;
+      height: 14px;
+      display: block;
     }
 
     .earth-footer__nav-col--open .earth-footer__accordion-arrow {
@@ -664,7 +687,9 @@
             required
           >
           <button type="submit" class="earth-footer__newsletter-submit" aria-label="Subscribe">
-            <img src="{{ 'icon-arrow-right.svg' | asset_url }}" alt="" class="earth-footer__submit-arrow" width="12" height="10" loading="lazy">
+            <span class="earth-footer__submit-arrow" aria-hidden="true">
+              {{ 'icon-arrow-right.svg' | inline_asset_content }}
+            </span>
           </button>
         {% endform %}
 
@@ -696,8 +721,10 @@
       <div class="earth-footer__nav-col earth-footer__nav-col--open">
         <button type="button" class="earth-footer__col-heading" aria-expanded="true">
           <span>{{ section.settings.col_1_title | default: 'COMPANY' }}</span>
-          <span class="earth-footer__accordion-icon">
-            <img src="{{ 'icon-next-right.svg' | asset_url }}" alt="" width="14" height="14" loading="lazy" class="earth-footer__accordion-arrow">
+          <span class="earth-footer__accordion-icon" aria-hidden="true">
+            <span class="earth-footer__accordion-arrow">
+              {{ 'icon-next-right.svg' | inline_asset_content }}
+            </span>
           </span>
         </button>
         <div class="earth-footer__accordion-content">
@@ -715,8 +742,10 @@
       <div class="earth-footer__nav-col">
         <button type="button" class="earth-footer__col-heading" aria-expanded="false">
           <span>{{ section.settings.col_2_title | default: 'SHOP' }}</span>
-          <span class="earth-footer__accordion-icon">
-            <img src="{{ 'icon-next-right.svg' | asset_url }}" alt="" width="14" height="14" loading="lazy" class="earth-footer__accordion-arrow">
+          <span class="earth-footer__accordion-icon" aria-hidden="true">
+            <span class="earth-footer__accordion-arrow">
+              {{ 'icon-next-right.svg' | inline_asset_content }}
+            </span>
           </span>
         </button>
         <div class="earth-footer__accordion-content">
@@ -735,8 +764,10 @@
       <div class="earth-footer__nav-col">
         <button type="button" class="earth-footer__col-heading" aria-expanded="false">
           <span>{{ section.settings.col_3_title | default: 'SUSTAINABILITY' }}</span>
-          <span class="earth-footer__accordion-icon">
-            <img src="{{ 'icon-next-right.svg' | asset_url }}" alt="" width="14" height="14" loading="lazy" class="earth-footer__accordion-arrow">
+          <span class="earth-footer__accordion-icon" aria-hidden="true">
+            <span class="earth-footer__accordion-arrow">
+              {{ 'icon-next-right.svg' | inline_asset_content }}
+            </span>
           </span>
         </button>
         <div class="earth-footer__accordion-content">
@@ -753,8 +784,10 @@
       <div class="earth-footer__nav-col">
         <button type="button" class="earth-footer__col-heading" aria-expanded="false">
           <span>{{ section.settings.col_4_title | default: 'SUPPORT' }}</span>
-          <span class="earth-footer__accordion-icon">
-            <img src="{{ 'icon-next-right.svg' | asset_url }}" alt="" width="14" height="14" loading="lazy" class="earth-footer__accordion-arrow">
+          <span class="earth-footer__accordion-icon" aria-hidden="true">
+            <span class="earth-footer__accordion-arrow">
+              {{ 'icon-next-right.svg' | inline_asset_content }}
+            </span>
           </span>
         </button>
         <div class="earth-footer__accordion-content">
@@ -770,24 +803,24 @@
           <ul class="earth-footer__contact-list">
             <li>
               <a href="mailto:hello@earthecoshop.com" class="earth-footer__contact-item">
-                <span class="earth-footer__contact-icon">
-                  <img src="{{ 'icon-mail.svg' | asset_url }}" alt="Email" width="19" height="13" loading="lazy">
+                <span class="earth-footer__contact-icon" aria-hidden="true">
+                  {{ 'icon-mail.svg' | inline_asset_content }}
                 </span>
                 <span>hello@earthecoshop.com</span>
               </a>
             </li>
             <li>
               <a href="tel:5551234567" class="earth-footer__contact-item">
-                <span class="earth-footer__contact-icon">
-                  <img src="{{ 'icon-telephone-call.svg' | asset_url }}" alt="Phone" width="19" height="19" loading="lazy">
+                <span class="earth-footer__contact-icon" aria-hidden="true">
+                  {{ 'icon-telephone-call.svg' | inline_asset_content }}
                 </span>
                 <span>(555) 123-4567</span>
               </a>
             </li>
             <li>
               <div class="earth-footer__contact-item">
-                <span class="earth-footer__contact-icon">
-                  <img src="{{ 'icon-location copy.svg' | asset_url }}" alt="Location" width="17" height="21" loading="lazy">
+                <span class="earth-footer__contact-icon" aria-hidden="true">
+                  {{ 'icon-location copy.svg' | inline_asset_content }}
                 </span>
                 <span>1234 Palm Boulevard, Miami</span>
               </div>
@@ -805,16 +838,16 @@
         
         <div class="earth-footer__social-row">
           <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="Facebook">
-            <img src="{{ 'icon-facebook.svg' | asset_url }}" alt="Facebook" width="11" height="20" loading="lazy">
+            {{ 'icon-facebook.svg' | inline_asset_content }}
           </a>
           <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="Instagram">
-            <img src="{{ 'icon-instagram.svg' | asset_url }}" alt="Instagram" width="20" height="20" loading="lazy">
+            {{ 'icon-instagram.svg' | inline_asset_content }}
           </a>
           <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="Twitter / X">
-            <img src="{{ 'icon-twitter.svg' | asset_url }}" alt="Twitter" width="16" height="16" loading="lazy">
+            {{ 'icon-twitter.svg' | inline_asset_content }}
           </a>
           <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="YouTube">
-            <img src="{{ 'icon-youtube.svg' | asset_url }}" alt="YouTube" width="24" height="19" loading="lazy">
+            {{ 'icon-youtube.svg' | inline_asset_content }}
           </a>
         </div>
 
@@ -861,10 +894,10 @@
         
         <p class="earth-footer__subhead">CERTIFIED BY</p>
         <div class="earth-footer__badges-row">
-          <img src="{{ 'icon-1ftp.svg' | asset_url }}" alt="1% For The Planet" class="earth-footer__badge-img" width="40" height="48" loading="lazy">
-          <img src="{{ 'icon-gots.svg' | asset_url }}" alt="GOTS Certified" class="earth-footer__badge-img" width="49" height="48" loading="lazy">
-          <img src="{{ 'icon-B-CORP.svg' | asset_url }}" alt="Certified B Corporation" class="earth-footer__badge-img" width="29" height="48" loading="lazy">
-          <img src="{{ 'icon-OEKO-TEX.svg' | asset_url }}" alt="OEKO-TEX Certified" class="earth-footer__badge-img" width="48" height="48" loading="lazy">
+          <span class="earth-footer__badge-img" aria-hidden="true">{{ 'icon-1ftp.svg' | inline_asset_content }}</span>
+          <span class="earth-footer__badge-img" aria-hidden="true">{{ 'icon-gots.svg' | inline_asset_content }}</span>
+          <span class="earth-footer__badge-img" aria-hidden="true">{{ 'icon-B-CORP.svg' | inline_asset_content }}</span>
+          <span class="earth-footer__badge-img" aria-hidden="true">{{ 'icon-OEKO-TEX.svg' | inline_asset_content }}</span>
         </div>
 
         <p class="earth-footer__subhead">SECURE PAYMENT</p>

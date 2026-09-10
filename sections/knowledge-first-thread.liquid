@@ -18,7 +18,7 @@
         {%- endif -%}
         <h2 class="knowledge-thread__title">
           <span class="knowledge-thread__title-leaf" aria-hidden="true">
-            <img src="{{ 'icon-leaf-2.svg' | asset_url }}" width="36" height="36" alt="" loading="lazy">
+            {{ 'icon-leaf-2.svg' | inline_asset_content }}
           </span>
           <span>{{ section.settings.title | default: 'Knowledge First Thread' }}</span>
         </h2>
@@ -52,11 +52,11 @@
                     <!-- Yellow Rounded Icon Badge -->
                     <div class="knowledge-thread__badge" aria-hidden="true">
                       {%- if block.settings.icon_name != blank -%}
-                        <img src="{{ block.settings.icon_name | asset_url }}" width="24" height="24" alt="" loading="lazy">
+                        {{ block.settings.icon_name | inline_asset_content }}
                       {%- elsif block.settings.custom_icon != blank -%}
                         <img src="{{ block.settings.custom_icon | image_url: width: 64 }}" width="24" height="24" alt="" loading="lazy">
                       {%- else -%}
-                        <img src="{{ 'icon-heart.svg' | asset_url }}" width="24" height="24" alt="" loading="lazy">
+                        {{ 'icon-heart.svg' | inline_asset_content }}
                       {%- endif -%}
                     </div>
                     <!-- Title -->
@@ -65,7 +65,7 @@
 
                   <!-- Animated Arrow Indicator -->
                   <div class="knowledge-thread__trigger-arrow" aria-hidden="true">
-                    <img src="{{ 'icon-next-right.svg' | asset_url }}" width="15" height="15" alt="" loading="lazy">
+                    {{ 'icon-next-right.svg' | inline_asset_content }}
                   </div>
                 </div>
 
@@ -91,7 +91,7 @@
                         {%- if block.settings.fast_point_1 != blank -%}
                           <li class="knowledge-thread__compare-item">
                             <span class="knowledge-thread__compare-icon" aria-hidden="true">
-                              <img src="{{ 'icon-close-circle.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                              {{ 'icon-close-circle.svg' | inline_asset_content }}
                             </span>
                             <span>{{ block.settings.fast_point_1 }}</span>
                           </li>
@@ -99,7 +99,7 @@
                         {%- if block.settings.fast_point_2 != blank -%}
                           <li class="knowledge-thread__compare-item">
                             <span class="knowledge-thread__compare-icon" aria-hidden="true">
-                              <img src="{{ 'icon-close-circle.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                              {{ 'icon-close-circle.svg' | inline_asset_content }}
                             </span>
                             <span>{{ block.settings.fast_point_2 }}</span>
                           </li>
@@ -107,7 +107,7 @@
                         {%- if block.settings.fast_point_3 != blank -%}
                           <li class="knowledge-thread__compare-item">
                             <span class="knowledge-thread__compare-icon" aria-hidden="true">
-                              <img src="{{ 'icon-close-circle.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                              {{ 'icon-close-circle.svg' | inline_asset_content }}
                             </span>
                             <span>{{ block.settings.fast_point_3 }}</span>
                           </li>
@@ -115,7 +115,7 @@
                         {%- if block.settings.fast_point_4 != blank -%}
                           <li class="knowledge-thread__compare-item">
                             <span class="knowledge-thread__compare-icon" aria-hidden="true">
-                              <img src="{{ 'icon-close-circle.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                              {{ 'icon-close-circle.svg' | inline_asset_content }}
                             </span>
                             <span>{{ block.settings.fast_point_4 }}</span>
                           </li>
@@ -130,7 +130,7 @@
                         {%- if block.settings.sust_point_1 != blank -%}
                           <li class="knowledge-thread__compare-item">
                             <span class="knowledge-thread__compare-icon" aria-hidden="true">
-                              <img src="{{ 'icon-check.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                              {{ 'icon-check.svg' | inline_asset_content }}
                             </span>
                             <span>{{ block.settings.sust_point_1 }}</span>
                           </li>
@@ -138,7 +138,7 @@
                         {%- if block.settings.sust_point_2 != blank -%}
                           <li class="knowledge-thread__compare-item">
                             <span class="knowledge-thread__compare-icon" aria-hidden="true">
-                              <img src="{{ 'icon-check.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                              {{ 'icon-check.svg' | inline_asset_content }}
                             </span>
                             <span>{{ block.settings.sust_point_2 }}</span>
                           </li>
@@ -146,7 +146,7 @@
                         {%- if block.settings.sust_point_3 != blank -%}
                           <li class="knowledge-thread__compare-item">
                             <span class="knowledge-thread__compare-icon" aria-hidden="true">
-                              <img src="{{ 'icon-check.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                              {{ 'icon-check.svg' | inline_asset_content }}
                             </span>
                             <span>{{ block.settings.sust_point_3 }}</span>
                           </li>
@@ -154,7 +154,7 @@
                         {%- if block.settings.sust_point_4 != blank -%}
                           <li class="knowledge-thread__compare-item">
                             <span class="knowledge-thread__compare-icon" aria-hidden="true">
-                              <img src="{{ 'icon-check.svg' | asset_url }}" width="18" height="18" alt="" loading="lazy">
+                              {{ 'icon-check.svg' | inline_asset_content }}
                             </span>
                             <span>{{ block.settings.sust_point_4 }}</span>
                           </li>
@@ -170,7 +170,7 @@
                   <div class="knowledge-thread__info-box">
                     <div class="knowledge-thread__info-header">
                       <span class="knowledge-thread__info-icon-wrap" aria-hidden="true">
-                        <img src="{{ 'icon-info.svg' | asset_url }}" width="24" height="24" alt="" loading="lazy">
+                        {{ 'icon-info.svg' | inline_asset_content }}
                       </span>
                       {%- if block.settings.info_title != blank -%}
                         <h5 class="knowledge-thread__info-title">{{ block.settings.info_title }}</h5>
@@ -269,11 +269,13 @@
     height: clamp(28px, 2.5vw, 36px);
     flex-shrink: 0;
   }
-  .knowledge-thread__title-leaf img {
+  .knowledge-thread__title-leaf img,
+  .knowledge-thread__title-leaf svg {
     width: 100%;
     height: 100%;
     object-fit: contain;
     filter: brightness(0) invert(1);
+    display: block;
   }
 
   .knowledge-thread__header-right {
@@ -350,11 +352,13 @@
     flex-shrink: 0;
   }
 
-  .knowledge-thread__badge img {
+  .knowledge-thread__badge img,
+  .knowledge-thread__badge svg {
     max-width: 24px;
     max-height: 24px;
     object-fit: contain;
     filter: brightness(0) saturate(100%) invert(13%) sepia(35%) saturate(2335%) hue-rotate(125deg) brightness(94%) contrast(106%);
+    display: block;
   }
 
   .knowledge-thread__item-title {
@@ -390,11 +394,13 @@
     transform: rotate(0deg);
   }
 
-  .knowledge-thread__trigger-arrow img {
+  .knowledge-thread__trigger-arrow img,
+  .knowledge-thread__trigger-arrow svg {
     width: 15px;
     height: 15px;
     object-fit: contain;
     filter: brightness(0) invert(1);
+    display: block;
   }
 
   /* Accordion Body */
@@ -488,10 +494,12 @@
     flex-shrink: 0;
   }
 
-  .knowledge-thread__compare-icon img {
+  .knowledge-thread__compare-icon img,
+  .knowledge-thread__compare-icon svg {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    display: block;
   }
 
   /* Bottom Info Box (Did You Know?) */
@@ -521,10 +529,12 @@
     flex-shrink: 0;
   }
 
-  .knowledge-thread__info-icon-wrap img {
+  .knowledge-thread__info-icon-wrap img,
+  .knowledge-thread__info-icon-wrap svg {
     width: 24px;
     height: 24px;
     object-fit: contain;
+    display: block;
   }
 
   .knowledge-thread__info-title {

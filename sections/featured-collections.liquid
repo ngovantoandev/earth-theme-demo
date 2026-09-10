@@ -9,7 +9,7 @@
     <div class="earth-essentials__header">
       <div class="earth-essentials__header-left">
         <h2 class="earth-essentials__main-title">
-          <img src="{{ 'icon-leaf-2.svg' | asset_url }}" width="36" height="36" alt="" class="earth-essentials__leaf-icon" loading="lazy">
+          <span class="earth-essentials__leaf-icon" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
           <span>{{ section.settings.title | default: 'Featured Eco Essentials' }}</span>
         </h2>
       </div>
@@ -68,13 +68,13 @@
             <div class="earth-essentials__badges">
               {%- if block.settings.badge_1 != blank -%}
                 <span class="earth-essentials__badge">
-                  <img src="{{ 'icon-Drop.svg' | asset_url }}" width="12" height="14" alt="" class="earth-essentials__badge-icon">
+                  <span class="earth-essentials__badge-icon" aria-hidden="true">{{ 'icon-Drop.svg' | inline_asset_content }}</span>
                   <span>{{ block.settings.badge_1 }}</span>
                 </span>
               {%- endif -%}
               {%- if block.settings.badge_2 != blank -%}
                 <span class="earth-essentials__badge">
-                  <img src="{{ 'icon-leaf-2.svg' | asset_url }}" width="12" height="12" alt="" class="earth-essentials__badge-icon">
+                  <span class="earth-essentials__badge-icon" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
                   <span>{{ block.settings.badge_2 }}</span>
                 </span>
               {%- endif -%}
@@ -105,11 +105,11 @@
           </div>
           <div class="earth-essentials__badges">
             <span class="earth-essentials__badge">
-              <img src="{{ 'icon-Drop.svg' | asset_url }}" width="12" height="14" alt="" class="earth-essentials__badge-icon">
+              <span class="earth-essentials__badge-icon" aria-hidden="true">{{ 'icon-Drop.svg' | inline_asset_content }}</span>
               <span>GOTS Certified</span>
             </span>
             <span class="earth-essentials__badge">
-              <img src="{{ 'icon-Carbon.svg' | asset_url }}" width="12" height="12" alt="" class="earth-essentials__badge-icon">
+              <span class="earth-essentials__badge-icon" aria-hidden="true">{{ 'icon-Carbon.svg' | inline_asset_content }}</span>
               <span>Carbon</span>
             </span>
           </div>
@@ -135,11 +135,11 @@
           </div>
           <div class="earth-essentials__badges">
             <span class="earth-essentials__badge">
-              <img src="{{ 'icon-Drop.svg' | asset_url }}" width="12" height="14" alt="" class="earth-essentials__badge-icon">
+              <span class="earth-essentials__badge-icon" aria-hidden="true">{{ 'icon-Drop.svg' | inline_asset_content }}</span>
               <span>Ocean Plastic</span>
             </span>
             <span class="earth-essentials__badge">
-              <img src="{{ 'icon-Carbon.svg' | asset_url }}" width="12" height="12" alt="" class="earth-essentials__badge-icon">
+              <span class="earth-essentials__badge-icon" aria-hidden="true">{{ 'icon-Carbon.svg' | inline_asset_content }}</span>
               <span>B Corp</span>
             </span>
           </div>
@@ -165,11 +165,11 @@
           </div>
           <div class="earth-essentials__badges">
             <span class="earth-essentials__badge">
-              <img src="{{ 'icon-Drop.svg' | asset_url }}" width="12" height="14" alt="" class="earth-essentials__badge-icon">
+              <span class="earth-essentials__badge-icon" aria-hidden="true">{{ 'icon-Drop.svg' | inline_asset_content }}</span>
               <span>Fair Trade</span>
             </span>
             <span class="earth-essentials__badge">
-              <img src="{{ 'icon-Carbon.svg' | asset_url }}" width="12" height="12" alt="" class="earth-essentials__badge-icon">
+              <span class="earth-essentials__badge-icon" aria-hidden="true">{{ 'icon-Carbon.svg' | inline_asset_content }}</span>
               <span>Zero Waste</span>
             </span>
           </div>
@@ -195,11 +195,11 @@
           </div>
           <div class="earth-essentials__badges">
             <span class="earth-essentials__badge">
-              <img src="{{ 'icon-Drop.svg' | asset_url }}" width="12" height="14" alt="" class="earth-essentials__badge-icon">
+              <span class="earth-essentials__badge-icon" aria-hidden="true">{{ 'icon-Drop.svg' | inline_asset_content }}</span>
               <span>Recycled Fabric</span>
             </span>
             <span class="earth-essentials__badge">
-              <img src="{{ 'icon-Carbon.svg' | asset_url }}" width="12" height="12" alt="" class="earth-essentials__badge-icon">
+              <span class="earth-essentials__badge-icon" aria-hidden="true">{{ 'icon-Carbon.svg' | inline_asset_content }}</span>
               <span>Low Impact</span>
             </span>
           </div>
@@ -262,7 +262,15 @@
     width: 36px;
     height: 36px;
     object-fit: contain;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+  }
+  .earth-essentials__leaf-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
   .earth-essentials__header-right {
     flex: 0.9;
@@ -414,8 +422,16 @@
     backdrop-filter: blur(4px);
   }
   .earth-essentials__badge-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     object-fit: contain;
     filter: brightness(0) saturate(100%) invert(18%) sepia(35%) saturate(1914%) hue-rotate(92deg) brightness(94%) contrast(97%);
+  }
+  .earth-essentials__badge-icon svg {
+    width: 12px;
+    height: 12px;
+    display: block;
   }
 
   /* Card Body */

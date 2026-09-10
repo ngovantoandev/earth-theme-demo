@@ -19,7 +19,9 @@
     {% if prev_id != blank %}id="{{ prev_id }}"{% endif %}
     aria-label="{{ prev_label | default: 'Previous slide' }}"
   >
-    <img src="{{ 'icon-prev-left.svg' | asset_url }}" width="15" height="15" alt="" class="earth-slider-nav__icon earth-slider-nav__icon--prev" loading="lazy">
+    <span class="earth-slider-nav__icon earth-slider-nav__icon--prev" aria-hidden="true">
+      {{ 'icon-prev-left.svg' | inline_asset_content }}
+    </span>
   </button>
 
   <button 
@@ -28,7 +30,9 @@
     {% if next_id != blank %}id="{{ next_id }}"{% endif %}
     aria-label="{{ next_label | default: 'Next slide' }}"
   >
-    <img src="{{ 'icon-next-right.svg' | asset_url }}" width="15" height="15" alt="" class="earth-slider-nav__icon earth-slider-nav__icon--next" loading="lazy">
+    <span class="earth-slider-nav__icon earth-slider-nav__icon--next" aria-hidden="true">
+      {{ 'icon-next-right.svg' | inline_asset_content }}
+    </span>
   </button>
 </div>
 {%- # theme-check-enable ValidScopedCSSClass -%}

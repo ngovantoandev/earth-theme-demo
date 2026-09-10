@@ -21,7 +21,7 @@
   <div class="earth-farmers__slider-wrapper">
     <!-- Left Floating Navigation Arrow (Appears on hover) -->
     <button type="button" class="earth-farmers__nav-btn earth-farmers__nav-btn--prev" id="earthFarmersPrev-{{ section.id }}" aria-label="Previous artisan story">
-      <img src="{{ 'icon-prev-left.svg' | asset_url }}" width="15" height="15" alt="" class="earth-farmers__icon-arrow earth-farmers__icon-arrow--prev">
+      <span class="earth-farmers__icon-arrow earth-farmers__icon-arrow--prev" aria-hidden="true">{{ 'icon-prev-left.svg' | inline_asset_content }}</span>
     </button>
 
     <div class="earth-farmers__track" id="earthFarmersTrack-{{ section.id }}" tabindex="0" role="region" aria-label="Artisan Stories Slider">
@@ -215,7 +215,7 @@
 
     <!-- Right Floating Navigation Arrow (Appears on hover) -->
     <button type="button" class="earth-farmers__nav-btn earth-farmers__nav-btn--next" id="earthFarmersNext-{{ section.id }}" aria-label="Next artisan story">
-      <img src="{{ 'icon-next-right.svg' | asset_url }}" width="15" height="15" alt="" class="earth-farmers__icon-arrow earth-farmers__icon-arrow--next">
+      <span class="earth-farmers__icon-arrow earth-farmers__icon-arrow--next" aria-hidden="true">{{ 'icon-next-right.svg' | inline_asset_content }}</span>
     </button>
   </div>
 </section>
@@ -327,9 +327,16 @@
     width: 15px;
     height: 15px;
     object-fit: contain;
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     pointer-events: none;
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .earth-farmers__icon-arrow svg {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
   .earth-farmers__icon-arrow--next {
     transform: rotate(0deg);

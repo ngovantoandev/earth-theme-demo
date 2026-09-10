@@ -210,11 +210,19 @@ button, .btn, input[type="button"], input[type="submit"], input[type="reset"] {
   box-shadow: 0 6px 18px rgba(113, 204, 59, 0.4);
 }
 .earth-slider-nav__icon {
-  width: var(--slider-nav-icon-size, 15px);
-  height: var(--slider-nav-icon-size, 15px);
+  width: 15px;
+  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   object-fit: contain;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
+}
+.earth-slider-nav__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 .earth-slider-nav__btn--prev:hover .earth-slider-nav__icon--prev {
   transform: rotate(-45deg);

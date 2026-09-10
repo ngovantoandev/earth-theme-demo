@@ -28,11 +28,11 @@
         {%- if section.settings.title != blank -%}
           <h2 class="earth-impact__main-title">
             {%- if section.settings.show_leaf_icons -%}
-              <img src="{{ 'icon-leaf-2.svg' | asset_url }}" width="32" height="32" alt="" class="earth-impact__leaf earth-impact__leaf--left" loading="lazy">
+              <span class="earth-impact__leaf earth-impact__leaf--left" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
             {%- endif -%}
             <span>{{ section.settings.title }}</span>
             {%- if section.settings.show_leaf_icons -%}
-              <img src="{{ 'icon-leaf-2.svg' | asset_url }}" width="32" height="32" alt="" class="earth-impact__leaf earth-impact__leaf--right" loading="lazy">
+              <span class="earth-impact__leaf earth-impact__leaf--right" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
             {%- endif -%}
           </h2>
         {%- endif -%}
@@ -58,7 +58,7 @@
           >
             {%- if block.settings.show_watermark -%}
               <div class="earth-impact__watermark" aria-hidden="true">
-                <img src="{{ 'icon-ecology.svg' | asset_url }}" width="226" height="219" alt="" loading="lazy">
+                {{ 'icon-ecology.svg' | inline_asset_content }}
               </div>
             {%- endif -%}
             
@@ -68,23 +68,23 @@
               {%- else -%}
                 {%- case block.settings.icon_type -%}
                   {%- when 'tree' -%}
-                    <img src="{{ 'icon-tree.svg' | asset_url }}" width="32" height="32" alt="Trees Planted" loading="lazy">
+                    {{ 'icon-tree.svg' | inline_asset_content }}
                   {%- when 'co2' -%}
-                    <img src="{{ 'icon-zero-emissions.svg' | asset_url }}" width="36" height="36" alt="CO2 Saved" loading="lazy">
+                    {{ 'icon-zero-emissions.svg' | inline_asset_content }}
                   {%- when 'quality' -%}
-                    <img src="{{ 'icon-quality.svg' | asset_url }}" width="36" height="36" alt="Fair Trade" loading="lazy">
+                    {{ 'icon-quality.svg' | inline_asset_content }}
                   {%- when 'water' -%}
-                    <img src="{{ 'icon-Drop.svg' | asset_url }}" width="28" height="32" alt="Water Saved" loading="lazy">
+                    {{ 'icon-Drop.svg' | inline_asset_content }}
                   {%- else -%}
                     {%- assign card_idx = forloop.index | modulo: 4 -%}
                     {%- if card_idx == 1 -%}
-                      <img src="{{ 'icon-tree.svg' | asset_url }}" width="32" height="32" alt="Trees Planted" loading="lazy">
+                      {{ 'icon-tree.svg' | inline_asset_content }}
                     {%- elsif card_idx == 2 -%}
-                      <img src="{{ 'icon-zero-emissions.svg' | asset_url }}" width="36" height="36" alt="CO2 Saved" loading="lazy">
+                      {{ 'icon-zero-emissions.svg' | inline_asset_content }}
                     {%- elsif card_idx == 3 -%}
-                      <img src="{{ 'icon-quality.svg' | asset_url }}" width="36" height="36" alt="Fair Trade" loading="lazy">
+                      {{ 'icon-quality.svg' | inline_asset_content }}
                     {%- else -%}
-                      <img src="{{ 'icon-Drop.svg' | asset_url }}" width="28" height="32" alt="Water Saved" loading="lazy">
+                      {{ 'icon-Drop.svg' | inline_asset_content }}
                     {%- endif -%}
                 {%- endcase -%}
               {%- endif -%}
@@ -116,10 +116,10 @@
         <!-- Fallback Default 4 Dark Cards -->
         <div class="earth-impact__dark-card">
           <div class="earth-impact__watermark" aria-hidden="true">
-            <img src="{{ 'icon-ecology.svg' | asset_url }}" width="226" height="219" alt="" loading="lazy">
+            {{ 'icon-ecology.svg' | inline_asset_content }}
           </div>
           <div class="earth-impact__icon-box">
-            <img src="{{ 'icon-tree.svg' | asset_url }}" width="32" height="32" alt="Trees Planted" loading="lazy">
+            {{ 'icon-tree.svg' | inline_asset_content }}
           </div>
           <span class="earth-impact__dark-number">100,000+</span>
           <h3 class="earth-impact__dark-title">Trees Planted</h3>
@@ -128,10 +128,10 @@
 
         <div class="earth-impact__dark-card">
           <div class="earth-impact__watermark" aria-hidden="true">
-            <img src="{{ 'icon-ecology.svg' | asset_url }}" width="226" height="219" alt="" loading="lazy">
+            {{ 'icon-ecology.svg' | inline_asset_content }}
           </div>
           <div class="earth-impact__icon-box">
-            <img src="{{ 'icon-zero-emissions.svg' | asset_url }}" width="36" height="36" alt="CO2 Saved" loading="lazy">
+            {{ 'icon-zero-emissions.svg' | inline_asset_content }}
           </div>
           <span class="earth-impact__dark-number">500T</span>
           <h3 class="earth-impact__dark-title">CO₂ Saved</h3>
@@ -140,10 +140,10 @@
 
         <div class="earth-impact__dark-card">
           <div class="earth-impact__watermark" aria-hidden="true">
-            <img src="{{ 'icon-ecology.svg' | asset_url }}" width="226" height="219" alt="" loading="lazy">
+            {{ 'icon-ecology.svg' | inline_asset_content }}
           </div>
           <div class="earth-impact__icon-box">
-            <img src="{{ 'icon-quality.svg' | asset_url }}" width="36" height="36" alt="Fair Trade" loading="lazy">
+            {{ 'icon-quality.svg' | inline_asset_content }}
           </div>
           <span class="earth-impact__dark-number">100%</span>
           <h3 class="earth-impact__dark-title">Fair Trade Certified</h3>
@@ -155,10 +155,10 @@
 
         <div class="earth-impact__dark-card">
           <div class="earth-impact__watermark" aria-hidden="true">
-            <img src="{{ 'icon-ecology.svg' | asset_url }}" width="226" height="219" alt="" loading="lazy">
+            {{ 'icon-ecology.svg' | inline_asset_content }}
           </div>
           <div class="earth-impact__icon-box">
-            <img src="{{ 'icon-Drop.svg' | asset_url }}" width="28" height="32" alt="Water Saved" loading="lazy">
+            {{ 'icon-Drop.svg' | inline_asset_content }}
           </div>
           <span class="earth-impact__dark-number">1,000,159</span>
           <h3 class="earth-impact__dark-title">Liters Water Saved</h3>
@@ -311,7 +311,14 @@
     width: 32px;
     height: 32px;
     object-fit: contain;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-impact__leaf svg {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
   .earth-impact__main-subtitle {
     font-size: var(--type-section-subtitle, 1.3125rem);
@@ -358,7 +365,8 @@
     align-items: center;
     justify-content: center;
   }
-  .earth-impact__watermark img {
+  .earth-impact__watermark img,
+  .earth-impact__watermark svg {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -373,10 +381,12 @@
     position: relative;
     z-index: 1;
   }
-  .earth-impact__icon-box img {
+  .earth-impact__icon-box img,
+  .earth-impact__icon-box svg {
     max-height: 38px;
     width: auto;
     object-fit: contain;
+    display: block;
   }
   .earth-impact__dark-number {
     font-size: clamp(1.8rem, 2.4vw, 2.3rem);

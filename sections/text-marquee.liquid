@@ -72,14 +72,9 @@
                         alt: block.settings.image.alt | default: 'Marquee icon'
                       }}
                     {%- else -%}
-                      <img 
-                        src="{{ 'icon-flower.svg' | asset_url }}" 
-                        class="earth-marquee__flower" 
-                        alt="flower" 
-                        width="{{ img_w }}" 
-                        height="auto" 
-                        loading="lazy"
-                      >
+                      <span class="earth-marquee__flower" aria-hidden="true">
+                        {{ 'icon-flower.svg' | inline_asset_content }}
+                      </span>
                     {%- endif -%}
                   </span>
                   {%- if block.settings.link != blank -%}
@@ -94,19 +89,19 @@
             <span class="earth-marquee__text earth-marquee__text--font-subheading" style="--item-fs: 22px;">Welcome to our store</span>
           </span>
           <span class="earth-marquee__item">
-            <img src="{{ 'icon-flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="32" height="auto" loading="lazy">
+            <span class="earth-marquee__flower" aria-hidden="true">{{ 'icon-flower.svg' | inline_asset_content }}</span>
           </span>
           <span class="earth-marquee__item">
             <span class="earth-marquee__text earth-marquee__text--font-subheading" style="--item-fs: 22px;">SUSTAINABLE FABRICS</span>
           </span>
           <span class="earth-marquee__item">
-            <img src="{{ 'icon-flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="32" height="auto" loading="lazy">
+            <span class="earth-marquee__flower" aria-hidden="true">{{ 'icon-flower.svg' | inline_asset_content }}</span>
           </span>
           <span class="earth-marquee__item">
             <span class="earth-marquee__text earth-marquee__text--font-subheading" style="--item-fs: 22px;">FEEL GOOD CLOTHES</span>
           </span>
           <span class="earth-marquee__item">
-            <img src="{{ 'icon-flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="32" height="auto" loading="lazy">
+            <span class="earth-marquee__flower" aria-hidden="true">{{ 'icon-flower.svg' | inline_asset_content }}</span>
           </span>
         {%- endif -%}
       </div>
@@ -223,10 +218,17 @@
   .earth-marquee__flower {
     width: var(--img-w-desktop, 32px);
     height: auto;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     vertical-align: middle;
     flex-shrink: 0;
     object-fit: contain;
+  }
+  .earth-marquee__flower svg {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
   @keyframes earthMarqueeScroll {

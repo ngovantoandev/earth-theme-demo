@@ -27,7 +27,7 @@
 
         <h2 class="earth-transparency__title">
           <span class="earth-transparency__title-icon" aria-hidden="true">
-            <img src="{{ 'icon-leaf-2.svg' | asset_url }}" width="36" height="36" alt="" loading="lazy">
+            {{ 'icon-leaf-2.svg' | inline_asset_content }}
           </span>
           <span>{{ section.settings.title | default: 'Transparency Spotlight' }}</span>
         </h2>
@@ -47,7 +47,7 @@
       <div class="earth-transparency__card earth-transparency__card--materials">
         <!-- Decorative Watermark Leaf -->
         <div class="earth-transparency__watermark" aria-hidden="true">
-          <img src="{{ 'icon-leaf-2.svg' | asset_url }}" width="240" height="240" alt="" loading="lazy">
+          {{ 'icon-leaf-2.svg' | inline_asset_content }}
         </div>
 
         <div class="earth-transparency__card-top">
@@ -73,11 +73,11 @@
           <!-- Certification Badges -->
           <div class="earth-transparency__badges-group">
             <div class="earth-transparency__badge">
-              <img src="{{ 'icon-GOTS Certified.svg' | asset_url }}" width="17" height="16" alt="GOTS Certified" loading="lazy" class="earth-transparency__badge-icon">
+              <span class="earth-transparency__badge-icon" aria-hidden="true">{{ 'icon-GOTS Certified.svg' | inline_asset_content }}</span>
               <span>{{ section.settings.card1_badge1_text | default: 'GOTS Certified' }}</span>
             </div>
             <div class="earth-transparency__badge">
-              <img src="{{ 'icon-Fair-Trade.svg' | asset_url }}" width="16" height="14" alt="Fair Trade" loading="lazy" class="earth-transparency__badge-icon">
+              <span class="earth-transparency__badge-icon" aria-hidden="true">{{ 'icon-Fair-Trade.svg' | inline_asset_content }}</span>
               <span>{{ section.settings.card1_badge2_text | default: 'Fair Trade' }}</span>
             </div>
           </div>
@@ -253,7 +253,8 @@
     flex-shrink: 0;
   }
 
-  .earth-transparency__title-icon img {
+  .earth-transparency__title-icon img,
+  .earth-transparency__title-icon svg {
     width: clamp(28px, 2.5vw, 36px);
     height: auto;
     object-fit: contain;
@@ -312,7 +313,8 @@
     z-index: 1;
   }
 
-  .earth-transparency__watermark img {
+  .earth-transparency__watermark img,
+  .earth-transparency__watermark svg {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -384,7 +386,14 @@
   }
 
   .earth-transparency__badge-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     object-fit: contain;
+  }
+  .earth-transparency__badge-icon svg {
+    width: 16px;
+    height: 16px;
     display: block;
   }
 

@@ -31,11 +31,11 @@
               <div class="measurable-impact__metric-header measurable-impact__metric-header--{{ block.settings.icon_position | default: 'right' }}">
                 {%- if block.settings.icon_position == 'left' -%}
                   {%- if block.settings.show_smile -%}
-                    <span class="measurable-impact__smile-icon">
+                    <span class="measurable-impact__smile-icon" aria-hidden="true">
                       {%- if block.settings.custom_icon != blank -%}
                         <img src="{{ block.settings.custom_icon | image_url: width: 120 }}" width="52" height="52" alt="" loading="lazy">
                       {%- else -%}
-                        <img src="{{ 'icon-smile.svg' | asset_url }}" width="52" height="52" alt="Smile icon" loading="lazy">
+                        {{ 'icon-smile.svg' | inline_asset_content }}
                       {%- endif -%}
                     </span>
                   {%- endif -%}
@@ -43,11 +43,11 @@
                 {%- else -%}
                   <span class="measurable-impact__metric-number">{{ block.settings.number }}</span>
                   {%- if block.settings.show_smile -%}
-                    <span class="measurable-impact__smile-icon">
+                    <span class="measurable-impact__smile-icon" aria-hidden="true">
                       {%- if block.settings.custom_icon != blank -%}
                         <img src="{{ block.settings.custom_icon | image_url: width: 120 }}" width="52" height="52" alt="" loading="lazy">
                       {%- else -%}
-                        <img src="{{ 'icon-smile.svg' | asset_url }}" width="52" height="52" alt="Smile icon" loading="lazy">
+                        {{ 'icon-smile.svg' | inline_asset_content }}
                       {%- endif -%}
                     </span>
                   {%- endif -%}
@@ -65,8 +65,8 @@
           <div class="measurable-impact__metric-item">
             <div class="measurable-impact__metric-header measurable-impact__metric-header--right">
               <span class="measurable-impact__metric-number">50k+</span>
-              <span class="measurable-impact__smile-icon">
-                <img src="{{ 'icon-smile.svg' | asset_url }}" width="52" height="52" alt="Smile icon" loading="lazy">
+              <span class="measurable-impact__smile-icon" aria-hidden="true">
+                {{ 'icon-smile.svg' | inline_asset_content }}
               </span>
             </div>
             <p class="measurable-impact__metric-text">
@@ -76,8 +76,8 @@
 
           <div class="measurable-impact__metric-item">
             <div class="measurable-impact__metric-header measurable-impact__metric-header--left">
-              <span class="measurable-impact__smile-icon">
-                <img src="{{ 'icon-smile.svg' | asset_url }}" width="52" height="52" alt="Smile icon" loading="lazy">
+              <span class="measurable-impact__smile-icon" aria-hidden="true">
+                {{ 'icon-smile.svg' | inline_asset_content }}
               </span>
               <span class="measurable-impact__metric-number">100%</span>
             </div>
@@ -89,8 +89,8 @@
           <div class="measurable-impact__metric-item">
             <div class="measurable-impact__metric-header measurable-impact__metric-header--right">
               <span class="measurable-impact__metric-number">12,400</span>
-              <span class="measurable-impact__smile-icon">
-                <img src="{{ 'icon-smile.svg' | asset_url }}" width="52" height="52" alt="Smile icon" loading="lazy">
+              <span class="measurable-impact__smile-icon" aria-hidden="true">
+                {{ 'icon-smile.svg' | inline_asset_content }}
               </span>
             </div>
             <p class="measurable-impact__metric-text">
@@ -240,7 +240,8 @@
     flex-shrink: 0;
   }
 
-  .measurable-impact__smile-icon img {
+  .measurable-impact__smile-icon img,
+  .measurable-impact__smile-icon svg {
     width: 100%;
     height: 100%;
     object-fit: contain;
