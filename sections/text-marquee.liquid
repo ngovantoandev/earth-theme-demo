@@ -1,37 +1,112 @@
-<section class="earth-marquee earth-marquee-{{ section.id }} full-width" style="--marquee-speed: {{ section.settings.speed }}s; --marquee-bg: {{ section.settings.bg_color }}; --marquee-color: {{ section.settings.text_color }};">
+{%- liquid
+  assign speed_val = section.settings.speed | default: 5
+  if speed_val <= 0
+    assign speed_val = 5
+  endif
+  # Duration calculation: speed 5 -> ~30s, speed 1 -> ~150s, speed 20 -> ~7.5s
+  assign duration = 150 | divided_by: speed_val
+  if duration < 3
+    assign duration = 3
+  endif
+-%}
+
+<section 
+  class="earth-marquee earth-marquee-{{ section.id }} full-width{% if section.settings.show_divider %} earth-marquee--has-divider{% endif %}" 
+  style="
+    --marquee-duration: {{ duration }}s;
+    --marquee-direction: {% if section.settings.direction == 'right' %}reverse{% else %}normal{% endif %};
+    --marquee-bg: {{ section.settings.bg_color | default: '#FDE68A' }};
+    --marquee-color: {{ section.settings.text_color | default: '#003225' }};
+    --marquee-pt: {{ section.settings.top_padding | default: 36 }}px;
+    --marquee-pb: {{ section.settings.bottom_padding | default: 36 }}px;
+    --marquee-space: {{ section.settings.space | default: 40 }}px;
+    --marquee-space-mobile: {{ section.settings.space_mobile | default: 25 }}px;
+  "
+>
   <div class="earth-marquee__track">
-    {%- for i in (1..4) -%}
+    {%- for i in (1..6) -%}
       <div class="earth-marquee__group" {% if i > 1 %}aria-hidden="true"{% endif %}>
         {%- if section.blocks.size > 0 -%}
           {%- for block in section.blocks -%}
             <span class="earth-marquee__item" {% if i == 1 %}{{ block.shopify_attributes }}{% endif %}>
-              <span class="earth-marquee__text">{{ block.settings.text | escape }}</span>
-              <img 
-                src="{{ 'icon-flower.svg' | asset_url }}" 
-                class="earth-marquee__flower" 
-                alt="flower" 
-                width="24" 
-                height="22" 
-                loading="lazy"
-              >
+              {%- case block.type -%}
+                {%- when 'text', 'marquee_text' -%}
+                  {%- liquid
+                    assign fs = block.settings.text_size | default: block.settings.font_size | default: 22
+                    assign font_family = block.settings.text_font | default: 'subheading'
+                  -%}
+                  {%- if block.settings.link != blank -%}
+                    <a href="{{ block.settings.link }}" class="earth-marquee__link">
+                      <span 
+                        class="earth-marquee__text earth-marquee__text--font-{{ font_family }}" 
+                        style="--item-fs: {{ fs }}px;"
+                      >
+                        {{ block.settings.text }}
+                      </span>
+                    </a>
+                  {%- else -%}
+                    <span 
+                      class="earth-marquee__text earth-marquee__text--font-{{ font_family }}" 
+                      style="--item-fs: {{ fs }}px;"
+                    >
+                      {{ block.settings.text }}
+                    </span>
+                  {%- endif -%}
+
+                {%- when 'image' -%}
+                  {%- liquid
+                    assign img_w = block.settings.image_width | default: 32
+                    assign img_w_mob = block.settings.image_width_mobile | default: 24
+                  -%}
+                  {%- if block.settings.link != blank -%}
+                    <a href="{{ block.settings.link }}" class="earth-marquee__link">
+                  {%- endif -%}
+                  <span 
+                    class="earth-marquee__image-wrapper" 
+                    style="--img-w-desktop: {{ img_w }}px; --img-w-mobile: {{ img_w_mob }}px;"
+                  >
+                    {%- if block.settings.image != blank -%}
+                      {{ block.settings.image | image_url: width: 240 | image_tag: 
+                        class: 'earth-marquee__image',
+                        loading: 'lazy',
+                        alt: block.settings.image.alt | default: 'Marquee icon'
+                      }}
+                    {%- else -%}
+                      <img 
+                        src="{{ 'icon-flower.svg' | asset_url }}" 
+                        class="earth-marquee__flower" 
+                        alt="flower" 
+                        width="{{ img_w }}" 
+                        height="auto" 
+                        loading="lazy"
+                      >
+                    {%- endif -%}
+                  </span>
+                  {%- if block.settings.link != blank -%}
+                    </a>
+                  {%- endif -%}
+
+              {%- endcase -%}
             </span>
           {%- endfor -%}
         {%- else -%}
           <span class="earth-marquee__item">
-            <span class="earth-marquee__text">SUSTAINABLE FABRICS</span>
-            <img src="{{ 'icon-flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="24" height="22" loading="lazy">
+            <span class="earth-marquee__text earth-marquee__text--font-subheading" style="--item-fs: 22px;">Welcome to our store</span>
           </span>
           <span class="earth-marquee__item">
-            <span class="earth-marquee__text">FEEL GOOD CLOTHES</span>
-            <img src="{{ 'icon-flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="24" height="22" loading="lazy">
+            <img src="{{ 'icon-flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="32" height="auto" loading="lazy">
           </span>
           <span class="earth-marquee__item">
-            <span class="earth-marquee__text">SUSTAINABLE FABRICS</span>
-            <img src="{{ 'icon-flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="24" height="22" loading="lazy">
+            <span class="earth-marquee__text earth-marquee__text--font-subheading" style="--item-fs: 22px;">SUSTAINABLE FABRICS</span>
           </span>
           <span class="earth-marquee__item">
-            <span class="earth-marquee__text">FEEL GOOD CLOTHES</span>
-            <img src="{{ 'icon-flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="24" height="22" loading="lazy">
+            <img src="{{ 'icon-flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="32" height="auto" loading="lazy">
+          </span>
+          <span class="earth-marquee__item">
+            <span class="earth-marquee__text earth-marquee__text--font-subheading" style="--item-fs: 22px;">FEEL GOOD CLOTHES</span>
+          </span>
+          <span class="earth-marquee__item">
+            <img src="{{ 'icon-flower.svg' | asset_url }}" class="earth-marquee__flower" alt="flower" width="32" height="auto" loading="lazy">
           </span>
         {%- endif -%}
       </div>
@@ -45,25 +120,30 @@
     overflow: hidden;
     width: 100%;
     user-select: none;
-    background-color: var(--marquee-bg, var(--color-white, #F8F9DC));
-    padding: 0 0 96px 0;
-    margin-top: -1px;
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
+    background-color: var(--marquee-bg, #FDE68A);
+    padding-top: var(--marquee-pt, 36px);
+    padding-bottom: var(--marquee-pb, 36px);
+    margin: 0;
     box-sizing: border-box;
     display: flex;
     align-items: center;
+    position: relative;
+  }
+
+  .earth-marquee--has-divider {
+    border-top: 1px solid rgba(0, 50, 37, 0.12);
+    border-bottom: 1px solid rgba(0, 50, 37, 0.12);
   }
 
   .earth-marquee__track {
     display: flex;
     width: max-content;
     will-change: transform;
-    animation: earthMarqueeScroll var(--marquee-speed, 22s) linear infinite;
+    animation: earthMarqueeScroll var(--marquee-duration, 30s) linear infinite;
+    animation-direction: var(--marquee-direction, normal);
   }
 
-  .earth-marquee__track:hover {
+  .earth-marquee:hover .earth-marquee__track {
     animation-play-state: paused;
     cursor: default;
   }
@@ -72,34 +152,81 @@
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    gap: 32px;
-    padding-right: 32px;
+    gap: var(--marquee-space, 40px);
+    padding-right: var(--marquee-space, 40px);
   }
 
   .earth-marquee__item {
     display: inline-flex;
     align-items: center;
-    gap: 32px;
+    justify-content: center;
     white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .earth-marquee__link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .earth-marquee__link:hover {
+    opacity: 0.85;
   }
 
   .earth-marquee__text {
-    color: var(--marquee-color, var(--color-black, #003225));
-    font-size: 22px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    line-height: 1;
+    color: var(--marquee-color, #003225);
+    font-size: var(--item-fs, 22px);
+    line-height: 1.1;
     font-family: inherit;
   }
 
+  .earth-marquee__text--font-body {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .earth-marquee__text--font-heading {
+    font-weight: 800;
+    text-transform: none;
+    letter-spacing: -0.02em;
+  }
+
+  .earth-marquee__text--font-subheading {
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+
+  .earth-marquee__text strong {
+    font-weight: 900;
+  }
+
+  .earth-marquee__text em {
+    font-style: italic;
+  }
+
+  .earth-marquee__text a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  .earth-marquee__image-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .earth-marquee__image,
   .earth-marquee__flower {
-    width: 24px;
+    width: var(--img-w-desktop, 32px);
     height: auto;
-    object-fit: contain;
     display: inline-block;
     vertical-align: middle;
     flex-shrink: 0;
+    object-fit: contain;
   }
 
   @keyframes earthMarqueeScroll {
@@ -112,92 +239,213 @@
   }
 
   @media (max-width: 768px) {
-    .earth-marquee {
-      padding: 0 0 64px 0;
+    .earth-marquee__group {
+      gap: var(--marquee-space-mobile, 25px);
+      padding-right: var(--marquee-space-mobile, 25px);
     }
     .earth-marquee__text {
-      font-size: 22px;
+      font-size: clamp(14px, calc(var(--item-fs, 22px) * 0.82), 48px);
     }
+    .earth-marquee__image,
     .earth-marquee__flower {
-      width: 22px;
-    }
-    .earth-marquee__group,
-    .earth-marquee__item {
-      gap: 24px;
-      padding-right: 24px;
+      width: var(--img-w-mobile, 24px);
     }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "Text Marquee",
+  "name": "Text marquee",
   "class": "earth-marquee-section",
   "settings": [
     {
-      "type": "color",
-      "id": "bg_color",
-      "label": "Background Color",
-      "default": "#F8F9DC"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text Color",
-      "default": "#003225"
+      "type": "select",
+      "id": "direction",
+      "label": "Direction",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
     },
     {
       "type": "range",
       "id": "speed",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "unit": "x",
+      "label": "Speed",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "space",
       "min": 10,
-      "max": 60,
+      "max": 200,
       "step": 2,
-      "unit": "s",
-      "label": "Scroll Speed",
-      "default": 24
+      "unit": "px",
+      "label": "Horizontal space (Desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "space_mobile",
+      "min": 5,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Horizontal space (Mobile)",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#FDE68A"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "range",
+      "id": "top_padding",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "bottom_padding",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show section divider",
+      "default": false
     }
   ],
   "blocks": [
     {
-      "type": "marquee_text",
-      "name": "Marquee Item",
+      "type": "text",
+      "name": "Text",
       "settings": [
         {
-          "type": "text",
+          "type": "inline_richtext",
           "id": "text",
           "label": "Text",
-          "default": "SUSTAINABLE FABRICS"
+          "default": "Welcome to our store"
+        },
+        {
+          "type": "range",
+          "id": "text_size",
+          "min": 10,
+          "max": 200,
+          "step": 2,
+          "unit": "px",
+          "label": "Text size",
+          "default": 22
+        },
+        {
+          "type": "select",
+          "id": "text_font",
+          "label": "Text font",
+          "options": [
+            { "value": "body", "label": "Body" },
+            { "value": "heading", "label": "Heading" },
+            { "value": "subheading", "label": "Subheading" }
+          ],
+          "default": "subheading"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "range",
+          "id": "image_width",
+          "min": 16,
+          "max": 120,
+          "step": 2,
+          "unit": "px",
+          "label": "Image width (Desktop)",
+          "default": 32
+        },
+        {
+          "type": "range",
+          "id": "image_width_mobile",
+          "min": 12,
+          "max": 80,
+          "step": 2,
+          "unit": "px",
+          "label": "Image width (Mobile)",
+          "default": 24
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Text Marquee",
+      "name": "Text marquee",
       "blocks": [
         {
-          "type": "marquee_text",
+          "type": "text",
           "settings": {
-            "text": "SUSTAINABLE FABRICS"
+            "text": "Welcome to our store",
+            "text_size": 22,
+            "text_font": "subheading"
           }
         },
         {
-          "type": "marquee_text",
+          "type": "image"
+        },
+        {
+          "type": "text",
           "settings": {
-            "text": "FEEL GOOD CLOTHES"
+            "text": "SUSTAINABLE FABRICS",
+            "text_size": 22,
+            "text_font": "subheading"
           }
         },
         {
-          "type": "marquee_text",
-          "settings": {
-            "text": "SUSTAINABLE FABRICS"
-          }
-        },
-        {
-          "type": "marquee_text",
-          "settings": {
-            "text": "FEEL GOOD CLOTHES"
-          }
+          "type": "image"
         }
       ]
     }

@@ -1,59 +1,155 @@
 {% doc %}
-  Renders a text block.
+  Renders a text block based on snippets/text.liquid.
 
   @example
   {% content_for 'block', type: 'text', id: 'text' %}
 {% enddoc %}
 
-<div
-  class="text {{ block.settings.text_style }}"
-  style="--text-align: {{ block.settings.alignment }}"
-  {{ block.shopify_attributes }}
->
-  {{ block.settings.text }}
+<div class="theme-block-text theme-block-text--{{ block.settings.alignment | default: 'left' }}" {{ block.shopify_attributes }}>
+  {% render 'text', block: block %}
 </div>
 
 {% stylesheet %}
-  .text {
-    text-align: var(--text-align);
+  .theme-block-text {
+    width: 100%;
+    display: flex;
   }
-  .text--title {
-    font-size: 2rem;
-    font-weight: 700;
+  .theme-block-text--left {
+    justify-content: flex-start;
+    text-align: left;
   }
-  .text--subtitle {
-    font-size: 1.5rem;
+  .theme-block-text--center {
+    justify-content: center;
+    text-align: center;
+  }
+  .theme-block-text--right {
+    justify-content: flex-end;
+    text-align: right;
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.text",
+  "name": "Text",
   "settings": [
     {
-      "type": "text",
+      "type": "richtext",
       "id": "text",
-      "label": "t:labels.text",
-      "default": "Text"
+      "label": "Text",
+      "default": "<p>Share information about your brand, materials, or sustainability commitments.</p>"
     },
     {
       "type": "select",
-      "id": "text_style",
-      "label": "t:labels.text_style",
+      "id": "text_font",
+      "label": "Font Style",
       "options": [
-        { "value": "text--title", "label": "t:options.text_style.title" },
-        { "value": "text--subtitle", "label": "t:options.text_style.subtitle" },
-        { "value": "text--normal", "label": "t:options.text_style.normal" }
+        { "value": "body", "label": "Body (Regular)" },
+        { "value": "heading", "label": "Heading (Bold)" },
+        { "value": "subheading", "label": "Subheading (Uppercase)" }
       ],
-      "default": "text--title"
+      "default": "body"
     },
     {
-      "type": "text_alignment",
+      "type": "select",
+      "id": "text_size",
+      "label": "Size Preset",
+      "options": [
+        { "value": "custom", "label": "Custom (px - Slider below)" },
+        { "value": "small", "label": "Small (14px)" },
+        { "value": "medium", "label": "Medium (16px)" },
+        { "value": "large", "label": "Large (21px)" },
+        { "value": "extra-large", "label": "Extra Large (28px)" }
+      ],
+      "default": "custom"
+    },
+    {
+      "type": "range",
+      "id": "custom_size",
+      "min": 10,
+      "max": 150,
+      "step": 2,
+      "unit": "px",
+      "label": "Custom Desktop Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "custom_size_mobile",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Custom Mobile Size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Text Color"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_secondary_color",
+      "label": "Use Secondary Theme Color",
+      "default": false
+    },
+    {
+      "type": "select",
       "id": "alignment",
-      "label": "t:labels.alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
       "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 200,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "label": "Max Width",
+      "default": 800
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 0
     }
   ],
-  "presets": [{ "name": "t:general.text" }]
+  "presets": [
+    {
+      "name": "Text",
+      "settings": {
+        "text": "<p>Share information about your brand, materials, or sustainability commitments.</p>",
+        "text_font": "body",
+        "text_size": "custom",
+        "custom_size": 16,
+        "custom_size_mobile": 14
+      }
+    }
+  ]
 }
 {% endschema %}

@@ -321,7 +321,7 @@
                 "max": 24,
                 "step": 1,
                 "unit": "px",
-                "default": 16,
+                "default": 18,
                 "label": "t:general.typography.accent.buttons.base_size.label"
             },
             {
@@ -463,6 +463,99 @@
         "id": "color_black",
         "default": "#003225",
         "label": "Dark / Pine Green"
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Action Button (Solid / Outline)"
+      },
+      {
+        "type": "color",
+        "id": "btn_solid_bg",
+        "label": "Button Background",
+        "default": "#003225"
+      },
+      {
+        "type": "color",
+        "id": "btn_solid_color",
+        "label": "Button Text Color",
+        "default": "#F8F9DC"
+      },
+      {
+        "type": "range",
+        "id": "btn_solid_padding_v",
+        "min": 0,
+        "max": 50,
+        "step": 2,
+        "unit": "px",
+        "label": "Padding Top / Bottom",
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "btn_solid_padding_h",
+        "min": 0,
+        "max": 80,
+        "step": 2,
+        "unit": "px",
+        "label": "Padding Left / Right",
+        "default": 28
+      },
+      {
+        "type": "range",
+        "id": "btn_solid_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Corner Radius",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Arrow Button (Link Style)"
+      },
+      {
+        "type": "color",
+        "id": "btn_arrow_text_color",
+        "label": "Text & Underline Color",
+        "default": "#003225"
+      },
+      {
+        "type": "color",
+        "id": "btn_arrow_circle_bg",
+        "label": "Circle Background",
+        "default": "#003225"
+      },
+      {
+        "type": "color",
+        "id": "btn_arrow_circle_icon",
+        "label": "Arrow Icon Color",
+        "default": "#F8F9DC"
+      },
+      {
+        "type": "range",
+        "id": "btn_arrow_padding_v",
+        "min": 0,
+        "max": 50,
+        "step": 2,
+        "unit": "px",
+        "label": "Padding Top / Bottom",
+        "default": 6
+      },
+      {
+        "type": "range",
+        "id": "btn_arrow_padding_h",
+        "min": 0,
+        "max": 80,
+        "step": 2,
+        "unit": "px",
+        "label": "Padding Left / Right",
+        "default": 0
       }
     ]
   }

@@ -241,21 +241,24 @@ button, .btn, input[type="button"], input[type="submit"], input[type="reset"] {
   grid-column: 1 / -1;
 }
 
-/* Reusable Action Button Component */
+/* Reusable Action Button Component (Type 1) */
 .earth-btn-action,
 .earth-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-button--family, var(--font-primary--family));
-  font-size: var(--font-button--size, clamp(14px, 1.05vw, 15px));
+  font-size: var(--font-button--size, 18px);
   font-weight: var(--font-button--weight, 700);
   letter-spacing: var(--button-letter-spacing, 0.04em);
   text-transform: var(--font-button--transform, uppercase);
   text-decoration: none;
-  padding: 14px 28px;
+  padding-top: var(--global-btn-solid-pt, 14px);
+  padding-bottom: var(--global-btn-solid-pb, 14px);
+  padding-left: var(--global-btn-solid-pl, 28px);
+  padding-right: var(--global-btn-solid-pr, 28px);
   line-height: 1.2;
-  border-radius: var(--button-border-radius, 2px);
+  border-radius: var(--global-btn-solid-radius, 0px);
   cursor: pointer;
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
   white-space: nowrap;
@@ -267,17 +270,17 @@ button, .btn, input[type="button"], input[type="submit"], input[type="reset"] {
 .earth-btn-action--solid,
 .earth-btn--primary,
 .button--primary {
-  background-color: var(--color-black, #003225);
-  color: var(--color-white, #F8F9DC);
-  border: 1.5px solid var(--color-black, #003225);
+  background-color: var(--btn-custom-bg, var(--global-btn-solid-bg, var(--color-black, #003225)));
+  color: var(--btn-custom-color, var(--global-btn-solid-color, var(--color-white, #F8F9DC)));
+  border: 1.5px solid var(--btn-custom-bg, var(--global-btn-solid-bg, var(--color-black, #003225)));
 }
 .earth-btn:hover,
 .earth-btn-action--solid:hover,
 .earth-btn--primary:hover,
 .button--primary:hover {
   background-color: transparent;
-  color: var(--color-black, #003225);
-  border-color: var(--color-black, #003225);
+  color: var(--btn-custom-bg, var(--global-btn-solid-bg, var(--color-black, #003225)));
+  border-color: var(--btn-custom-bg, var(--global-btn-solid-bg, var(--color-black, #003225)));
 }
 
 /* Outline Variant (Default: Outline -> Hover: Filled) */
@@ -285,15 +288,15 @@ button, .btn, input[type="button"], input[type="submit"], input[type="reset"] {
 .earth-btn--outline,
 .button--secondary {
   background-color: transparent;
-  color: var(--color-black, #003225);
-  border: 1.5px solid var(--color-black, #003225);
+  color: var(--btn-custom-bg, var(--global-btn-solid-bg, var(--color-black, #003225)));
+  border: 1.5px solid var(--btn-custom-bg, var(--global-btn-solid-bg, var(--color-black, #003225)));
 }
 .earth-btn-action--outline:hover,
 .earth-btn--outline:hover,
 .button--secondary:hover {
-  background-color: var(--color-black, #003225);
-  color: var(--color-white, #F8F9DC);
-  border-color: var(--color-black, #003225);
+  background-color: var(--btn-custom-bg, var(--global-btn-solid-bg, var(--color-black, #003225)));
+  color: var(--btn-custom-color, var(--global-btn-solid-color, var(--color-white, #F8F9DC)));
+  border-color: var(--btn-custom-bg, var(--global-btn-solid-bg, var(--color-black, #003225)));
 }
 
 /* Accent Variant */
@@ -307,5 +310,72 @@ button, .btn, input[type="button"], input[type="submit"], input[type="reset"] {
   color: var(--color-white, #F8F9DC);
   border-color: var(--color-black, #003225);
 }
+
+/* Reusable Arrow Link Button Component (Type 2) */
+.earth-btn-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-button--family, var(--font-primary--family));
+  font-size: var(--font-button--size, 18px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+  border-bottom: 1.5px solid currentColor;
+  padding-top: var(--global-btn-arrow-pt, 6px);
+  padding-bottom: var(--global-btn-arrow-pb, 6px);
+  padding-left: var(--global-btn-arrow-pl, 0px);
+  padding-right: var(--global-btn-arrow-pr, 0px);
+  line-height: 1;
+  color: var(--btn-arrow-color, var(--global-btn-arrow-color, #003225));
+}
+.earth-btn-arrow__text {
+  line-height: 1;
+}
+.earth-btn-arrow__icon-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, background-color 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+  background-color: var(--circle-bg, var(--global-btn-arrow-circle-bg, #003225));
+  color: var(--circle-color, var(--global-btn-arrow-circle-icon, #F8F9DC));
+}
+.earth-btn-arrow:hover .earth-btn-arrow__icon-circle {
+  transform: translateX(4px);
+}
+.earth-btn-arrow__icon-circle img,
+.earth-btn-arrow__icon-svg {
+  width: 12px;
+  height: 10px;
+  display: block;
+  object-fit: contain;
+  fill: currentColor;
+}
+.earth-btn-arrow--dark {
+  color: var(--btn-arrow-color, var(--color-black, #003225));
+}
+.earth-btn-arrow--dark .earth-btn-arrow__icon-circle {
+  background-color: var(--circle-bg, var(--color-black, #003225));
+  color: var(--circle-color, var(--color-white, #F8F9DC));
+}
+.earth-btn-arrow--light {
+  color: var(--btn-arrow-color, var(--color-white, #F8F9DC));
+}
+.earth-btn-arrow--light .earth-btn-arrow__icon-circle {
+  background-color: var(--circle-bg, var(--color-white, #F8F9DC));
+  color: var(--circle-color, var(--color-black, #003225));
+}
+.earth-btn-arrow--light .earth-btn-arrow__icon-circle img {
+  filter: brightness(0) saturate(100%) invert(18%) sepia(35%) saturate(1914%) hue-rotate(92deg) brightness(94%) contrast(97%);
+}
+
+
 
 

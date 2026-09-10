@@ -4,14 +4,69 @@
   - text: {String} Button label text
   - url: {String} Link destination URL
   - theme: {String} 'dark' (default on light bg) or 'light' (on dark image bg)
+  - font_size: {Number} Font size in px
+  - padding_vertical: {Number} Padding top & bottom in px
+  - padding_horizontal: {Number} Padding left & right in px
+  - padding_top: {Number} (Optional override)
+  - padding_bottom: {Number} (Optional override)
+  - padding_left: {Number} (Optional override)
+  - padding_right: {Number} (Optional override)
+  - color: {String} (Optional) Text & underline color override
+  - circle_bg: {String} (Optional) Circle background color override
+  - circle_color: {String} (Optional) Arrow icon color override
   - class: {String} Additional classes
+  - style: {String} Additional custom inline styles
 {% endcomment %}
 
-{%- assign btn_theme = theme | default: 'dark' -%}
+{%- liquid
+  assign btn_theme = theme | default: 'dark'
+  assign custom_styles = ''
+  if color != blank
+    assign custom_styles = custom_styles | append: '--btn-arrow-color: ' | append: color | append: '; '
+  endif
+  if circle_bg != blank
+    assign custom_styles = custom_styles | append: '--circle-bg: ' | append: circle_bg | append: '; '
+  endif
+  if circle_color != blank
+    assign custom_styles = custom_styles | append: '--circle-color: ' | append: circle_color | append: '; '
+  endif
 
-<a href="{{ url | default: routes.all_products_collection_url }}" class="earth-btn-arrow earth-btn-arrow--{{ btn_theme }} {{ class }}">
+  if font_size != blank and font_size > 0
+    assign custom_styles = custom_styles | append: 'font-size: ' | append: font_size | append: 'px !important; '
+  endif
+
+  assign pt = padding_top | default: padding_vertical
+  assign pb = padding_bottom | default: padding_vertical
+  assign pl = padding_left | default: padding_horizontal
+  assign pr = padding_right | default: padding_horizontal
+
+  if pt != blank and pt > 0
+    assign custom_styles = custom_styles | append: 'padding-top: ' | append: pt | append: 'px !important; '
+  endif
+  if pb != blank and pb > 0
+    assign custom_styles = custom_styles | append: 'padding-bottom: ' | append: pb | append: 'px !important; '
+  endif
+  if pl != blank and pl > 0
+    assign custom_styles = custom_styles | append: 'padding-left: ' | append: pl | append: 'px !important; '
+  endif
+  if pr != blank and pr > 0
+    assign custom_styles = custom_styles | append: 'padding-right: ' | append: pr | append: 'px !important; '
+  endif
+
+  if style != blank
+    assign custom_styles = custom_styles | append: style
+  endif
+-%}
+
+<a 
+  href="{{ url | default: routes.all_products_collection_url }}" 
+  class="earth-btn-arrow earth-btn-arrow--{{ btn_theme }} {{ class }}" 
+  {% if custom_styles != blank %}style="{{ custom_styles | strip }}"{% endif %}
+>
   <span class="earth-btn-arrow__text">{{ text }}</span>
   <span class="earth-btn-arrow__icon-circle" aria-hidden="true">
-    <img src="{{ 'icon-arrow-right.svg' | asset_url }}" width="12" height="10" alt="" loading="lazy">
+    <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg" class="earth-btn-arrow__icon-svg">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M0 5.58409H10.0464L6.4503 9.35022L7.0415 9.96017C7.09039 10.0125 7.13927 10.0125 7.1893 9.96017L11.9638 5.12574C12.0115 5.0752 12.0115 4.97414 11.9638 4.92301L7.18988 0.0392367C7.13984 -0.0130789 7.09039 -0.0130789 7.04208 0.0392367L6.45088 0.70091L10.143 4.46644H0" fill="currentColor"/>
+    </svg>
   </span>
 </a>

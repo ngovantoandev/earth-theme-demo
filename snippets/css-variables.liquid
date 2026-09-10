@@ -59,8 +59,26 @@
     /* ==========================================================================
        Global Component Design Tokens
        ========================================================================== */
-    /* Buttons */
-    --button-border-radius: {{ settings.button_border_radius | default: 0 }}px;
+    /* Button Type 1: Solid / Action Button */
+    --global-btn-solid-bg: {{ settings.btn_solid_bg | default: '#003225' }};
+    --global-btn-solid-color: {{ settings.btn_solid_color | default: '#F8F9DC' }};
+    --global-btn-solid-pt: {{ settings.btn_solid_padding_v | default: 14 }}px;
+    --global-btn-solid-pb: {{ settings.btn_solid_padding_v | default: 14 }}px;
+    --global-btn-solid-pl: {{ settings.btn_solid_padding_h | default: 28 }}px;
+    --global-btn-solid-pr: {{ settings.btn_solid_padding_h | default: 28 }}px;
+    --global-btn-solid-radius: {{ settings.btn_solid_radius | default: 0 }}px;
+
+    /* Button Type 2: Arrow Link Button */
+    --global-btn-arrow-color: {{ settings.btn_arrow_text_color | default: '#003225' }};
+    --global-btn-arrow-circle-bg: {{ settings.btn_arrow_circle_bg | default: '#003225' }};
+    --global-btn-arrow-circle-icon: {{ settings.btn_arrow_circle_icon | default: '#F8F9DC' }};
+    --global-btn-arrow-pt: {{ settings.btn_arrow_padding_v | default: 6 }}px;
+    --global-btn-arrow-pb: {{ settings.btn_arrow_padding_v | default: 6 }}px;
+    --global-btn-arrow-pl: {{ settings.btn_arrow_padding_h | default: 0 }}px;
+    --global-btn-arrow-pr: {{ settings.btn_arrow_padding_h | default: 0 }}px;
+
+    /* Buttons Legacy / Common */
+    --button-border-radius: var(--global-btn-solid-radius, {{ settings.button_border_radius | default: 0 }}px);
     --button-letter-spacing: {{ settings.button_letter_spacing | default: 40 | divided_by: 1000.0 }}em;
 
     /* Cards & Badges */

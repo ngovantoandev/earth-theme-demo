@@ -49,54 +49,112 @@
     },
     "sustainable_fashion_hero": {
       "type": "sustainable-fashion-hero",
-      "blocks": {
-        "heading_item": {
-          "type": "heading",
-          "settings": {
-            "heading_line_1": "Earth–Core",
-            "heading_line_2": "Sustainable Fashion",
-            "heading_color": "#003225",
-            "heading_size": "default"
-          }
-        },
-        "subtitle_item": {
-          "type": "subtitle",
-          "settings": {
-            "text": "One tree planted per product – 100K+ Trees Planted",
-            "color": "#1a420b",
-            "font_size": 18
-          }
-        },
-        "button_item": {
-          "type": "button",
-          "settings": {
-            "button_text": "SHOP NOW",
-            "variant": "solid",
-            "button_bg_color": "#003225",
-            "button_text_color": "#F8F9DC"
-          }
-        }
-      },
-      "block_order": [
-        "heading_item",
-        "subtitle_item",
-        "button_item"
-      ],
       "settings": {
         "bg_color": "#F8F9DC",
         "top_padding": 36,
         "bottom_padding": 36,
-        "full_width": true
+        "full_width": true,
+        "heading_line_1": "Earth–Core",
+        "heading_line_2": "Sustainable Fashion",
+        "heading_color": "#003225",
+        "heading_size": "default",
+        "subtitle": "One tree planted per product – 100K+ Trees Planted",
+        "subtitle_color": "#1a420b",
+        "subtitle_font_size": 21,
+        "button_text": "SHOP NOW",
+        "button_type": "solid"
       }
     },
     "impact_metrics": {
       "type": "impact-metrics",
+      "blocks": {
+        "dark_card_1": {
+          "type": "dark_card",
+          "settings": {
+            "icon_type": "tree",
+            "number": "100,000+",
+            "title": "Trees Planted",
+            "note": "80% of 2025 goal reached"
+          }
+        },
+        "dark_card_2": {
+          "type": "dark_card",
+          "settings": {
+            "icon_type": "co2",
+            "number": "500T",
+            "title": "CO₂ Saved",
+            "note": "≠ Equal to 2,500 cars off the road yearly"
+          }
+        },
+        "dark_card_3": {
+          "type": "dark_card",
+          "settings": {
+            "icon_type": "quality",
+            "number": "100%",
+            "title": "Fair Trade Certified",
+            "note": "",
+            "pills": "GOTS, B Corp"
+          }
+        },
+        "dark_card_4": {
+          "type": "dark_card",
+          "settings": {
+            "icon_type": "water",
+            "number": "1,000,159",
+            "title": "Liters Water Saved",
+            "note": "• Live update"
+          }
+        },
+        "outline_card_1": {
+          "type": "outline_card",
+          "settings": {
+            "number": "95%",
+            "title": "Organic Cotton",
+            "note": "of materials used"
+          }
+        },
+        "outline_card_2": {
+          "type": "outline_card",
+          "settings": {
+            "number": "2,500+",
+            "title": "Factory Workers",
+            "note": "earning fair wages"
+          }
+        },
+        "outline_card_3": {
+          "type": "outline_card",
+          "settings": {
+            "number": "40%",
+            "title": "Recycled Materials",
+            "note": "in our products"
+          }
+        },
+        "outline_card_4": {
+          "type": "outline_card",
+          "settings": {
+            "number": "2026",
+            "title": "Carbon Neutral",
+            "note": "achieved"
+          }
+        }
+      },
+      "block_order": [
+        "dark_card_1",
+        "dark_card_2",
+        "dark_card_3",
+        "dark_card_4",
+        "outline_card_1",
+        "outline_card_2",
+        "outline_card_3",
+        "outline_card_4"
+      ],
       "settings": {
         "title": "Our Real Impact",
         "subtitle": "Transparency is at the heart of everything we do. Track our environmental and social impact in real-time.",
         "personal_title": "Your Personal Sustainability Impact",
         "personal_subtitle": "Connect your account to see how you contribute to sustainability goals.",
-        "button_text": "TRACK MY IMPACT"
+        "button_text": "TRACK MY IMPACT",
+        "button_type": "solid"
       }
     },
     "featured_collections": {
@@ -119,40 +177,78 @@
       "type": "text-marquee",
       "blocks": {
         "item_1": {
-          "type": "marquee_text",
+          "type": "text",
           "settings": {
             "text": "SUSTAINABLE FABRICS"
+          }
+        },
+        "item_img_1": {
+          "type": "image",
+          "settings": {
+            "image_width": 32,
+            "image_width_mobile": 24
           }
         },
         "item_2": {
-          "type": "marquee_text",
+          "type": "text",
           "settings": {
             "text": "FEEL GOOD CLOTHES"
           }
         },
+        "item_img_2": {
+          "type": "image",
+          "settings": {
+            "image_width": 32,
+            "image_width_mobile": 24
+          }
+        },
         "item_3": {
-          "type": "marquee_text",
+          "type": "text",
           "settings": {
             "text": "SUSTAINABLE FABRICS"
           }
         },
+        "item_img_3": {
+          "type": "image",
+          "settings": {
+            "image_width": 32,
+            "image_width_mobile": 24
+          }
+        },
         "item_4": {
-          "type": "marquee_text",
+          "type": "text",
           "settings": {
             "text": "FEEL GOOD CLOTHES"
+          }
+        },
+        "item_img_4": {
+          "type": "image",
+          "settings": {
+            "image_width": 32,
+            "image_width_mobile": 24
           }
         }
       },
       "block_order": [
         "item_1",
+        "item_img_1",
         "item_2",
+        "item_img_2",
         "item_3",
-        "item_4"
+        "item_img_3",
+        "item_4",
+        "item_img_4"
       ],
       "settings": {
-        "bg_color": "#F8F9DC",
+        "direction": "left",
+        "speed": 5,
+        "space": 40,
+        "space_mobile": 25,
         "text_color": "#003225",
-        "speed": 24
+        "bg_color": "#F8F9DC",
+        "top_padding": 36,
+        "bottom_padding": 36,
+        "show_divider": false
       }
     },
     "shop_by_values": {

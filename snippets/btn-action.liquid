@@ -4,16 +4,60 @@
   - text: {String} Button label (e.g. 'SHOP COLLECTION')
   - url: {String} Link destination
   - variant: {String} 'solid' (default, dark green filled) | 'outline' (transparent with dark green border) | 'accent' (lime green filled)
+  - font_size: {Number} Font size in px
+  - padding_vertical: {Number} Padding top & bottom in px
+  - padding_horizontal: {Number} Padding left & right in px
+  - padding_top: {Number} (Optional override)
+  - padding_bottom: {Number} (Optional override)
+  - padding_left: {Number} (Optional override)
+  - padding_right: {Number} (Optional override)
   - class: {String} Additional custom classes
+  - style: {String} Additional inline styles
   - aria_label: {String} Accessibility label
   - target: {String} e.g. '_blank'
 {% endcomment %}
 
-{%- assign btn_variant = variant | default: 'solid' -%}
+{%- liquid
+  assign btn_variant = variant | default: 'solid'
+  assign custom_styles = ''
+  if font_size != blank and font_size > 0
+    assign custom_styles = custom_styles | append: 'font-size: ' | append: font_size | append: 'px !important; '
+  endif
+
+  assign pt = padding_top | default: padding_vertical
+  assign pb = padding_bottom | default: padding_vertical
+  assign pl = padding_left | default: padding_horizontal
+  assign pr = padding_right | default: padding_horizontal
+
+  if pt != blank and pt > 0
+    assign custom_styles = custom_styles | append: 'padding-top: ' | append: pt | append: 'px !important; '
+  endif
+  if pb != blank and pb > 0
+    assign custom_styles = custom_styles | append: 'padding-bottom: ' | append: pb | append: 'px !important; '
+  endif
+  if pl != blank and pl > 0
+    assign custom_styles = custom_styles | append: 'padding-left: ' | append: pl | append: 'px !important; '
+  endif
+  if pr != blank and pr > 0
+    assign custom_styles = custom_styles | append: 'padding-right: ' | append: pr | append: 'px !important; '
+  endif
+
+  if custom_bg != blank
+    assign custom_styles = custom_styles | append: '--btn-custom-bg: ' | append: custom_bg | append: '; '
+  endif
+  if custom_color != blank
+    assign custom_styles = custom_styles | append: '--btn-custom-color: ' | append: custom_color | append: '; '
+  endif
+
+  if style != blank
+    assign custom_styles = custom_styles | append: style
+  endif
+-%}
 
 <a 
   href="{{ url | default: routes.all_products_collection_url }}" 
   class="earth-btn-action earth-btn-action--{{ btn_variant }} {{ class }}" 
+  {% if custom_styles != blank %}style="{{ custom_styles | strip }}"{% endif %}
   {% if aria_label != blank %}aria-label="{{ aria_label }}"{% endif %}
   {% if target != blank %}target="{{ target }}" rel="noopener noreferrer"{% endif %}
 >

@@ -1,0 +1,173 @@
+{%- # theme-check-disable ValidScopedCSSClass, OrphanedSnippet -%}
+{% comment %}
+  Reusable Text Block Component
+  Accepts:
+  - block: {Object} Shopify block object with settings
+  - text: {String} (Optional override) Text content
+  - text_font: {String} 'body' | 'heading' | 'subheading'
+  - text_size: {String} 'small' | 'medium' | 'large' | 'extra-large' | 'custom'
+  - custom_size: {Number} Custom font size in px (desktop)
+  - custom_size_mobile: {Number} Custom font size in px (mobile)
+  - max_width: {Number} Max width in px
+  - alignment: {String} 'left' | 'center' | 'right'
+  - padding_top: {Number} Padding top in px
+  - padding_bottom: {Number} Padding bottom in px
+  - color: {String} Hex color code
+  - use_secondary_color: {Boolean} Use secondary theme color
+  - class: {String} Additional custom class names
+{% endcomment %}
+
+{%- liquid
+  assign b_settings = block.settings
+  assign content = text | default: b_settings.text | default: b_settings.content
+  assign font_type = text_font | default: b_settings.text_font | default: 'body'
+  assign size_preset = text_size | default: b_settings.text_size | default: 'custom'
+  assign custom_desktop = custom_size | default: b_settings.custom_size | default: b_settings.custom_text_size
+  assign custom_mobile = custom_size_mobile | default: b_settings.custom_size_mobile | default: custom_desktop
+  assign max_w = max_width | default: b_settings.max_width
+  assign text_align = alignment | default: b_settings.alignment | default: b_settings.text_alignment | default: 'left'
+  assign pt = padding_top | default: b_settings.padding_top | default: 0
+  assign pb = padding_bottom | default: b_settings.padding_bottom | default: 0
+  assign is_secondary = use_secondary_color | default: b_settings.use_secondary_color
+  assign text_color = color | default: b_settings.color
+
+  assign inline_styles = ''
+  if is_secondary
+    assign inline_styles = inline_styles | append: 'color: var(--color-secondary, #71CC3B) !important; '
+  elsif text_color != blank
+    assign inline_styles = inline_styles | append: 'color: ' | append: text_color | append: ' !important; '
+  endif
+
+  if text_align != blank
+    assign inline_styles = inline_styles | append: 'text-align: ' | append: text_align | append: '; '
+  endif
+
+  if max_w != blank and max_w > 0
+    assign inline_styles = inline_styles | append: 'max-width: ' | append: max_w | append: 'px; '
+    if text_align == 'center'
+      assign inline_styles = inline_styles | append: 'margin-left: auto; margin-right: auto; '
+    elsif text_align == 'right'
+      assign inline_styles = inline_styles | append: 'margin-left: auto; margin-right: 0; '
+    else
+      assign inline_styles = inline_styles | append: 'margin-left: 0; margin-right: auto; '
+    endif
+  endif
+
+  if pt > 0
+    assign inline_styles = inline_styles | append: 'padding-top: ' | append: pt | append: 'px; '
+  endif
+  if pb > 0
+    assign inline_styles = inline_styles | append: 'padding-bottom: ' | append: pb | append: 'px; '
+  endif
+
+  if size_preset == 'custom' and custom_desktop != blank
+    assign inline_styles = inline_styles | append: '--block-text-size: ' | append: custom_desktop | append: 'px; --custom-text-size: ' | append: custom_desktop | append: 'px; '
+    if custom_mobile != blank
+      assign inline_styles = inline_styles | append: '--block-text-size-mobile: ' | append: custom_mobile | append: 'px; '
+    endif
+  endif
+-%}
+
+{%- if content != blank -%}
+  <div 
+    class="earth-block-text earth-block-text--font-{{ font_type }} earth-block-text--size-{{ size_preset }} earth-block-text--align-{{ text_align }} {{ class }}"
+    {% if block %} {{ block.shopify_attributes }}{% endif %}
+    {% if inline_styles != blank %}style="{{ inline_styles | strip }}"{% endif %}
+  >
+    {{ content }}
+  </div>
+{%- endif -%}
+
+{% style %}
+  .earth-block-text {
+    margin: 0;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .earth-block-text--align-left {
+    text-align: left;
+  }
+  .earth-block-text--align-center {
+    text-align: center;
+  }
+  .earth-block-text--align-right {
+    text-align: right;
+  }
+
+  .earth-block-text p {
+    margin: 0;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    color: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
+    text-align: inherit !important;
+  }
+  .earth-block-text p + p {
+    margin-top: 0.6em;
+  }
+  .earth-block-text a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  /* Font Families */
+  .earth-block-text--font-body {
+    font-family: inherit;
+    font-weight: 400;
+  }
+  .earth-block-text--font-heading {
+    font-family: inherit;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .earth-block-text--font-subheading {
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* Standard Size Presets in REM */
+  .earth-block-text--size-small {
+    font-size: 0.875rem !important; /* 14px */
+  }
+  .earth-block-text--size-medium {
+    font-size: 1rem !important; /* 16px */
+  }
+  .earth-block-text--size-large {
+    font-size: 1.3125rem !important; /* 21px */
+  }
+  .earth-block-text--size-extra-large,
+  .earth-block-text--size-x-large {
+    font-size: 1.75rem !important; /* 28px */
+    line-height: 1.2;
+  }
+  .earth-block-text--size-custom {
+    font-size: var(--block-text-size, 1rem) !important;
+  }
+
+  @media screen and (max-width: 768px) {
+    .earth-block-text--size-small {
+      font-size: 0.8125rem !important; /* 13px */
+    }
+    .earth-block-text--size-medium {
+      font-size: 0.9375rem !important; /* 15px */
+    }
+    .earth-block-text--size-large {
+      font-size: 1.125rem !important; /* 18px */
+    }
+    .earth-block-text--size-extra-large,
+    .earth-block-text--size-x-large {
+      font-size: 1.375rem !important; /* 22px */
+    }
+    .earth-block-text--size-custom {
+      font-size: var(--block-text-size-mobile, var(--block-text-size, 1rem)) !important;
+    }
+  }
+{% endstyle %}

@@ -15,6 +15,17 @@
     "color_accent": "#EAE060",
     "color_white": "#F8F9DC",
     "color_black": "#003225",
+    "buttons_base_size": 18,
+    "btn_solid_bg": "#003225",
+    "btn_solid_color": "#F8F9DC",
+    "btn_solid_padding_v": 14,
+    "btn_solid_padding_h": 28,
+    "btn_solid_radius": 0,
+    "btn_arrow_text_color": "#003225",
+    "btn_arrow_circle_bg": "#003225",
+    "btn_arrow_circle_icon": "#F8F9DC",
+    "btn_arrow_padding_v": 6,
+    "btn_arrow_padding_h": 0,
     "content_for_index": []
   }
 }

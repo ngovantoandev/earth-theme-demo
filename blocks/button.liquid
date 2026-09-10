@@ -1,0 +1,188 @@
+{% doc %}
+  Renders a button block supporting solid action button and arrow link button with full color customization, padding, and font size.
+
+  @example
+  {% content_for 'block', type: 'button', id: 'button' %}
+{% enddoc %}
+
+{%- liquid
+  assign btn_type = block.settings.button_type | default: 'solid'
+  assign arrow_theme = block.settings.arrow_theme | default: 'dark'
+-%}
+
+<div class="theme-block-button theme-block-button--{{ block.settings.alignment | default: 'left' }}" {{ block.shopify_attributes }}>
+  {%- if btn_type == 'arrow' -%}
+    {% render 'btn-arrow',
+      text: block.settings.button_text,
+      url: block.settings.button_link,
+      theme: arrow_theme,
+      color: block.settings.text_color,
+      circle_bg: block.settings.circle_bg_color,
+      circle_color: block.settings.circle_icon_color,
+      font_size: block.settings.font_size,
+      padding_vertical: block.settings.padding_vertical,
+      padding_horizontal: block.settings.padding_horizontal
+    %}
+  {%- else -%}
+    {% render 'btn-action',
+      text: block.settings.button_text,
+      url: block.settings.button_link,
+      variant: btn_type,
+      custom_bg: block.settings.button_bg_color,
+      custom_color: block.settings.button_text_color,
+      font_size: block.settings.font_size,
+      padding_vertical: block.settings.padding_vertical,
+      padding_horizontal: block.settings.padding_horizontal
+    %}
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .theme-block-button {
+    display: flex;
+    width: 100%;
+  }
+  .theme-block-button--left {
+    justify-content: flex-start;
+  }
+  .theme-block-button--center {
+    justify-content: center;
+  }
+  .theme-block-button--right {
+    justify-content: flex-end;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Button",
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "select",
+      "id": "button_type",
+      "label": "Button Style",
+      "options": [
+        { "value": "solid", "label": "Solid Button (Shop Now)" },
+        { "value": "outline", "label": "Outline Button" },
+        { "value": "arrow", "label": "Arrow Button (Shop Collection)" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "select",
+      "id": "arrow_theme",
+      "label": "Preset Theme (for Arrow style)",
+      "options": [
+        { "value": "dark", "label": "Dark (on light bg)" },
+        { "value": "light", "label": "Light (on dark bg)" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size Override (0 = Global)",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top / Bottom Override",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Left / Right Override",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Arrow Button Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text & Underline Color"
+    },
+    {
+      "type": "color",
+      "id": "circle_bg_color",
+      "label": "Circle Background"
+    },
+    {
+      "type": "color",
+      "id": "circle_icon_color",
+      "label": "Arrow Icon Color"
+    },
+    {
+      "type": "header",
+      "content": "Solid / Outline Button Colors"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Custom Background"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Custom Text Color"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Action Button",
+      "settings": {
+        "button_text": "SHOP NOW",
+        "button_type": "solid"
+      }
+    },
+    {
+      "name": "Arrow Button",
+      "settings": {
+        "button_text": "SHOP COLLECTION",
+        "button_type": "arrow"
+      }
+    }
+  ]
+}
+{% endschema %}
