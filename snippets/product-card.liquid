@@ -38,9 +38,10 @@
   {%- assign prod_co2 = co2_saved | default: '3.8 kg' -%}
 {%- endif -%}
 
+{%- assign card_aspect = aspect_ratio | default: 'portrait' -%}
 <div class="earth-prod-card">
   <!-- 1. Product Image & Badges -->
-  <div class="earth-prod-card__media">
+  <div class="earth-prod-card__media earth-prod-card__media--aspect-{{ card_aspect }}">
     <a href="{{ prod_url }}" class="earth-prod-card__image-link" aria-label="{{ prod_title }}">
       {%- if product.featured_image != blank -%}
         {{ product.featured_image | image_url: width: 800 | image_tag: class: 'earth-prod-card__img', loading: 'lazy', alt: prod_title }}
@@ -55,31 +56,34 @@
     <div class="earth-prod-card__overlay" aria-hidden="true"></div>
 
     <!-- Top Left Impact Score Badge -->
-    <div class="earth-prod-card__impact-badge">
-      <span class="earth-prod-card__badge-icon" aria-hidden="true">{{ 'icon-sustainability.svg' | inline_asset_content }}</span>
-      <span>{{ prod_impact }}</span>
-    </div>
+    {%- if show_impact_badge != false -%}
+      <div class="earth-prod-card__impact-badge">
+        <span class="earth-prod-card__badge-icon" aria-hidden="true">{{ 'icon-sustainability.svg' | inline_asset_content }}</span>
+        <span>{{ prod_impact }}</span>
+      </div>
+    {%- endif -%}
 
     <!-- Bottom Left Metric Badges (Water & CO2) -->
-    <div class="earth-prod-card__metrics">
-      <span class="earth-prod-card__metric-pill">
-        <span class="earth-prod-card__metric-icon" aria-hidden="true">{{ 'icon-Drop.svg' | inline_asset_content }}</span>
-        <span>{{ prod_water }}</span>
-      </span>
-      <span class="earth-prod-card__metric-pill">
-        <span class="earth-prod-card__metric-icon" aria-hidden="true">{{ 'icon-windy.svg' | inline_asset_content }}</span>
-        <span>{{ prod_co2 }}</span>
-      </span>
-    </div>
+    {%- if show_metrics != false -%}
+      <div class="earth-prod-card__metrics">
+        <span class="earth-prod-card__metric-pill">
+          <span class="earth-prod-card__metric-icon" aria-hidden="true">{{ 'icon-Drop.svg' | inline_asset_content }}</span>
+          <span>{{ prod_water }}</span>
+        </span>
+        <span class="earth-prod-card__metric-pill">
+          <span class="earth-prod-card__metric-icon" aria-hidden="true">{{ 'icon-windy.svg' | inline_asset_content }}</span>
+          <span>{{ prod_co2 }}</span>
+        </span>
+      </div>
+    {%- endif -%}
 
     <!-- Center Hover Quick View Button -->
-    <a href="{{ prod_url }}" class="earth-prod-card__quick-view" aria-label="Quick View {{ prod_title }}">
-      <svg width="18" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-        <circle cx="12" cy="12" r="3"></circle>
-      </svg>
-      <span>QUICK VIEW</span>
-    </a>
+    {%- if show_quick_view != false -%}
+      <a href="{{ prod_url }}" class="earth-prod-card__quick-view" aria-label="Quick View {{ prod_title }}">
+        <span class="earth-prod-card__quick-view-icon" aria-hidden="true">{{ 'icon-quick-view.svg' | inline_asset_content }}</span>
+        <span>QUICK VIEW</span>
+      </a>
+    {%- endif -%}
   </div>
 
   <!-- 2. Product Information -->
@@ -88,54 +92,58 @@
       <a href="{{ prod_url }}">{{ prod_title }}</a>
     </h3>
 
-    <p class="earth-prod-card__material">{{ prod_material }}</p>
+    {%- if show_material != false and prod_material != blank -%}
+      <p class="earth-prod-card__material">{{ prod_material }}</p>
+    {%- endif -%}
 
     <!-- Material & Quality Tag Pills -->
-    <div class="earth-prod-card__tags">
-      {%- if badges != blank -%}
-        {%- assign badge_list = badges | split: ',' -%}
-        {%- for b in badge_list -%}
-          {%- assign clean_badge = b | strip -%}
-          {%- if clean_badge != blank -%}
-            <span class="earth-prod-card__tag-pill">{{ clean_badge }}</span>
-          {%- endif -%}
-        {%- endfor -%}
-      {%- elsif product.tags.size > 0 -%}
-        {%- for tag in product.tags limit: 2 -%}
-          <span class="earth-prod-card__tag-pill">{{ tag }}</span>
-        {%- endfor -%}
-      {%- else -%}
-        <span class="earth-prod-card__tag-pill">Organic Cotton</span>
-        <span class="earth-prod-card__tag-pill">Recycled Materials</span>
-      {%- endif -%}
-    </div>
+    {%- if show_tags != false -%}
+      <div class="earth-prod-card__tags">
+        {%- if badges != blank -%}
+          {%- assign badge_list = badges | split: ',' -%}
+          {%- for b in badge_list -%}
+            {%- assign clean_badge = b | strip -%}
+            {%- if clean_badge != blank -%}
+              <span class="earth-prod-card__tag-pill">{{ clean_badge }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- elsif product.tags.size > 0 -%}
+          {%- for tag in product.tags limit: 2 -%}
+            <span class="earth-prod-card__tag-pill">{{ tag }}</span>
+          {%- endfor -%}
+        {%- else -%}
+          <span class="earth-prod-card__tag-pill">Organic Cotton</span>
+          <span class="earth-prod-card__tag-pill">Recycled Materials</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
 
     <!-- Origin & Promotion Meta -->
-    <div class="earth-prod-card__meta-row">
-      <div class="earth-prod-card__origin">
-        <span class="earth-prod-card__meta-icon" aria-hidden="true">{{ 'icon-location.svg' | inline_asset_content }}</span>
-        <span>Made in {{ prod_origin }}</span>
-      </div>
+    {%- if show_origin != false or show_discount != false -%}
+      <div class="earth-prod-card__meta-row">
+        {%- if show_origin != false -%}
+          <div class="earth-prod-card__origin">
+            <span class="earth-prod-card__meta-icon" aria-hidden="true">{{ 'icon-location.svg' | inline_asset_content }}</span>
+            <span>Made in {{ prod_origin }}</span>
+          </div>
+        {%- endif -%}
 
-      {%- if discount_text != blank -%}
-        <div class="earth-prod-card__discount">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-            <line x1="7" y1="7" x2="7.01" y2="7"></line>
-          </svg>
-          <span>{{ discount_text }}</span>
-        </div>
-      {%- elsif product.compare_at_price > product.price -%}
-        {%- assign saved_percent = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
-        <div class="earth-prod-card__discount">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-            <line x1="7" y1="7" x2="7.01" y2="7"></line>
-          </svg>
-          <span>{{ saved_percent }}% Off (Price as Marked)</span>
-        </div>
-      {%- endif -%}
-    </div>
+        {%- if show_discount != false -%}
+          {%- if discount_text != blank -%}
+            <div class="earth-prod-card__discount">
+              <span class="earth-prod-card__discount-icon" aria-hidden="true">{{ 'icon-marketing.svg' | inline_asset_content }}</span>
+              <span>{{ discount_text }}</span>
+            </div>
+          {%- elsif product.compare_at_price > product.price -%}
+            {%- assign saved_percent = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+            <div class="earth-prod-card__discount">
+              <span class="earth-prod-card__discount-icon" aria-hidden="true">{{ 'icon-marketing.svg' | inline_asset_content }}</span>
+              <span>{{ saved_percent }}% Off (Price as Marked)</span>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
 
     <!-- 3. Integrated Action Unit (Price Box + Add to Cart) -->
     <div class="earth-prod-card__action-group">

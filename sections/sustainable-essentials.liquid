@@ -1,33 +1,57 @@
 {% comment %}
-  Sustainable Essentials Section - Product Showcase with Tabs, Real Product Data, and Slider
+  Sustainable Essentials Section - Product Showcase with Tabs, Real Product Data, and Slider / Grid
 {% endcomment %}
 
-<section class="earth-sustainable-essentials full-width{% if section.settings.full_width %} earth-sustainable-essentials--full{% endif %}" id="earthEssentials-{{ section.id }}">
+<section 
+  class="earth-sustainable-essentials full-width{% if section.settings.full_width %} earth-sustainable-essentials--full{% endif %} earth-sustainable-essentials--layout-{{ section.settings.layout_mode | default: 'slider' }} earth-sustainable-essentials--cols-{{ section.settings.columns_desktop | default: '3' }} earth-sustainable-essentials--m-cols-{{ section.settings.columns_mobile | default: '1' }} earth-sustainable-essentials--tabs-{{ section.settings.tab_style | default: 'underline' }}" 
+  id="earthEssentials-{{ section.id }}"
+  style="
+    --sus-bg: {{ section.settings.bg_color | default: '#F8F9DC' }};
+    --sus-title-color: {{ section.settings.title_color | default: '#003225' }};
+    --sus-pt: {{ section.settings.padding_top | default: 80 }}px;
+    --sus-pb: {{ section.settings.padding_bottom | default: 96 }}px;
+    --sus-m-pt: {{ section.settings.mobile_padding_top | default: 48 }}px;
+    --sus-m-pb: {{ section.settings.mobile_padding_bottom | default: 56 }}px;
+    --sus-card-radius: {{ section.settings.card_corner_radius | default: 0 }}px;
+    --sus-nav-size: {{ section.settings.nav_button_size | default: 48 }}px;
+    --sus-nav-bg: {{ section.settings.nav_bg_color | default: '#F8F9DC' }};
+    --sus-nav-color: {{ section.settings.nav_icon_color | default: '#003225' }};
+    --sus-nav-hover-bg: {{ section.settings.nav_hover_bg_color | default: '#71CC3B' }};
+    --sus-nav-hover-color: {{ section.settings.nav_hover_icon_color | default: '#003225' }};
+    --sus-tab-active-color: {{ section.settings.tab_active_color | default: '#71CC3B' }};
+  "
+>
   <div class="earth-sus__container">
     <!-- 1. Top Section Header -->
     <div class="earth-sus__header">
-      <h2 class="earth-sus__main-title">
-        <span class="earth-sus__leaf earth-sus__leaf--left" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
+      <h2 class="earth-sus__main-title" style="color: var(--sus-title-color, #003225);">
+        {%- if section.settings.show_leaf_icons != false -%}
+          <span class="earth-sus__leaf earth-sus__leaf--left" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
+        {%- endif -%}
         <span>{{ section.settings.title | default: 'Sustainable Essentials' }}</span>
-        <span class="earth-sus__leaf earth-sus__leaf--right" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
+        {%- if section.settings.show_leaf_icons != false -%}
+          <span class="earth-sus__leaf earth-sus__leaf--right" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
+        {%- endif -%}
       </h2>
       <div class="earth-sus__subtitle">
         {{ section.settings.subtitle | default: '<p>Every piece designed with purpose – discover the full impact story behind each garment</p>' }}
       </div>
     </div>
 
-    <!-- Category Filter Tabs -->
-    <div class="earth-sus__tabs-wrapper">
-      <nav class="earth-sus__tabs" aria-label="Product categories">
-        <button type="button" class="earth-sus__tab is-active" data-tab="all">All</button>
-        <button type="button" class="earth-sus__tab" data-tab="mens">Men's</button>
-        <button type="button" class="earth-sus__tab" data-tab="womens">Women's</button>
-        <button type="button" class="earth-sus__tab" data-tab="new-arrivals">New Arrivals</button>
-        <button type="button" class="earth-sus__tab" data-tab="sale">Sale</button>
-      </nav>
-    </div>
+    {%- if section.settings.show_tabs != false -%}
+      <!-- Category Filter Tabs -->
+      <div class="earth-sus__tabs-wrapper">
+        <nav class="earth-sus__tabs" aria-label="Product categories">
+          <button type="button" class="earth-sus__tab is-active" data-tab="all">{{ section.settings.tab_1_label | default: 'All' }}</button>
+          <button type="button" class="earth-sus__tab" data-tab="mens">{{ section.settings.tab_2_label | default: "Men's" }}</button>
+          <button type="button" class="earth-sus__tab" data-tab="womens">{{ section.settings.tab_3_label | default: "Women's" }}</button>
+          <button type="button" class="earth-sus__tab" data-tab="new-arrivals">{{ section.settings.tab_4_label | default: 'New Arrivals' }}</button>
+          <button type="button" class="earth-sus__tab" data-tab="sale">{{ section.settings.tab_5_label | default: 'Sale' }}</button>
+        </nav>
+      </div>
+    {%- endif -%}
 
-    <!-- 2. Product Slider Track Area -->
+    <!-- 2. Product Slider / Grid Track Area -->
     <div class="earth-sus__slider-wrapper">
       <div class="earth-sus__track" id="earthSusTrack-{{ section.id }}">
         {%- assign selected_collection = section.settings.collection -%}
@@ -35,16 +59,40 @@
           {%- assign selected_collection = collections['all'] -%}
         {%- endif -%}
 
+        {%- assign prod_list = selected_collection.products -%}
+        {%- case section.settings.sort_by -%}
+          {%- when 'price_asc' -%}
+            {%- assign prod_list = prod_list | sort: 'price' -%}
+          {%- when 'price_desc' -%}
+            {%- assign prod_list = prod_list | sort: 'price' | reverse -%}
+          {%- when 'title_asc' -%}
+            {%- assign prod_list = prod_list | sort: 'title' -%}
+          {%- when 'title_desc' -%}
+            {%- assign prod_list = prod_list | sort: 'title' | reverse -%}
+          {%- when 'created_desc' -%}
+            {%- assign prod_list = prod_list | sort: 'created_at' | reverse -%}
+        {%- endcase -%}
+
         {%- if selected_collection != blank and selected_collection.products_count > 0 -%}
-          {%- for product in selected_collection.products limit: section.settings.products_to_show -%}
+          {%- for product in prod_list limit: section.settings.products_to_show -%}
             <div class="earth-sus__slide" data-product-type="{{ product.type | handleize }}" data-tags="{{ product.tags | join: ',' | downcase }}">
-              {% render 'product-card', product: product %}
+              {% render 'product-card',
+                product: product,
+                aspect_ratio: section.settings.card_aspect_ratio,
+                show_impact_badge: section.settings.show_impact_badge,
+                show_metrics: section.settings.show_metrics_pills,
+                show_quick_view: section.settings.show_quick_view,
+                show_material: section.settings.show_material,
+                show_tags: section.settings.show_tags,
+                show_origin: section.settings.show_origin,
+                show_discount: section.settings.show_discount
+              %}
             </div>
           {%- endfor -%}
         {%- else -%}
           <!-- Default Curated Products from Design -->
           <!-- Product 1: Regenerative Denim -->
-          <div class="earth-sus__slide">
+          <div class="earth-sus__slide" data-product-type="mens" data-tags="organic-cotton,recycled-materials">
             {% render 'product-card',
               fallback_image: 'prod-denim.jpg',
               title: 'Regenerative Denim',
@@ -54,12 +102,20 @@
               co2_saved: '5.5 kg',
               origin: 'Vietnam',
               badges: 'Organic Cotton, Recycled Materials',
-              price: '110'
+              price: '110',
+              aspect_ratio: section.settings.card_aspect_ratio,
+              show_impact_badge: section.settings.show_impact_badge,
+              show_metrics: section.settings.show_metrics_pills,
+              show_quick_view: section.settings.show_quick_view,
+              show_material: section.settings.show_material,
+              show_tags: section.settings.show_tags,
+              show_origin: section.settings.show_origin,
+              show_discount: section.settings.show_discount
             %}
           </div>
 
           <!-- Product 2: Essential Organic Tee -->
-          <div class="earth-sus__slide">
+          <div class="earth-sus__slide" data-product-type="womens" data-tags="sale,fair-trade,carbon-neutral">
             {% render 'product-card',
               fallback_image: 'prod-tee.jpg',
               title: 'Essential Organic Tee',
@@ -71,12 +127,20 @@
               discount_text: '52% Off (Price as Marked)',
               badges: 'Fair Trade, Carbon Neutral',
               price: '68',
-              compare_price: '128'
+              compare_price: '128',
+              aspect_ratio: section.settings.card_aspect_ratio,
+              show_impact_badge: section.settings.show_impact_badge,
+              show_metrics: section.settings.show_metrics_pills,
+              show_quick_view: section.settings.show_quick_view,
+              show_material: section.settings.show_material,
+              show_tags: section.settings.show_tags,
+              show_origin: section.settings.show_origin,
+              show_discount: section.settings.show_discount
             %}
           </div>
 
           <!-- Product 3: Classic Oxford Shirt -->
-          <div class="earth-sus__slide">
+          <div class="earth-sus__slide" data-product-type="mens" data-tags="new-arrivals,plastic-free,organic-cotton">
             {% render 'product-card',
               fallback_image: 'prod-oxford.jpg',
               title: 'Classic Oxford Shirt',
@@ -86,12 +150,20 @@
               co2_saved: '3.8 kg',
               origin: 'India',
               badges: 'Plastic-Free, Organic Cotton',
-              price: '68'
+              price: '68',
+              aspect_ratio: section.settings.card_aspect_ratio,
+              show_impact_badge: section.settings.show_impact_badge,
+              show_metrics: section.settings.show_metrics_pills,
+              show_quick_view: section.settings.show_quick_view,
+              show_material: section.settings.show_material,
+              show_tags: section.settings.show_tags,
+              show_origin: section.settings.show_origin,
+              show_discount: section.settings.show_discount
             %}
           </div>
 
           <!-- Product 4: Sustainable Linen Trouser -->
-          <div class="earth-sus__slide">
+          <div class="earth-sus__slide" data-product-type="womens" data-tags="new-arrivals,organic-cotton,zero-waste">
             {% render 'product-card',
               fallback_image: 'prod-denim.jpg',
               title: 'Sustainable Linen Trouser',
@@ -101,22 +173,63 @@
               co2_saved: '4.2 kg',
               origin: 'Vietnam',
               badges: 'Organic Cotton, Zero Waste',
-              price: '120'
+              price: '120',
+              aspect_ratio: section.settings.card_aspect_ratio,
+              show_impact_badge: section.settings.show_impact_badge,
+              show_metrics: section.settings.show_metrics_pills,
+              show_quick_view: section.settings.show_quick_view,
+              show_material: section.settings.show_material,
+              show_tags: section.settings.show_tags,
+              show_origin: section.settings.show_origin,
+              show_discount: section.settings.show_discount
             %}
           </div>
         {%- endif -%}
       </div>
 
-      <!-- Left Floating Navigation Arrow (Appears on hover) -->
-      <button type="button" class="earth-sus__nav-btn earth-sus__nav-btn--prev" id="earthSusPrev-{{ section.id }}" aria-label="Previous Products">
-        <span class="earth-sus__icon-arrow earth-sus__icon-arrow--prev" aria-hidden="true">{{ 'icon-prev-left.svg' | inline_asset_content }}</span>
-      </button>
+      {%- if section.settings.layout_mode != 'grid' and section.settings.show_nav_buttons != false -%}
+        <!-- Left Floating Navigation Arrow (Disabled initially at start) -->
+        <button 
+          type="button" 
+          class="earth-sus__nav-btn earth-sus__nav-btn--prev is-disabled{% if section.settings.nav_button_visibility == 'always' %} earth-sus__nav-btn--always{% endif %}" 
+          id="earthSusPrev-{{ section.id }}" 
+          aria-label="Previous Products"
+        >
+          <span class="earth-sus__icon-arrow earth-sus__icon-arrow--prev" aria-hidden="true">{{ 'icon-prev-left.svg' | inline_asset_content }}</span>
+        </button>
 
-      <!-- Right Floating Navigation Arrow (Appears on hover) -->
-      <button type="button" class="earth-sus__nav-btn earth-sus__nav-btn--next" id="earthSusNext-{{ section.id }}" aria-label="Next Products">
-        <span class="earth-sus__icon-arrow earth-sus__icon-arrow--next" aria-hidden="true">{{ 'icon-next-right.svg' | inline_asset_content }}</span>
-      </button>
+        <!-- Right Floating Navigation Arrow -->
+        <button 
+          type="button" 
+          class="earth-sus__nav-btn earth-sus__nav-btn--next{% if section.settings.nav_button_visibility == 'always' %} earth-sus__nav-btn--always{% endif %}" 
+          id="earthSusNext-{{ section.id }}" 
+          aria-label="Next Products"
+        >
+          <span class="earth-sus__icon-arrow earth-sus__icon-arrow--next" aria-hidden="true">{{ 'icon-next-right.svg' | inline_asset_content }}</span>
+        </button>
+      {%- endif -%}
     </div>
+
+    <!-- 3. Optional Bottom Call To Action Button -->
+    {%- if section.settings.show_bottom_cta and section.settings.bottom_cta_text != blank -%}
+      <div class="earth-sus__bottom-cta">
+        {%- assign cta_url = section.settings.bottom_cta_link | default: selected_collection.url | default: routes.all_products_collection_url -%}
+        {%- assign cta_style = section.settings.bottom_cta_style | default: 'arrow' -%}
+        {%- if cta_style == 'arrow' -%}
+          {% render 'btn-arrow',
+            text: section.settings.bottom_cta_text,
+            url: cta_url,
+            theme: 'dark'
+          %}
+        {%- else -%}
+          {% render 'btn-action',
+            text: section.settings.bottom_cta_text,
+            url: cta_url,
+            variant: cta_style
+          %}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
   </div>
 </section>
 
@@ -126,8 +239,8 @@
      ========================================================================== */
   .earth-sustainable-essentials {
     grid-column: 1 / -1 !important;
-    background-color: var(--color-white, #F8F9DC);
-    padding: clamp(56px, 7vw, 96px) 0 clamp(64px, 8vw, 110px);
+    background-color: var(--sus-bg, #F8F9DC);
+    padding: var(--sus-pt, 80px) 0 var(--sus-pb, 96px);
     width: 100%;
     box-sizing: border-box;
     overflow: hidden;
@@ -223,19 +336,46 @@
   white-space: nowrap;
   text-align: center;
   box-sizing: border-box;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .earth-sus__tab.is-active {
   font-weight: 700;
-  color: var(--color-secondary, #71CC3B);
-  border-bottom: 1px solid var(--color-secondary, #71CC3B);
+  color: var(--sus-tab-active-color, #71CC3B);
+  border-bottom: 1px solid var(--sus-tab-active-color, #71CC3B);
 }
 
 .earth-sus__tab.is-active::after {
   display: none !important;
 }
 
-  /* 2. Slider Track */
+/* Tabs Styles */
+.earth-sustainable-essentials--tabs-pill .earth-sus__tabs {
+  background-color: rgba(0, 50, 37, 0.06);
+  padding: 6px;
+  border-radius: 30px;
+  gap: 6px;
+}
+.earth-sustainable-essentials--tabs-pill .earth-sus__tab {
+  border-bottom: none !important;
+  border-radius: 24px;
+  padding: 8px 22px !important;
+}
+.earth-sustainable-essentials--tabs-pill .earth-sus__tab.is-active {
+  background-color: var(--sus-tab-active-color, #71CC3B);
+  color: #003225 !important;
+}
+
+.earth-sustainable-essentials--tabs-minimal .earth-sus__tab {
+  border-bottom: none !important;
+  opacity: 0.65;
+}
+.earth-sustainable-essentials--tabs-minimal .earth-sus__tab.is-active {
+  opacity: 1;
+  color: var(--sus-tab-active-color, #71CC3B) !important;
+}
+
+  /* 2. Slider Track / Grid */
   .earth-sus__slider-wrapper {
     position: relative;
     width: 100%;
@@ -258,28 +398,70 @@
     display: none;
   }
 
+  /* Slider Column Widths */
   .earth-sus__slide {
     flex: 0 0 31.5%;
-    min-width: 320px;
+    min-width: 300px;
     max-width: 440px;
     display: flex;
     flex-direction: column;
     scroll-snap-align: start;
     box-sizing: border-box;
   }
+  .earth-sustainable-essentials--cols-2 .earth-sus__slide {
+    flex: 0 0 calc(50% - 10px);
+    max-width: none;
+  }
+  .earth-sustainable-essentials--cols-3 .earth-sus__slide {
+    flex: 0 0 31.5%;
+    min-width: 300px;
+    max-width: 440px;
+  }
+  .earth-sustainable-essentials--cols-4 .earth-sus__slide {
+    flex: 0 0 calc(25% - 15px);
+    min-width: 250px;
+    max-width: 360px;
+  }
 
-  /* Floating Navigation Arrows (Visible on hover of slider wrapper) */
+  /* Grid Mode */
+  .earth-sustainable-essentials--layout-grid .earth-sus__track {
+    display: grid !important;
+    overflow-x: visible !important;
+    scroll-snap-type: none !important;
+    gap: 24px;
+    padding: 0 34px !important;
+  }
+  .earth-sustainable-essentials--layout-grid.earth-sustainable-essentials--cols-2 .earth-sus__track {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .earth-sustainable-essentials--layout-grid.earth-sustainable-essentials--cols-3 .earth-sus__track {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  .earth-sustainable-essentials--layout-grid.earth-sustainable-essentials--cols-4 .earth-sus__track {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  .earth-sustainable-essentials--layout-grid .earth-sus__slide {
+    flex: none !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  .earth-sustainable-essentials--layout-grid .earth-sus__nav-btn {
+    display: none !important;
+  }
+
+  /* Floating Navigation Arrows */
   .earth-sus__nav-btn {
     position: absolute;
     top: 42%;
     transform: translateY(-50%);
     z-index: 10;
-    width: 48px;
-    height: 48px;
+    width: var(--sus-nav-size, 48px);
+    height: var(--sus-nav-size, 48px);
     border-radius: 50%;
-    background-color: var(--color-white, #F8F9DC);
-    border: 1.5px solid var(--color-white, #F8F9DC);
-    color: var(--color-black, #003225);
+    background-color: var(--sus-nav-bg, #F8F9DC);
+    border: 1.5px solid var(--sus-nav-bg, #F8F9DC);
+    color: var(--sus-nav-color, #003225);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -287,16 +469,27 @@
     box-shadow: 0 4px 16px rgba(0, 50, 37, 0.16);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s ease, background-color 0.25s ease, border-color 0.25s ease;
+    transition: opacity 0.28s ease, visibility 0.28s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
   }
-  .earth-sus__slider-wrapper:hover .earth-sus__nav-btn {
+  .earth-sus__slider-wrapper:hover .earth-sus__nav-btn:not(.is-disabled) {
     opacity: 1;
     visibility: visible;
   }
-  .earth-sus__nav-btn:hover {
-    background-color: var(--color-secondary, #71CC3B);
-    border-color: var(--color-secondary, #71CC3B);
-    transform: translateY(-50%) scale(1.06);
+  .earth-sus__nav-btn--always:not(.is-disabled) {
+    opacity: 1;
+    visibility: visible;
+  }
+  .earth-sus__nav-btn.is-disabled {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) scale(0.7) !important;
+  }
+  .earth-sus__nav-btn:hover:not(.is-disabled) {
+    background-color: var(--sus-nav-hover-bg, #71CC3B);
+    border-color: var(--sus-nav-hover-bg, #71CC3B);
+    color: var(--sus-nav-hover-color, #003225);
+    transform: translateY(-50%) scale(1.08);
   }
   .earth-sus__nav-btn--prev {
     left: clamp(16px, 2.5vw, 36px);
@@ -334,6 +527,15 @@
     transform: rotate(-45deg);
   }
 
+  /* Optional Bottom CTA */
+  .earth-sus__bottom-cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: clamp(36px, 4.5vw, 60px);
+    width: 100%;
+  }
+
   /* ==========================================================================
      Product Card Component Styles
      ========================================================================== */
@@ -353,7 +555,18 @@
     background-color: #e5ecd2;
     margin-bottom: 16px;
     flex-shrink: 0;
+    border-radius: var(--sus-card-radius, 0px);
   }
+  .earth-prod-card__media--aspect-portrait {
+    aspect-ratio: 3 / 4 !important;
+  }
+  .earth-prod-card__media--aspect-square {
+    aspect-ratio: 1 / 1 !important;
+  }
+  .earth-prod-card__media--aspect-tall {
+    aspect-ratio: 2 / 3 !important;
+  }
+
   .earth-prod-card__image-link {
     display: block;
     width: 100%;
@@ -364,6 +577,10 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .earth-prod-card__media:hover .earth-prod-card__img {
+    transform: scale(1.04);
   }
 
   /* Dark translucent overlay when hovering image */
@@ -375,6 +592,7 @@
     visibility: hidden;
     z-index: 2;
     pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
   }
   .earth-prod-card__media:hover .earth-prod-card__overlay {
     opacity: 1;
@@ -420,6 +638,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
   }
   .earth-prod-card__metric-pill {
     background-color: var(--color-accent, #EAE060);
@@ -444,188 +663,233 @@
     height: 13px;
     display: block;
   }
-
   /* Center Hover Quick View Button */
   .earth-prod-card__quick-view {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
+    transform: translate(-50%, -50%) scale(0.92);
     z-index: 4;
     background-color: var(--color-secondary, #71CC3B);
     color: var(--color-black, #003225);
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    padding: 11px 20px;
+    padding: 11px 22px;
     border-radius: 2px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    text-decoration: none;
-    white-space: nowrap;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
     box-shadow: 0 4px 14px rgba(0, 50, 37, 0.2);
+    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+    text-decoration: none;
   }
   .earth-prod-card__media:hover .earth-prod-card__quick-view {
     opacity: 1;
     visibility: visible;
     transform: translate(-50%, -50%) scale(1);
   }
+  .earth-prod-card__quick-view:hover {
+    background-color: #63b930;
+    color: var(--color-black, #003225);
+  }
+  .earth-prod-card__quick-view-icon {
+    width: 22px;
+    height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--color-black, #003225);
+  }
+  .earth-prod-card__quick-view-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 
-  /* Product Details */
+  /* 2. Content Info */
   .earth-prod-card__content {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    gap: 6px;
+    flex-grow: 1;
   }
   .earth-prod-card__title {
-    margin: 0;
-    font-size: 19px;
+    font-size: clamp(20px, 1.8vw, 24px);
     font-weight: 800;
-    line-height: 1.25;
     letter-spacing: -0.02em;
-    word-break: break-word;
-    overflow-wrap: break-word;
+    margin: 0 0 6px 0;
+    line-height: 1.25;
   }
   .earth-prod-card__title a {
     color: var(--color-black, #003225);
     text-decoration: none;
+    transition: color 0.2s ease;
   }
   .earth-prod-card__title a:hover {
-    opacity: 0.75;
+    color: var(--color-secondary, #71CC3B);
   }
   .earth-prod-card__material {
     font-size: 16px;
-    font-weight: 400;
     color: var(--color-black, #003225);
-    margin: 0 0 4px 0;
+    margin: 0 0 10px 0;
     line-height: 1.35;
-    word-break: break-word;
-    overflow-wrap: break-word;
   }
 
-  /* Tags */
+  /* Tag Pills */
   .earth-prod-card__tags {
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 6px;
+    gap: 8px;
+    margin-bottom: 12px;
   }
   .earth-prod-card__tag-pill {
     background-color: var(--color-accent, #EAE060);
     border: 1px solid var(--color-primary, #224E09);
     color: var(--color-black, #003225);
-    font-size: 15px;
-    font-weight: 400;
-    padding: 3px 10px;
-    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 4px 11px;
+    border-radius: 14px;
     line-height: 1.2;
   }
 
-  /* Origin & Discount Meta Row */
+  /* Origin & Discount Row */
   .earth-prod-card__meta-row {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 14px;
+    justify-content: start;
+    gap: 8px 15px;
     font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
     color: var(--color-primary, #224E09);
-    margin-bottom: 12px;
   }
-  .earth-prod-card__origin,
-  .earth-prod-card__discount {
+  .earth-prod-card__origin {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
+    color: var(--color-primary, #224E09);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.2;
+    white-space: nowrap;
   }
   .earth-prod-card__meta-icon {
+    width: 15px;
+    height: 18px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    object-fit: contain;
+    flex-shrink: 0;
+    color: var(--color-primary, #224E09);
   }
   .earth-prod-card__meta-icon svg {
-    width: 10px;
-    height: 14px;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .earth-prod-card__discount {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-primary, #224E09);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.2;
+    flex-wrap: wrap;
+  }
+  .earth-prod-card__discount-icon {
+    width: 17px;
+    height: 17px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--color-primary, #224E09);
+  }
+  .earth-prod-card__discount-icon svg {
+    width: 100%;
+    height: 100%;
     display: block;
   }
 
-  /* Action Unit (Joined Price & Add Button on SAME Row) */
+  /* 3. Integrated Action Unit */
   .earth-prod-card__action-group {
     display: flex;
-    flex-direction: row;
     align-items: stretch;
-    width: 100%;
     margin-top: auto;
+    width: 100%;
+    border-radius: 4px;
     overflow: hidden;
   }
   .earth-prod-card__price-box {
     background-color: var(--color-black, #003225);
     color: var(--color-white, #F8F9DC);
-    padding: 12px 16px;
-    display: flex;
+    padding: 10px 16px;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
     font-size: 16px;
     font-weight: 800;
-    white-space: nowrap;
     flex-shrink: 0;
-    box-sizing: border-box;
   }
   .earth-prod-card__compare-price {
-    font-size: 14px;
-    font-weight: 700;
     text-decoration: line-through;
-    opacity: 0.75;
+    opacity: 0.6;
+    font-size: 14px;
+    font-weight: 500;
   }
   .earth-prod-card__form {
-    flex: 1;
+    flex-grow: 1;
     display: flex;
     margin: 0;
-    min-width: 0;
   }
   .earth-prod-card__add-btn {
-    width: 100%;
     background-color: var(--color-accent, #EAE060);
     color: var(--color-black, #003225);
     border: none;
     font-size: 14px;
     font-weight: 800;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    text-decoration: none;
-    padding: 12px 16px;
-    display: flex;
+    letter-spacing: 0.04em;
+    padding: 10px 18px;
+    cursor: pointer;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    white-space: nowrap;
-    text-align: center;
-    box-sizing: border-box;
+    width: 100%;
+    text-decoration: none;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+  }
+  .earth-prod-card__add-btn:hover:not(:disabled) {
+    background-color: #dfd452;
+  }
+  .earth-prod-card__add-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
   .earth-prod-card__add-icon {
+    width: 14px;
+    height: 14px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
   }
   .earth-prod-card__add-icon svg {
-    width: 15px;
-    height: 15px;
+    width: 100%;
+    height: 100%;
     display: block;
   }
-  .earth-prod-card__add-btn:hover {
-    background-color: #dfd452;
-  }
 
-  /* Responsive Design */
+  /* ==========================================================================
+     Mobile Responsive Adjustments
+     ========================================================================== */
   @media (max-width: 1024px) {
     .earth-sus__header {
       padding: 0 24px !important;
@@ -641,58 +905,49 @@
 
   @media (max-width: 768px) {
     .earth-sustainable-essentials {
-      padding: 44px 0 60px;
+      padding: var(--sus-m-pt, 48px) 0 var(--sus-m-pb, 56px) !important;
     }
     .earth-sus__header {
       padding: 0 20px !important;
       margin-bottom: 24px !important;
     }
-    .earth-sus__leaf {
-      display: none !important;
-    }
     .earth-sus__main-title {
-      font-size: 2.25rem !important;
+      font-size: 32px !important;
+      gap: 8px !important;
+    }
+    .earth-sus__leaf {
+      width: 24px !important;
+      height: 24px !important;
     }
     .earth-sus__subtitle {
-      font-size: 1.125rem;
-      margin: 0 auto !important;
+      font-size: 15px !important;
     }
     .earth-sus__tabs-wrapper {
-      width: 100% !important;
-      overflow-x: auto !important;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
       padding: 0 !important;
-      margin: 0 0 28px 0 !important;
-      display: block !important;
+      margin-bottom: 28px !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      -webkit-overflow-scrolling: touch !important;
+      scrollbar-width: none !important;
+      display: flex !important;
+      justify-content: flex-start !important;
+      width: 100% !important;
       box-sizing: border-box !important;
     }
     .earth-sus__tabs-wrapper::-webkit-scrollbar {
-      display: none;
+      display: none !important;
     }
     .earth-sus__tabs {
       display: flex !important;
-      min-width: 100% !important;
+      flex-wrap: nowrap !important;
+      padding: 0 20px !important;
       width: max-content !important;
       justify-content: flex-start !important;
-      padding-left: 20px !important;
-      padding-right: 0 !important;
-      scroll-padding-left: 20px !important;
-      scroll-padding-right: 20px !important;
-      margin: 0 !important;
       gap: 0 !important;
-      position: relative !important;
-      box-sizing: border-box !important;
-      border-bottom: none !important;
-    }
-    .earth-sus__tabs::before {
-      display: none !important;
     }
     .earth-sus__tabs::after {
       content: '' !important;
-      display: block !important;
       flex: 0 0 20px !important;
-      min-width: 20px !important;
       width: 20px !important;
       height: 1px;
       margin: 0 !important;
@@ -703,10 +958,10 @@
       background: none !important;
       border: none !important;
       border-bottom: 1px solid var(--color-black, #003225) !important;
-      font-size: 18px !important;
+      font-size: 16px !important;
       font-weight: 700 !important;
       color: var(--color-black, #003225) !important;
-      padding: 10px clamp(16px, 2.5vw, 32px) 14px !important;
+      padding: 10px clamp(14px, 2.5vw, 24px) 12px !important;
       cursor: pointer !important;
       position: relative !important;
       white-space: nowrap !important;
@@ -717,8 +972,8 @@
     }
     .earth-sus__tab.is-active {
       font-weight: 700 !important;
-      color: var(--color-secondary, #71CC3B) !important;
-      border-bottom: 1px solid var(--color-secondary, #71CC3B) !important;
+      color: var(--sus-tab-active-color, #71CC3B) !important;
+      border-bottom: 1px solid var(--sus-tab-active-color, #71CC3B) !important;
     }
     .earth-sus__tab.is-active::after {
       display: none !important;
@@ -727,10 +982,6 @@
       margin: 0 !important;
       width: 100% !important;
       overflow: visible;
-    }
-    .earth-sus__slide {
-      flex: 0 0 78%;
-      min-width: 260px;
     }
     .earth-sus__nav-btn {
       display: none;
@@ -769,6 +1020,26 @@
       display: block !important;
       pointer-events: none;
     }
+
+    /* Mobile 2 Column Grid Option */
+    .earth-sustainable-essentials--m-cols-2 .earth-sus__track {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      overflow-x: visible !important;
+      scroll-snap-type: none !important;
+      padding: 0 20px 16px 20px !important;
+      gap: 14px !important;
+    }
+    .earth-sustainable-essentials--m-cols-2 .earth-sus__slide {
+      flex: none !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+    .earth-sustainable-essentials--m-cols-2 .earth-sus__track::after {
+      display: none !important;
+    }
+
     /* Mobile: Stack Price Box and Add to Cart Button into 2 rows */
     .earth-prod-card__action-group {
       flex-direction: column !important;
@@ -794,14 +1065,48 @@
 <script>
   (function() {
     function initSusEssentials() {
+      var sectionEl = document.getElementById('earthEssentials-{{ section.id }}');
+      if (!sectionEl) return;
       var track = document.getElementById('earthSusTrack-{{ section.id }}');
       var prevBtn = document.getElementById('earthSusPrev-{{ section.id }}');
       var nextBtn = document.getElementById('earthSusNext-{{ section.id }}');
 
       if (!track) return;
 
+      function updateNavButtons() {
+        if (!prevBtn && !nextBtn) return;
+        var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+        var currentScroll = track.scrollLeft;
+
+        // If all items fit without scrolling
+        if (maxScroll <= 5) {
+          if (prevBtn) prevBtn.classList.add('is-disabled');
+          if (nextBtn) nextBtn.classList.add('is-disabled');
+          return;
+        }
+
+        // Prev button: hide when at the start
+        if (prevBtn) {
+          if (currentScroll <= 5) {
+            prevBtn.classList.add('is-disabled');
+          } else {
+            prevBtn.classList.remove('is-disabled');
+          }
+        }
+
+        // Next button: hide when reached the end
+        if (nextBtn) {
+          if (currentScroll >= maxScroll - 8) {
+            nextBtn.classList.add('is-disabled');
+          } else {
+            nextBtn.classList.remove('is-disabled');
+          }
+        }
+      }
+
       if (prevBtn) {
-        prevBtn.addEventListener('click', function() {
+        prevBtn.addEventListener('click', function(e) {
+          e.preventDefault();
           var slide = track.querySelector('.earth-sus__slide');
           var step = slide ? slide.offsetWidth + 20 : 350;
           track.scrollBy({ left: -step, behavior: 'smooth' });
@@ -809,16 +1114,20 @@
       }
 
       if (nextBtn) {
-        nextBtn.addEventListener('click', function() {
+        nextBtn.addEventListener('click', function(e) {
+          e.preventDefault();
           var slide = track.querySelector('.earth-sus__slide');
           var step = slide ? slide.offsetWidth + 20 : 350;
           track.scrollBy({ left: step, behavior: 'smooth' });
         });
       }
 
+      track.addEventListener('scroll', updateNavButtons, { passive: true });
+      window.addEventListener('resize', updateNavButtons);
+
       // Tab switcher filter simulation / interaction
-      var tabs = document.querySelectorAll('#earthEssentials-{{ section.id }} .earth-sus__tab');
-      var tabsWrapper = document.querySelector('#earthEssentials-{{ section.id }} .earth-sus__tabs-wrapper');
+      var tabs = sectionEl.querySelectorAll('.earth-sus__tab');
+      var tabsWrapper = sectionEl.querySelector('.earth-sus__tabs-wrapper');
       tabs.forEach(function(tab) {
         tab.addEventListener('click', function() {
           tabs.forEach(function(t) { t.classList.remove('is-active'); });
@@ -829,8 +1138,15 @@
               behavior: 'smooth'
             });
           }
+          // Reset slider track to start on tab change
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+          setTimeout(updateNavButtons, 200);
         });
       });
+
+      // Initialize state on load
+      setTimeout(updateNavButtons, 100);
+      window.addEventListener('load', updateNavButtons);
     }
 
     if (document.readyState === 'loading') {
@@ -838,6 +1154,13 @@
     } else {
       initSusEssentials();
     }
+
+    // Support Shopify Theme Editor dynamic re-render
+    document.addEventListener('shopify:section:load', function(e) {
+      if (e.detail && e.detail.sectionId === '{{ section.id }}') {
+        initSusEssentials();
+      }
+    });
   })();
 </script>
 
@@ -858,10 +1181,20 @@
       "default": "Sustainable Essentials"
     },
     {
+      "type": "checkbox",
+      "id": "show_leaf_icons",
+      "label": "Show Decorative Leaf Icons",
+      "default": true
+    },
+    {
       "type": "richtext",
       "id": "subtitle",
       "label": "Section Subtitle",
       "default": "<p>Every piece designed with purpose – discover the full impact story behind each garment</p>"
+    },
+    {
+      "type": "header",
+      "content": "Product Source & Sorting"
     },
     {
       "type": "collection",
@@ -872,10 +1205,329 @@
       "type": "range",
       "id": "products_to_show",
       "min": 4,
-      "max": 16,
-      "step": 1,
+      "max": 24,
+      "step": 2,
       "default": 8,
       "label": "Products to Show"
+    },
+    {
+      "type": "select",
+      "id": "sort_by",
+      "label": "Product Sort Order",
+      "options": [
+        { "value": "default", "label": "Collection Default / Manual" },
+        { "value": "price_asc", "label": "Price: Low to High" },
+        { "value": "price_desc", "label": "Price: High to Low" },
+        { "value": "title_asc", "label": "Alphabetically: A-Z" },
+        { "value": "title_desc", "label": "Alphabetically: Z-A" },
+        { "value": "created_desc", "label": "Date: New to Old" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Presentation"
+    },
+    {
+      "type": "select",
+      "id": "layout_mode",
+      "label": "Layout Mode",
+      "options": [
+        { "value": "slider", "label": "Carousel Slider (Horizontal Scroll)" },
+        { "value": "grid", "label": "Classic Responsive Grid" }
+      ],
+      "default": "slider"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on Desktop",
+      "options": [
+        { "value": "2", "label": "2 Columns (Large Feature)" },
+        { "value": "3", "label": "3 Columns (Standard)" },
+        { "value": "4", "label": "4 Columns (Compact)" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on Mobile",
+      "options": [
+        { "value": "1", "label": "1 Column (Swipeable Peek Slider)" },
+        { "value": "2", "label": "2 Columns Grid" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Category Filter Tabs"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tabs",
+      "label": "Show Category Tabs",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "tab_style",
+      "label": "Tab Style",
+      "options": [
+        { "value": "underline", "label": "Modern Underline" },
+        { "value": "pill", "label": "Pill / Capsule" },
+        { "value": "minimal", "label": "Minimal Ghost" }
+      ],
+      "default": "underline"
+    },
+    {
+      "type": "text",
+      "id": "tab_1_label",
+      "label": "Tab 1 Label",
+      "default": "All"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_label",
+      "label": "Tab 2 Label",
+      "default": "Men's"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_label",
+      "label": "Tab 3 Label",
+      "default": "Women's"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_label",
+      "label": "Tab 4 Label",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "text",
+      "id": "tab_5_label",
+      "label": "Tab 5 Label",
+      "default": "Sale"
+    },
+    {
+      "type": "header",
+      "content": "Product Card Appearance"
+    },
+    {
+      "type": "select",
+      "id": "card_aspect_ratio",
+      "label": "Product Image Aspect Ratio",
+      "options": [
+        { "value": "portrait", "label": "Portrait (3:4)" },
+        { "value": "square", "label": "Square (1:1)" },
+        { "value": "tall", "label": "Tall (2:3)" }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "range",
+      "id": "card_corner_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Card Image Corner Radius",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "show_impact_badge",
+      "label": "Show Impact Score Badge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_metrics_pills",
+      "label": "Show Water & CO₂ Metrics Pills",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_view",
+      "label": "Show Hover Quick View Button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_material",
+      "label": "Show Material Text",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show Quality Tag Pills",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_origin",
+      "label": "Show Origin (Made in...)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount",
+      "label": "Show Discount Highlight Tag",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Slider Navigation Buttons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_nav_buttons",
+      "label": "Show Navigation Arrows",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "nav_button_visibility",
+      "label": "Arrow Visibility",
+      "options": [
+        { "value": "on_hover", "label": "Show on Hover" },
+        { "value": "always", "label": "Always Visible" }
+      ],
+      "default": "on_hover"
+    },
+    {
+      "type": "range",
+      "id": "nav_button_size",
+      "min": 36,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Arrow Button Size",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "nav_bg_color",
+      "label": "Arrow Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "nav_icon_color",
+      "label": "Arrow Icon Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "nav_hover_bg_color",
+      "label": "Arrow Hover Background",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "color",
+      "id": "nav_hover_icon_color",
+      "label": "Arrow Hover Icon Color",
+      "default": "#003225"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Call To Action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bottom_cta",
+      "label": "Show Bottom CTA Button",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "bottom_cta_text",
+      "label": "CTA Button Text",
+      "default": "VIEW ALL SUSTAINABLE PIECES"
+    },
+    {
+      "type": "url",
+      "id": "bottom_cta_link",
+      "label": "CTA Button Link"
+    },
+    {
+      "type": "select",
+      "id": "bottom_cta_style",
+      "label": "CTA Button Style",
+      "options": [
+        { "value": "arrow", "label": "Arrow Link Button" },
+        { "value": "solid", "label": "Solid Button" },
+        { "value": "outline", "label": "Outline Button" }
+      ],
+      "default": "arrow"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Styling"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_color",
+      "label": "Active Tab & Accent Color",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top (Desktop)",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom (Desktop)",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top (Mobile)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom (Mobile)",
+      "default": 56
     }
   ],
   "presets": [
