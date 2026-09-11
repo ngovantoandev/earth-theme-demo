@@ -400,20 +400,14 @@
     "name": "t:general.layout",
     "settings": [
       {
-        "type": "select",
-        "id": "max_page_width",
-        "label": "t:labels.page_width",
-        "options": [
-          {
-            "value": "90rem",
-            "label": "t:options.page_width.narrow"
-          },
-          {
-            "value": "110rem",
-            "label": "t:options.page_width.wide"
-          }
-        ],
-        "default": "90rem"
+        "type": "range",
+        "id": "page_width",
+        "min": 1000,
+        "max": 2560,
+        "step": 20,
+        "unit": "px",
+        "label": "Page max width",
+        "default": 1920
       },
       {
         "type": "range",

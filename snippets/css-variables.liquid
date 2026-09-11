@@ -53,7 +53,12 @@
     --font-product-grid--transform: {% if settings.product_grid_capitalize %}uppercase{% else %}none{% endif %};
 
     /* Layout */
-    --page-width: {{ settings.max_page_width | default: '90rem' }};
+    {%- assign max_width_val = settings.page_width | default: settings.max_page_width | default: 1320 -%}
+    {%- if max_width_val contains 'rem' or max_width_val contains 'px' or max_width_val contains '%' -%}
+      --page-width: {{ max_width_val }};
+    {%- else -%}
+      --page-width: {{ max_width_val }}px;
+    {%- endif -%}
     --page-margin: {{ settings.min_page_margin | default: 20 }}px;
 
     /* ==========================================================================

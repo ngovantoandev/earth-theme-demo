@@ -1,33 +1,45 @@
-<section class="earth-values earth-values-{{ section.id }} full-width" id="earthValuesSection-{{ section.id }}">
-  <!-- 1. Section Header -->
-  <div class="earth-values__header-container">
-    <div class="earth-values__header">
-      <h2 class="earth-values__title">
-        <svg class="earth-values__leaf-icon earth-values__leaf-icon--left" width="32" height="29" viewBox="0 0 41 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M36.5053 0C31.3399 8.60515 23.6183 8.25605 18.7209 16.5435C18.1501 17.5098 17.7216 18.4694 17.4006 19.4141C17.9201 19.9982 18.4198 20.6252 18.8896 21.3102C21.8992 25.6864 22.0051 29.5861 21.469 32.2433C28.2393 23.9243 33.6728 14.439 36.3796 4.02875C33.8597 15.1885 28.2277 25.4233 21.1299 34.3842C24.0269 34.7664 31.8942 34.8442 37.1803 25.7609C44.5942 13.0194 36.5053 0 36.5053 0Z" fill="currentColor"/>
-          <path d="M18.1567 21.8148C12.4933 13.5753 2.73161 13.3403 0 13.4462C1.99535 16.7238 2.37093 19.7351 2.73492 22.652C3.11711 25.7112 3.4778 28.6 5.61213 31.7518C9.73022 37.8305 16.8298 37.081 18.3536 36.8378C14.5465 28.4031 9.27192 20.5375 2.15915 14.5548C9.4109 20.1818 14.9651 27.7198 19.1229 35.9047C20.435 33.7439 22.6801 28.3931 18.1567 21.8148Z" fill="currentColor"/>
-        </svg>
-        <span>{{ section.settings.title | default: 'Shop by Values' }}</span>
-        <svg class="earth-values__leaf-icon earth-values__leaf-icon--right" width="32" height="29" viewBox="0 0 41 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M36.5053 0C31.3399 8.60515 23.6183 8.25605 18.7209 16.5435C18.1501 17.5098 17.7216 18.4694 17.4006 19.4141C17.9201 19.9982 18.4198 20.6252 18.8896 21.3102C21.8992 25.6864 22.0051 29.5861 21.469 32.2433C28.2393 23.9243 33.6728 14.439 36.3796 4.02875C33.8597 15.1885 28.2277 25.4233 21.1299 34.3842C24.0269 34.7664 31.8942 34.8442 37.1803 25.7609C44.5942 13.0194 36.5053 0 36.5053 0Z" fill="currentColor"/>
-          <path d="M18.1567 21.8148C12.4933 13.5753 2.73161 13.3403 0 13.4462C1.99535 16.7238 2.37093 19.7351 2.73492 22.652C3.11711 25.7112 3.4778 28.6 5.61213 31.7518C9.73022 37.8305 16.8298 37.081 18.3536 36.8378C14.5465 28.4031 9.27192 20.5375 2.15915 14.5548C9.4109 20.1818 14.9651 27.7198 19.1229 35.9047C20.435 33.7439 22.6801 28.3931 18.1567 21.8148Z" fill="currentColor"/>
-        </svg>
-      </h2>
-      {%- if section.settings.subtitle != blank -%}
-        <p class="earth-values__subtitle">{{ section.settings.subtitle }}</p>
-      {%- endif -%}
+<section class="earth-values earth-values-{{ section.id }}{% if section.settings.full_width %} full-width{% endif %}" id="earthValuesSection-{{ section.id }}">
+  <div class="earth-values__inner-container">
+    <!-- 1. Section Header -->
+    <div class="earth-values__header-container">
+      <div class="earth-values__header">
+        <h2 class="earth-values__title">
+          {%- if section.settings.show_leaf_icons != false -%}
+            <svg class="earth-values__leaf-icon earth-values__leaf-icon--left" width="32" height="29" viewBox="0 0 41 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M36.5053 0C31.3399 8.60515 23.6183 8.25605 18.7209 16.5435C18.1501 17.5098 17.7216 18.4694 17.4006 19.4141C17.9201 19.9982 18.4198 20.6252 18.8896 21.3102C21.8992 25.6864 22.0051 29.5861 21.469 32.2433C28.2393 23.9243 33.6728 14.439 36.3796 4.02875C33.8597 15.1885 28.2277 25.4233 21.1299 34.3842C24.0269 34.7664 31.8942 34.8442 37.1803 25.7609C44.5942 13.0194 36.5053 0 36.5053 0Z" fill="currentColor"/>
+              <path d="M18.1567 21.8148C12.4933 13.5753 2.73161 13.3403 0 13.4462C1.99535 16.7238 2.37093 19.7351 2.73492 22.652C3.11711 25.7112 3.4778 28.6 5.61213 31.7518C9.73022 37.8305 16.8298 37.081 18.3536 36.8378C14.5465 28.4031 9.27192 20.5375 2.15915 14.5548C9.4109 20.1818 14.9651 27.7198 19.1229 35.9047C20.435 33.7439 22.6801 28.3931 18.1567 21.8148Z" fill="currentColor"/>
+            </svg>
+          {%- endif -%}
+          <span>{{ section.settings.title | default: 'Shop by Values' }}</span>
+          {%- if section.settings.show_leaf_icons != false -%}
+            <svg class="earth-values__leaf-icon earth-values__leaf-icon--right" width="32" height="29" viewBox="0 0 41 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M36.5053 0C31.3399 8.60515 23.6183 8.25605 18.7209 16.5435C18.1501 17.5098 17.7216 18.4694 17.4006 19.4141C17.9201 19.9982 18.4198 20.6252 18.8896 21.3102C21.8992 25.6864 22.0051 29.5861 21.469 32.2433C28.2393 23.9243 33.6728 14.439 36.3796 4.02875C33.8597 15.1885 28.2277 25.4233 21.1299 34.3842C24.0269 34.7664 31.8942 34.8442 37.1803 25.7609C44.5942 13.0194 36.5053 0 36.5053 0Z" fill="currentColor"/>
+              <path d="M18.1567 21.8148C12.4933 13.5753 2.73161 13.3403 0 13.4462C1.99535 16.7238 2.37093 19.7351 2.73492 22.652C3.11711 25.7112 3.4778 28.6 5.61213 31.7518C9.73022 37.8305 16.8298 37.081 18.3536 36.8378C14.5465 28.4031 9.27192 20.5375 2.15915 14.5548C9.4109 20.1818 14.9651 27.7198 19.1229 35.9047C20.435 33.7439 22.6801 28.3931 18.1567 21.8148Z" fill="currentColor"/>
+            </svg>
+          {%- endif -%}
+        </h2>
+        {%- if section.settings.subtitle != blank -%}
+          <div class="earth-values__subtitle">{{ section.settings.subtitle }}</div>
+        {%- endif -%}
+      </div>
     </div>
-  </div>
 
-  <!-- 2. Slider Showcase Area -->
-    <div class="earth-values__slider-wrapper" id="earthValuesSliderWrapper-{{ section.id }}">
-      <!-- Left Floating Navigation Arrow (Appears on hover) -->
-      <button type="button" class="earth-values__nav-btn earth-values__nav-btn--prev" id="earthValuesPrev-{{ section.id }}" aria-label="Previous value">
-        <span class="earth-values__icon-arrow earth-values__icon-arrow--prev" aria-hidden="true">{{ 'icon-prev-left.svg' | inline_asset_content }}</span>
-      </button>
+    <!-- 2. Slider / Grid Showcase Area -->
+    <div class="earth-values__slider-wrapper earth-values__slider-wrapper--{{ section.settings.layout_mode | default: 'slider' }}" id="earthValuesSliderWrapper-{{ section.id }}">
+      {%- if section.settings.layout_mode != 'grid' and section.settings.show_nav_arrows != false -%}
+        <!-- Left Floating Navigation Arrow -->
+        <button 
+          type="button" 
+          class="earth-values__nav-btn earth-values__nav-btn--prev is-disabled{% if section.settings.nav_arrow_visibility == 'always' %} earth-values__nav-btn--always{% endif %}" 
+          id="earthValuesPrev-{{ section.id }}" 
+          aria-label="Previous value"
+        >
+          <span class="earth-values__icon-arrow earth-values__icon-arrow--prev" aria-hidden="true">{{ 'icon-prev-left.svg' | inline_asset_content }}</span>
+        </button>
+      {%- endif -%}
 
-      <!-- Horizontal Slider Track -->
-      <div class="earth-values__track" id="earthValuesTrack-{{ section.id }}">
+      <!-- Horizontal Slider Track or Grid Container -->
+      <div class="earth-values__track earth-values__track--{{ section.settings.layout_mode | default: 'slider' }} earth-values__track--cols-{{ section.settings.columns_desktop | default: '1' }}" id="earthValuesTrack-{{ section.id }}">
         {%- if section.blocks.size > 0 -%}
           {%- for block in section.blocks -%}
             <div class="earth-values__slide" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
@@ -62,17 +74,21 @@
 
                   {%- if block.settings.highlight != blank -%}
                     <div class="earth-values__highlight">
-                      <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
+                      {%- assign icon_file = block.settings.icon | default: 'icon-handshake.svg' -%}
+                      <span class="earth-values__highlight-icon" aria-hidden="true">{{ icon_file | inline_asset_content }}</span>
                       <span>{{ block.settings.highlight }}</span>
                     </div>
                   {%- endif -%}
 
                   {%- if block.settings.desc != blank -%}
-                    <p class="earth-values__description">{{ block.settings.desc }}</p>
+                    <div class="earth-values__description">{{ block.settings.desc }}</div>
                   {%- endif -%}
 
+                  {%- assign cta_label = block.settings.cta_text | default: 'EXPLORE PRODUCTS' -%}
+                  {%- assign cta_url = block.settings.link | default: routes.all_products_collection_url -%}
+                  {%- assign cta_theme = block.settings.cta_theme | default: 'dark' -%}
                   <div class="earth-values__cta-wrap">
-                    {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: block.settings.link, theme: 'dark' %}
+                    {% render 'btn-arrow', text: cta_label, url: cta_url, theme: cta_theme %}
                   </div>
                 </div>
               </div>
@@ -95,7 +111,7 @@
                   <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
                   <span>100% Pesticide & GMO Free</span>
                 </div>
-                <p class="earth-values__description">Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton.</p>
+                <div class="earth-values__description"><p>Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton.</p></div>
                 <div class="earth-values__cta-wrap">
                   {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
                 </div>
@@ -118,7 +134,7 @@
                   <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
                   <span>7.8 plastic bottles per garment</span>
                 </div>
-                <p class="earth-values__description">Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments.</p>
+                <div class="earth-values__description"><p>Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments.</p></div>
                 <div class="earth-values__cta-wrap">
                   {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
                 </div>
@@ -141,7 +157,7 @@
                   <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
                   <span>100% worker-owned cooperatives</span>
                 </div>
-                <p class="earth-values__description">Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p>
+                <div class="earth-values__description"><p>Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p></div>
                 <div class="earth-values__cta-wrap">
                   {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
                 </div>
@@ -164,7 +180,7 @@
                   <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
                   <span>100% renewable energy powered</span>
                 </div>
-                <p class="earth-values__description">Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery.</p>
+                <div class="earth-values__description"><p>Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery.</p></div>
                 <div class="earth-values__cta-wrap">
                   {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
                 </div>
@@ -187,7 +203,7 @@
                   <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
                   <span>Zero animal testing or materials</span>
                 </div>
-                <p class="earth-values__description">100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living.</p>
+                <div class="earth-values__description"><p>100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living.</p></div>
                 <div class="earth-values__cta-wrap">
                   {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
                 </div>
@@ -197,55 +213,64 @@
         {%- endif -%}
       </div>
 
-      <!-- Right Floating Navigation Arrow (Appears on hover) -->
-      <button type="button" class="earth-values__nav-btn earth-values__nav-btn--next" id="earthValuesNext-{{ section.id }}" aria-label="Next value">
-        <span class="earth-values__icon-arrow earth-values__icon-arrow--next" aria-hidden="true">{{ 'icon-next-right.svg' | inline_asset_content }}</span>
-      </button>
-
+      {%- if section.settings.layout_mode != 'grid' and section.settings.show_nav_arrows != false -%}
+        <!-- Right Floating Navigation Arrow -->
+        <button 
+          type="button" 
+          class="earth-values__nav-btn earth-values__nav-btn--next{% if section.settings.nav_arrow_visibility == 'always' %} earth-values__nav-btn--always{% endif %}" 
+          id="earthValuesNext-{{ section.id }}" 
+          aria-label="Next value"
+        >
+          <span class="earth-values__icon-arrow earth-values__icon-arrow--next" aria-hidden="true">{{ 'icon-next-right.svg' | inline_asset_content }}</span>
+        </button>
+      {%- endif -%}
     </div>
 
-    <!-- 3. Bottom Values Navigation Tabs -->
-    <div class="earth-values__tabs-wrapper">
-      <div class="earth-values__tabs" id="earthValuesTabs-{{ section.id }}" role="tablist">
-        {%- if section.blocks.size > 0 -%}
-          {%- for block in section.blocks -%}
-            <button 
-              type="button" 
-              class="earth-values__tab {% if forloop.first %}earth-values__tab--active{% endif %}" 
-              data-index="{{ forloop.index0 }}"
-              role="tab"
-              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-              {{ block.shopify_attributes }}
-            >
+    <!-- 3. Bottom Values Navigation Tabs (Only in Slider mode) -->
+    {%- if section.settings.layout_mode != 'grid' and section.settings.show_tabs != false -%}
+      <div class="earth-values__tabs-wrapper">
+        <div class="earth-values__tabs" id="earthValuesTabs-{{ section.id }}" role="tablist">
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              <button 
+                type="button" 
+                class="earth-values__tab {% if forloop.first %}earth-values__tab--active{% endif %}" 
+                data-index="{{ forloop.index0 }}"
+                role="tab"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                <span class="earth-values__tab-line"></span>
+                <span class="earth-values__tab-text">{{ block.settings.title }}</span>
+              </button>
+            {%- endfor -%}
+          {%- else -%}
+            <button type="button" class="earth-values__tab earth-values__tab--active" data-index="0" role="tab" aria-selected="true">
               <span class="earth-values__tab-line"></span>
-              <span class="earth-values__tab-text">{{ block.settings.title }}</span>
+              <span class="earth-values__tab-text">Organic Cotton</span>
             </button>
-          {%- endfor -%}
-        {%- else -%}
-          <button type="button" class="earth-values__tab earth-values__tab--active" data-index="0" role="tab" aria-selected="true">
-            <span class="earth-values__tab-line"></span>
-            <span class="earth-values__tab-text">Organic Cotton</span>
-          </button>
-          <button type="button" class="earth-values__tab" data-index="1" role="tab" aria-selected="false">
-            <span class="earth-values__tab-line"></span>
-            <span class="earth-values__tab-text">Recycled Materials</span>
-          </button>
-          <button type="button" class="earth-values__tab" data-index="2" role="tab" aria-selected="false">
-            <span class="earth-values__tab-line"></span>
-            <span class="earth-values__tab-text">Fair Trade</span>
-          </button>
-          <button type="button" class="earth-values__tab" data-index="3" role="tab" aria-selected="false">
-            <span class="earth-values__tab-line"></span>
-            <span class="earth-values__tab-text">Carbon Neutral</span>
-          </button>
-          <button type="button" class="earth-values__tab" data-index="4" role="tab" aria-selected="false">
-            <span class="earth-values__tab-line"></span>
-            <span class="earth-values__tab-text">Vegan & Cruelty-Free</span>
-          </button>
-        {%- endif -%}
+            <button type="button" class="earth-values__tab" data-index="1" role="tab" aria-selected="false">
+              <span class="earth-values__tab-line"></span>
+              <span class="earth-values__tab-text">Recycled Materials</span>
+            </button>
+            <button type="button" class="earth-values__tab" data-index="2" role="tab" aria-selected="false">
+              <span class="earth-values__tab-line"></span>
+              <span class="earth-values__tab-text">Fair Trade</span>
+            </button>
+            <button type="button" class="earth-values__tab" data-index="3" role="tab" aria-selected="false">
+              <span class="earth-values__tab-line"></span>
+              <span class="earth-values__tab-text">Carbon Neutral</span>
+            </button>
+            <button type="button" class="earth-values__tab" data-index="4" role="tab" aria-selected="false">
+              <span class="earth-values__tab-line"></span>
+              <span class="earth-values__tab-text">Vegan & Cruelty-Free</span>
+            </button>
+          {%- endif -%}
+        </div>
       </div>
-    </div>
-  </section>
+    {%- endif -%}
+  </div>
+</section>
 
 <style>
   .earth-values-{{ section.id }} {
@@ -253,21 +278,44 @@
     --values-text: {{ section.settings.text_color | default: '#F8F9DC' }};
     --values-card-bg: {{ section.settings.card_bg_color | default: '#F8F9DC' }};
     --values-card-text: {{ section.settings.card_text_color | default: '#003225' }};
+    --values-badge-bg: {{ section.settings.badge_bg_color | default: '#003225' }};
+    --values-badge-text: {{ section.settings.badge_text_color | default: '#EAE060' }};
+    --values-highlight-color: {{ section.settings.highlight_color | default: '#224E09' }};
     --values-tab-inactive: {{ section.settings.tab_inactive_color | default: '#EAE060' }};
     --values-tab-active: {{ section.settings.tab_active_color | default: '#F8F9DC' }};
+    --values-card-radius: {{ section.settings.card_corner_radius | default: 0 }}px;
+    --values-card-aspect: {{ section.settings.card_image_aspect | default: '1 / 1' }};
+    --values-pt: {{ section.settings.padding_top | default: 80 }}px;
+    --values-pb: {{ section.settings.padding_bottom | default: 96 }}px;
+    --values-mpt: {{ section.settings.mobile_padding_top | default: 50 }}px;
+    --values-mpb: {{ section.settings.mobile_padding_bottom | default: 60 }}px;
+    --values-nav-size: {{ section.settings.nav_button_size | default: 48 }}px;
+    --values-nav-bg: {{ section.settings.nav_bg_color | default: '#F8F9DC' }};
+    --values-nav-color: {{ section.settings.nav_icon_color | default: '#003225' }};
+    --values-nav-hover-bg: {{ section.settings.nav_hover_bg_color | default: '#71CC3B' }};
+    --values-nav-hover-color: {{ section.settings.nav_hover_icon_color | default: '#003225' }};
 
     grid-column: 1 / -1 !important;
     width: 100%;
     background-color: var(--values-bg);
     color: var(--values-text);
-    padding: clamp(60px, 7vw, 100px) 0 clamp(64px, 8vw, 110px);
+    padding: var(--values-pt) 0 var(--values-pb);
     box-sizing: border-box;
     overflow: hidden;
   }
 
+  .earth-values-{{ section.id }} .earth-values__inner-container {
+    width: 100%;
+    {% unless section.settings.full_width %}
+      max-width: var(--page-width, 1320px);
+      margin: 0 auto;
+    {% endunless %}
+    box-sizing: border-box;
+  }
+
   .earth-values-{{ section.id }} .earth-values__header-container {
     width: 100%;
-    padding: 0 34px;
+    padding: 0 clamp(20px, 3.5vw, 34px);
     box-sizing: border-box;
   }
 
@@ -298,9 +346,12 @@
     font-size: var(--type-section-subtitle, 1.3125rem);
     color: var(--values-text);
     opacity: 0.9;
-    max-width: 620px;
+    max-width: 680px;
     margin: 0 auto;
     line-height: 1.5;
+  }
+  .earth-values-{{ section.id }} .earth-values__subtitle p {
+    margin: 0;
   }
 
   /* 2. Slider Showcase Track */
@@ -315,16 +366,43 @@
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    scroll-padding-left: 34px;
-    scroll-padding-right: 34px;
+    scroll-padding-left: clamp(20px, 3.5vw, 34px);
+    scroll-padding-right: clamp(20px, 3.5vw, 34px);
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     gap: clamp(24px, 2.5vw, 40px);
-    padding: 10px 34px;
+    padding: 10px clamp(20px, 3.5vw, 34px);
     box-sizing: border-box;
   }
   .earth-values-{{ section.id }} .earth-values__track::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Grid Layout Mode */
+  .earth-values-{{ section.id }} .earth-values__track--grid {
+    display: grid !important;
+    overflow-x: visible !important;
+    scroll-snap-type: none !important;
+    gap: clamp(24px, 3vw, 40px) !important;
+    padding: 0 clamp(20px, 3.5vw, 34px) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .earth-values-{{ section.id }} .earth-values__track--grid.earth-values__track--cols-1 {
+    grid-template-columns: 1fr !important;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .earth-values-{{ section.id }} .earth-values__track--grid.earth-values__track--cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .earth-values-{{ section.id }} .earth-values__track--grid .earth-values__slide {
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .earth-values-{{ section.id }} .earth-values__track--grid.earth-values__track--cols-2 .earth-values__card {
+    grid-template-columns: 1fr !important;
   }
 
   /* Each Value Slide */
@@ -335,22 +413,23 @@
     box-sizing: border-box;
   }
 
-  /* Split Card (Left: Square Image 1:1, Right: Info Box) */
+  /* Split Card (Left: Media Box, Right: Info Box) */
   .earth-values-{{ section.id }} .earth-values__card {
     display: grid;
     grid-template-columns: 1fr 1fr;
     background-color: var(--values-card-bg);
+    border-radius: var(--values-card-radius);
     box-sizing: border-box;
     overflow: hidden;
     height: 100%;
     align-items: stretch;
   }
 
-  /* Square Image (1:1 Aspect Ratio) */
+  /* Image Box */
   .earth-values-{{ section.id }} .earth-values__media-box {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: var(--values-card-aspect);
     overflow: hidden;
     background-color: #1e3a10;
   }
@@ -359,6 +438,10 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .earth-values-{{ section.id }} .earth-values__card:hover .earth-values__img {
+    transform: scale(1.03);
   }
 
   /* Info Box */
@@ -386,8 +469,8 @@
   .earth-values-{{ section.id }} .earth-values__badge,
   .earth-values__badge {
     display: inline-block;
-    background-color: var(--color-black, #003225);
-    color: var(--color-accent, #EAE060);
+    background-color: var(--values-badge-bg, var(--color-black, #003225));
+    color: var(--values-badge-text, var(--color-accent, #EAE060));
     font-size: 15px;
     font-weight: 400;
     padding: 7px 16px;
@@ -402,7 +485,7 @@
     gap: 10px;
     font-size: 17px;
     font-weight: 400;
-    color: var(--color-primary, #224E09);
+    color: var(--values-highlight-color, var(--color-primary, #224E09));
     margin-bottom: 20px;
   }
   .earth-values-{{ section.id }} .earth-values__highlight-icon,
@@ -427,63 +510,22 @@
     margin: 0 0 32px;
     opacity: 0.92;
   }
-
-  /* Reusable Arrow Button (Snippet Styles) */
-  .earth-values-{{ section.id }} .earth-btn-arrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border-bottom: 2px solid currentColor;
-    padding-bottom: 4px;
-    transition: opacity 0.2s ease;
-    cursor: pointer;
-  }
-  .earth-values-{{ section.id }} .earth-btn-arrow__text {
-    line-height: 1;
-  }
-  .earth-values-{{ section.id }} .earth-btn-arrow__icon-circle {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.25s ease;
-    flex-shrink: 0;
-  }
-  .earth-values-{{ section.id }} .earth-btn-arrow:hover .earth-btn-arrow__icon-circle {
-    transform: translateX(4px);
-  }
-  .earth-values-{{ section.id }} .earth-btn-arrow--dark {
-    color: var(--values-card-text);
-  }
-  .earth-values-{{ section.id }} .earth-btn-arrow--dark .earth-btn-arrow__icon-circle {
-    background-color: var(--values-card-text);
-    color: var(--values-card-bg);
-  }
-  .earth-values-{{ section.id }} .earth-btn-arrow--dark .earth-btn-arrow__icon-circle img {
-    filter: brightness(0) invert(1);
-    width: 12px;
-    height: 10px;
+  .earth-values-{{ section.id }} .earth-values__description p {
+    margin: 0;
   }
 
-  /* 3. Floating Navigation Arrows (Visible on hover of slider wrapper) */
+  /* 3. Floating Navigation Arrows */
   .earth-values-{{ section.id }} .earth-values__nav-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
-    width: 48px;
-    height: 48px;
+    width: var(--values-nav-size, 48px);
+    height: var(--values-nav-size, 48px);
     border-radius: 50%;
-    background-color: var(--color-white, #F8F9DC);
-    border: 1.5px solid var(--color-white, #F8F9DC);
-    color: var(--color-black, #003225);
+    background-color: var(--values-nav-bg, #F8F9DC);
+    border: 1.5px solid var(--values-nav-bg, #F8F9DC);
+    color: var(--values-nav-color, #003225);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -491,16 +533,27 @@
     box-shadow: 0 4px 16px rgba(0, 50, 37, 0.16);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s ease, background-color 0.25s ease, border-color 0.25s ease;
+    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
   }
-  .earth-values-{{ section.id }} .earth-values__slider-wrapper:hover .earth-values__nav-btn {
+  .earth-values-{{ section.id }} .earth-values__slider-wrapper:hover .earth-values__nav-btn:not(.is-disabled) {
     opacity: 1;
     visibility: visible;
   }
-  .earth-values-{{ section.id }} .earth-values__nav-btn:hover {
-    background-color: var(--color-secondary, #71CC3B);
-    border-color: var(--color-secondary, #71CC3B);
-    transform: translateY(-50%) scale(1.06);
+  .earth-values-{{ section.id }} .earth-values__nav-btn--always:not(.is-disabled) {
+    opacity: 1;
+    visibility: visible;
+  }
+  .earth-values-{{ section.id }} .earth-values__nav-btn.is-disabled {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) scale(0.7) !important;
+  }
+  .earth-values-{{ section.id }} .earth-values__nav-btn:hover:not(.is-disabled) {
+    background-color: var(--values-nav-hover-bg, #71CC3B);
+    border-color: var(--values-nav-hover-bg, #71CC3B);
+    color: var(--values-nav-hover-color, #003225);
+    transform: translateY(-50%) scale(1.08);
   }
   .earth-values-{{ section.id }} .earth-values__nav-btn--prev {
     left: clamp(16px, 2.5vw, 36px);
@@ -542,7 +595,7 @@
   /* 4. Bottom Values Navigation Tabs */
   .earth-values-{{ section.id }} .earth-values__tabs-wrapper {
     width: 100%;
-    padding: 12px 34px 0;
+    padding: 12px clamp(20px, 3.5vw, 34px) 0;
     box-sizing: border-box;
   }
   .earth-values-{{ section.id }} .earth-values__tabs {
@@ -553,6 +606,8 @@
     width: 100%;
     box-sizing: border-box;
   }
+
+  /* Underline Style (Default) */
   .earth-values-{{ section.id }} .earth-values__tab {
     background: none;
     border: none;
@@ -564,6 +619,7 @@
     flex: 1;
     -webkit-appearance: none;
     appearance: none;
+    transition: color 0.25s ease;
   }
   .earth-values-{{ section.id }} .earth-values__tab-line {
     display: block;
@@ -573,6 +629,7 @@
     width: 0;
     height: 2px;
     background-color: var(--values-tab-active);
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .earth-values-{{ section.id }} .earth-values__tab-text {
     font-size: clamp(16px, 1.4vw, 20px);
@@ -596,9 +653,6 @@
 
   /* Responsive Design */
   @media (max-width: 1024px) {
-    .earth-values-{{ section.id }} .earth-values__header-container {
-      padding: 0 24px !important;
-    }
     .earth-values-{{ section.id }} .earth-values__slide {
       flex: 0 0 92%;
     }
@@ -632,9 +686,15 @@
     }
   }
 
+  @media (max-width: 900px) {
+    .earth-values-{{ section.id }} .earth-values__track--grid.earth-values__track--cols-2 {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
   @media (max-width: 768px) {
     .earth-values-{{ section.id }} {
-      padding: 50px 0 60px;
+      padding: var(--values-mpt) 0 var(--values-mpb);
     }
     .earth-values-{{ section.id }} .earth-values__title {
       font-size: 2.25rem !important;
@@ -642,15 +702,12 @@
     .earth-values-{{ section.id }} .earth-values__subtitle {
       font-size: 1.125rem;
     }
-    .earth-values-{{ section.id }} .earth-values__header-container {
-      padding: 0 20px !important;
-    }
     .earth-values-{{ section.id }} .earth-values__slider-wrapper {
       margin-bottom: 28px !important;
       width: 100% !important;
       overflow: visible;
     }
-    .earth-values-{{ section.id }} .earth-values__track {
+    .earth-values-{{ section.id }} .earth-values__track:not(.earth-values__track--grid) {
       display: flex !important;
       overflow-x: auto !important;
       scroll-snap-type: x mandatory !important;
@@ -662,16 +719,16 @@
       margin: 0 !important;
       gap: 16px !important;
     }
-    .earth-values-{{ section.id }} .earth-values__track::-webkit-scrollbar {
+    .earth-values-{{ section.id }} .earth-values__track:not(.earth-values__track--grid)::-webkit-scrollbar {
       display: none !important;
     }
-    .earth-values-{{ section.id }} .earth-values__slide {
+    .earth-values-{{ section.id }} .earth-values__track:not(.earth-values__track--grid) .earth-values__slide {
       flex: 0 0 86% !important;
       min-width: 280px !important;
       scroll-snap-align: start !important;
       margin: 0 !important;
     }
-    .earth-values-{{ section.id }} .earth-values__track::after {
+    .earth-values-{{ section.id }} .earth-values__track:not(.earth-values__track--grid)::after {
       content: '' !important;
       flex: 0 0 20px !important;
       min-width: 20px !important;
@@ -686,9 +743,6 @@
     }
     .earth-values-{{ section.id }} .earth-values__info-box {
       padding: 24px 20px;
-    }
-    .earth-values-{{ section.id }} .earth-values__nav-btn {
-      display: none;
     }
     .earth-values-{{ section.id }} .earth-values__tabs-wrapper {
       width: 100% !important;
@@ -745,10 +799,27 @@
       var prevBtn = document.getElementById('earthValuesPrev-' + sectionId);
       var nextBtn = document.getElementById('earthValuesNext-' + sectionId);
 
-      if (!track) return;
+      if (!track || track.classList.contains('earth-values__track--grid')) return;
 
       var slides = track.querySelectorAll('.earth-values__slide');
       if (slides.length === 0) return;
+
+      function updateNavButtons(currentIdx) {
+        if (prevBtn) {
+          if (currentIdx <= 0) {
+            prevBtn.classList.add('is-disabled');
+          } else {
+            prevBtn.classList.remove('is-disabled');
+          }
+        }
+        if (nextBtn) {
+          if (currentIdx >= slides.length - 1) {
+            nextBtn.classList.add('is-disabled');
+          } else {
+            nextBtn.classList.remove('is-disabled');
+          }
+        }
+      }
 
       function updateActiveTab(index) {
         if (!tabsContainer) return;
@@ -756,7 +827,6 @@
         tabs.forEach(function(tab, i) {
           if (i === index) {
             tab.classList.add('earth-values__tab--active');
-            tab.classList.add('is-active');
             tab.setAttribute('aria-selected', 'true');
             var tabsWrapper = tabsContainer.closest('.earth-values__tabs-wrapper');
             if (tabsWrapper && window.innerWidth <= 1024) {
@@ -768,10 +838,10 @@
             }
           } else {
             tab.classList.remove('earth-values__tab--active');
-            tab.classList.remove('is-active');
             tab.setAttribute('aria-selected', 'false');
           }
         });
+        updateNavButtons(index);
       }
 
       function scrollToSlide(index) {
@@ -832,6 +902,9 @@
           }
         }, 80);
       });
+
+      // Initial state
+      updateNavButtons(0);
     }
 
     if (document.readyState === 'loading') {
@@ -839,6 +912,13 @@
     } else {
       initShopByValuesSlider();
     }
+
+    // Support Shopify Theme Editor dynamic re-render
+    document.addEventListener('shopify:section:load', function(e) {
+      if (e.detail && e.detail.sectionId === '{{ section.id }}') {
+        initShopByValuesSlider();
+      }
+    });
   })();
 </script>
 
@@ -848,20 +928,157 @@
   "class": "earth-values-section",
   "settings": [
     {
+      "type": "header",
+      "content": "Section Content"
+    },
+    {
       "type": "text",
       "id": "title",
-      "label": "Heading",
+      "label": "Section Heading",
       "default": "Shop by Values"
     },
     {
-      "type": "textarea",
+      "type": "checkbox",
+      "id": "show_leaf_icons",
+      "label": "Show Decorative Leaf Icons",
+      "default": true
+    },
+    {
+      "type": "richtext",
       "id": "subtitle",
-      "label": "Subtitle",
-      "default": "Find fashion that matches your ethics – filter by what matters most to you"
+      "label": "Section Subtitle",
+      "default": "<p>Find fashion that matches your ethics – filter by what matters most to you</p>"
     },
     {
       "type": "header",
-      "content": "Colors"
+      "content": "Layout & Presentation"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make Section Full Width",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "layout_mode",
+      "label": "Layout Mode",
+      "options": [
+        { "value": "slider", "label": "Carousel Slider (Horizontal Scroll)" },
+        { "value": "grid", "label": "Classic Responsive Grid" }
+      ],
+      "default": "slider"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Grid Columns on Desktop",
+      "options": [
+        { "value": "1", "label": "1 Column (Full Width Stacked Cards)" },
+        { "value": "2", "label": "2 Columns Grid" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "card_image_aspect",
+      "label": "Card Image Aspect Ratio",
+      "options": [
+        { "value": "1 / 1", "label": "Square (1:1)" },
+        { "value": "4 / 5", "label": "Portrait (4:5)" },
+        { "value": "16 / 9", "label": "Landscape (16:9)" }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "range",
+      "id": "card_corner_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Card Corner Radius",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Slider Navigation Arrows"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_nav_arrows",
+      "label": "Show Navigation Arrows",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "nav_arrow_visibility",
+      "label": "Arrow Visibility",
+      "options": [
+        { "value": "on_hover", "label": "Show on Hover" },
+        { "value": "always", "label": "Always Visible" }
+      ],
+      "default": "on_hover"
+    },
+    {
+      "type": "range",
+      "id": "nav_button_size",
+      "min": 36,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Arrow Button Size",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "nav_bg_color",
+      "label": "Arrow Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "nav_icon_color",
+      "label": "Arrow Icon Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "nav_hover_bg_color",
+      "label": "Arrow Hover Background",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "color",
+      "id": "nav_hover_icon_color",
+      "label": "Arrow Hover Icon Color",
+      "default": "#003225"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Navigation Tabs"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tabs",
+      "label": "Show Bottom Tabs",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "tab_inactive_color",
+      "label": "Inactive Tab Text Color",
+      "default": "#EAE060"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_color",
+      "label": "Active Tab Text Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Appearance"
     },
     {
       "type": "color",
@@ -889,15 +1106,65 @@
     },
     {
       "type": "color",
-      "id": "tab_inactive_color",
-      "label": "Inactive Tab Text Color",
+      "id": "badge_bg_color",
+      "label": "Card Badge Background",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Card Badge Text Color",
       "default": "#EAE060"
     },
     {
       "type": "color",
-      "id": "tab_active_color",
-      "label": "Active Tab Text Color",
-      "default": "#F8F9DC"
+      "id": "highlight_color",
+      "label": "Highlight Text & Icon Color",
+      "default": "#224E09"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top (Desktop)",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom (Desktop)",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top (Mobile)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom (Mobile)",
+      "default": 56
     }
   ],
   "blocks": [
@@ -905,6 +1172,11 @@
       "type": "value_item",
       "name": "Value Item",
       "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Value Image"
+        },
         {
           "type": "text",
           "id": "title",
@@ -930,20 +1202,31 @@
           "default": "icon-handshake.svg"
         },
         {
-          "type": "textarea",
+          "type": "richtext",
           "id": "desc",
           "label": "Description",
-          "default": "Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans."
+          "default": "<p>Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p>"
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "Button Label",
+          "default": "EXPLORE PRODUCTS"
         },
         {
           "type": "url",
           "id": "link",
-          "label": "Explore Link"
+          "label": "Button Link"
         },
         {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Value Image"
+          "type": "select",
+          "id": "cta_theme",
+          "label": "Button Theme",
+          "options": [
+            { "value": "dark", "label": "Dark Style (Forest Green)" },
+            { "value": "light", "label": "Light Style" }
+          ],
+          "default": "dark"
         }
       ]
     }
@@ -959,7 +1242,8 @@
             "badge": "GOTS Certified Organic",
             "highlight": "100% Pesticide & GMO Free",
             "icon": "icon-handshake.svg",
-            "desc": "Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton."
+            "desc": "<p>Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton.</p>",
+            "cta_text": "EXPLORE PRODUCTS"
           }
         },
         {
@@ -969,7 +1253,8 @@
             "badge": "Ocean & Land Waste Diverted",
             "highlight": "7.8 plastic bottles per garment",
             "icon": "icon-handshake.svg",
-            "desc": "Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments."
+            "desc": "<p>Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments.</p>",
+            "cta_text": "EXPLORE PRODUCTS"
           }
         },
         {
@@ -979,7 +1264,8 @@
             "badge": "Ethical wages guaranteed",
             "highlight": "100% worker-owned cooperatives",
             "icon": "icon-handshake.svg",
-            "desc": "Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans."
+            "desc": "<p>Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p>",
+            "cta_text": "EXPLORE PRODUCTS"
           }
         },
         {
@@ -989,7 +1275,8 @@
             "badge": "Net-Zero Supply Chain",
             "highlight": "100% renewable energy powered",
             "icon": "icon-handshake.svg",
-            "desc": "Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery."
+            "desc": "<p>Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery.</p>",
+            "cta_text": "EXPLORE PRODUCTS"
           }
         },
         {
@@ -999,7 +1286,8 @@
             "badge": "PETA Approved Vegan",
             "highlight": "Zero animal testing or materials",
             "icon": "icon-handshake.svg",
-            "desc": "100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living."
+            "desc": "<p>100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living.</p>",
+            "cta_text": "EXPLORE PRODUCTS"
           }
         }
       ]
