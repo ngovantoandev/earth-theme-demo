@@ -2,7 +2,7 @@
   Sustainable Essentials Section - Product Showcase with Tabs, Real Product Data, and Slider
 {% endcomment %}
 
-<section class="earth-sustainable-essentials full-width" id="earthEssentials-{{ section.id }}">
+<section class="earth-sustainable-essentials full-width{% if section.settings.full_width %} earth-sustainable-essentials--full{% endif %}" id="earthEssentials-{{ section.id }}">
   <div class="earth-sus__container">
     <!-- 1. Top Section Header -->
     <div class="earth-sus__header">
@@ -11,9 +11,9 @@
         <span>{{ section.settings.title | default: 'Sustainable Essentials' }}</span>
         <span class="earth-sus__leaf earth-sus__leaf--right" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
       </h2>
-      <p class="earth-sus__subtitle">
-        {{ section.settings.subtitle | default: 'Every piece designed with purpose – discover the full impact story behind each garment' }}
-      </p>
+      <div class="earth-sus__subtitle">
+        {{ section.settings.subtitle | default: '<p>Every piece designed with purpose – discover the full impact story behind each garment</p>' }}
+      </div>
     </div>
 
     <!-- Category Filter Tabs -->
@@ -134,7 +134,12 @@
   }
   .earth-sus__container {
     width: 100%;
+    max-width: var(--page-width, 1320px);
     margin: 0 auto;
+    box-sizing: border-box;
+  }
+  .earth-sustainable-essentials--full .earth-sus__container {
+    max-width: 100%;
   }
 
   /* 1. Header */
@@ -174,6 +179,13 @@
     max-width: 620px;
     margin: 0 auto;
     line-height: 1.45;
+  }
+  .earth-sus__subtitle p {
+    margin: 0;
+    font-size: inherit !important;
+    color: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
   }
 
  /* Category Filter Tabs Wrapper & Tabs */
@@ -834,16 +846,22 @@
   "name": "Sustainable Essentials",
   "settings": [
     {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make section full width",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "title",
       "label": "Section Title",
       "default": "Sustainable Essentials"
     },
     {
-      "type": "textarea",
+      "type": "richtext",
       "id": "subtitle",
       "label": "Section Subtitle",
-      "default": "Every piece designed with purpose – discover the full impact story behind each garment"
+      "default": "<p>Every piece designed with purpose – discover the full impact story behind each garment</p>"
     },
     {
       "type": "collection",

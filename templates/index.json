@@ -159,9 +159,66 @@
     },
     "featured_collections": {
       "type": "featured-collections",
+      "blocks": {
+        "essential_card_1": {
+          "type": "essential_card",
+          "settings": {
+            "title": "Organic Essentials",
+            "subtitle": "From farm to wardrobe",
+            "badge_1": "GOTS Certified",
+            "badge_1_icon": "drop",
+            "badge_2": "Carbon",
+            "badge_2_icon": "leaf",
+            "button_text": "SHOP ORGANIC ESSENTIALS"
+          }
+        },
+        "essential_card_2": {
+          "type": "essential_card",
+          "settings": {
+            "title": "Recycled Ocean",
+            "subtitle": "Plastic-free future",
+            "badge_1": "Ocean Plastic",
+            "badge_1_icon": "drop",
+            "badge_2": "B Corp",
+            "badge_2_icon": "leaf",
+            "button_text": "DISCOVER RECYCLED OCEAN"
+          }
+        },
+        "essential_card_3": {
+          "type": "essential_card",
+          "settings": {
+            "title": "Timeless Neutrals",
+            "subtitle": "Built to last forever",
+            "badge_1": "Fair Trade",
+            "badge_1_icon": "drop",
+            "badge_2": "Zero Waste",
+            "badge_2_icon": "leaf",
+            "button_text": "EXPLORE TIMELESS NEUTRALS"
+          }
+        },
+        "essential_card_4": {
+          "type": "essential_card",
+          "settings": {
+            "title": "Eco Activewear",
+            "subtitle": "Move with purpose",
+            "badge_1": "Recycled Fabric",
+            "badge_1_icon": "drop",
+            "badge_2": "Low Impact",
+            "badge_2_icon": "leaf",
+            "button_text": "SHOP ECO ACTIVEWEAR"
+          }
+        }
+      },
+      "block_order": [
+        "essential_card_1",
+        "essential_card_2",
+        "essential_card_3",
+        "essential_card_4"
+      ],
       "settings": {
+        "full_width": true,
         "title": "Featured Eco Essentials",
-        "subtitle": "Where fashion meets purpose: recycled fabrics, reduced impact, endless wear.",
+        "subtitle": "<p>Where fashion meets purpose: recycled fabrics, reduced impact, endless wear.</p>",
         "header_button_text": "SHOP COLLECTION"
       }
     },
@@ -169,7 +226,7 @@
       "type": "sustainable-essentials",
       "settings": {
         "title": "Sustainable Essentials",
-        "subtitle": "Every piece designed with purpose – discover the full impact story behind each garment",
+        "subtitle": "<p>Every piece designed with purpose – discover the full impact story behind each garment</p>",
         "products_to_show": 8
       }
     },
