@@ -55,12 +55,30 @@
                   <div class="knowledge-thread__trigger-header-left">
                     <!-- Yellow Rounded Icon Badge -->
                     <div class="knowledge-thread__badge" aria-hidden="true">
-                      {%- if block.settings.icon_name != blank -%}
-                        {{ block.settings.icon_name | inline_asset_content }}
-                      {%- elsif block.settings.custom_icon != blank -%}
+                      {%- if block.settings.custom_icon != blank -%}
                         <img src="{{ block.settings.custom_icon | image_url: width: 64 }}" width="24" height="24" alt="" loading="lazy">
+                      {%- elsif block.settings.icon_type != blank and block.settings.icon_type != 'auto' -%}
+                        {%- case block.settings.icon_type -%}
+                          {%- when 'heart' -%}{{ 'icon-heart.svg' | inline_asset_content }}
+                          {%- when 'eco' -%}{{ 'icon-eco.svg' | inline_asset_content }}
+                          {%- when 'calculator' -%}{{ 'icon-caculator.svg' | inline_asset_content }}
+                          {%- when 'washing' -%}{{ 'icon-washing.svg' | inline_asset_content }}
+                          {%- when 'recycle' -%}{{ 'icon-get-dressed.svg' | inline_asset_content }}
+                          {%- when 'sparkle' -%}{{ 'icon-sparkle.svg' | inline_asset_content }}
+                          {%- else -%}{{ block.settings.icon_type | inline_asset_content }}
+                        {%- endcase -%}
+                      {%- elsif block.settings.icon_name != blank -%}
+                        {{ block.settings.icon_name | inline_asset_content }}
                       {%- else -%}
-                        {{ 'icon-heart.svg' | inline_asset_content }}
+                        {%- case forloop.index0 -%}
+                          {%- when 0 -%}{{ 'icon-heart.svg' | inline_asset_content }}
+                          {%- when 1 -%}{{ 'icon-eco.svg' | inline_asset_content }}
+                          {%- when 2 -%}{{ 'icon-caculator.svg' | inline_asset_content }}
+                          {%- when 3 -%}{{ 'icon-washing.svg' | inline_asset_content }}
+                          {%- when 4 -%}{{ 'icon-get-dressed.svg' | inline_asset_content }}
+                          {%- when 5 -%}{{ 'icon-sparkle.svg' | inline_asset_content }}
+                          {%- else -%}{{ 'icon-heart.svg' | inline_asset_content }}
+                        {%- endcase -%}
                       {%- endif -%}
                     </div>
                     <!-- Title -->
@@ -379,9 +397,16 @@
   .knowledge-thread__badge svg {
     max-width: 24px;
     max-height: 24px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
-    filter: brightness(0) saturate(100%) invert(13%) sepia(35%) saturate(2335%) hue-rotate(125deg) brightness(94%) contrast(106%);
     display: block;
+  }
+
+  .knowledge-thread__badge svg path,
+  .knowledge-thread__badge svg g,
+  .knowledge-thread__badge svg * {
+    fill: #003225 !important;
   }
 
   .knowledge-thread__item-title {
@@ -815,10 +840,25 @@
           "default": "Understanding the real cost of fast fashion"
         },
         {
+          "type": "select",
+          "id": "icon_type",
+          "label": "Badge Icon",
+          "options": [
+            { "value": "auto", "label": "Auto by Topic Order (Default)" },
+            { "value": "heart", "label": "Heart (Why Sustainable)" },
+            { "value": "eco", "label": "Eco Leaf (Material Guide)" },
+            { "value": "calculator", "label": "Calculator (Impact Teaser)" },
+            { "value": "washing", "label": "Washing Care (Care Instructions)" },
+            { "value": "recycle", "label": "Circular T-Shirt (Circular 101)" },
+            { "value": "sparkle", "label": "Sparkle Hand (Myth Busting)" }
+          ],
+          "default": "auto"
+        },
+        {
           "type": "text",
           "id": "icon_name",
-          "label": "Icon SVG Asset Name",
-          "default": "icon-heart.svg"
+          "label": "Custom SVG Asset Name (Optional)",
+          "info": "Leave blank to use Badge Icon above"
         },
         {
           "type": "image_picker",
