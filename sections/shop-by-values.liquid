@@ -525,7 +525,7 @@
     gap: 10px;
     font-size: 17px;
     font-weight: 400;
-    color: var(--values-highlight-color, var(--color-primary, #224E09));
+    color: var(--values-highlight-color, var(--color-primary, #003225));
     margin-bottom: 20px;
   }
   .earth-values-{{ section.id }} .earth-values__highlight-icon,
@@ -535,12 +535,19 @@
     justify-content: center;
     object-fit: contain;
     flex-shrink: 0;
+    color: var(--values-highlight-color, var(--color-primary, #003225));
   }
   .earth-values-{{ section.id }} .earth-values__highlight-icon svg,
   .earth-values__highlight-icon svg {
     width: 18px;
     height: 18px;
     display: block;
+    fill: currentColor;
+    color: inherit;
+  }
+  .earth-values-{{ section.id }} .earth-values__highlight-icon svg path,
+  .earth-values-{{ section.id }} .earth-values__highlight-icon svg * {
+    fill: currentColor;
   }
 
   .earth-values-{{ section.id }} .earth-values__description {

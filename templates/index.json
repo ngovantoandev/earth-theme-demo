@@ -534,45 +534,58 @@
           "type": "milestone",
           "settings": {
             "year": "2018",
-            "icon_name": "icon-idea.svg",
             "title": "The Beginning",
-            "description": "Founded in Hanoi with mission to source 100% organic cotton from local farms"
+            "description": "<p>Founded in Hanoi with mission to source 100% organic cotton from local farms</p>"
           }
         },
         "m_2020": {
           "type": "milestone",
           "settings": {
             "year": "2020",
-            "icon_name": "icon-handshake.svg",
             "title": "Fair Trade Partnership",
-            "description": "Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans"
+            "description": "<p>Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans</p>"
           }
         },
         "m_2022": {
           "type": "milestone",
           "settings": {
             "year": "2022",
-            "icon_name": "icon-tree.svg",
             "title": "Reforestation Initiative",
-            "description": "Launched \"1 Tree Per Product\" – planted 50K trees in Vietnam reforestation"
+            "description": "<p>Launched \"1 Tree Per Product\" – planted 50K trees in Vietnam reforestation</p>"
           }
         },
         "m_2024": {
           "type": "milestone",
           "settings": {
             "year": "2024",
-            "icon_name": "icon-badge.svg",
             "title": "Carbon Neutral",
-            "description": "Achieved B Corp certification and full carbon-neutral shipping"
+            "description": "<p>Achieved B Corp certification and full carbon-neutral shipping</p>"
           }
         },
         "m_2026": {
           "type": "milestone",
           "settings": {
             "year": "2026",
-            "icon_name": "icon-repost.svg",
             "title": "Circular Economy",
-            "description": "Closed-loop recycling: turn old clothes into new collections"
+            "description": "<p>Closed-loop recycling: turn old clothes into new collections</p>"
+          }
+        },
+        "pillar_1": {
+          "type": "pillar",
+          "settings": {
+            "label": "100% ORGANIC"
+          }
+        },
+        "pillar_2": {
+          "type": "pillar",
+          "settings": {
+            "label": "CARBON NEUTRAL"
+          }
+        },
+        "pillar_3": {
+          "type": "pillar",
+          "settings": {
+            "label": "FAIR WAGES"
           }
         }
       },
@@ -581,7 +594,10 @@
         "m_2020",
         "m_2022",
         "m_2024",
-        "m_2026"
+        "m_2026",
+        "pillar_1",
+        "pillar_2",
+        "pillar_3"
       ],
       "settings": {
         "title": "Our Sustainability Journey",

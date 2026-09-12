@@ -1,64 +1,171 @@
 {% comment %}
   Sustainability Journey Section
   Interactive timeline with connected milestones, call-to-action box, reusable action buttons, and sustainability pillars.
-  Fully responsive on Desktop, Tablet, and Mobile with Full-Width Layout (34px padding)
+  Left column: Enter data (Milestone blocks, Pillar blocks, Button blocks)
+  Right column: Configure UI & styling (Layout, Timeline styles, Node styles, Card styles, CTA box styles, Colors)
+  Full width toggle applies to inner container while section background spans edge-to-edge.
+  Integrated with snippets/section-header.liquid with exact original default UI preserved.
 {% endcomment %}
 
-<section class="sustainability-journey full-width" id="sustainabilityJourney-{{ section.id }}" style="--journey-bg: {{ section.settings.bg_color | default: '#F1F4D8' }}; --journey-color: {{ section.settings.text_color | default: '#003225' }};">
+{%- liquid
+  assign section_title = section.settings.title | default: 'Our Sustainability Journey'
+  assign header_layout = section.settings.header_layout | default: 'centered'
+  assign timeline_layout = section.settings.timeline_layout | default: 'horizontal_connected'
+  assign card_style = section.settings.card_style | default: 'outline'
+  assign node_style = section.settings.timeline_node_style | default: 'solid_dark'
+  assign line_style = section.settings.timeline_line_style | default: 'solid'
+  assign hover_effect = section.settings.card_hover_effect | default: 'none'
+  assign year_style = section.settings.year_style | default: 'bold_header'
+
+  assign milestone_blocks = section.blocks | where: 'type', 'milestone'
+  assign pillar_blocks = section.blocks | where: 'type', 'pillar'
+  assign button_blocks = section.blocks | where: 'type', 'button'
+-%}
+
+{%- capture header_button_block -%}
+  {%- if section.settings.show_header_btn and section.settings.header_btn_text != blank -%}
+    <div class="earth-section-header__btn-wrap">
+      {%- if section.settings.header_btn_type == 'arrow' -%}
+        {% render 'btn-arrow',
+          text: section.settings.header_btn_text,
+          url: section.settings.header_btn_url,
+          theme: section.settings.header_btn_theme,
+          color: section.settings.header_btn_color
+        %}
+      {%- else -%}
+        {% render 'btn-action',
+          text: section.settings.header_btn_text,
+          url: section.settings.header_btn_url,
+          variant: section.settings.header_btn_type,
+          custom_bg: section.settings.header_btn_color
+        %}
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+<section
+  class="sustainability-journey full-width{% if section.settings.full_width %} sustainability-journey--full{% else %} sustainability-journey--contained{% endif %} sustainability-journey--layout-{{ timeline_layout }} sustainability-journey--card-{{ card_style }} sustainability-journey--node-{{ node_style }} sustainability-journey--line-{{ line_style }} sustainability-journey--hover-{{ hover_effect }} sustainability-journey--year-{{ year_style }}"
+  id="sustainabilityJourney-{{ section.id }}"
+  style="
+    --journey-bg: {{ section.settings.bg_color | default: '#F1F4D8' }};
+    --journey-color: {{ section.settings.text_color | default: '#003225' }};
+    --journey-accent: {{ section.settings.accent_color | default: '#71CC3B' }};
+    --journey-pt: {{ section.settings.desktop_padding_top | default: 116 }}px;
+    --journey-pb: {{ section.settings.desktop_padding_bottom | default: 116 }}px;
+    --journey-mpt: {{ section.settings.mobile_padding_top | default: 48 }}px;
+    --journey-mpb: {{ section.settings.mobile_padding_bottom | default: 56 }}px;
+    --journey-line-color: {{ section.settings.timeline_line_color | default: '#003225' }};
+    --journey-node-bg: {{ section.settings.node_bg_color | default: '#003225' }};
+    --journey-node-border: {{ section.settings.node_border_color | default: '#003225' }};
+    --journey-node-icon: {{ section.settings.node_icon_color | default: '#F1F4D8' }};
+    --journey-node-active-bg: {{ section.settings.node_active_bg | default: '#71CC3B' }};
+    --journey-node-active-icon: {{ section.settings.node_active_icon_color | default: '#003225' }};
+    --journey-card-bg: {{ section.settings.card_bg_color | default: 'transparent' }};
+    --journey-card-border: {{ section.settings.card_border_color | default: '#003225' }};
+    --journey-card-radius: {{ section.settings.card_border_radius | default: 0 }}px;
+    --journey-year-color: {{ section.settings.year_color | default: '#003225' }};
+    --journey-cta-bg: {{ section.settings.cta_bg_color | default: 'transparent' }};
+    --journey-cta-border: {{ section.settings.cta_border_color | default: '#003225' }};
+    --journey-cta-radius: {{ section.settings.cta_border_radius | default: 0 }}px;
+    --journey-pillar-bg: {{ section.settings.pillar_icon_bg | default: '#71CC3B' }};
+    --journey-pillar-border: {{ section.settings.pillar_border_color | default: '#003225' }};
+    --journey-pillar-icon: {{ section.settings.pillar_icon_color | default: '#003225' }};
+    --journey-pillar-label-color: {{ section.settings.pillar_label_color | default: '#003225' }};
+    --journey-pillar-sublabel-color: {{ section.settings.pillar_sublabel_color | default: '#003225' }};
+    --journey-pillar-badge-size: {{ section.settings.pillar_badge_size | default: 54 }}px;
+    --journey-pillar-icon-size: {{ section.settings.pillar_icon_size | default: 28 }}px;
+    --journey-pillar-size-desktop: {{ section.settings.pillar_label_size_desktop | default: 18 }}px;
+    --journey-pillar-size-mobile: {{ section.settings.pillar_label_size_mobile | default: 14 }}px;
+    --journey-pillar-gap: {{ section.settings.pillar_gap | default: 72 }}px;
+  "
+>
   <div class="sustainability-journey__container">
     
-    <!-- 1. Section Header -->
-    <div class="sustainability-journey__header">
-      <h2 class="sustainability-journey__title">
-        <span class="sustainability-journey__leaf sustainability-journey__leaf--left" aria-hidden="true">
-          {{ 'icon-leaf-2.svg' | inline_asset_content }}
-        </span>
-        <span>{{ section.settings.title | default: 'Our Sustainability Journey' }}</span>
-        <span class="sustainability-journey__leaf sustainability-journey__leaf--right" aria-hidden="true">
-          {{ 'icon-leaf-2.svg' | inline_asset_content }}
-        </span>
-      </h2>
-      {%- if section.settings.subtitle != blank -%}
-        <p class="sustainability-journey__subtitle">
-          {{ section.settings.subtitle }}
-        </p>
-      {%- endif -%}
+    <!-- 1. Unified Section Header -->
+    <div class="sustainability-journey__header-container">
+      {% render 'section-header',
+        layout: header_layout,
+        title: section_title,
+        title_color: section.settings.title_color,
+        title_size: section.settings.title_size_desktop,
+        eyebrow: section.settings.eyebrow,
+        show_eyebrow_icon: section.settings.show_eyebrow_icon,
+        eyebrow_color: section.settings.eyebrow_color,
+        eyebrow_size_desktop: section.settings.eyebrow_size_desktop,
+        eyebrow_size_mobile: section.settings.eyebrow_size_mobile,
+        subtitle: section.settings.subtitle,
+        subtitle_color: section.settings.subtitle_color,
+        subtitle_size_desktop: section.settings.subtitle_size_desktop,
+        subtitle_size_mobile: section.settings.subtitle_size_mobile,
+        show_leaf: section.settings.show_leaf_icons,
+        leaf_position: section.settings.leaf_position,
+        leaf_color: section.settings.leaf_color,
+        leaf_size: section.settings.leaf_size,
+        leaf_gap: section.settings.leaf_gap,
+        btn_block: header_button_block
+      %}
     </div>
 
     <!-- 2. Timeline Milestones Grid / Track -->
-    <div class="sustainability-journey__timeline-wrapper">
+    <div class="sustainability-journey__timeline-wrapper sustainability-journey__timeline-wrapper--{{ timeline_layout }}">
       <div class="sustainability-journey__timeline-line" aria-hidden="true"></div>
+      
       <div class="sustainability-journey__milestones" role="region" aria-label="Sustainability Milestones">
-        {%- if section.blocks.size > 0 -%}
-          {%- for block in section.blocks -%}
-            <div class="sustainability-journey__milestone-item" {{ block.shopify_attributes }}>
+        {%- if milestone_blocks.size > 0 -%}
+          {%- for block in milestone_blocks -%}
+            {%- assign is_highlight = block.settings.highlight -%}
+            <div 
+              class="sustainability-journey__milestone-item{% if is_highlight %} sustainability-journey__milestone-item--highlight{% endif %}" 
+              {{ block.shopify_attributes }}
+              style="{% if block.settings.custom_node_bg != blank %}--item-node-bg: {{ block.settings.custom_node_bg }};{% endif %}"
+            >
               
-              <!-- Top Circle Badge -->
+              <!-- Top Circle Badge / Node -->
               <div class="sustainability-journey__node-badge" aria-hidden="true">
                 <div class="sustainability-journey__icon-inner">
-                  {%- if block.settings.icon_name != blank -%}
-                    {{ block.settings.icon_name | inline_asset_content }}
-                  {%- elsif block.settings.custom_icon != blank -%}
-                    <img src="{{ block.settings.custom_icon | image_url: width: 64 }}" width="28" height="28" alt="" loading="lazy">
+                  {%- if block.settings.custom_icon != blank -%}
+                    <img src="{{ block.settings.custom_icon | image_url: width: 64 }}" width="28" height="28" alt="{{ block.settings.title | escape }}" loading="lazy">
                   {%- else -%}
-                    {{ 'icon-tree.svg' | inline_asset_content }}
+                    {%- case forloop.index0 -%}
+                      {%- when 0 -%}
+                        {{ 'icon-idea.svg' | inline_asset_content }}
+                      {%- when 1 -%}
+                        {{ 'icon-handshake.svg' | inline_asset_content }}
+                      {%- when 2 -%}
+                        {{ 'icon-tree.svg' | inline_asset_content }}
+                      {%- when 3 -%}
+                        {{ 'icon-badge.svg' | inline_asset_content }}
+                      {%- when 4 -%}
+                        {{ 'icon-repost.svg' | inline_asset_content }}
+                      {%- else -%}
+                        {{ 'icon-tree.svg' | inline_asset_content }}
+                    {%- endcase -%}
                   {%- endif -%}
                 </div>
               </div>
 
               <!-- Year Label -->
-              <span class="sustainability-journey__year">{{ block.settings.year }}</span>
+              <div class="sustainability-journey__year-wrap">
+                <span class="sustainability-journey__year">{{ block.settings.year }}</span>
+              </div>
 
-              <!-- Outlined Card -->
+              <!-- Milestone Card -->
               <div class="sustainability-journey__card">
                 <h3 class="sustainability-journey__card-title">{{ block.settings.title }}</h3>
-                <p class="sustainability-journey__card-desc">{{ block.settings.description }}</p>
+                <div class="sustainability-journey__card-desc">
+                  {%- if block.settings.description contains '<p>' -%}
+                    {{ block.settings.description }}
+                  {%- else -%}
+                    <p>{{ block.settings.description }}</p>
+                  {%- endif -%}
+                </div>
               </div>
 
             </div>
           {%- endfor -%}
         {%- else -%}
-          <!-- Default Fallback Milestones (5 steps) -->
+          <!-- Default Fallback Milestones (5 steps matching initial design) -->
           <!-- 1. 2018 -->
           <div class="sustainability-journey__milestone-item">
             <div class="sustainability-journey__node-badge" aria-hidden="true">
@@ -66,7 +173,9 @@
                 {{ 'icon-idea.svg' | inline_asset_content }}
               </div>
             </div>
-            <span class="sustainability-journey__year">2018</span>
+            <div class="sustainability-journey__year-wrap">
+              <span class="sustainability-journey__year">2018</span>
+            </div>
             <div class="sustainability-journey__card">
               <h3 class="sustainability-journey__card-title">The Beginning</h3>
               <p class="sustainability-journey__card-desc">Founded in Hanoi with mission to source 100% organic cotton from local farms</p>
@@ -80,7 +189,9 @@
                 {{ 'icon-handshake.svg' | inline_asset_content }}
               </div>
             </div>
-            <span class="sustainability-journey__year">2020</span>
+            <div class="sustainability-journey__year-wrap">
+              <span class="sustainability-journey__year">2020</span>
+            </div>
             <div class="sustainability-journey__card">
               <h3 class="sustainability-journey__card-title">Fair Trade Partnership</h3>
               <p class="sustainability-journey__card-desc">Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans</p>
@@ -94,7 +205,9 @@
                 {{ 'icon-tree.svg' | inline_asset_content }}
               </div>
             </div>
-            <span class="sustainability-journey__year">2022</span>
+            <div class="sustainability-journey__year-wrap">
+              <span class="sustainability-journey__year">2022</span>
+            </div>
             <div class="sustainability-journey__card">
               <h3 class="sustainability-journey__card-title">Reforestation Initiative</h3>
               <p class="sustainability-journey__card-desc">Launched "1 Tree Per Product" – planted 50K trees in Vietnam reforestation</p>
@@ -102,13 +215,16 @@
           </div>
 
           <!-- 4. 2024 -->
-          <div class="sustainability-journey__milestone-item">
+          <div class="sustainability-journey__milestone-item sustainability-journey__milestone-item--highlight">
             <div class="sustainability-journey__node-badge" aria-hidden="true">
               <div class="sustainability-journey__icon-inner">
                 {{ 'icon-badge.svg' | inline_asset_content }}
               </div>
             </div>
-            <span class="sustainability-journey__year">2024</span>
+            <div class="sustainability-journey__year-wrap">
+              <span class="sustainability-journey__year">2024</span>
+              <span class="sustainability-journey__status-badge">Achieved</span>
+            </div>
             <div class="sustainability-journey__card">
               <h3 class="sustainability-journey__card-title">Carbon Neutral</h3>
               <p class="sustainability-journey__card-desc">Achieved B Corp certification and full carbon-neutral shipping</p>
@@ -122,7 +238,9 @@
                 {{ 'icon-repost.svg' | inline_asset_content }}
               </div>
             </div>
-            <span class="sustainability-journey__year">2026</span>
+            <div class="sustainability-journey__year-wrap">
+              <span class="sustainability-journey__year">2026</span>
+            </div>
             <div class="sustainability-journey__card">
               <h3 class="sustainability-journey__card-title">Circular Economy</h3>
               <p class="sustainability-journey__card-desc">Closed-loop recycling: turn old clothes into new collections</p>
@@ -132,234 +250,493 @@
       </div>
     </div>
 
-    <!-- 3. Bottom Call-to-Action Box -->
-    <div class="sustainability-journey__cta-box">
-      <h3 class="sustainability-journey__cta-title">
-        {{ section.settings.cta_title | default: 'Be part of our story' }}
-      </h3>
-      
-      {%- if section.settings.cta_subtitle != blank -%}
-        <p class="sustainability-journey__cta-subtitle">
-          {{ section.settings.cta_subtitle }}
-        </p>
-      {%- endif -%}
+    <!-- 3. Bottom Call-to-Action Box & Pillars -->
+    {%- if section.settings.show_cta_box != false -%}
+      <div class="sustainability-journey__cta-box sustainability-journey__cta-box--{{ section.settings.cta_layout | default: 'centered_card' }}">
+        
+        <div class="sustainability-journey__cta-content">
+          <h3 class="sustainability-journey__cta-title">
+            {{ section.settings.cta_title | default: 'Be part of our story' }}
+          </h3>
+          
+          {%- if section.settings.cta_subtitle != blank -%}
+            <p class="sustainability-journey__cta-subtitle">
+              {{ section.settings.cta_subtitle }}
+            </p>
+          {%- endif -%}
 
-      <!-- Reusable Action Buttons Group -->
-      <div class="sustainability-journey__btn-group">
-        {%- if section.settings.primary_btn_text != blank -%}
-          {% render 'btn-action',
-            text: section.settings.primary_btn_text,
-            url: section.settings.primary_btn_url,
-            variant: 'solid'
-          %}
+          <!-- Action Buttons Group -->
+          <div class="sustainability-journey__btn-group">
+            {%- if button_blocks.size > 0 -%}
+              {%- for block in button_blocks -%}
+                <div class="sustainability-journey__btn-item" {{ block.shopify_attributes }}>
+                  {%- assign btn_style = block.settings.button_type | default: 'solid' -%}
+                  {%- assign btn_theme = block.settings.arrow_theme | default: 'dark' -%}
+                  {%- if btn_style == 'arrow' -%}
+                    {% render 'btn-arrow',
+                      text: block.settings.button_text,
+                      url: block.settings.button_link,
+                      theme: btn_theme,
+                      color: block.settings.custom_color
+                    %}
+                  {%- else -%}
+                    {% render 'btn-action',
+                      text: block.settings.button_text,
+                      url: block.settings.button_link,
+                      variant: btn_style,
+                      custom_bg: block.settings.custom_color
+                    %}
+                  {%- endif -%}
+                </div>
+              {%- endfor -%}
+            {%- else -%}
+              <!-- Fallback buttons from section settings -->
+              {%- assign p_variant = section.settings.primary_btn_type | default: 'solid' -%}
+              {%- assign s_variant = section.settings.secondary_btn_type | default: 'outline' -%}
+              {%- if section.settings.primary_btn_text != blank -%}
+                {% render 'btn-action',
+                  text: section.settings.primary_btn_text,
+                  url: section.settings.primary_btn_url,
+                  variant: p_variant
+                %}
+              {%- endif -%}
+
+              {%- if section.settings.secondary_btn_text != blank -%}
+                {% render 'btn-action',
+                  text: section.settings.secondary_btn_text,
+                  url: section.settings.secondary_btn_url,
+                  variant: s_variant
+                %}
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+        </div>
+
+        <!-- 3 Pillars / Badges Row -->
+        {%- if section.settings.show_pillars != false -%}
+          <div class="sustainability-journey__pillars sustainability-journey__pillars--style-{{ section.settings.pillar_badge_style | default: 'circle_badge' }}">
+            {%- if pillar_blocks.size > 0 -%}
+              {%- for block in pillar_blocks -%}
+                <div 
+                  class="sustainability-journey__pillar-item" 
+                  {{ block.shopify_attributes }}
+                  style="{% if block.settings.custom_badge_bg != blank %}--item-pillar-bg: {{ block.settings.custom_badge_bg }};{% endif %}{% if block.settings.custom_icon_color != blank %}--item-pillar-icon: {{ block.settings.custom_icon_color }};{% endif %}"
+                >
+                  <div class="sustainability-journey__pillar-icon-wrap" aria-hidden="true">
+                    {%- if block.settings.custom_icon != blank -%}
+                      <img src="{{ block.settings.custom_icon | image_url: width: 64 }}" width="28" height="28" alt="{{ block.settings.label | escape }}" loading="lazy">
+                    {%- else -%}
+                      {%- case forloop.index0 -%}
+                        {%- when 0 -%}
+                          {{ 'icon-plant-based.svg' | inline_asset_content }}
+                        {%- when 1 -%}
+                          {{ 'icon-plant-based-1.svg' | inline_asset_content }}
+                        {%- when 2 -%}
+                          {{ 'icon-Fair-Wages.svg' | inline_asset_content }}
+                        {%- else -%}
+                          {{ 'icon-plant-based.svg' | inline_asset_content }}
+                      {%- endcase -%}
+                    {%- endif -%}
+                  </div>
+                  <div class="sustainability-journey__pillar-text">
+                    <span class="sustainability-journey__pillar-label">{{ block.settings.label }}</span>
+                    {%- if block.settings.sublabel != blank -%}
+                      <span class="sustainability-journey__pillar-sublabel">{{ block.settings.sublabel }}</span>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endfor -%}
+            {%- else -%}
+              <!-- Fallback Pillars matching exact initial design -->
+              {%- if section.settings.pillar_1_label != blank -%}
+                <div class="sustainability-journey__pillar-item">
+                  <div class="sustainability-journey__pillar-icon-wrap" aria-hidden="true">
+                    {{ 'icon-plant-based.svg' | inline_asset_content }}
+                  </div>
+                  <div class="sustainability-journey__pillar-text">
+                    <span class="sustainability-journey__pillar-label">{{ section.settings.pillar_1_label }}</span>
+                  </div>
+                </div>
+              {%- endif -%}
+
+              {%- if section.settings.pillar_2_label != blank -%}
+                <div class="sustainability-journey__pillar-item">
+                  <div class="sustainability-journey__pillar-icon-wrap" aria-hidden="true">
+                    {{ 'icon-plant-based-1.svg' | inline_asset_content }}
+                  </div>
+                  <div class="sustainability-journey__pillar-text">
+                    <span class="sustainability-journey__pillar-label">{{ section.settings.pillar_2_label }}</span>
+                  </div>
+                </div>
+              {%- endif -%}
+
+              {%- if section.settings.pillar_3_label != blank -%}
+                <div class="sustainability-journey__pillar-item">
+                  <div class="sustainability-journey__pillar-icon-wrap" aria-hidden="true">
+                    {{ 'icon-Fair-Wages.svg' | inline_asset_content }}
+                  </div>
+                  <div class="sustainability-journey__pillar-text">
+                    <span class="sustainability-journey__pillar-label">{{ section.settings.pillar_3_label }}</span>
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+          </div>
         {%- endif -%}
 
-        {%- if section.settings.secondary_btn_text != blank -%}
-          {% render 'btn-action',
-            text: section.settings.secondary_btn_text,
-            url: section.settings.secondary_btn_url,
-            variant: 'outline'
-          %}
-        {%- endif -%}
       </div>
-
-      <!-- 3 Pillars / Badges Row -->
-      <div class="sustainability-journey__pillars">
-        <!-- Pillar 1 -->
-        <div class="sustainability-journey__pillar-item">
-          <div class="sustainability-journey__pillar-icon-wrap" aria-hidden="true">
-            {{ 'icon-plant-based.svg' | inline_asset_content }}
-          </div>
-          <span class="sustainability-journey__pillar-label">{{ section.settings.pillar_1_label | default: '100% ORGANIC' }}</span>
-        </div>
-
-        <!-- Pillar 2 -->
-        <div class="sustainability-journey__pillar-item">
-          <div class="sustainability-journey__pillar-icon-wrap" aria-hidden="true">
-            {{ 'icon-plant-based-1.svg' | inline_asset_content }}
-          </div>
-          <span class="sustainability-journey__pillar-label">{{ section.settings.pillar_2_label | default: 'CARBON NEUTRAL' }}</span>
-        </div>
-
-        <!-- Pillar 3 -->
-        <div class="sustainability-journey__pillar-item">
-          <div class="sustainability-journey__pillar-icon-wrap" aria-hidden="true">
-            {{ 'icon-Fair Wages.svg' | inline_asset_content }}
-          </div>
-          <span class="sustainability-journey__pillar-label">{{ section.settings.pillar_3_label | default: 'FAIR WAGES' }}</span>
-        </div>
-      </div>
-
-    </div>
+    {%- endif -%}
 
   </div>
 </section>
 
 {% stylesheet %}
   /* ==========================================================================
-     Sustainability Journey Section Styles
+     Sustainability Journey Section Styles (Full Width background with inner control)
      ========================================================================== */
   .sustainability-journey {
     grid-column: 1 / -1 !important;
     width: 100%;
     background-color: var(--journey-bg, #F1F4D8);
     color: var(--journey-color, #003225);
-    padding: 115px 34px 115px;
+    padding: var(--journey-pt, 116px) 0 var(--journey-pb, 116px);
     box-sizing: border-box;
     overflow: hidden;
   }
 
   .sustainability-journey__container {
     width: 100%;
-    max-width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
   }
 
-  /* 1. Header */
-  .sustainability-journey__header {
-    text-align: center;
-    margin-bottom: clamp(40px, 5.5vw, 68px);
+  /* 1. Full Width Mode */
+  .sustainability-journey--full .sustainability-journey__container {
+    max-width: 100%;
+    padding-left: clamp(20px, 2.5vw, 34px);
+    padding-right: clamp(20px, 2.5vw, 34px);
   }
 
-  .sustainability-journey__title {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    font-size: var(--type-section-title, 2.625rem);
-    font-weight: 800;
-    line-height: 1.15;
-    letter-spacing: -0.03em;
-    color: var(--journey-color, #003225);
-    margin: 0 0 16px 0;
+  /* 2. Contained Mode */
+  .sustainability-journey--contained .sustainability-journey__container {
+    max-width: var(--page-width, 1920px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(20px, 3vw, var(--page-margin, 20px));
+    padding-right: clamp(20px, 3vw, var(--page-margin, 20px));
   }
 
-  .sustainability-journey__leaf {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: clamp(28px, 2.5vw, 36px);
-    height: clamp(28px, 2.5vw, 36px);
-    flex-shrink: 0;
-  }
-  .sustainability-journey__leaf img,
-  .sustainability-journey__leaf svg {
+  /* Section Header Wrap */
+  .sustainability-journey__header-container {
     width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
+    margin-bottom: clamp(40px, 5.5vw, 68px);
+    box-sizing: border-box;
+    text-align: center;
   }
 
-  .sustainability-journey__subtitle {
-    font-size: var(--type-section-subtitle, 1.3125rem);
-    line-height: 1.5;
-    color: var(--journey-color, #003225);
-    opacity: 0.92;
-    max-width: 780px;
-    margin: 0 auto;
-    letter-spacing: -0.01em;
-  }
-
-  /* 2. Timeline Milestones */
+  /* ==========================================================================
+     Timeline Milestones Layout
+     ========================================================================== */
   .sustainability-journey__timeline-wrapper {
     position: relative;
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: clamp(12px, 1.8vw, 24px);
+    box-sizing: border-box;
   }
 
-  /* Continuous horizontal connector line running through all milestone nodes */
+  /* Horizontal Connected Line */
   .sustainability-journey__timeline-line {
-    display: none;
-  }
-
-  .sustainability-journey__milestones {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    position: relative;
-    z-index: 2;
-    width: 100%;
-  }
-
-  .sustainability-journey__milestones::before {
-    content: "";
     position: absolute;
-    top: 32px;
+    top: 26px;
     left: 0;
     right: 0;
     width: 100%;
-    height: 2px;
-    background-color: var(--journey-color, #003225);
+    height: 1.5px;
+    background-color: var(--journey-line-color, #003225);
     z-index: 1;
     pointer-events: none;
     transform: translateY(-50%);
   }
 
+  .sustainability-journey--line-dashed .sustainability-journey__timeline-line {
+    background: repeating-linear-gradient(90deg, var(--journey-line-color, #003225) 0, var(--journey-line-color, #003225) 8px, transparent 8px, transparent 16px);
+  }
+  .sustainability-journey--line-gradient .sustainability-journey__timeline-line {
+    background: linear-gradient(90deg, transparent 0%, var(--journey-line-color, #003225) 15%, var(--journey-accent, #71CC3B) 85%, transparent 100%);
+    height: 2px;
+  }
+  .sustainability-journey--line-none .sustainability-journey__timeline-line {
+    display: none;
+  }
+
+  /* Timeline Layout 1: Horizontal Connected (Design Default) */
+  .sustainability-journey--layout-horizontal_connected .sustainability-journey__timeline-line {
+    display: block;
+  }
+  .sustainability-journey--layout-horizontal_connected .sustainability-journey__milestones {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(12px, 1.8vw, 24px);
+  }
+
+  /* Timeline Layout 2: Cards Grid */
+  .sustainability-journey--layout-cards_grid .sustainability-journey__timeline-line {
+    display: none !important;
+  }
+  .sustainability-journey--layout-cards_grid .sustainability-journey__milestones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+  }
+  .sustainability-journey--layout-cards_grid .sustainability-journey__milestone-item {
+    padding: 32px 24px;
+    background-color: var(--journey-card-bg, rgba(255, 255, 255, 0.5));
+    border: 1.5px solid var(--journey-card-border, #003225);
+    border-radius: var(--journey-card-radius, 12px);
+    box-shadow: 0 6px 20px rgba(0, 50, 37, 0.06);
+  }
+  .sustainability-journey--layout-cards_grid .sustainability-journey__card {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    min-height: auto !important;
+    box-shadow: none !important;
+  }
+  .sustainability-journey--layout-cards_grid .sustainability-journey__node-badge {
+    margin-bottom: 16px;
+  }
+
+  /* Timeline Layout 3: Vertical Timeline Steps */
+  .sustainability-journey--layout-vertical_timeline .sustainability-journey__timeline-wrapper {
+    max-width: 820px;
+    margin: 0 auto clamp(24px, 3.5vw, 44px);
+  }
+  .sustainability-journey--layout-vertical_timeline .sustainability-journey__timeline-line {
+    top: 0;
+    bottom: 0;
+    left: 26px;
+    width: 2px;
+    height: 100%;
+    transform: none;
+  }
+  .sustainability-journey--layout-vertical_timeline .sustainability-journey__milestones {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+  }
+  .sustainability-journey--layout-vertical_timeline .sustainability-journey__milestone-item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 24px;
+  }
+  .sustainability-journey--layout-vertical_timeline .sustainability-journey__node-badge {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  .sustainability-journey--layout-vertical_timeline .sustainability-journey__year-wrap {
+    margin-bottom: 8px;
+    justify-content: flex-start;
+  }
+  .sustainability-journey--layout-vertical_timeline .sustainability-journey__card {
+    align-items: flex-start;
+    text-align: left;
+    min-height: auto;
+    padding: 20px 24px;
+  }
+
+  /* Individual Milestone Item Base */
   .sustainability-journey__milestone-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 100%;
-    box-sizing: border-box;
+    position: relative;
   }
 
-  /* Circular Badge with solid dark green background centered on line */
+  /* Node Badge / Circle (Exact Image 1: Solid dark green circle with cream icon, sitting on horizontal line) */
   .sustainability-journey__node-badge {
-    width: 64px;
-    height: 64px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
+    max-width: 52px;
+    max-height: 52px;
+    aspect-ratio: 1 / 1;
     border-radius: 50%;
-    background-color: var(--journey-color, #003225);
+    background-color: var(--item-node-bg, var(--journey-node-bg, #003225));
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
+    margin-bottom: 20px;
     position: relative;
     z-index: 3;
     flex-shrink: 0;
+    box-sizing: border-box;
+  }
+
+  .sustainability-journey--node-solid_dark .sustainability-journey__node-badge {
+    background-color: var(--item-node-bg, var(--journey-node-bg, #003225));
+    border: none;
+  }
+  .sustainability-journey--node-solid_dark .sustainability-journey__icon-inner {
+    color: var(--journey-bg, #F1F4D8);
+  }
+  .sustainability-journey--node-outline_circle .sustainability-journey__node-badge {
+    background-color: var(--item-node-bg, var(--journey-bg, #F1F4D8));
+    border: 1.5px solid var(--journey-node-border, #003225);
+  }
+  .sustainability-journey--node-outline_circle .sustainability-journey__icon-inner {
+    color: var(--journey-color, #003225);
+  }
+  .sustainability-journey--node-accent_badge .sustainability-journey__node-badge {
+    background-color: var(--journey-accent, #71CC3B);
+    border: none;
+  }
+  .sustainability-journey--node-accent_badge .sustainability-journey__icon-inner {
+    color: var(--journey-color, #003225);
+  }
+  .sustainability-journey--node-floating_badge .sustainability-journey__node-badge {
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0, 50, 37, 0.1);
+  }
+  .sustainability-journey--node-minimal_dot .sustainability-journey__node-badge {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .sustainability-journey__milestone-item--highlight .sustainability-journey__node-badge {
+    background-color: var(--journey-node-active-bg, #71CC3B);
+    box-shadow: 0 0 0 3px rgba(113, 204, 59, 0.25);
   }
 
   .sustainability-journey__icon-inner {
-    width: 30px;
-    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 24px;
+    height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+    color: var(--journey-node-icon, #F1F4D8);
+    flex-shrink: 0;
+  }
+
+  .sustainability-journey__icon-inner svg path[fill]:not([fill="none"]),
+  .sustainability-journey__icon-inner svg [fill]:not(svg):not([fill="none"]) {
+    fill: var(--journey-node-icon, #F1F4D8) !important;
+  }
+
+  .sustainability-journey__icon-inner svg path[stroke]:not([stroke="none"]),
+  .sustainability-journey__icon-inner svg [stroke]:not(svg):not([stroke="none"]) {
+    stroke: var(--journey-node-icon, #F1F4D8) !important;
+  }
+
+  .sustainability-journey__milestone-item--highlight .sustainability-journey__icon-inner {
+    color: var(--journey-node-active-icon, #003225);
+  }
+
+  .sustainability-journey__milestone-item--highlight .sustainability-journey__icon-inner svg path[fill]:not([fill="none"]),
+  .sustainability-journey__milestone-item--highlight .sustainability-journey__icon-inner svg [fill]:not(svg):not([fill="none"]) {
+    fill: var(--journey-node-active-icon, #003225) !important;
+  }
+
+  .sustainability-journey__milestone-item--highlight .sustainability-journey__icon-inner svg path[stroke]:not([stroke="none"]),
+  .sustainability-journey__milestone-item--highlight .sustainability-journey__icon-inner svg [stroke]:not(svg):not([stroke="none"]) {
+    stroke: var(--journey-node-active-icon, #003225) !important;
   }
 
   .sustainability-journey__icon-inner img,
   .sustainability-journey__icon-inner svg {
-    width: 100%;
-    height: 100%;
+    width: 24px;
+    height: 24px;
+    max-width: 24px;
+    max-height: 24px;
     object-fit: contain;
-    filter: brightness(0) invert(1);
     display: block;
+    flex-shrink: 0;
   }
 
-  /* Year */
+  /* Year Wrap & Label */
+  .sustainability-journey__year-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
   .sustainability-journey__year {
-    display: block;
-    font-size: 1.375rem;
+    font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: var(--journey-color, #003225);
-    margin: 14px 0 16px;
+    color: var(--journey-year-color, #003225);
     line-height: 1.2;
   }
 
-  /* Card */
+  .sustainability-journey--year-pill_badge .sustainability-journey__year {
+    font-size: 1.125rem;
+    background-color: var(--journey-node-border, #003225);
+    color: var(--journey-bg, #F1F4D8);
+    padding: 3px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  .sustainability-journey--year-accent_text .sustainability-journey__year {
+    color: var(--journey-accent, #71CC3B);
+  }
+
+  .sustainability-journey__status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: var(--journey-accent, #71CC3B);
+    color: #003225;
+    padding: 2px 8px;
+    border-radius: 12px;
+    line-height: 1.3;
+  }
+
+  /* Milestone Card (Exact Original Dimensions & Styles) */
   .sustainability-journey__card {
-    border: 1.5px solid var(--journey-color, #003225);
-    background-color: transparent;
+    border: 1.5px solid var(--journey-card-border, #003225);
+    border-radius: var(--journey-card-radius, 0px);
+    background-color: var(--journey-card-bg, transparent);
     padding: clamp(20px, 2vw, 28px) clamp(14px, 1.4vw, 20px);
     width: 100%;
     height: 100%;
+    min-height: 140px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     box-sizing: border-box;
+  }
+
+  .sustainability-journey--card-filled_card .sustainability-journey__card {
+    border: none;
+    background-color: var(--journey-card-bg, #ffffff);
+    box-shadow: 0 4px 18px rgba(0, 50, 37, 0.06);
+  }
+
+  .sustainability-journey--card-glass .sustainability-journey__card {
+    background-color: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 50, 37, 0.15);
+  }
+
+  .sustainability-journey--card-minimal_text .sustainability-journey__card {
+    border: none;
+    background: transparent;
+    padding: 8px 4px;
+    min-height: auto;
   }
 
   .sustainability-journey__card-title {
@@ -371,6 +748,11 @@
     margin: 0 0 10px 0;
   }
 
+  .sustainability-journey__card-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
   .sustainability-journey__card-desc {
     font-size: 1rem;
     line-height: 1.45;
@@ -378,18 +760,69 @@
     opacity: 0.9;
     margin: 0;
   }
+  .sustainability-journey__card-desc p {
+    margin: 0;
+  }
 
-  /* 3. Bottom CTA Box */
+  /* Card Hover Effects */
+  .sustainability-journey--hover-lift .sustainability-journey__card,
+  .sustainability-journey--hover-lift .sustainability-journey__milestone-item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .sustainability-journey--hover-lift .sustainability-journey__card:hover,
+  .sustainability-journey--hover-lift.sustainability-journey--layout-cards_grid .sustainability-journey__milestone-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 50, 37, 0.12);
+  }
+
+  .sustainability-journey--hover-glow .sustainability-journey__card,
+  .sustainability-journey--hover-glow .sustainability-journey__milestone-item {
+    transition: box-shadow 0.3s ease;
+  }
+  .sustainability-journey--hover-glow .sustainability-journey__card:hover,
+  .sustainability-journey--hover-glow.sustainability-journey--layout-cards_grid .sustainability-journey__milestone-item:hover {
+    box-shadow: 0 0 0 2px var(--journey-accent, #71CC3B), 0 8px 24px rgba(113, 204, 59, 0.25);
+  }
+
+  .sustainability-journey--hover-zoom_icon .sustainability-journey__node-badge {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .sustainability-journey--hover-zoom_icon .sustainability-journey__milestone-item:hover .sustainability-journey__node-badge {
+    transform: scale(1.16);
+  }
+
+  .sustainability-journey--hover-scale_card .sustainability-journey__card,
+  .sustainability-journey--hover-scale_card .sustainability-journey__milestone-item {
+    transition: transform 0.3s ease;
+  }
+  .sustainability-journey--hover-scale_card .sustainability-journey__card:hover,
+  .sustainability-journey--hover-scale_card.sustainability-journey--layout-cards_grid .sustainability-journey__milestone-item:hover {
+    transform: scale(1.03);
+  }
+
+  /* ==========================================================================
+     Bottom Call-to-Action Card & 3 Pillars
+     ========================================================================== */
   .sustainability-journey__cta-box {
-    border: 1.5px solid var(--journey-color, #003225);
-    background-color: transparent;
+    border: 1.5px solid var(--journey-cta-border, #003225);
+    background-color: var(--journey-cta-bg, transparent);
+    border-radius: var(--journey-cta-radius, 0px);
     padding: clamp(42px, 5.5vw, 68px) clamp(20px, 4vw, 56px);
-    text-align: center;
     width: 100%;
     box-sizing: border-box;
+    text-align: center;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .sustainability-journey__cta-box--split_banner {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    gap: 40px;
   }
 
   .sustainability-journey__cta-title {
@@ -411,23 +844,29 @@
     letter-spacing: -0.01em;
   }
 
+  .sustainability-journey__cta-box--split_banner .sustainability-journey__cta-subtitle {
+    margin-left: 0;
+  }
+
+  /* Action Buttons Group */
   .sustainability-journey__btn-group {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
     flex-wrap: wrap;
+    gap: 16px;
     margin-bottom: clamp(36px, 4.5vw, 56px);
   }
 
-  /* 3 Pillars */
+  /* 3 Pillars Row */
   .sustainability-journey__pillars {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(32px, 6.5vw, 96px);
+    gap: var(--journey-pillar-gap, clamp(32px, 5vw, 72px));
     flex-wrap: wrap;
     width: 100%;
+    box-sizing: border-box;
   }
 
   .sustainability-journey__pillar-item {
@@ -435,34 +874,103 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .sustainability-journey__pillar-item--link {
+    cursor: pointer;
   }
 
   .sustainability-journey__pillar-icon-wrap {
-    width: 54px;
-    height: 54px;
+    width: var(--journey-pillar-badge-size, 54px);
+    height: var(--journey-pillar-badge-size, 54px);
     border-radius: 50%;
-    background-color: var(--color-secondary, #71CC3B);
+    background-color: var(--item-pillar-bg, var(--journey-pillar-bg, #71CC3B));
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    color: var(--item-pillar-icon, var(--journey-pillar-icon, #003225));
+    box-sizing: border-box;
+  }
+
+  /* Badge Shape Styles */
+  .sustainability-journey__pillars--style-circle_badge .sustainability-journey__pillar-icon-wrap {
+    border-radius: 50%;
+    background-color: var(--item-pillar-bg, var(--journey-pillar-bg, #71CC3B));
+    border: none;
+  }
+
+  .sustainability-journey__pillars--style-outline_circle .sustainability-journey__pillar-icon-wrap {
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1.5px solid var(--journey-pillar-border, #003225);
+  }
+
+  .sustainability-journey__pillars--style-dark_circle .sustainability-journey__pillar-icon-wrap {
+    border-radius: 50%;
+    background-color: #003225;
+    border: none;
+    color: #F1F4D8;
+  }
+
+  .sustainability-journey__pillars--style-soft_square .sustainability-journey__pillar-icon-wrap {
+    border-radius: 14px;
+    background-color: var(--item-pillar-bg, var(--journey-pillar-bg, #71CC3B));
+    border: none;
+  }
+
+  .sustainability-journey__pillars--style-raw_icon .sustainability-journey__pillar-icon-wrap {
+    border-radius: 0;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    width: auto;
+    height: auto;
   }
 
   .sustainability-journey__pillar-icon-wrap img,
   .sustainability-journey__pillar-icon-wrap svg {
-    max-width: 30px;
-    max-height: 30px;
+    max-width: var(--journey-pillar-icon-size, 28px);
+    max-height: var(--journey-pillar-icon-size, 28px);
+    width: auto;
+    height: auto;
     object-fit: contain;
     display: block;
   }
 
+  .sustainability-journey__pillar-icon-wrap svg path[fill]:not([fill="none"]),
+  .sustainability-journey__pillar-icon-wrap svg [fill]:not(svg):not([fill="none"]) {
+    fill: var(--item-pillar-icon, var(--journey-pillar-icon, #003225)) !important;
+  }
+
+  .sustainability-journey__pillar-icon-wrap svg path[stroke]:not([stroke="none"]),
+  .sustainability-journey__pillar-icon-wrap svg [stroke]:not(svg):not([stroke="none"]) {
+    stroke: var(--item-pillar-icon, var(--journey-pillar-icon, #003225)) !important;
+  }
+
+  .sustainability-journey__pillar-text {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 2px;
+  }
+
   .sustainability-journey__pillar-label {
-    font-size: 1.125rem;
+    font-size: var(--journey-pillar-size-desktop, 18px);
     font-weight: 800;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--journey-color, #003225);
+    color: var(--journey-pillar-label-color, var(--journey-color, #003225));
     line-height: 1.2;
+  }
+
+  .sustainability-journey__pillar-sublabel {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--journey-pillar-sublabel-color, var(--journey-color, #003225));
+    opacity: 0.8;
   }
 
   /* ==========================================================================
@@ -470,7 +978,13 @@
      ========================================================================== */
   @media (max-width: 1024px) {
     .sustainability-journey {
-      padding: 80px 24px;
+      padding: var(--journey-mpt, 60px) 0 var(--journey-mpb, 70px);
+    }
+
+    .sustainability-journey--full .sustainability-journey__container,
+    .sustainability-journey--contained .sustainability-journey__container {
+      padding-left: 24px;
+      padding-right: 24px;
     }
 
     .sustainability-journey__timeline-line {
@@ -483,9 +997,7 @@
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       padding-bottom: 12px;
-      position: relative;
-      margin: 0;
-      padding: 0;
+      margin: 0 0 32px 0;
       width: 100%;
     }
     .sustainability-journey__timeline-wrapper::-webkit-scrollbar {
@@ -495,7 +1007,7 @@
     .sustainability-journey__milestones {
       display: flex;
       width: max-content;
-      gap: 8px;
+      gap: 12px;
       position: relative;
       padding: 0;
       box-sizing: border-box;
@@ -509,7 +1021,7 @@
       right: 0;
       width: 100%;
       height: 2px;
-      background-color: var(--journey-color, #003225);
+      background-color: var(--journey-line-color, #003225);
       z-index: 1;
       pointer-events: none;
       transform: translateY(-50%);
@@ -519,26 +1031,26 @@
       flex: 0 0 240px;
       scroll-snap-align: start;
     }
+
+    .sustainability-journey__cta-box--split_banner {
+      flex-direction: column;
+      text-align: center;
+    }
+    .sustainability-journey__cta-box--split_banner .sustainability-journey__cta-subtitle {
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 
   @media (max-width: 768px) {
     .sustainability-journey {
-      padding: 60px 20px 70px;
+      padding: var(--journey-mpt, 48px) 0 var(--journey-mpb, 56px);
     }
 
-    .sustainability-journey__title {
-      font-size: 2.25rem !important;
-      line-height: 1.2;
-    }
-
-    /* Hide heading leaf icons on mobile */
-    .sustainability-journey__leaf {
-      display: none !important;
-    }
-
-    .sustainability-journey__subtitle {
-      font-size: 1.125rem;
-      line-height: 1.5;
+    .sustainability-journey--full .sustainability-journey__container,
+    .sustainability-journey--contained .sustainability-journey__container {
+      padding-left: 20px;
+      padding-right: 20px;
     }
 
     .sustainability-journey__milestone-item {
@@ -550,50 +1062,40 @@
     }
 
     .sustainability-journey__cta-title {
-      font-size: 26px;
+      font-size: 24px;
       line-height: 1.2;
       margin-bottom: 12px;
     }
 
     .sustainability-journey__cta-subtitle {
-      font-size: 18px;
+      font-size: 16px;
       line-height: 1.5;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .sustainability-journey__btn-group {
       flex-direction: column;
       width: 100%;
       gap: 12px;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
     }
 
-    .sustainability-journey__btn-group .earth-btn-action {
+    .sustainability-journey__btn-group .earth-btn-action,
+    .sustainability-journey__btn-group .sustainability-journey__btn-item {
       width: 100%;
     }
 
-    /* Vertical stacked pillars on mobile */
+    /* Mobile pillars */
     .sustainability-journey__pillars {
-      flex-direction: column;
-      gap: 28px;
+      gap: clamp(20px, 4vw, 32px);
     }
 
     .sustainability-journey__pillar-item {
       gap: 10px;
     }
 
-    .sustainability-journey__pillar-icon-wrap {
-      width: 54px;
-      height: 54px;
-    }
-
     .sustainability-journey__pillar-label {
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-    }
-    .sustainability-journey__timeline-wrapper {
-      margin-bottom: 8px;
+      font-size: var(--journey-pillar-size-mobile, 14px);
     }
   }
 {% endstylesheet %}
@@ -603,32 +1105,364 @@
   "name": "Sustainability Journey",
   "settings": [
     {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make section full width",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "select",
+      "id": "header_layout",
+      "label": "Header Layout",
+      "options": [
+        { "value": "centered", "label": "Centered (Design Default)" },
+        { "value": "stacked_left", "label": "Stacked Left" },
+        { "value": "split", "label": "Split Columns" },
+        { "value": "split_btn", "label": "Split with Button" }
+      ],
+      "default": "centered"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow / Sub-tag"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_eyebrow_icon",
+      "label": "Show Eyebrow Sparkle Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow Custom Color"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_desktop",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Font Size (Desktop)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Font Size (Mobile)",
+      "default": 15
+    },
+    {
       "type": "text",
       "id": "title",
-      "label": "Heading",
+      "label": "Section Heading",
       "default": "Our Sustainability Journey"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Heading Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Desktop)",
+      "default": 42
     },
     {
       "type": "textarea",
       "id": "subtitle",
-      "label": "Subtitle",
+      "label": "Subtitle Description",
       "default": "From a small organic farm to global impact – our story unfolds through transparent milestones and unwavering commitment to the planet"
     },
     {
       "type": "color",
-      "id": "bg_color",
-      "label": "Background Color",
+      "id": "subtitle_color",
+      "label": "Subtitle Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Desktop)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 13,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Mobile)",
+      "default": 17
+    },
+    {
+      "type": "checkbox",
+      "id": "show_leaf_icons",
+      "label": "Show Decorative Leaf Icons",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "leaf_position",
+      "label": "Leaf Icon Position",
+      "options": [
+        { "value": "both_sides", "label": "Both Sides of Title (Default)" },
+        { "value": "left", "label": "Left of Title" },
+        { "value": "top", "label": "Top of Title" },
+        { "value": "right", "label": "Right of Title" },
+        { "value": "none", "label": "None (Hide)" }
+      ],
+      "default": "both_sides"
+    },
+    {
+      "type": "color",
+      "id": "leaf_color",
+      "label": "Leaf Icon Color",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "range",
+      "id": "leaf_size",
+      "min": 20,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Leaf Icon Size",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "leaf_gap",
+      "min": 4,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Leaf Icon Gap",
+      "default": 14
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header_btn",
+      "label": "Show Header Action Button",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "header_btn_text",
+      "label": "Header Button Text",
+      "default": "EXPLORE ALL"
+    },
+    {
+      "type": "url",
+      "id": "header_btn_url",
+      "label": "Header Button Link"
+    },
+    {
+      "type": "select",
+      "id": "header_btn_type",
+      "label": "Header Button Style",
+      "options": [
+        { "value": "arrow", "label": "Arrow Link Button" },
+        { "value": "solid", "label": "Solid Button" },
+        { "value": "outline", "label": "Outline Button" }
+      ],
+      "default": "arrow"
+    },
+    {
+      "type": "select",
+      "id": "header_btn_theme",
+      "label": "Header Arrow Theme",
+      "options": [
+        { "value": "dark", "label": "Dark (Forest Green)" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_color",
+      "label": "Header Button Custom Color"
+    },
+    {
+      "type": "header",
+      "content": "Timeline & Milestone Styling"
+    },
+    {
+      "type": "select",
+      "id": "timeline_layout",
+      "label": "Timeline Layout",
+      "options": [
+        { "value": "horizontal_connected", "label": "Connected Horizontal Timeline (Design Default)" },
+        { "value": "cards_grid", "label": "Milestone Cards Grid (3 Columns)" },
+        { "value": "vertical_timeline", "label": "Vertical Timeline Steps" }
+      ],
+      "default": "horizontal_connected"
+    },
+    {
+      "type": "select",
+      "id": "timeline_line_style",
+      "label": "Timeline Line Style",
+      "options": [
+        { "value": "solid", "label": "Solid Line" },
+        { "value": "dashed", "label": "Dashed Line" },
+        { "value": "gradient", "label": "Gradient Accent Line" },
+        { "value": "none", "label": "Hide Line" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "timeline_line_color",
+      "label": "Timeline Line Color",
+      "default": "#003225"
+    },
+    {
+      "type": "select",
+      "id": "timeline_node_style",
+      "label": "Node Badge Style",
+      "options": [
+        { "value": "solid_dark", "label": "Solid Dark Green Circle (Design Default)" },
+        { "value": "outline_circle", "label": "Outline Circle" },
+        { "value": "accent_badge", "label": "Accent Green Circle" },
+        { "value": "floating_badge", "label": "Rounded Square Badge" },
+        { "value": "minimal_dot", "label": "Compact Circle" }
+      ],
+      "default": "solid_dark"
+    },
+    {
+      "type": "color",
+      "id": "node_bg_color",
+      "label": "Node Default Background",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "node_border_color",
+      "label": "Node Border Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "node_icon_color",
+      "label": "Node Icon Color",
       "default": "#F1F4D8"
     },
     {
       "type": "color",
-      "id": "text_color",
-      "label": "Text Color",
+      "id": "node_active_bg",
+      "label": "Highlighted Node Background",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "color",
+      "id": "node_active_icon_color",
+      "label": "Highlighted Node Icon Color",
       "default": "#003225"
+    },
+    {
+      "type": "select",
+      "id": "year_style",
+      "label": "Year Label Style",
+      "options": [
+        { "value": "bold_header", "label": "Bold Text Header (Design Default)" },
+        { "value": "pill_badge", "label": "Dark Pill Tag" },
+        { "value": "accent_text", "label": "Accent Color Text" }
+      ],
+      "default": "bold_header"
+    },
+    {
+      "type": "color",
+      "id": "year_color",
+      "label": "Year Label Color",
+      "default": "#003225"
+    },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Milestone Card Style",
+      "options": [
+        { "value": "outline", "label": "Outlined Card (Design Default)" },
+        { "value": "filled_card", "label": "Filled Card with Shadow" },
+        { "value": "glass", "label": "Glassmorphism Card" },
+        { "value": "minimal_text", "label": "Minimalist Text Only" }
+      ],
+      "default": "outline"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card Background Color",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card Border Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Card Corner Radius",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "card_hover_effect",
+      "label": "Milestone Hover Effect",
+      "options": [
+        { "value": "none", "label": "None (Design Default)" },
+        { "value": "lift", "label": "Lift Up Card & Soft Shadow" },
+        { "value": "glow", "label": "Glow Accent Border" },
+        { "value": "zoom_icon", "label": "Zoom Icon" },
+        { "value": "scale_card", "label": "Scale Card" }
+      ],
+      "default": "none"
     },
     {
       "type": "header",
       "content": "Call-to-Action Card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta_box",
+      "label": "Show CTA Box",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "cta_layout",
+      "label": "CTA Box Layout",
+      "options": [
+        { "value": "centered_card", "label": "Centered Card (Design Default)" },
+        { "value": "split_banner", "label": "Split Horizontal Banner" }
+      ],
+      "default": "centered_card"
     },
     {
       "type": "text",
@@ -643,6 +1477,28 @@
       "default": "Your choices define the future of fashion. Join a movement that celebrates beauty without compromise."
     },
     {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "CTA Box Background Color",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "cta_border_color",
+      "label": "CTA Box Border Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "cta_border_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "CTA Box Corner Radius",
+      "default": 0
+    },
+    {
       "type": "text",
       "id": "primary_btn_text",
       "label": "Primary Button Text",
@@ -652,6 +1508,17 @@
       "type": "url",
       "id": "primary_btn_url",
       "label": "Primary Button Link"
+    },
+    {
+      "type": "select",
+      "id": "primary_btn_type",
+      "label": "Primary Button Style",
+      "options": [
+        { "value": "solid", "label": "Solid Button" },
+        { "value": "outline", "label": "Outline Button" },
+        { "value": "accent", "label": "Accent Button" }
+      ],
+      "default": "solid"
     },
     {
       "type": "text",
@@ -665,26 +1532,202 @@
       "label": "Secondary Button Link"
     },
     {
+      "type": "select",
+      "id": "secondary_btn_type",
+      "label": "Secondary Button Style",
+      "options": [
+        { "value": "solid", "label": "Solid Button" },
+        { "value": "outline", "label": "Outline Button" },
+        { "value": "accent", "label": "Accent Button" }
+      ],
+      "default": "outline"
+    },
+    {
       "type": "header",
-      "content": "Bottom Pillars"
+      "content": "Bottom Pillars / Certifications"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pillars",
+      "label": "Show Pillars Row",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "pillar_badge_style",
+      "label": "Pillar Badge Shape & Style",
+      "options": [
+        { "value": "circle_badge", "label": "Solid Lime Green Circle (Design Default)" },
+        { "value": "outline_circle", "label": "Outline Circle" },
+        { "value": "dark_circle", "label": "Dark Forest Green Circle" },
+        { "value": "soft_square", "label": "Rounded Soft Square" },
+        { "value": "raw_icon", "label": "Raw Icon (No Background)" }
+      ],
+      "default": "circle_badge"
+    },
+    {
+      "type": "color",
+      "id": "pillar_icon_bg",
+      "label": "Badge Background Color",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "color",
+      "id": "pillar_border_color",
+      "label": "Badge Border Color (for Outline Style)",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "pillar_icon_color",
+      "label": "Icon Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "pillar_label_color",
+      "label": "Pillar Label Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "pillar_sublabel_color",
+      "label": "Pillar Sub-label Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "pillar_badge_size",
+      "min": 36,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Badge Diameter Size",
+      "default": 54
+    },
+    {
+      "type": "range",
+      "id": "pillar_icon_size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon Size",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "pillar_label_size_desktop",
+      "min": 12,
+      "max": 26,
+      "step": 1,
+      "unit": "px",
+      "label": "Label Font Size (Desktop)",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "pillar_label_size_mobile",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Label Font Size (Mobile)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "pillar_gap",
+      "min": 16,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap between Pillars",
+      "default": 72
+    },
+    {
+      "type": "header",
+      "content": "Pillars Fallback (If No Blocks)"
     },
     {
       "type": "text",
       "id": "pillar_1_label",
-      "label": "Pillar 1 Label",
+      "label": "Pillar 1 Fallback Label",
       "default": "100% ORGANIC"
     },
     {
       "type": "text",
       "id": "pillar_2_label",
-      "label": "Pillar 2 Label",
+      "label": "Pillar 2 Fallback Label",
       "default": "CARBON NEUTRAL"
     },
     {
       "type": "text",
       "id": "pillar_3_label",
-      "label": "Pillar 3 Label",
+      "label": "Pillar 3 Fallback Label",
       "default": "FAIR WAGES"
+    },
+    {
+      "type": "header",
+      "content": "Section Colors & Padding"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background Color",
+      "default": "#F1F4D8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Section Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Padding Top",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Padding Bottom",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Padding Top",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Padding Bottom",
+      "default": 56
     }
   ],
   "blocks": [
@@ -695,19 +1738,8 @@
         {
           "type": "text",
           "id": "year",
-          "label": "Year",
+          "label": "Year / Step",
           "default": "2024"
-        },
-        {
-          "type": "text",
-          "id": "icon_name",
-          "label": "Icon SVG Asset Name",
-          "default": "icon-tree.svg"
-        },
-        {
-          "type": "image_picker",
-          "id": "custom_icon",
-          "label": "Custom Icon Image"
         },
         {
           "type": "text",
@@ -716,10 +1748,101 @@
           "default": "Milestone Title"
         },
         {
-          "type": "textarea",
+          "type": "richtext",
           "id": "description",
           "label": "Milestone Description",
-          "default": "Description of this sustainability milestone."
+          "default": "<p>Description of this sustainability milestone and ecological progress.</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom Icon Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "highlight",
+          "label": "Highlight this Milestone",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "custom_node_bg",
+          "label": "Custom Node Background Color"
+        }
+      ]
+    },
+    {
+      "type": "pillar",
+      "name": "Pillar / Certification",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Pillar Label / Title",
+          "default": "100% ORGANIC"
+        },
+        {
+          "type": "text",
+          "id": "sublabel",
+          "label": "Sub-label / Extra Note (Optional)"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom Icon Image (PNG / SVG upload)"
+        },
+        {
+          "type": "color",
+          "id": "custom_badge_bg",
+          "label": "Custom Badge Background Color (Override)"
+        },
+        {
+          "type": "color",
+          "id": "custom_icon_color",
+          "label": "Custom Icon Color (Override)"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Action Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Label",
+          "default": "SHOP COLLECTION"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "select",
+          "id": "button_type",
+          "label": "Button Style",
+          "options": [
+            { "value": "solid", "label": "Solid Button" },
+            { "value": "outline", "label": "Outline Button" },
+            { "value": "arrow", "label": "Arrow Link Button" }
+          ],
+          "default": "solid"
+        },
+        {
+          "type": "select",
+          "id": "arrow_theme",
+          "label": "Arrow Theme",
+          "options": [
+            { "value": "dark", "label": "Dark (Forest Green)" },
+            { "value": "light", "label": "Light" }
+          ],
+          "default": "dark"
+        },
+        {
+          "type": "color",
+          "id": "custom_color",
+          "label": "Button Custom Color"
         }
       ]
     }
@@ -727,50 +1850,79 @@
   "presets": [
     {
       "name": "Sustainability Journey",
+      "settings": {
+        "full_width": true,
+        "header_layout": "centered",
+        "title": "Our Sustainability Journey",
+        "subtitle": "From a small organic farm to global impact – our story unfolds through transparent milestones and unwavering commitment to the planet",
+        "show_leaf_icons": true,
+        "leaf_position": "both_sides",
+        "cta_title": "Be part of our story",
+        "cta_subtitle": "Your choices define the future of fashion. Join a movement that celebrates beauty without compromise.",
+        "primary_btn_text": "SHOP COLLECTION",
+        "secondary_btn_text": "EXPLORE JOURNAL",
+        "pillar_1_label": "100% ORGANIC",
+        "pillar_2_label": "CARBON NEUTRAL",
+        "pillar_3_label": "FAIR WAGES"
+      },
       "blocks": [
         {
           "type": "milestone",
           "settings": {
             "year": "2018",
-            "icon_name": "icon-idea.svg",
             "title": "The Beginning",
-            "description": "Founded in Hanoi with mission to source 100% organic cotton from local farms"
+            "description": "<p>Founded in Hanoi with mission to source 100% organic cotton from local farms</p>"
           }
         },
         {
           "type": "milestone",
           "settings": {
             "year": "2020",
-            "icon_name": "icon-handshake.svg",
             "title": "Fair Trade Partnership",
-            "description": "Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans"
+            "description": "<p>Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans</p>"
           }
         },
         {
           "type": "milestone",
           "settings": {
             "year": "2022",
-            "icon_name": "icon-tree.svg",
             "title": "Reforestation Initiative",
-            "description": "Launched \"1 Tree Per Product\" – planted 50K trees in Vietnam reforestation"
+            "description": "<p>Launched \"1 Tree Per Product\" – planted 50K trees in Vietnam reforestation</p>"
           }
         },
         {
           "type": "milestone",
           "settings": {
             "year": "2024",
-            "icon_name": "icon-badge.svg",
             "title": "Carbon Neutral",
-            "description": "Achieved B Corp certification and full carbon-neutral shipping"
+            "highlight": false,
+            "description": "<p>Achieved B Corp certification and full carbon-neutral shipping</p>"
           }
         },
         {
           "type": "milestone",
           "settings": {
             "year": "2026",
-            "icon_name": "icon-repost.svg",
             "title": "Circular Economy",
-            "description": "Closed-loop recycling: turn old clothes into new collections"
+            "description": "<p>Closed-loop recycling: turn old clothes into new collections</p>"
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "label": "100% ORGANIC"
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "label": "CARBON NEUTRAL"
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "label": "FAIR WAGES"
           }
         }
       ]
