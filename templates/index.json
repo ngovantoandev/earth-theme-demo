@@ -150,7 +150,7 @@
       ],
       "settings": {
         "title": "Our Real Impact",
-        "subtitle": "Transparency is at the heart of everything we do. Track our environmental and social impact in real-time.",
+        "subtitle": "<p>Transparency is at the heart of everything we do. Track our environmental and social impact in real-time.</p>",
         "personal_title": "Your Personal Sustainability Impact",
         "personal_subtitle": "Connect your account to see how you contribute to sustainability goals.",
         "button_text": "TRACK MY IMPACT",
@@ -318,7 +318,7 @@
             "badge": "GOTS Certified Organic",
             "highlight": "100% Pesticide & GMO Free",
             "icon": "icon-handshake.svg",
-            "desc": "Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton."
+            "desc": "<p>Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton.</p>"
           }
         },
         "val_2": {
@@ -328,7 +328,7 @@
             "badge": "Ocean & Land Waste Diverted",
             "highlight": "7.8 plastic bottles per garment",
             "icon": "icon-handshake.svg",
-            "desc": "Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments."
+            "desc": "<p>Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments.</p>"
           }
         },
         "val_3": {
@@ -338,7 +338,7 @@
             "badge": "Ethical wages guaranteed",
             "highlight": "100% worker-owned cooperatives",
             "icon": "icon-handshake.svg",
-            "desc": "Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans."
+            "desc": "<p>Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p>"
           }
         },
         "val_4": {
@@ -348,7 +348,7 @@
             "badge": "Net-Zero Supply Chain",
             "highlight": "100% renewable energy powered",
             "icon": "icon-handshake.svg",
-            "desc": "Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery."
+            "desc": "<p>Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery.</p>"
           }
         },
         "val_5": {
@@ -358,7 +358,7 @@
             "badge": "PETA Approved Vegan",
             "highlight": "Zero animal testing or materials",
             "icon": "icon-handshake.svg",
-            "desc": "100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living."
+            "desc": "<p>100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living.</p>"
           }
         }
       },
@@ -371,7 +371,7 @@
       ],
       "settings": {
         "title": "Shop by Values",
-        "subtitle": "Find fashion that matches your ethics – filter by what matters most to you"
+        "subtitle": "<p>Find fashion that matches your ethics – filter by what matters most to you</p>"
       }
     },
     "background_video": {
@@ -451,7 +451,7 @@
       ],
       "settings": {
         "title": "The hands that hold the harvest",
-        "subtitle": "Meet the farmers and artisans who cultivate our materials with generations of wisdom and care for the earth.",
+        "subtitle": "<p>Meet the farmers and artisans who cultivate our materials with generations of wisdom and care for the earth.</p>",
         "full_width": true
       }
     },

@@ -23,26 +23,33 @@
 >
   <div class="earth-impact__container">
     <!-- 1. Top Section Header -->
-    {%- if section.settings.title != blank or section.settings.subtitle != blank -%}
-      <div class="earth-impact__header">
-        {%- if section.settings.title != blank -%}
-          <h2 class="earth-impact__main-title">
-            {%- if section.settings.show_leaf_icons -%}
-              <span class="earth-impact__leaf earth-impact__leaf--left" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
-            {%- endif -%}
-            <span>{{ section.settings.title }}</span>
-            {%- if section.settings.show_leaf_icons -%}
-              <span class="earth-impact__leaf earth-impact__leaf--right" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
-            {%- endif -%}
-          </h2>
-        {%- endif -%}
-        {%- if section.settings.subtitle != blank -%}
-          <p class="earth-impact__main-subtitle">
-            {{ section.settings.subtitle }}
-          </p>
-        {%- endif -%}
-      </div>
-    {%- endif -%}
+    {%- assign header_layout = section.settings.header_layout | default: 'centered' -%}
+    <div class="earth-impact__header-container">
+      {% render 'section-header',
+        layout: header_layout,
+        title: section.settings.title,
+        eyebrow: section.settings.eyebrow,
+        show_eyebrow_icon: section.settings.show_eyebrow_icon,
+        eyebrow_color: section.settings.eyebrow_color,
+        eyebrow_size_desktop: section.settings.eyebrow_size_desktop,
+        eyebrow_size_mobile: section.settings.eyebrow_size_mobile,
+        subtitle: section.settings.subtitle,
+        subtitle_color: section.settings.subtitle_color,
+        subtitle_size_desktop: section.settings.subtitle_size_desktop,
+        subtitle_size_mobile: section.settings.subtitle_size_mobile,
+        show_leaf: section.settings.show_leaf_icons,
+        leaf_position: section.settings.leaf_position,
+        leaf_color: section.settings.leaf_color,
+        leaf_size: section.settings.leaf_size,
+        leaf_gap: section.settings.leaf_gap,
+        btn_text: section.settings.header_btn_text,
+        btn_url: section.settings.header_btn_url,
+        btn_type: section.settings.header_btn_type,
+        btn_theme: section.settings.header_btn_theme,
+        title_color: section.settings.title_color,
+        text_color: section.settings.text_color
+      %}
+    </div>
 
     <!-- 2. Top Dark Green Cards Grid -->
     <div class="earth-impact__grid-top">
@@ -291,42 +298,9 @@
   }
 
   /* 1. Top Section Header */
-  .earth-impact__header {
-    text-align: center;
-    margin-bottom: clamp(36px, 5vw, 56px);
-  }
-  .earth-impact__main-title {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    font-size: var(--type-section-title, 2.625rem);
-    font-weight: 800;
-    color: var(--impact-title-color, #003225);
-    letter-spacing: -0.03em;
-    margin: 0 0 16px 0;
-    line-height: 1.15;
-  }
-  .earth-impact__leaf {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .earth-impact__leaf svg {
+  .earth-impact__header-container {
     width: 100%;
-    height: 100%;
-    display: block;
-  }
-  .earth-impact__main-subtitle {
-    font-size: var(--type-section-subtitle, 1.3125rem);
-    color: var(--impact-subtitle-color, #224E09);
-    max-width: 550px;
-    margin: 0 auto;
-    line-height: 1.5;
-    letter-spacing: -0.01em;
+    margin-bottom: clamp(36px, 5vw, 56px);
   }
 
   /* 2. Top Dark Green Cards Grid */
@@ -640,6 +614,54 @@
       "content": "Top Section Header"
     },
     {
+      "type": "select",
+      "id": "header_layout",
+      "label": "Header Layout",
+      "options": [
+        { "value": "centered", "label": "Centered" },
+        { "value": "stacked_left", "label": "Stacked Left" },
+        { "value": "split", "label": "Split Columns" },
+        { "value": "split_btn", "label": "Split with Button" }
+      ],
+      "default": "centered"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow / Sub-tag"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_eyebrow_icon",
+      "label": "Show Eyebrow Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow Color"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_desktop",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Desktop",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Mobile",
+      "default": 15
+    },
+    {
       "type": "text",
       "id": "title",
       "label": "Title",
@@ -651,10 +673,45 @@
       "label": "Title Color"
     },
     {
-      "type": "textarea",
+      "type": "checkbox",
+      "id": "show_leaf_icons",
+      "label": "Show Decorative Leaves in Title",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "leaf_position",
+      "label": "Leaf Icon Position",
+      "options": [
+        { "value": "both_sides", "label": "Both Sides of Title" },
+        { "value": "top", "label": "Top (Above Title)" },
+        { "value": "left", "label": "Left of Title" },
+        { "value": "right", "label": "Right of Title" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "both_sides"
+    },
+    {
+      "type": "color",
+      "id": "leaf_color",
+      "label": "Leaf Icon Color",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "range",
+      "id": "leaf_gap",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Leaf Spacing / Gap",
+      "default": 12
+    },
+    {
+      "type": "richtext",
       "id": "subtitle",
       "label": "Subtitle",
-      "default": "Transparency is at the heart of everything we do. Track our environmental and social impact in real-time."
+      "default": "<p>Transparency is at the heart of everything we do. Track our environmental and social impact in real-time.</p>"
     },
     {
       "type": "color",
@@ -662,10 +719,55 @@
       "label": "Subtitle Color"
     },
     {
-      "type": "checkbox",
-      "id": "show_leaf_icons",
-      "label": "Show Decorative Leaves in Title",
-      "default": true
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "min": 15,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Size Desktop",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Size Mobile",
+      "default": 18
+    },
+    {
+      "type": "text",
+      "id": "header_btn_text",
+      "label": "Header Button Text"
+    },
+    {
+      "type": "url",
+      "id": "header_btn_url",
+      "label": "Header Button Link"
+    },
+    {
+      "type": "select",
+      "id": "header_btn_type",
+      "label": "Header Button Style",
+      "options": [
+        { "value": "arrow", "label": "Arrow Button (Shop Collection →)" },
+        { "value": "solid", "label": "Solid Button (Shop Now)" },
+        { "value": "outline", "label": "Outline Button" }
+      ],
+      "default": "arrow"
+    },
+    {
+      "type": "select",
+      "id": "header_btn_theme",
+      "label": "Arrow Theme",
+      "options": [
+        { "value": "dark", "label": "Dark (on light bg)" },
+        { "value": "light", "label": "Light (on dark bg)" }
+      ],
+      "default": "dark"
     },
     {
       "type": "header",

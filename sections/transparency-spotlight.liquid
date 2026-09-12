@@ -10,25 +10,28 @@
 <section 
   class="earth-transparency full-width" 
   id="earthTransparency-{{ section.id }}"
-  style="--transparency-bg: {{ section.settings.bg_color | default: '#F8F9DC' }}; --transparency-text: {{ section.settings.text_color | default: '#003225' }};"
+  style="--transparency-bg: {{ section.settings.bg_color | default: '#F8F9DC' }}; --transparency-text: {{ section.settings.text_color | default: '#003225' }}; --transparency-eyebrow-size-desktop: {{ section.settings.eyebrow_size_desktop | default: 16 }}px; --transparency-eyebrow-size-mobile: {{ section.settings.eyebrow_size_mobile | default: 15 }}px;"
 >
   <div class="earth-transparency__container">
 
-    <!-- 1. Header (Left: Eyebrow + Title with Leaf, Right: Description) -->
+    <!-- 1. Header (Left: Eyebrow + Title with Leaf, Right: Description 1/3 Left-aligned) -->
     <div class="earth-transparency__header">
       <div class="earth-transparency__header-left">
         {%- if section.settings.eyebrow != blank -%}
-          <div class="earth-transparency__eyebrow">
-            <span class="earth-transparency__sparkle-icon" aria-hidden="true">✨</span>
-            
+          <div class="earth-transparency__eyebrow" style="{% if section.settings.eyebrow_color != blank and section.settings.eyebrow_color != 'rgba(0,0,0,0)' %}color: {{ section.settings.eyebrow_color }} !important;{% endif %}">
+            {%- if section.settings.show_eyebrow_icon != false -%}
+              <span class="earth-transparency__eyebrow-icon" aria-hidden="true">✨</span>
+            {%- endif -%}
             <span>{{ section.settings.eyebrow }}</span>
           </div>
         {%- endif -%}
 
         <h2 class="earth-transparency__title">
-          <span class="earth-transparency__title-icon" aria-hidden="true">
-            {{ 'icon-leaf-2.svg' | inline_asset_content }}
-          </span>
+          {%- if section.settings.show_leaf_icon != false -%}
+            <span class="earth-transparency__title-icon" aria-hidden="true">
+              {{ 'icon-leaf-2.svg' | inline_asset_content }}
+            </span>
+          {%- endif -%}
           <span>{{ section.settings.title | default: 'Transparency Spotlight' }}</span>
         </h2>
       </div>
@@ -207,15 +210,19 @@
 
   /* 1. Header */
   .earth-transparency__header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
     align-items: flex-start;
-    gap: clamp(24px, 4vw, 64px);
+    gap: clamp(32px, 5vw, 64px);
     margin-bottom: clamp(36px, 4vw, 48px);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .earth-transparency__header-left {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     min-width: 0;
   }
 
@@ -223,19 +230,32 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 16px;
+    font-size: var(--transparency-eyebrow-size-desktop, 16px);
     font-weight: 400;
-    color: #224E09;
-    margin-bottom: 8px;
-    letter-spacing: 0.02em;
+    color: var(--color-primary, #003225);
+    margin-bottom: 4px;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    text-transform: none;
   }
 
-  .earth-transparency__sparkle-icon {
+  .earth-transparency__eyebrow-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1em;
+    line-height: 1;
     flex-shrink: 0;
+  }
+  .earth-transparency__eyebrow-icon svg {
+    width: 1.1em;
+    height: 1.1em;
+    fill: currentColor;
+    display: block;
   }
 
   .earth-transparency__title {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 12px;
     font-size: var(--type-section-title, 2.625rem);
@@ -262,25 +282,31 @@
   }
 
   .earth-transparency__header-right {
-    flex: 0 0 clamp(320px, 35%, 480px);
-    max-width: 480px;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
   }
 
   .earth-transparency__subtitle {
     font-size: var(--type-section-subtitle, 1.3125rem);
     line-height: 1.5;
-    font-weight: 500;
+    font-weight: 400;
     color: var(--transparency-text, #003225);
     margin: 0;
     opacity: 0.95;
+    text-align: left;
   }
 
-  /* 2. Feature Cards Grid (2 Columns) */
+  /* 2. Feature Cards Grid (2 Columns: 2/3 and 1/3 Proportional Layout) */
   .earth-transparency__cards-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(20px, 2.5vw, 32px);
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+    gap: clamp(24px, 3.5vw, 48px);
     margin-bottom: clamp(24px, 3vw, 40px);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .earth-transparency__card {
@@ -627,6 +653,10 @@
     .earth-transparency__container {
       padding: 0 24px;
     }
+    .earth-transparency__cards-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
     .earth-transparency__banner {
       grid-template-columns: 1fr;
       gap: 24px;
@@ -644,30 +674,23 @@
       padding: 0 20px;
     }
     .earth-transparency__header {
-      flex-direction: column;
+      grid-template-columns: 1fr;
       align-items: flex-start;
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 28px;
     }
     .earth-transparency__eyebrow {
-      font-size: 14.5px;
-      margin-bottom: 6px;
+      font-size: var(--transparency-eyebrow-size-mobile, 15px);
+      margin-bottom: 4px;
       color: #224E09;
     }
     .earth-transparency__title {
-      font-size: 2.25rem !important;
-      line-height: 1.12;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0;
-      max-width: 280px;
-    }
-    .earth-transparency__title-icon {
-      display: none;
+      font-size: 2.125rem !important;
+      line-height: 1.15;
     }
     .earth-transparency__header-right {
       max-width: 100%;
-      flex: 1 1 100%;
+      text-align: left;
     }
     .earth-transparency__subtitle {
       font-size: 1.125rem;
@@ -832,8 +855,46 @@
     {
       "type": "text",
       "id": "eyebrow",
-      "label": "Eyebrow Text",
+      "label": "Eyebrow / Sub-tag",
       "default": "Our Commitment"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_eyebrow_icon",
+      "label": "Show Eyebrow Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow Color (Optional)",
+      "info": "Leave blank to use Primary theme color"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_desktop",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Desktop",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Mobile",
+      "default": 15
+    },
+    {
+      "type": "checkbox",
+      "id": "show_leaf_icon",
+      "label": "Show Decorative Leaf in Heading",
+      "default": true
     },
     {
       "type": "text",

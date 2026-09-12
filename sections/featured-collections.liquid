@@ -21,56 +21,38 @@
 >
   <div class="earth-essentials__container">
     <!-- 1. Section Header -->
-    <div class="earth-essentials__header">
-      <div class="earth-essentials__header-left">
-        <h2 class="earth-essentials__main-title">
-          {%- if section.settings.show_leaf_icon -%}
-            <span class="earth-essentials__leaf-icon" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
-          {%- endif -%}
-          <span>{{ section.settings.title | default: 'Featured Eco Essentials' }}</span>
-        </h2>
-      </div>
-
-      <div class="earth-essentials__header-right">
-        {%- if section.settings.subtitle != blank -%}
-          <div class="earth-essentials__header-desc">
-            {{ section.settings.subtitle }}
-          </div>
-        {%- endif -%}
-
-        {%- assign header_btn_type = section.settings.header_button_type | default: 'arrow' -%}
-        {%- if section.settings.show_header_button and section.settings.header_button_text != blank and header_btn_type != 'none' -%}
-          <div class="earth-essentials__header-cta">
-            {%- assign header_btn_text = section.settings.header_button_text -%}
-            {%- assign header_btn_url = section.settings.header_button_link | default: routes.all_products_collection_url -%}
-            {%- if header_btn_type == 'arrow' -%}
-              {%- assign header_arrow_theme = section.settings.header_arrow_theme | default: 'dark' -%}
-              {% render 'btn-arrow',
-                text: header_btn_text,
-                url: header_btn_url,
-                theme: header_arrow_theme,
-                color: section.settings.header_arrow_text_color,
-                circle_bg: section.settings.header_arrow_circle_bg,
-                circle_color: section.settings.header_arrow_circle_icon,
-                font_size: section.settings.header_btn_font_size,
-                padding_vertical: section.settings.header_btn_padding_vertical,
-                padding_horizontal: section.settings.header_btn_padding_horizontal
-              %}
-            {%- else -%}
-              {% render 'btn-action',
-                text: header_btn_text,
-                url: header_btn_url,
-                variant: header_btn_type,
-                custom_bg: section.settings.header_button_bg_color,
-                custom_color: section.settings.header_button_text_color,
-                font_size: section.settings.header_btn_font_size,
-                padding_vertical: section.settings.header_btn_padding_vertical,
-                padding_horizontal: section.settings.header_btn_padding_horizontal
-              %}
-            {%- endif -%}
-          </div>
-        {%- endif -%}
-      </div>
+    {%- assign header_layout = section.settings.header_layout | default: 'split_btn' -%}
+    {%- assign header_btn_text = '' -%}
+    {%- if section.settings.show_header_button and section.settings.header_button_text != blank and section.settings.header_button_type != 'none' -%}
+      {%- assign header_btn_text = section.settings.header_button_text -%}
+    {%- endif -%}
+    {%- assign header_btn_url = section.settings.header_button_link | default: routes.all_products_collection_url -%}
+    <div class="earth-essentials__header-container">
+      {% render 'section-header',
+        layout: header_layout,
+        title: section.settings.title,
+        eyebrow: section.settings.eyebrow,
+        show_eyebrow_icon: section.settings.show_eyebrow_icon,
+        eyebrow_color: section.settings.eyebrow_color,
+        eyebrow_size_desktop: section.settings.eyebrow_size_desktop,
+        eyebrow_size_mobile: section.settings.eyebrow_size_mobile,
+        subtitle: section.settings.subtitle,
+        subtitle_color: section.settings.subtitle_color,
+        subtitle_size_desktop: section.settings.subtitle_size_desktop,
+        subtitle_size_mobile: section.settings.subtitle_size_mobile,
+        show_leaf: section.settings.show_leaf_icon,
+        leaf_position: section.settings.leaf_position,
+        leaf_color: section.settings.leaf_color,
+        leaf_size: section.settings.leaf_size,
+        leaf_gap: section.settings.leaf_gap,
+        btn_text: header_btn_text,
+        btn_url: header_btn_url,
+        btn_type: section.settings.header_button_type,
+        btn_theme: section.settings.header_arrow_theme,
+        btn_color: section.settings.header_arrow_text_color,
+        title_color: section.settings.title_color,
+        text_color: section.settings.text_color
+      %}
     </div>
 
     <!-- 2. Cards Grid -->
@@ -354,61 +336,9 @@
   }
 
   /* 1. Header Layout */
-  .earth-essentials__header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 36px;
-    margin-bottom: clamp(40px, 5vw, 60px);
-  }
-  .earth-essentials__header-left {
-    flex: 1.2;
-  }
-  .earth-essentials__main-title {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    font-size: var(--type-section-title, 2.625rem);
-    font-weight: 800;
-    color: var(--section-text, #003225);
-    letter-spacing: -0.03em;
-    margin: 0;
-    line-height: 1.1;
-  }
-  .earth-essentials__leaf-icon {
-    width: 36px;
-    height: 36px;
-    object-fit: contain;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .earth-essentials__leaf-icon svg {
+  .earth-essentials__header-container {
     width: 100%;
-    height: 100%;
-    display: block;
-  }
-  .earth-essentials__header-right {
-    flex: 0.9;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-  }
-  .earth-essentials__header-desc {
-    font-size: 1.3125rem;
-    color: var(--section-text, #003225);
-    line-height: 1.45;
-    margin: 0;
-    max-width: 420px;
-  }
-  .earth-essentials__header-desc p {
-    margin: 0;
-    font-size: inherit !important;
-    color: inherit !important;
-    font-weight: inherit !important;
-    line-height: inherit !important;
+    margin-bottom: clamp(40px, 5vw, 60px);
   }
 
   /* 2. Reusable Arrow Link Button Component */
@@ -750,6 +680,54 @@
       "default": true
     },
     {
+      "type": "select",
+      "id": "header_layout",
+      "label": "Header Layout",
+      "options": [
+        { "value": "split_btn", "label": "Split with Button (Design Default)" },
+        { "value": "split", "label": "Split Columns" },
+        { "value": "centered", "label": "Centered" },
+        { "value": "stacked_left", "label": "Stacked Left" }
+      ],
+      "default": "split_btn"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow / Sub-tag"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_eyebrow_icon",
+      "label": "Show Eyebrow Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow Color"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_desktop",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Desktop",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Mobile",
+      "default": 15
+    },
+    {
       "type": "text",
       "id": "title",
       "label": "Heading",
@@ -762,10 +740,59 @@
       "default": true
     },
     {
+      "type": "select",
+      "id": "leaf_position",
+      "label": "Leaf Icon Position",
+      "options": [
+        { "value": "left", "label": "Left of Title (Design Default)" },
+        { "value": "both_sides", "label": "Both Sides of Title" },
+        { "value": "top", "label": "Top (Above Title)" },
+        { "value": "right", "label": "Right of Title" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "leaf_color",
+      "label": "Leaf Icon Color",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "range",
+      "id": "leaf_gap",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Leaf Spacing / Gap",
+      "default": 12
+    },
+    {
       "type": "richtext",
       "id": "subtitle",
       "label": "Subtitle",
       "default": "<p>Where fashion meets purpose: recycled fabrics, reduced impact, endless wear.</p>"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "min": 15,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Size Desktop",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Size Mobile",
+      "default": 18
     },
     {
       "type": "header",

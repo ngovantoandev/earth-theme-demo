@@ -4,22 +4,26 @@
   Fully responsive on Desktop, Tablet, and Mobile.
 {% endcomment %}
 
-<section class="knowledge-thread full-width" id="knowledgeThread-{{ section.id }}" style="--kt-bg: {{ section.settings.bg_color | default: '#224E09' }}; --kt-text: {{ section.settings.text_color | default: '#F8F9DC' }};">
+<section class="knowledge-thread full-width" id="knowledgeThread-{{ section.id }}" style="--kt-bg: {{ section.settings.bg_color | default: '#224E09' }}; --kt-text: {{ section.settings.text_color | default: '#F8F9DC' }}; --kt-eyebrow-size-desktop: {{ section.settings.eyebrow_size_desktop | default: 16 }}px; --kt-eyebrow-size-mobile: {{ section.settings.eyebrow_size_mobile | default: 15 }}px;">
   <div class="knowledge-thread__container">
     
-    <!-- 1. Header Area: 2-column layout on Desktop, stacked on Mobile -->
+    <!-- 1. Header Area: 2-column layout (2/3 Left Title, 1/3 Right Subtitle Left-aligned) -->
     <div class="knowledge-thread__header">
       <div class="knowledge-thread__header-left">
         {%- if section.settings.eyebrow != blank -%}
-          <div class="knowledge-thread__eyebrow">
-            <span class="knowledge-thread__sparkle" aria-hidden="true">✨</span>
+          <div class="knowledge-thread__eyebrow" style="{% if section.settings.eyebrow_color != blank and section.settings.eyebrow_color != 'rgba(0,0,0,0)' %}color: {{ section.settings.eyebrow_color }} !important;{% endif %}">
+            {%- if section.settings.show_eyebrow_icon != false -%}
+              <span class="knowledge-thread__eyebrow-icon" aria-hidden="true">✨</span>
+            {%- endif -%}
             <span>{{ section.settings.eyebrow }}</span>
           </div>
         {%- endif -%}
         <h2 class="knowledge-thread__title">
-          <span class="knowledge-thread__title-leaf" aria-hidden="true">
-            {{ 'icon-leaf-2.svg' | inline_asset_content }}
-          </span>
+          {%- if section.settings.show_leaf_icon != false -%}
+            <span class="knowledge-thread__title-leaf" aria-hidden="true">
+              {{ 'icon-leaf-2.svg' | inline_asset_content }}
+            </span>
+          {%- endif -%}
           <span>{{ section.settings.title | default: 'Knowledge First Thread' }}</span>
         </h2>
       </div>
@@ -221,32 +225,47 @@
 
   /* 1. Header Area */
   .knowledge-thread__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+    align-items: flex-start;
+    gap: clamp(32px, 5vw, 64px);
     margin-bottom: clamp(36px, 5vw, 56px);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .knowledge-thread__header-left {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-width: 0;
   }
 
   .knowledge-thread__eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 14px;
+    font-size: var(--kt-eyebrow-size-desktop, 16px);
     font-weight: 400;
     letter-spacing: 0.04em;
     color: var(--kt-text, #F8F9DC);
     opacity: 0.9;
+    line-height: 1.3;
+    text-transform: none;
   }
-  .knowledge-thread__sparkle {
-    font-size: 15px;
+  .knowledge-thread__eyebrow-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1em;
     line-height: 1;
+    flex-shrink: 0;
+  }
+  .knowledge-thread__eyebrow-icon svg {
+    width: 1.1em;
+    height: 1.1em;
+    fill: currentColor;
+    display: block;
   }
 
   .knowledge-thread__title {
@@ -279,8 +298,11 @@
   }
 
   .knowledge-thread__header-right {
-    max-width: 460px;
-    text-align: right;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
   }
 
   .knowledge-thread__subtitle {
@@ -289,6 +311,7 @@
     color: var(--kt-text, #F8F9DC);
     opacity: 0.92;
     margin: 0;
+    text-align: left;
     letter-spacing: -0.01em;
   }
 
@@ -579,10 +602,14 @@
 
     /* Stack Header on Mobile */
     .knowledge-thread__header {
-      flex-direction: column;
+      grid-template-columns: 1fr;
       align-items: flex-start;
       gap: 14px;
       margin-bottom: 32px;
+    }
+
+    .knowledge-thread__eyebrow {
+      font-size: var(--kt-eyebrow-size-mobile, 15px);
     }
 
     .knowledge-thread__title {
@@ -601,6 +628,7 @@
 
     .knowledge-thread__subtitle {
       font-size: 1.125rem;
+      text-align: left;
       line-height: 1.5;
     }
 
@@ -703,8 +731,46 @@
     {
       "type": "text",
       "id": "eyebrow",
-      "label": "Eyebrow Text",
+      "label": "Eyebrow / Sub-tag",
       "default": "Education & Ethos"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_eyebrow_icon",
+      "label": "Show Eyebrow Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow Color (Optional)",
+      "info": "Leave blank to use section text color"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_desktop",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Desktop",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Mobile",
+      "default": 15
+    },
+    {
+      "type": "checkbox",
+      "id": "show_leaf_icon",
+      "label": "Show Decorative Leaf in Heading",
+      "default": true
     },
     {
       "type": "text",

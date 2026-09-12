@@ -23,19 +23,32 @@
 >
   <div class="earth-sus__container">
     <!-- 1. Top Section Header -->
-    <div class="earth-sus__header">
-      <h2 class="earth-sus__main-title" style="color: var(--sus-title-color, #003225);">
-        {%- if section.settings.show_leaf_icons != false -%}
-          <span class="earth-sus__leaf earth-sus__leaf--left" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
-        {%- endif -%}
-        <span>{{ section.settings.title | default: 'Sustainable Essentials' }}</span>
-        {%- if section.settings.show_leaf_icons != false -%}
-          <span class="earth-sus__leaf earth-sus__leaf--right" aria-hidden="true">{{ 'icon-leaf-2.svg' | inline_asset_content }}</span>
-        {%- endif -%}
-      </h2>
-      <div class="earth-sus__subtitle">
-        {{ section.settings.subtitle | default: '<p>Every piece designed with purpose – discover the full impact story behind each garment</p>' }}
-      </div>
+    {%- assign header_layout = section.settings.header_layout | default: 'centered' -%}
+    <div class="earth-sus__header-container">
+      {% render 'section-header',
+        layout: header_layout,
+        title: section.settings.title,
+        eyebrow: section.settings.eyebrow,
+        show_eyebrow_icon: section.settings.show_eyebrow_icon,
+        eyebrow_color: section.settings.eyebrow_color,
+        eyebrow_size_desktop: section.settings.eyebrow_size_desktop,
+        eyebrow_size_mobile: section.settings.eyebrow_size_mobile,
+        subtitle: section.settings.subtitle,
+        subtitle_color: section.settings.subtitle_color,
+        subtitle_size_desktop: section.settings.subtitle_size_desktop,
+        subtitle_size_mobile: section.settings.subtitle_size_mobile,
+        show_leaf: section.settings.show_leaf_icons,
+        leaf_position: section.settings.leaf_position,
+        leaf_color: section.settings.leaf_color,
+        leaf_size: section.settings.leaf_size,
+        leaf_gap: section.settings.leaf_gap,
+        btn_text: section.settings.header_btn_text,
+        btn_url: section.settings.header_btn_url,
+        btn_type: section.settings.header_btn_type,
+        btn_theme: section.settings.header_btn_theme,
+        title_color: section.settings.title_color,
+        text_color: section.settings.text_color
+      %}
     </div>
 
     {%- if section.settings.show_tabs != false -%}
@@ -256,49 +269,11 @@
   }
 
   /* 1. Header */
-  .earth-sus__header {
-    text-align: center;
-    padding: 0 34px;
-    margin-bottom: clamp(24px, 3vw, 36px);
-  }
-  .earth-sus__main-title {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    font-size: var(--type-section-title, 2.625rem);
-    font-weight: 800;
-    color: var(--color-black, #003225);
-    letter-spacing: -0.03em;
-    margin: 0 0 14px 0;
-    line-height: 1.15;
-  }
-  .earth-sus__leaf {
-    width: 36px;
-    height: 36px;
-    object-fit: contain;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .earth-sus__leaf svg {
+  .earth-sus__header-container {
     width: 100%;
-    height: 100%;
-    display: block;
-  }
-  .earth-sus__subtitle {
-    font-size: var(--type-section-subtitle, 1.3125rem);
-    color: var(--color-black, #003225);
-    max-width: 620px;
-    margin: 0 auto;
-    line-height: 1.45;
-  }
-  .earth-sus__subtitle p {
-    margin: 0;
-    font-size: inherit !important;
-    color: inherit !important;
-    font-weight: inherit !important;
-    line-height: inherit !important;
+    padding: 0 34px;
+    box-sizing: border-box;
+    margin-bottom: clamp(24px, 3vw, 36px);
   }
 
  /* Category Filter Tabs Wrapper & Tabs */
@@ -1175,6 +1150,58 @@
       "default": true
     },
     {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "select",
+      "id": "header_layout",
+      "label": "Header Layout",
+      "options": [
+        { "value": "centered", "label": "Centered" },
+        { "value": "stacked_left", "label": "Stacked Left" },
+        { "value": "split", "label": "Split Columns" },
+        { "value": "split_btn", "label": "Split with Button" }
+      ],
+      "default": "centered"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow / Sub-tag"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_eyebrow_icon",
+      "label": "Show Eyebrow Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow Color"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_desktop",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Desktop",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Mobile",
+      "default": 15
+    },
+    {
       "type": "text",
       "id": "title",
       "label": "Section Title",
@@ -1187,10 +1214,90 @@
       "default": true
     },
     {
+      "type": "select",
+      "id": "leaf_position",
+      "label": "Leaf Icon Position",
+      "options": [
+        { "value": "both_sides", "label": "Both Sides of Title" },
+        { "value": "top", "label": "Top (Above Title)" },
+        { "value": "left", "label": "Left of Title" },
+        { "value": "right", "label": "Right of Title" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "both_sides"
+    },
+    {
+      "type": "color",
+      "id": "leaf_color",
+      "label": "Leaf Icon Color",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "range",
+      "id": "leaf_gap",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Leaf Spacing / Gap",
+      "default": 12
+    },
+    {
       "type": "richtext",
       "id": "subtitle",
       "label": "Section Subtitle",
       "default": "<p>Every piece designed with purpose – discover the full impact story behind each garment</p>"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "min": 15,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Size Desktop",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Size Mobile",
+      "default": 18
+    },
+    {
+      "type": "text",
+      "id": "header_btn_text",
+      "label": "Header Button Text"
+    },
+    {
+      "type": "url",
+      "id": "header_btn_url",
+      "label": "Header Button Link"
+    },
+    {
+      "type": "select",
+      "id": "header_btn_type",
+      "label": "Header Button Style",
+      "options": [
+        { "value": "arrow", "label": "Arrow Button (Shop Collection →)" },
+        { "value": "solid", "label": "Solid Button (Shop Now)" },
+        { "value": "outline", "label": "Outline Button" }
+      ],
+      "default": "arrow"
+    },
+    {
+      "type": "select",
+      "id": "header_btn_theme",
+      "label": "Arrow Theme",
+      "options": [
+        { "value": "dark", "label": "Dark (on light bg)" },
+        { "value": "light", "label": "Light (on dark bg)" }
+      ],
+      "default": "dark"
     },
     {
       "type": "header",
