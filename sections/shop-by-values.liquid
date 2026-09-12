@@ -1,4 +1,29 @@
-<section class="earth-values earth-values-{{ section.id }}{% if section.settings.full_width %} full-width{% endif %}" id="earthValuesSection-{{ section.id }}">
+<section 
+  class="earth-values earth-values-{{ section.id }} full-width{% if section.settings.full_width %} earth-values--full{% else %} earth-values--contained{% endif %}" 
+  id="earthValuesSection-{{ section.id }}"
+  style="
+    --values-bg: {{ section.settings.bg_color | default: '#224E09' }};
+    --values-text: {{ section.settings.text_color | default: '#F8F9DC' }};
+    --values-card-bg: {{ section.settings.card_bg_color | default: '#F8F9DC' }};
+    --values-card-text: {{ section.settings.card_text_color | default: '#003225' }};
+    --values-badge-bg: {{ section.settings.badge_bg_color | default: '#003225' }};
+    --values-badge-text: {{ section.settings.badge_text_color | default: '#EAE060' }};
+    --values-highlight-color: {{ section.settings.highlight_color | default: '#224E09' }};
+    --values-tab-inactive: {{ section.settings.tab_inactive_color | default: '#EAE060' }};
+    --values-tab-active: {{ section.settings.tab_active_color | default: '#F8F9DC' }};
+    --values-card-radius: {{ section.settings.card_corner_radius | default: 0 }}px;
+    --values-card-aspect: {{ section.settings.card_image_aspect | default: '1 / 1' }};
+    --values-pt: {{ section.settings.padding_top | default: 80 }}px;
+    --values-pb: {{ section.settings.padding_bottom | default: 96 }}px;
+    --values-mpt: {{ section.settings.mobile_padding_top | default: 50 }}px;
+    --values-mpb: {{ section.settings.mobile_padding_bottom | default: 60 }}px;
+    --values-nav-size: {{ section.settings.nav_button_size | default: 48 }}px;
+    --values-nav-bg: {{ section.settings.nav_bg_color | default: '#F8F9DC' }};
+    --values-nav-color: {{ section.settings.nav_icon_color | default: '#003225' }};
+    --values-nav-hover-bg: {{ section.settings.nav_hover_bg_color | default: '#71CC3B' }};
+    --values-nav-hover-color: {{ section.settings.nav_hover_icon_color | default: '#003225' }};
+  "
+>
   <div class="earth-values__inner-container">
     {%- capture header_button_block -%}
       {%- for block in section.blocks -%}
@@ -29,30 +54,36 @@
     <!-- 1. Section Header -->
     <div class="earth-values__header-container">
       {%- assign header_layout = section.settings.header_layout | default: 'centered' -%}
+      {%- assign show_leaf_val = section.settings.show_leaf_icons -%}
+      {%- if show_leaf_val == nil -%}{%- assign show_leaf_val = section.settings.show_leaf_icon -%}{%- endif -%}
       {% render 'section-header',
         layout: header_layout,
         title: section.settings.title,
+        title_color: section.settings.title_color | default: '#F8F9DC',
+        title_size: section.settings.title_size_desktop,
+        title_size_desktop: section.settings.title_size_desktop,
+        title_size_mobile: section.settings.title_size_mobile,
         eyebrow: section.settings.eyebrow,
         show_eyebrow_icon: section.settings.show_eyebrow_icon,
-        eyebrow_color: section.settings.eyebrow_color,
+        eyebrow_color: section.settings.eyebrow_color | default: '#F8F9DC',
         eyebrow_size_desktop: section.settings.eyebrow_size_desktop,
         eyebrow_size_mobile: section.settings.eyebrow_size_mobile,
         subtitle: section.settings.subtitle,
-        subtitle_color: section.settings.subtitle_color,
+        subtitle_color: section.settings.subtitle_color | default: '#F8F9DC',
         subtitle_size_desktop: section.settings.subtitle_size_desktop,
         subtitle_size_mobile: section.settings.subtitle_size_mobile,
-        show_leaf: section.settings.show_leaf_icons,
+        show_leaf: show_leaf_val,
         leaf_position: section.settings.leaf_position,
-        leaf_color: section.settings.leaf_color,
+        leaf_color: section.settings.leaf_color | default: '#EAE060',
         leaf_size: section.settings.leaf_size,
         leaf_gap: section.settings.leaf_gap,
         btn_text: section.settings.header_btn_text,
         btn_url: section.settings.header_btn_url,
         btn_type: section.settings.header_btn_type,
         btn_theme: section.settings.header_btn_theme,
+        btn_color: section.settings.header_btn_color,
         btn_block: header_button_block,
-        title_color: section.settings.title_color,
-        text_color: section.settings.text_color
+        text_color: section.settings.text_color | default: '#F8F9DC'
       %}
     </div>
 
@@ -313,95 +344,79 @@
 </section>
 
 <style>
-  .earth-values-{{ section.id }} {
-    --values-bg: {{ section.settings.bg_color | default: '#224E09' }};
-    --values-text: {{ section.settings.text_color | default: '#F8F9DC' }};
-    --values-card-bg: {{ section.settings.card_bg_color | default: '#F8F9DC' }};
-    --values-card-text: {{ section.settings.card_text_color | default: '#003225' }};
-    --values-badge-bg: {{ section.settings.badge_bg_color | default: '#003225' }};
-    --values-badge-text: {{ section.settings.badge_text_color | default: '#EAE060' }};
-    --values-highlight-color: {{ section.settings.highlight_color | default: '#224E09' }};
-    --values-tab-inactive: {{ section.settings.tab_inactive_color | default: '#EAE060' }};
-    --values-tab-active: {{ section.settings.tab_active_color | default: '#F8F9DC' }};
-    --values-card-radius: {{ section.settings.card_corner_radius | default: 0 }}px;
-    --values-card-aspect: {{ section.settings.card_image_aspect | default: '1 / 1' }};
-    --values-pt: {{ section.settings.padding_top | default: 80 }}px;
-    --values-pb: {{ section.settings.padding_bottom | default: 96 }}px;
-    --values-mpt: {{ section.settings.mobile_padding_top | default: 50 }}px;
-    --values-mpb: {{ section.settings.mobile_padding_bottom | default: 60 }}px;
-    --values-nav-size: {{ section.settings.nav_button_size | default: 48 }}px;
-    --values-nav-bg: {{ section.settings.nav_bg_color | default: '#F8F9DC' }};
-    --values-nav-color: {{ section.settings.nav_icon_color | default: '#003225' }};
-    --values-nav-hover-bg: {{ section.settings.nav_hover_bg_color | default: '#71CC3B' }};
-    --values-nav-hover-color: {{ section.settings.nav_hover_icon_color | default: '#003225' }};
-
+  .earth-values {
     grid-column: 1 / -1 !important;
     width: 100%;
-    background-color: var(--values-bg);
-    color: var(--values-text);
-    padding: var(--values-pt) 0 var(--values-pb);
+    background-color: var(--values-bg, #224E09);
+    color: var(--values-text, #F8F9DC);
+    padding: var(--values-pt, 80px) 0 var(--values-pb, 96px);
     box-sizing: border-box;
     overflow: hidden;
   }
 
-  .earth-values-{{ section.id }} .earth-values__inner-container {
+  .earth-values__inner-container {
     width: 100%;
-    {% unless section.settings.full_width %}
-      max-width: var(--page-width, 1320px);
-      margin: 0 auto;
-    {% endunless %}
     box-sizing: border-box;
   }
 
-  .earth-values-{{ section.id }} .earth-values__header-container {
+  .earth-values--contained .earth-values__inner-container {
+    max-width: var(--page-width, 1320px);
+    margin: 0 auto;
+  }
+
+  .earth-values--full .earth-values__inner-container {
+    max-width: 100%;
+  }
+
+  .earth-values__header-container {
     width: 100%;
     padding: 0 clamp(20px, 3.5vw, 34px);
     box-sizing: border-box;
   }
 
   /* 1. Header */
-  .earth-values-{{ section.id }} .earth-values__header {
+  .earth-values__header {
     text-align: center;
     margin-bottom: clamp(36px, 5vw, 56px);
   }
-  .earth-values-{{ section.id }} .earth-values__title {
+  .earth-values__title {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 14px;
     font-size: var(--type-section-title, 2.625rem);
     font-weight: 800;
-    color: var(--values-text);
+    color: var(--values-text, #F8F9DC);
     letter-spacing: -0.02em;
     margin: 0 0 12px;
   }
-  .earth-values-{{ section.id }} .earth-values__leaf-icon {
+  .earth-values__leaf-icon {
     color: var(--values-tab-inactive, var(--color-accent, #EAE060));
     width: clamp(24px, 3vw, 32px);
     height: auto;
     object-fit: contain;
     flex-shrink: 0;
   }
-  .earth-values-{{ section.id }} .earth-values__subtitle {
+  .earth-values__subtitle {
     font-size: var(--type-section-subtitle, 1.3125rem);
-    color: var(--values-text);
+    color: var(--values-text, #F8F9DC);
     opacity: 0.9;
     max-width: 680px;
     margin: 0 auto;
     line-height: 1.5;
   }
-  .earth-values-{{ section.id }} .earth-values__subtitle p {
+  .earth-values__subtitle p {
     margin: 0;
   }
 
   /* 2. Slider Showcase Track */
-  .earth-values-{{ section.id }} .earth-values__slider-wrapper {
+  .earth-values__slider-wrapper {
     position: relative;
     width: 100%;
     margin-bottom: clamp(36px, 4.5vw, 56px);
   }
 
-  .earth-values-{{ section.id }} .earth-values__track {
+  .earth-values__track {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -414,12 +429,12 @@
     padding: 64px clamp(20px, 3.5vw, 34px);
     box-sizing: border-box;
   }
-  .earth-values-{{ section.id }} .earth-values__track::-webkit-scrollbar {
+  .earth-values__track::-webkit-scrollbar {
     display: none;
   }
 
   /* Grid Layout Mode */
-  .earth-values-{{ section.id }} .earth-values__track--grid {
+  .earth-values__track--grid {
     display: grid !important;
     overflow-x: visible !important;
     scroll-snap-type: none !important;
@@ -428,25 +443,25 @@
     width: 100% !important;
     box-sizing: border-box !important;
   }
-  .earth-values-{{ section.id }} .earth-values__track--grid.earth-values__track--cols-1 {
+  .earth-values__track--grid.earth-values__track--cols-1 {
     grid-template-columns: 1fr !important;
     max-width: 1200px;
     margin: 0 auto;
   }
-  .earth-values-{{ section.id }} .earth-values__track--grid.earth-values__track--cols-2 {
+  .earth-values__track--grid.earth-values__track--cols-2 {
     grid-template-columns: repeat(2, 1fr) !important;
   }
-  .earth-values-{{ section.id }} .earth-values__track--grid .earth-values__slide {
+  .earth-values__track--grid .earth-values__slide {
     flex: none !important;
     width: 100% !important;
     min-width: 0 !important;
   }
-  .earth-values-{{ section.id }} .earth-values__track--grid.earth-values__track--cols-2 .earth-values__card {
+  .earth-values__track--grid.earth-values__track--cols-2 .earth-values__card {
     grid-template-columns: 1fr !important;
   }
 
   /* Each Value Slide */
-  .earth-values-{{ section.id }} .earth-values__slide {
+  .earth-values__slide {
     flex: 0 0 clamp(660px, 66vw, 80vw);
     min-width: 320px;
     scroll-snap-align: start;
@@ -454,11 +469,11 @@
   }
 
   /* Split Card (Left: Media Box, Right: Info Box) */
-  .earth-values-{{ section.id }} .earth-values__card {
+  .earth-values__card {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    background-color: var(--values-card-bg);
-    border-radius: var(--values-card-radius);
+    background-color: var(--values-card-bg, #F8F9DC);
+    border-radius: var(--values-card-radius, 0px);
     box-sizing: border-box;
     overflow: hidden;
     height: 100%;
@@ -466,47 +481,46 @@
   }
 
   /* Image Box */
-  .earth-values-{{ section.id }} .earth-values__media-box {
+  .earth-values__media-box {
     position: relative;
     width: 100%;
-    aspect-ratio: var(--values-card-aspect);
+    aspect-ratio: var(--values-card-aspect, 1 / 1);
     overflow: hidden;
     background-color: #1e3a10;
   }
-  .earth-values-{{ section.id }} .earth-values__img {
+  .earth-values__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .earth-values-{{ section.id }} .earth-values__card:hover .earth-values__img {
+  .earth-values__card:hover .earth-values__img {
     transform: scale(1.03);
   }
 
   /* Info Box */
-  .earth-values-{{ section.id }} .earth-values__info-box {
+  .earth-values__info-box {
     padding: clamp(36px, 4.5vw, 64px);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    color: var(--values-card-text);
+    color: var(--values-card-text, #003225);
     box-sizing: border-box;
   }
-  .earth-values-{{ section.id }} .earth-values__item-title {
+  .earth-values__item-title {
     font-size: clamp(34px, 3.2vw, 48px);
     font-weight: 800;
-    color: var(--values-card-text);
+    color: var(--values-card-text, #003225);
     margin: 0 0 18px;
     letter-spacing: -0.02em;
     line-height: 1.15;
   }
   
-  .earth-values-{{ section.id }} .earth-values__badge-wrap {
+  .earth-values__badge-wrap {
     margin-bottom: 20px;
   }
-  .earth-values-{{ section.id }} .earth-values__badge,
   .earth-values__badge {
     display: inline-block;
     background-color: var(--values-badge-bg, var(--color-black, #003225));
@@ -518,7 +532,6 @@
     letter-spacing: 0.02em;
   }
 
-  .earth-values-{{ section.id }} .earth-values__highlight,
   .earth-values__highlight {
     display: inline-flex;
     align-items: center;
@@ -528,7 +541,6 @@
     color: var(--values-highlight-color, var(--color-primary, #003225));
     margin-bottom: 20px;
   }
-  .earth-values-{{ section.id }} .earth-values__highlight-icon,
   .earth-values__highlight-icon {
     display: inline-flex;
     align-items: center;
@@ -537,7 +549,6 @@
     flex-shrink: 0;
     color: var(--values-highlight-color, var(--color-primary, #003225));
   }
-  .earth-values-{{ section.id }} .earth-values__highlight-icon svg,
   .earth-values__highlight-icon svg {
     width: 18px;
     height: 18px;
@@ -545,24 +556,24 @@
     fill: currentColor;
     color: inherit;
   }
-  .earth-values-{{ section.id }} .earth-values__highlight-icon svg path,
-  .earth-values-{{ section.id }} .earth-values__highlight-icon svg * {
+  .earth-values__highlight-icon svg path,
+  .earth-values__highlight-icon svg * {
     fill: currentColor;
   }
 
-  .earth-values-{{ section.id }} .earth-values__description {
+  .earth-values__description {
     font-size: clamp(16px, 1.3vw, 20px);
-    color: var(--values-card-text);
+    color: var(--values-card-text, #003225);
     line-height: 1.55;
     margin: 0 0 32px;
     opacity: 0.92;
   }
-  .earth-values-{{ section.id }} .earth-values__description p {
+  .earth-values__description p {
     margin: 0;
   }
 
   /* 3. Floating Navigation Arrows */
-  .earth-values-{{ section.id }} .earth-values__nav-btn {
+  .earth-values__nav-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -582,34 +593,33 @@
     visibility: hidden;
     transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
   }
-  .earth-values-{{ section.id }} .earth-values__slider-wrapper:hover .earth-values__nav-btn:not(.is-disabled) {
+  .earth-values__slider-wrapper:hover .earth-values__nav-btn:not(.is-disabled) {
     opacity: 1;
     visibility: visible;
   }
-  .earth-values-{{ section.id }} .earth-values__nav-btn--always:not(.is-disabled) {
+  .earth-values__nav-btn--always:not(.is-disabled) {
     opacity: 1;
     visibility: visible;
   }
-  .earth-values-{{ section.id }} .earth-values__nav-btn.is-disabled {
+  .earth-values__nav-btn.is-disabled {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
     transform: translateY(-50%) scale(0.7) !important;
   }
-  .earth-values-{{ section.id }} .earth-values__nav-btn:hover:not(.is-disabled) {
+  .earth-values__nav-btn:hover:not(.is-disabled) {
     background-color: var(--values-nav-hover-bg, #71CC3B);
     border-color: var(--values-nav-hover-bg, #71CC3B);
     color: var(--values-nav-hover-color, #003225);
     transform: translateY(-50%) scale(1.08);
   }
-  .earth-values-{{ section.id }} .earth-values__nav-btn--prev {
+  .earth-values__nav-btn--prev {
     left: clamp(16px, 2.5vw, 36px);
   }
-  .earth-values-{{ section.id }} .earth-values__nav-btn--next {
+  .earth-values__nav-btn--next {
     right: clamp(16px, 2.5vw, 36px);
   }
 
-  .earth-values-{{ section.id }} .earth-values__icon-arrow,
   .earth-values__icon-arrow {
     width: 15px;
     height: 15px;
@@ -620,32 +630,31 @@
     pointer-events: none;
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .earth-values-{{ section.id }} .earth-values__icon-arrow svg,
   .earth-values__icon-arrow svg {
     width: 100%;
     height: 100%;
     display: block;
   }
-  .earth-values-{{ section.id }} .earth-values__icon-arrow--next {
+  .earth-values__icon-arrow--next {
     transform: rotate(0deg);
   }
-  .earth-values-{{ section.id }} .earth-values__nav-btn--next:hover .earth-values__icon-arrow--next {
+  .earth-values__nav-btn--next:hover .earth-values__icon-arrow--next {
     transform: rotate(45deg);
   }
-  .earth-values-{{ section.id }} .earth-values__icon-arrow--prev {
+  .earth-values__icon-arrow--prev {
     transform: rotate(0deg);
   }
-  .earth-values-{{ section.id }} .earth-values__nav-btn--prev:hover .earth-values__icon-arrow--prev {
+  .earth-values__nav-btn--prev:hover .earth-values__icon-arrow--prev {
     transform: rotate(-45deg);
   }
 
   /* 4. Bottom Values Navigation Tabs */
-  .earth-values-{{ section.id }} .earth-values__tabs-wrapper {
+  .earth-values__tabs-wrapper {
     width: 100%;
     padding: 12px clamp(20px, 3.5vw, 34px) 0;
     box-sizing: border-box;
   }
-  .earth-values-{{ section.id }} .earth-values__tabs {
+  .earth-values__tabs {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -655,10 +664,10 @@
   }
 
   /* Underline Style (Default) */
-  .earth-values-{{ section.id }} .earth-values__tab {
+  .earth-values__tab {
     background: none;
     border: none;
-    color: var(--values-tab-inactive) !important;
+    color: var(--values-tab-inactive, #EAE060) !important;
     padding: 12px 0 0;
     cursor: pointer;
     position: relative;
@@ -668,17 +677,17 @@
     appearance: none;
     transition: color 0.25s ease;
   }
-  .earth-values-{{ section.id }} .earth-values__tab-line {
+  .earth-values__tab-line {
     display: block;
     position: absolute;
     top: 0;
     left: 0;
     width: 0;
     height: 2px;
-    background-color: var(--values-tab-active);
+    background-color: var(--values-tab-active, #F8F9DC);
     transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .earth-values-{{ section.id }} .earth-values__tab-text {
+  .earth-values__tab-text {
     font-size: clamp(16px, 1.4vw, 20px);
     font-weight: 700;
     letter-spacing: -0.01em;
@@ -686,24 +695,24 @@
     white-space: nowrap;
     color: inherit;
   }
-  .earth-values-{{ section.id }} .earth-values__tab:hover,
-  .earth-values-{{ section.id }} .earth-values__tab:hover .earth-values__tab-text {
-    color: var(--values-tab-active) !important;
+  .earth-values__tab:hover,
+  .earth-values__tab:hover .earth-values__tab-text {
+    color: var(--values-tab-active, #F8F9DC) !important;
   }
-  .earth-values-{{ section.id }} .earth-values__tab--active,
-  .earth-values-{{ section.id }} .earth-values__tab.earth-values__tab--active .earth-values__tab-text {
-    color: var(--values-tab-active) !important;
+  .earth-values__tab--active,
+  .earth-values__tab.earth-values__tab--active .earth-values__tab-text {
+    color: var(--values-tab-active, #F8F9DC) !important;
   }
-  .earth-values-{{ section.id }} .earth-values__tab--active .earth-values__tab-line {
+  .earth-values__tab--active .earth-values__tab-line {
     width: 100%;
   }
 
   /* Responsive Design */
   @media (max-width: 1024px) {
-    .earth-values-{{ section.id }} .earth-values__slide {
+    .earth-values__slide {
       flex: 0 0 92%;
     }
-    .earth-values-{{ section.id }} .earth-values__tabs-wrapper {
+    .earth-values__tabs-wrapper {
       width: 100% !important;
       padding: 12px 0 0 !important;
       overflow-x: auto !important;
@@ -712,10 +721,10 @@
       display: block !important;
       box-sizing: border-box !important;
     }
-    .earth-values-{{ section.id }} .earth-values__tabs-wrapper::-webkit-scrollbar {
+    .earth-values__tabs-wrapper::-webkit-scrollbar {
       display: none !important;
     }
-    .earth-values-{{ section.id }} .earth-values__tabs {
+    .earth-values__tabs {
       display: flex !important;
       width: max-content !important;
       min-width: 100% !important;
@@ -728,33 +737,33 @@
       overflow: visible !important;
       box-sizing: border-box !important;
     }
-    .earth-values-{{ section.id }} .earth-values__tab {
+    .earth-values__tab {
       flex: 0 0 auto !important;
     }
   }
 
   @media (max-width: 900px) {
-    .earth-values-{{ section.id }} .earth-values__track--grid.earth-values__track--cols-2 {
+    .earth-values__track--grid.earth-values__track--cols-2 {
       grid-template-columns: 1fr !important;
     }
   }
 
   @media (max-width: 768px) {
-    .earth-values-{{ section.id }} {
-      padding: var(--values-mpt) 0 var(--values-mpb);
+    .earth-values {
+      padding: var(--values-mpt, 50px) 0 var(--values-mpb, 60px);
     }
-    .earth-values-{{ section.id }} .earth-values__title {
+    .earth-values__title {
       font-size: 2.25rem !important;
     }
-    .earth-values-{{ section.id }} .earth-values__subtitle {
+    .earth-values__subtitle {
       font-size: 1.125rem;
     }
-    .earth-values-{{ section.id }} .earth-values__slider-wrapper {
+    .earth-values__slider-wrapper {
       margin-bottom: 28px !important;
       width: 100% !important;
       overflow: visible;
     }
-    .earth-values-{{ section.id }} .earth-values__track:not(.earth-values__track--grid) {
+    .earth-values__track:not(.earth-values__track--grid) {
       display: flex !important;
       overflow-x: auto !important;
       scroll-snap-type: x mandatory !important;
@@ -766,16 +775,16 @@
       margin: 0 !important;
       gap: 16px !important;
     }
-    .earth-values-{{ section.id }} .earth-values__track:not(.earth-values__track--grid)::-webkit-scrollbar {
+    .earth-values__track:not(.earth-values__track--grid)::-webkit-scrollbar {
       display: none !important;
     }
-    .earth-values-{{ section.id }} .earth-values__track:not(.earth-values__track--grid) .earth-values__slide {
+    .earth-values__track:not(.earth-values__track--grid) .earth-values__slide {
       flex: 0 0 86% !important;
       min-width: 280px !important;
       scroll-snap-align: start !important;
       margin: 0 !important;
     }
-    .earth-values-{{ section.id }} .earth-values__track:not(.earth-values__track--grid)::after {
+    .earth-values__track:not(.earth-values__track--grid)::after {
       content: '' !important;
       flex: 0 0 20px !important;
       min-width: 20px !important;
@@ -785,13 +794,13 @@
       display: block !important;
       pointer-events: none;
     }
-    .earth-values-{{ section.id }} .earth-values__card {
+    .earth-values__card {
       grid-template-columns: 1fr;
     }
-    .earth-values-{{ section.id }} .earth-values__info-box {
+    .earth-values__info-box {
       padding: 24px 20px;
     }
-    .earth-values-{{ section.id }} .earth-values__tabs-wrapper {
+    .earth-values__tabs-wrapper {
       width: 100% !important;
       padding: 12px 0 0 !important;
       overflow-x: auto !important;
@@ -800,10 +809,10 @@
       display: block !important;
       box-sizing: border-box !important;
     }
-    .earth-values-{{ section.id }} .earth-values__tabs-wrapper::-webkit-scrollbar {
+    .earth-values__tabs-wrapper::-webkit-scrollbar {
       display: none !important;
     }
-    .earth-values-{{ section.id }} .earth-values__tabs {
+    .earth-values__tabs {
       display: flex !important;
       width: max-content !important;
       min-width: 100% !important;
@@ -816,10 +825,10 @@
       overflow: visible !important;
       box-sizing: border-box !important;
     }
-    .earth-values-{{ section.id }} .earth-values__tabs::before {
+    .earth-values__tabs::before {
       display: none !important;
     }
-    .earth-values-{{ section.id }} .earth-values__tabs::after {
+    .earth-values__tabs::after {
       content: '' !important;
       flex: 0 0 20px !important;
       min-width: 20px !important;
@@ -828,10 +837,10 @@
       display: block !important;
       pointer-events: none;
     }
-    .earth-values-{{ section.id }} .earth-values__tab {
+    .earth-values__tab {
       flex: 0 0 auto !important;
     }
-    .earth-values-{{ section.id }} .earth-values__tab-text {
+    .earth-values__tab-text {
       font-size: 16px;
     }
   }
@@ -976,29 +985,17 @@
   "settings": [
     {
       "type": "header",
-      "content": "Section Header & Content"
+      "content": "Title Styling"
     },
     {
       "type": "select",
       "id": "header_layout",
-      "label": "Header Style / Layout",
+      "label": "Header Layout",
       "options": [
-        {
-          "value": "centered",
-          "label": "Centered with Leaves"
-        },
-        {
-          "value": "stacked_left",
-          "label": "Stacked Left"
-        },
-        {
-          "value": "split",
-          "label": "Split (Left/Right)"
-        },
-        {
-          "value": "split_btn",
-          "label": "Split with Button"
-        }
+        { "value": "centered", "label": "Centered (Design Default)" },
+        { "value": "stacked_left", "label": "Stacked Left" },
+        { "value": "split", "label": "Split Columns" },
+        { "value": "split_btn", "label": "Split with Button" }
       ],
       "default": "centered"
     },
@@ -1010,14 +1007,13 @@
     {
       "type": "checkbox",
       "id": "show_eyebrow_icon",
-      "label": "Show Eyebrow Icon",
+      "label": "Show Eyebrow Sparkle Icon",
       "default": true
     },
     {
       "type": "color",
       "id": "eyebrow_color",
-      "label": "Eyebrow Color (Optional)",
-      "info": "Leave blank to use Primary theme color"
+      "label": "Eyebrow Custom Color"
     },
     {
       "type": "range",
@@ -1026,7 +1022,7 @@
       "max": 24,
       "step": 1,
       "unit": "px",
-      "label": "Eyebrow Size Desktop",
+      "label": "Eyebrow Font Size (Desktop)",
       "default": 16
     },
     {
@@ -1036,7 +1032,7 @@
       "max": 20,
       "step": 1,
       "unit": "px",
-      "label": "Eyebrow Size Mobile",
+      "label": "Eyebrow Font Size (Mobile)",
       "default": 15
     },
     {
@@ -1044,6 +1040,64 @@
       "id": "title",
       "label": "Section Heading",
       "default": "Shop by Values"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Heading Text Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Desktop)",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Mobile)",
+      "default": 36
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "label": "Subtitle Description",
+      "default": "<p>Find fashion that matches your ethics – filter by what matters most to you</p>"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Text Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Desktop)",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 13,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Mobile)",
+      "default": 18
     },
     {
       "type": "checkbox",
@@ -1056,11 +1110,11 @@
       "id": "leaf_position",
       "label": "Leaf Icon Position",
       "options": [
-        { "value": "both_sides", "label": "Both Sides of Title" },
-        { "value": "top", "label": "Top (Above Title)" },
+        { "value": "both_sides", "label": "Both Sides of Title (Default)" },
+        { "value": "top", "label": "Top of Title" },
         { "value": "left", "label": "Left of Title" },
         { "value": "right", "label": "Right of Title" },
-        { "value": "none", "label": "None" }
+        { "value": "none", "label": "None (Hide)" }
       ],
       "default": "both_sides"
     },
@@ -1072,57 +1126,48 @@
     },
     {
       "type": "range",
-      "id": "leaf_gap",
-      "min": 4,
-      "max": 32,
+      "id": "leaf_size",
+      "min": 20,
+      "max": 50,
       "step": 2,
       "unit": "px",
-      "label": "Leaf Spacing / Gap",
-      "default": 12
-    },
-    {
-      "type": "richtext",
-      "id": "subtitle",
-      "label": "Section Subtitle",
-      "default": "<p>Find fashion that matches your ethics – filter by what matters most to you</p>"
+      "label": "Leaf Icon Size",
+      "default": 34
     },
     {
       "type": "range",
-      "id": "subtitle_size_desktop",
-      "min": 15,
-      "max": 28,
-      "step": 1,
+      "id": "leaf_gap",
+      "min": 4,
+      "max": 30,
+      "step": 2,
       "unit": "px",
-      "label": "Subtitle Size Desktop",
-      "default": 21
+      "label": "Leaf Icon Gap",
+      "default": 14
     },
     {
-      "type": "range",
-      "id": "subtitle_size_mobile",
-      "min": 14,
-      "max": 22,
-      "step": 1,
-      "unit": "px",
-      "label": "Subtitle Size Mobile",
-      "default": 18
+      "type": "checkbox",
+      "id": "show_header_btn",
+      "label": "Show Header Action Button",
+      "default": false
     },
     {
       "type": "text",
       "id": "header_btn_text",
-      "label": "Action Button Text"
+      "label": "Header Button Text",
+      "default": "EXPLORE ALL"
     },
     {
       "type": "url",
       "id": "header_btn_url",
-      "label": "Action Button Link"
+      "label": "Header Button Link"
     },
     {
       "type": "select",
       "id": "header_btn_type",
-      "label": "Action Button Style",
+      "label": "Header Button Style",
       "options": [
-        { "value": "arrow", "label": "Arrow Button (Shop Collection →)" },
-        { "value": "solid", "label": "Solid Button (Shop Now)" },
+        { "value": "arrow", "label": "Arrow Link Button" },
+        { "value": "solid", "label": "Solid Button" },
         { "value": "outline", "label": "Outline Button" }
       ],
       "default": "arrow"
@@ -1130,12 +1175,17 @@
     {
       "type": "select",
       "id": "header_btn_theme",
-      "label": "Arrow Theme",
+      "label": "Header Arrow Theme",
       "options": [
-        { "value": "dark", "label": "Dark (on light bg)" },
-        { "value": "light", "label": "Light (on dark bg)" }
+        { "value": "dark", "label": "Dark (Forest Green)" },
+        { "value": "light", "label": "Light" }
       ],
       "default": "dark"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_color",
+      "label": "Header Button Custom Color"
     },
     {
       "type": "header",

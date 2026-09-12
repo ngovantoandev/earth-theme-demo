@@ -621,19 +621,12 @@
           "settings": {
             "title": "Why Sustainable Fashion?",
             "subtitle": "Understanding the real cost of fast fashion",
-            "icon_name": "icon-heart.svg",
             "default_open": true,
             "show_comparison": true,
             "fast_heading": "FAST FASHION",
-            "fast_point_1": "Average 1–7 wears before disposal",
-            "fast_point_2": "92 million tons → landfill yearly",
-            "fast_point_3": "High water pollution from synthetic dyes",
-            "fast_point_4": "Exploitative labor practices",
+            "fast_points": "Average 1–7 wears before disposal\n92 million tons → landfill yearly\nHigh water pollution from synthetic dyes\nExploitative labor practices",
             "sustainable_heading": "SUSTAINABLE FASHION",
-            "sust_point_1": "Average 20+ wears, recyclable design",
-            "sust_point_2": "Circular economy reduces 80% waste",
-            "sust_point_3": "Natural/recycled materials, low-impact dyes",
-            "sust_point_4": "Fair wages, safe working conditions",
+            "sustainable_points": "Average 20+ wears, recyclable design\nCircular economy reduces 80% waste\nNatural/recycled materials, low-impact dyes\nFair wages, safe working conditions",
             "info_title": "Did You Know?",
             "info_text": "The fashion industry produces 10% of global CO2 emissions—more than international flights and maritime shipping combined. By choosing sustainable fashion, you can reduce your personal fashion footprint by up to 73%."
           }
@@ -643,7 +636,6 @@
           "settings": {
             "title": "Material Guide",
             "subtitle": "Choose fabrics by their environmental impact",
-            "icon_name": "icon-eco.svg",
             "default_open": false,
             "show_comparison": false,
             "info_title": "Material Insights",
@@ -655,7 +647,6 @@
           "settings": {
             "title": "Impact Calculator Teaser",
             "subtitle": "See the real impact of your choices",
-            "icon_name": "icon-caculator.svg",
             "default_open": false,
             "show_comparison": false,
             "info_title": "Measure Your Impact",
@@ -667,7 +658,6 @@
           "settings": {
             "title": "Care Instructions",
             "subtitle": "Extend garment life by 3x with proper care",
-            "icon_name": "icon-washing.svg",
             "default_open": false,
             "show_comparison": false,
             "info_title": "Longevity Tip",
@@ -679,7 +669,6 @@
           "settings": {
             "title": "Circular Fashion 101",
             "subtitle": "From your closet back to ours—zero waste",
-            "icon_name": "icon-get-dressed.svg",
             "default_open": false,
             "show_comparison": false,
             "info_title": "Closed Loop Movement",
@@ -691,7 +680,6 @@
           "settings": {
             "title": "Myth Busting",
             "subtitle": "Debunking common sustainable fashion misconceptions",
-            "icon_name": "icon-sparkle.svg",
             "default_open": false,
             "show_comparison": false,
             "info_title": "True Cost vs Sticker Price",
@@ -708,6 +696,8 @@
         "topic_6"
       ],
       "settings": {
+        "full_width": true,
+        "header_layout": "split",
         "eyebrow": "Education & Ethos",
         "title": "Knowledge First Thread",
         "subtitle": "Everything to know about making conscious fashion choices expand topics deeper into sustainable style.",

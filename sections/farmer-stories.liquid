@@ -1,4 +1,33 @@
-<section class="earth-farmers earth-farmers-{{ section.id }}{% if section.settings.full_width %} earth-farmers--full{% else %} earth-farmers--contained{% endif %}{% if section.settings.full_width %} full-width{% endif %}" id="earthFarmers-{{ section.id }}">
+<section 
+  class="earth-farmers earth-farmers-{{ section.id }}{% if section.settings.full_width %} earth-farmers--full{% else %} earth-farmers--contained{% endif %}{% if section.settings.full_width %} full-width{% endif %}" 
+  id="earthFarmers-{{ section.id }}"
+  style="
+    --farmer-bg: {{ section.settings.section_bg_color | default: '#F1F4D8' }};
+    --farmer-text: {{ section.settings.section_text_color | default: '#003225' }};
+    --farmer-leaf: {{ section.settings.leaf_color | default: '#71CC3B' }};
+    --farmer-card-bg: {{ section.settings.card_bg_color | default: '#EAE060' }};
+    --farmer-card-text: {{ section.settings.card_text_color | default: '#003225' }};
+    --farmer-card-radius: {{ section.settings.card_corner_radius | default: 0 }}px;
+    --farmer-card-padding: {{ section.settings.card_padding | default: 36 }}px;
+    --farmer-card-border-color: {{ section.settings.card_border_color | default: '#E0D650' }};
+    --farmer-img-radius: {{ section.settings.image_corner_radius | default: 0 }}px;
+    --farmer-quote-size: {{ section.settings.quote_font_size | default: 19 }}px;
+    --farmer-author-size: {{ section.settings.author_name_size | default: 19 }}px;
+    --farmer-badge-bg: {{ section.settings.badge_bg_color | default: '#003225' }};
+    --farmer-badge-text: {{ section.settings.badge_text_color | default: '#F8F9DC' }};
+    --farmer-badge-radius: {{ section.settings.badge_border_radius | default: 20 }}px;
+    --farmer-nav-size: {{ section.settings.nav_btn_size | default: 48 }}px;
+    --farmer-nav-bg: {{ section.settings.nav_bg_color | default: '#F8F9DC' }};
+    --farmer-nav-color: {{ section.settings.nav_icon_color | default: '#003225' }};
+    --farmer-nav-hover-bg: {{ section.settings.nav_hover_bg_color | default: '#71CC3B' }};
+    --farmer-nav-hover-color: {{ section.settings.nav_hover_icon_color | default: '#003225' }};
+    --farmer-pt: {{ section.settings.padding_top | default: 116 }}px;
+    --farmer-pb: {{ section.settings.padding_bottom | default: 116 }}px;
+    --farmer-pt-mob: {{ section.settings.mobile_padding_top | default: 50 }}px;
+    --farmer-pb-mob: {{ section.settings.mobile_padding_bottom | default: 60 }}px;
+    --farmer-gap: {{ section.settings.columns_gap | default: 34 }}px;
+  "
+>
   <div class="earth-farmers__inner-container">
     
     {%- capture header_button_block -%}
@@ -30,9 +59,15 @@
     <!-- 1. Section Header -->
     <div class="earth-farmers__header-container">
       {%- assign header_layout = section.settings.header_layout | default: 'stacked_left' -%}
+      {%- assign show_leaf_val = section.settings.show_leaf_icons -%}
+      {%- if show_leaf_val == nil -%}{%- assign show_leaf_val = section.settings.show_leaf_icon -%}{%- endif -%}
       {% render 'section-header',
         layout: header_layout,
         title: section.settings.title,
+        title_color: section.settings.title_color | default: section.settings.section_text_color,
+        title_size: section.settings.title_size_desktop,
+        title_size_desktop: section.settings.title_size_desktop,
+        title_size_mobile: section.settings.title_size_mobile,
         eyebrow: section.settings.eyebrow,
         show_eyebrow_icon: section.settings.show_eyebrow_icon,
         eyebrow_color: section.settings.eyebrow_color,
@@ -42,7 +77,7 @@
         subtitle_color: section.settings.subtitle_color,
         subtitle_size_desktop: section.settings.subtitle_size_desktop,
         subtitle_size_mobile: section.settings.subtitle_size_mobile,
-        show_leaf: section.settings.show_leaf_icon,
+        show_leaf: show_leaf_val,
         leaf_position: section.settings.leaf_position,
         leaf_color: section.settings.leaf_color,
         leaf_size: section.settings.leaf_size,
@@ -51,8 +86,8 @@
         btn_url: section.settings.header_btn_url,
         btn_type: section.settings.header_btn_type,
         btn_theme: section.settings.header_btn_theme,
+        btn_color: section.settings.header_btn_color,
         btn_block: header_button_block,
-        title_color: section.settings.section_text_color,
         text_color: section.settings.section_text_color
       %}
     </div>
@@ -290,35 +325,6 @@
     </div>
   </div>
 </section>
-
-<style>
-  .earth-farmers-{{ section.id }} {
-    --farmer-bg: {{ section.settings.section_bg_color | default: '#F1F4D8' }};
-    --farmer-text: {{ section.settings.section_text_color | default: '#003225' }};
-    --farmer-leaf: {{ section.settings.leaf_color | default: '#71CC3B' }};
-    --farmer-card-bg: {{ section.settings.card_bg_color | default: '#EAE060' }};
-    --farmer-card-text: {{ section.settings.card_text_color | default: '#003225' }};
-    --farmer-card-radius: {{ section.settings.card_corner_radius | default: 0 }}px;
-    --farmer-card-padding: {{ section.settings.card_padding | default: 36 }}px;
-    --farmer-card-border-color: {{ section.settings.card_border_color | default: '#E0D650' }};
-    --farmer-img-radius: {{ section.settings.image_corner_radius | default: 0 }}px;
-    --farmer-quote-size: {{ section.settings.quote_font_size | default: 19 }}px;
-    --farmer-author-size: {{ section.settings.author_name_size | default: 19 }}px;
-    --farmer-badge-bg: {{ section.settings.badge_bg_color | default: '#003225' }};
-    --farmer-badge-text: {{ section.settings.badge_text_color | default: '#F8F9DC' }};
-    --farmer-badge-radius: {{ section.settings.badge_border_radius | default: 20 }}px;
-    --farmer-nav-size: {{ section.settings.nav_btn_size | default: 48 }}px;
-    --farmer-nav-bg: {{ section.settings.nav_bg_color | default: '#F8F9DC' }};
-    --farmer-nav-color: {{ section.settings.nav_icon_color | default: '#003225' }};
-    --farmer-nav-hover-bg: {{ section.settings.nav_hover_bg_color | default: '#71CC3B' }};
-    --farmer-nav-hover-color: {{ section.settings.nav_hover_icon_color | default: '#003225' }};
-    --farmer-pt: {{ section.settings.padding_top | default: 116 }}px;
-    --farmer-pb: {{ section.settings.padding_bottom | default: 116 }}px;
-    --farmer-pt-mob: {{ section.settings.mobile_padding_top | default: 50 }}px;
-    --farmer-pb-mob: {{ section.settings.mobile_padding_bottom | default: 60 }}px;
-    --farmer-gap: {{ section.settings.columns_gap | default: 34 }}px;
-  }
-</style>
 
 {% stylesheet %}
   .earth-farmers {
@@ -895,29 +901,17 @@
   "settings": [
     {
       "type": "header",
-      "content": "Section Header & Content"
+      "content": "Title Styling"
     },
     {
       "type": "select",
       "id": "header_layout",
-      "label": "Header Style / Layout",
+      "label": "Header Layout",
       "options": [
-        {
-          "value": "stacked_left",
-          "label": "Stacked Left"
-        },
-        {
-          "value": "centered",
-          "label": "Centered with Leaves"
-        },
-        {
-          "value": "split",
-          "label": "Split (Left/Right)"
-        },
-        {
-          "value": "split_btn",
-          "label": "Split with Button"
-        }
+        { "value": "stacked_left", "label": "Stacked Left (Design Default)" },
+        { "value": "centered", "label": "Centered" },
+        { "value": "split", "label": "Split Columns" },
+        { "value": "split_btn", "label": "Split with Button" }
       ],
       "default": "stacked_left"
     },
@@ -929,14 +923,13 @@
     {
       "type": "checkbox",
       "id": "show_eyebrow_icon",
-      "label": "Show Eyebrow Icon",
+      "label": "Show Eyebrow Sparkle Icon",
       "default": true
     },
     {
       "type": "color",
       "id": "eyebrow_color",
-      "label": "Eyebrow Color (Optional)",
-      "info": "Leave blank to use Primary theme color"
+      "label": "Eyebrow Custom Color"
     },
     {
       "type": "range",
@@ -945,7 +938,7 @@
       "max": 24,
       "step": 1,
       "unit": "px",
-      "label": "Eyebrow Size Desktop",
+      "label": "Eyebrow Font Size (Desktop)",
       "default": 16
     },
     {
@@ -955,19 +948,75 @@
       "max": 20,
       "step": 1,
       "unit": "px",
-      "label": "Eyebrow Size Mobile",
+      "label": "Eyebrow Font Size (Mobile)",
       "default": 15
     },
     {
       "type": "text",
       "id": "title",
-      "label": "Heading",
+      "label": "Section Heading",
       "default": "The hands that hold the harvest"
     },
     {
+      "type": "color",
+      "id": "title_color",
+      "label": "Heading Text Color"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Desktop)",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Mobile)",
+      "default": 36
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "label": "Subtitle Description",
+      "default": "<p>Meet the farmers and artisans who cultivate our materials with generations of wisdom and care for the earth.</p>"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Text Color"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Desktop)",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 13,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Mobile)",
+      "default": 18
+    },
+    {
       "type": "checkbox",
-      "id": "show_leaf_icon",
-      "label": "Show Decorative Leaf Icon",
+      "id": "show_leaf_icons",
+      "label": "Show Decorative Leaf Icons",
       "default": true
     },
     {
@@ -975,11 +1024,11 @@
       "id": "leaf_position",
       "label": "Leaf Icon Position",
       "options": [
-        { "value": "top", "label": "Top (Above Title)" },
+        { "value": "top", "label": "Top of Title (Default)" },
         { "value": "left", "label": "Left of Title" },
         { "value": "both_sides", "label": "Both Sides of Title" },
         { "value": "right", "label": "Right of Title" },
-        { "value": "none", "label": "None" }
+        { "value": "none", "label": "None (Hide)" }
       ],
       "default": "top"
     },
@@ -991,57 +1040,48 @@
     },
     {
       "type": "range",
-      "id": "leaf_gap",
-      "min": 4,
-      "max": 32,
+      "id": "leaf_size",
+      "min": 20,
+      "max": 50,
       "step": 2,
       "unit": "px",
-      "label": "Leaf Spacing / Gap",
-      "default": 12
-    },
-    {
-      "type": "richtext",
-      "id": "subtitle",
-      "label": "Subtitle",
-      "default": "<p>Meet the farmers and artisans who cultivate our materials with generations of wisdom and care for the earth.</p>"
+      "label": "Leaf Icon Size",
+      "default": 34
     },
     {
       "type": "range",
-      "id": "subtitle_size_desktop",
-      "min": 15,
-      "max": 28,
-      "step": 1,
+      "id": "leaf_gap",
+      "min": 4,
+      "max": 30,
+      "step": 2,
       "unit": "px",
-      "label": "Subtitle Size Desktop",
-      "default": 21
+      "label": "Leaf Icon Gap",
+      "default": 14
     },
     {
-      "type": "range",
-      "id": "subtitle_size_mobile",
-      "min": 14,
-      "max": 22,
-      "step": 1,
-      "unit": "px",
-      "label": "Subtitle Size Mobile",
-      "default": 18
+      "type": "checkbox",
+      "id": "show_header_btn",
+      "label": "Show Header Action Button",
+      "default": false
     },
     {
       "type": "text",
       "id": "header_btn_text",
-      "label": "Action Button Text"
+      "label": "Header Button Text",
+      "default": "EXPLORE ALL"
     },
     {
       "type": "url",
       "id": "header_btn_url",
-      "label": "Action Button Link"
+      "label": "Header Button Link"
     },
     {
       "type": "select",
       "id": "header_btn_type",
-      "label": "Action Button Style",
+      "label": "Header Button Style",
       "options": [
-        { "value": "arrow", "label": "Arrow Button (Shop Collection →)" },
-        { "value": "solid", "label": "Solid Button (Shop Now)" },
+        { "value": "arrow", "label": "Arrow Link Button" },
+        { "value": "solid", "label": "Solid Button" },
         { "value": "outline", "label": "Outline Button" }
       ],
       "default": "arrow"
@@ -1049,12 +1089,17 @@
     {
       "type": "select",
       "id": "header_btn_theme",
-      "label": "Arrow Theme",
+      "label": "Header Arrow Theme",
       "options": [
-        { "value": "dark", "label": "Dark (on light bg)" },
-        { "value": "light", "label": "Light (on dark bg)" }
+        { "value": "dark", "label": "Dark (Forest Green)" },
+        { "value": "light", "label": "Light" }
       ],
       "default": "dark"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_color",
+      "label": "Header Button Custom Color"
     },
     {
       "type": "header",

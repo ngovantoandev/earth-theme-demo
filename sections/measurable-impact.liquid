@@ -68,9 +68,15 @@
     <div class="measurable-impact__left">
       <!-- 1. Unified Section Header -->
       <div class="measurable-impact__header-wrap">
+        {%- assign show_leaf_val = section.settings.show_leaf_icons -%}
+        {%- if show_leaf_val == nil -%}{%- assign show_leaf_val = section.settings.show_leaf_icon -%}{%- endif -%}
         {% render 'section-header',
           layout: header_layout,
           title: section_title,
+          title_color: section.settings.title_color,
+          title_size: section.settings.title_size_desktop,
+          title_size_desktop: section.settings.title_size_desktop,
+          title_size_mobile: section.settings.title_size_mobile,
           eyebrow: section.settings.eyebrow,
           show_eyebrow_icon: section.settings.show_eyebrow_icon,
           eyebrow_color: section.settings.eyebrow_color,
@@ -80,7 +86,7 @@
           subtitle_color: section.settings.subtitle_color,
           subtitle_size_desktop: section.settings.subtitle_size_desktop,
           subtitle_size_mobile: section.settings.subtitle_size_mobile,
-          show_leaf: section.settings.show_leaf_icons,
+          show_leaf: show_leaf_val,
           leaf_position: section.settings.leaf_position,
           leaf_color: section.settings.leaf_color,
           leaf_size: section.settings.leaf_size,
@@ -91,7 +97,6 @@
           btn_theme: section.settings.header_btn_theme,
           btn_color: section.settings.header_btn_color,
           btn_block: header_button_block,
-          title_color: section.settings.title_color,
           text_color: section.settings.text_color
         %}
       </div>
@@ -698,7 +703,7 @@
     },
     {
       "type": "header",
-      "content": "Section Header"
+      "content": "Title Styling"
     },
     {
       "type": "select",
@@ -721,13 +726,13 @@
     {
       "type": "checkbox",
       "id": "show_eyebrow_icon",
-      "label": "Show Eyebrow Icon",
+      "label": "Show Eyebrow Sparkle Icon",
       "default": true
     },
     {
       "type": "color",
       "id": "eyebrow_color",
-      "label": "Eyebrow Color"
+      "label": "Eyebrow Custom Color"
     },
     {
       "type": "range",
@@ -736,7 +741,7 @@
       "max": 24,
       "step": 1,
       "unit": "px",
-      "label": "Eyebrow Size Desktop",
+      "label": "Eyebrow Font Size (Desktop)",
       "default": 16
     },
     {
@@ -746,36 +751,88 @@
       "max": 20,
       "step": 1,
       "unit": "px",
-      "label": "Eyebrow Size Mobile",
+      "label": "Eyebrow Font Size (Mobile)",
       "default": 15
     },
     {
       "type": "text",
-      "id": "heading",
-      "label": "Heading",
+      "id": "title",
+      "label": "Section Heading",
       "default": "Our footprint is small, but our impact is deep."
     },
     {
       "type": "color",
       "id": "title_color",
-      "label": "Heading Color"
+      "label": "Heading Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Desktop)",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Mobile)",
+      "default": 36
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "label": "Subtitle Description"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Desktop)",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 13,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Mobile)",
+      "default": 18
     },
     {
       "type": "checkbox",
       "id": "show_leaf_icons",
-      "label": "Show Decorative Leaf Icon",
-      "default": false
+      "label": "Show Decorative Leaf Icons",
+      "default": true
     },
     {
       "type": "select",
       "id": "leaf_position",
       "label": "Leaf Icon Position",
       "options": [
-        { "value": "none", "label": "None (Design Default)" },
-        { "value": "top", "label": "Top (Above Heading)" },
-        { "value": "left", "label": "Left of Heading" },
-        { "value": "both_sides", "label": "Both Sides of Heading" },
-        { "value": "right", "label": "Right of Heading" }
+        { "value": "top", "label": "Top of Title" },
+        { "value": "left", "label": "Left of Title" },
+        { "value": "both_sides", "label": "Both Sides of Title" },
+        { "value": "right", "label": "Right of Title" },
+        { "value": "none", "label": "None (Hide)" }
       ],
       "default": "none"
     },
@@ -787,61 +844,48 @@
     },
     {
       "type": "range",
-      "id": "leaf_gap",
-      "min": 4,
-      "max": 32,
+      "id": "leaf_size",
+      "min": 20,
+      "max": 50,
       "step": 2,
       "unit": "px",
-      "label": "Leaf Spacing / Gap",
-      "default": 12
-    },
-    {
-      "type": "richtext",
-      "id": "subtitle",
-      "label": "Subtitle"
-    },
-    {
-      "type": "color",
-      "id": "subtitle_color",
-      "label": "Subtitle Color"
+      "label": "Leaf Icon Size",
+      "default": 34
     },
     {
       "type": "range",
-      "id": "subtitle_size_desktop",
-      "min": 15,
-      "max": 28,
-      "step": 1,
+      "id": "leaf_gap",
+      "min": 4,
+      "max": 30,
+      "step": 2,
       "unit": "px",
-      "label": "Subtitle Size Desktop",
-      "default": 21
+      "label": "Leaf Icon Gap",
+      "default": 14
     },
     {
-      "type": "range",
-      "id": "subtitle_size_mobile",
-      "min": 14,
-      "max": 22,
-      "step": 1,
-      "unit": "px",
-      "label": "Subtitle Size Mobile",
-      "default": 18
+      "type": "checkbox",
+      "id": "show_header_btn",
+      "label": "Show Header Action Button",
+      "default": false
     },
     {
       "type": "text",
       "id": "header_btn_text",
-      "label": "Action Button Text"
+      "label": "Header Button Text",
+      "default": "EXPLORE ALL"
     },
     {
       "type": "url",
       "id": "header_btn_url",
-      "label": "Action Button Link"
+      "label": "Header Button Link"
     },
     {
       "type": "select",
       "id": "header_btn_type",
-      "label": "Action Button Style",
+      "label": "Header Button Style",
       "options": [
-        { "value": "arrow", "label": "Arrow Button (Shop Collection →)" },
-        { "value": "solid", "label": "Solid Button (Shop Now)" },
+        { "value": "arrow", "label": "Arrow Link Button" },
+        { "value": "solid", "label": "Solid Button" },
         { "value": "outline", "label": "Outline Button" }
       ],
       "default": "arrow"
@@ -849,17 +893,17 @@
     {
       "type": "select",
       "id": "header_btn_theme",
-      "label": "Arrow Theme",
+      "label": "Header Arrow Theme",
       "options": [
-        { "value": "dark", "label": "Dark (on light bg)" },
-        { "value": "light", "label": "Light (on dark bg)" }
+        { "value": "dark", "label": "Dark (Forest Green)" },
+        { "value": "light", "label": "Light" }
       ],
       "default": "dark"
     },
     {
       "type": "color",
       "id": "header_btn_color",
-      "label": "Custom Button Color"
+      "label": "Header Button Custom Color"
     },
     {
       "type": "header",

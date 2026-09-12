@@ -4,7 +4,7 @@
 {% endcomment %}
 
 <section
-  class="earth-featured-essentials full-width{% if section.settings.full_width %} earth-featured-essentials--full{% endif %} earth-featured-essentials--{{ section.settings.layout_style | default: 'asymmetric' }} earth-featured-essentials--hover-{{ section.settings.image_hover_effect | default: 'zoom' }}"
+  class="earth-featured-essentials full-width{% if section.settings.full_width != false %} earth-featured-essentials--full{% else %} earth-featured-essentials--contained{% endif %} earth-featured-essentials--{{ section.settings.layout_style | default: 'asymmetric' }} earth-featured-essentials--hover-{{ section.settings.image_hover_effect | default: 'zoom' }}"
   id="earthFeaturedEssentials-{{ section.id }}"
   style="
     --section-bg: {{ section.settings.bg_color | default: '#EBF7BE' }};
@@ -22,15 +22,26 @@
   <div class="earth-essentials__container">
     <!-- 1. Section Header -->
     {%- assign header_layout = section.settings.header_layout | default: 'split_btn' -%}
-    {%- assign header_btn_text = '' -%}
-    {%- if section.settings.show_header_button and section.settings.header_button_text != blank and section.settings.header_button_type != 'none' -%}
-      {%- assign header_btn_text = section.settings.header_button_text -%}
-    {%- endif -%}
-    {%- assign header_btn_url = section.settings.header_button_link | default: routes.all_products_collection_url -%}
+    {%- assign show_leaf_val = section.settings.show_leaf_icons -%}
+    {%- if show_leaf_val == nil -%}{%- assign show_leaf_val = section.settings.show_leaf_icon -%}{%- endif -%}
+    {%- assign btn_text_val = section.settings.header_btn_text -%}
+    {%- if btn_text_val == blank -%}{%- assign btn_text_val = section.settings.header_button_text -%}{%- endif -%}
+    {%- assign btn_url_val = section.settings.header_btn_url -%}
+    {%- if btn_url_val == blank -%}{%- assign btn_url_val = section.settings.header_button_link | default: routes.all_products_collection_url -%}{%- endif -%}
+    {%- assign btn_type_val = section.settings.header_btn_type -%}
+    {%- if btn_type_val == blank -%}{%- assign btn_type_val = section.settings.header_button_type | default: 'arrow' -%}{%- endif -%}
+    {%- assign btn_theme_val = section.settings.header_btn_theme -%}
+    {%- if btn_theme_val == blank -%}{%- assign btn_theme_val = section.settings.header_arrow_theme | default: 'dark' -%}{%- endif -%}
+    {%- assign btn_color_val = section.settings.header_btn_color -%}
+    {%- if btn_color_val == blank -%}{%- assign btn_color_val = section.settings.header_arrow_text_color -%}{%- endif -%}
     <div class="earth-essentials__header-container">
       {% render 'section-header',
         layout: header_layout,
         title: section.settings.title,
+        title_color: section.settings.title_color,
+        title_size: section.settings.title_size_desktop,
+        title_size_desktop: section.settings.title_size_desktop,
+        title_size_mobile: section.settings.title_size_mobile,
         eyebrow: section.settings.eyebrow,
         show_eyebrow_icon: section.settings.show_eyebrow_icon,
         eyebrow_color: section.settings.eyebrow_color,
@@ -40,17 +51,16 @@
         subtitle_color: section.settings.subtitle_color,
         subtitle_size_desktop: section.settings.subtitle_size_desktop,
         subtitle_size_mobile: section.settings.subtitle_size_mobile,
-        show_leaf: section.settings.show_leaf_icon,
+        show_leaf: show_leaf_val,
         leaf_position: section.settings.leaf_position,
         leaf_color: section.settings.leaf_color,
         leaf_size: section.settings.leaf_size,
         leaf_gap: section.settings.leaf_gap,
-        btn_text: header_btn_text,
-        btn_url: header_btn_url,
-        btn_type: section.settings.header_button_type,
-        btn_theme: section.settings.header_arrow_theme,
-        btn_color: section.settings.header_arrow_text_color,
-        title_color: section.settings.title_color,
+        btn_text: btn_text_val,
+        btn_url: btn_url_val,
+        btn_type: btn_type_val,
+        btn_theme: btn_theme_val,
+        btn_color: btn_color_val,
         text_color: section.settings.text_color
       %}
     </div>
@@ -670,14 +680,14 @@
   "name": "Featured Eco Essentials",
   "settings": [
     {
-      "type": "header",
-      "content": "Section Header"
-    },
-    {
       "type": "checkbox",
       "id": "full_width",
       "label": "Make section full width",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Title Styling"
     },
     {
       "type": "select",
@@ -699,13 +709,13 @@
     {
       "type": "checkbox",
       "id": "show_eyebrow_icon",
-      "label": "Show Eyebrow Icon",
+      "label": "Show Eyebrow Sparkle Icon",
       "default": true
     },
     {
       "type": "color",
       "id": "eyebrow_color",
-      "label": "Eyebrow Color"
+      "label": "Eyebrow Custom Color"
     },
     {
       "type": "range",
@@ -714,7 +724,7 @@
       "max": 24,
       "step": 1,
       "unit": "px",
-      "label": "Eyebrow Size Desktop",
+      "label": "Eyebrow Font Size (Desktop)",
       "default": 16
     },
     {
@@ -724,19 +734,77 @@
       "max": 20,
       "step": 1,
       "unit": "px",
-      "label": "Eyebrow Size Mobile",
+      "label": "Eyebrow Font Size (Mobile)",
       "default": 15
     },
     {
       "type": "text",
       "id": "title",
-      "label": "Heading",
+      "label": "Section Heading",
       "default": "Featured Eco Essentials"
     },
     {
+      "type": "color",
+      "id": "title_color",
+      "label": "Heading Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Desktop)",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Mobile)",
+      "default": 36
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "label": "Subtitle Description",
+      "default": "<p>Where fashion meets purpose: recycled fabrics, reduced impact, endless wear.</p>"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Desktop)",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 13,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Mobile)",
+      "default": 18
+    },
+    {
       "type": "checkbox",
-      "id": "show_leaf_icon",
-      "label": "Show Decorative Leaf Icon",
+      "id": "show_leaf_icons",
+      "label": "Show Decorative Leaf Icons",
       "default": true
     },
     {
@@ -746,9 +814,9 @@
       "options": [
         { "value": "left", "label": "Left of Title (Design Default)" },
         { "value": "both_sides", "label": "Both Sides of Title" },
-        { "value": "top", "label": "Top (Above Title)" },
+        { "value": "top", "label": "Top of Title" },
         { "value": "right", "label": "Right of Title" },
-        { "value": "none", "label": "None" }
+        { "value": "none", "label": "None (Hide)" }
       ],
       "default": "left"
     },
@@ -760,141 +828,66 @@
     },
     {
       "type": "range",
-      "id": "leaf_gap",
-      "min": 4,
-      "max": 32,
+      "id": "leaf_size",
+      "min": 20,
+      "max": 50,
       "step": 2,
       "unit": "px",
-      "label": "Leaf Spacing / Gap",
-      "default": 12
-    },
-    {
-      "type": "richtext",
-      "id": "subtitle",
-      "label": "Subtitle",
-      "default": "<p>Where fashion meets purpose: recycled fabrics, reduced impact, endless wear.</p>"
+      "label": "Leaf Icon Size",
+      "default": 34
     },
     {
       "type": "range",
-      "id": "subtitle_size_desktop",
-      "min": 15,
-      "max": 28,
-      "step": 1,
+      "id": "leaf_gap",
+      "min": 4,
+      "max": 30,
+      "step": 2,
       "unit": "px",
-      "label": "Subtitle Size Desktop",
-      "default": 21
-    },
-    {
-      "type": "range",
-      "id": "subtitle_size_mobile",
-      "min": 14,
-      "max": 22,
-      "step": 1,
-      "unit": "px",
-      "label": "Subtitle Size Mobile",
-      "default": 18
-    },
-    {
-      "type": "header",
-      "content": "Header CTA Button"
+      "label": "Leaf Icon Gap",
+      "default": 14
     },
     {
       "type": "checkbox",
-      "id": "show_header_button",
-      "label": "Show Header CTA Button",
+      "id": "show_header_btn",
+      "label": "Show Header Action Button",
       "default": true
     },
     {
       "type": "text",
-      "id": "header_button_text",
+      "id": "header_btn_text",
       "label": "Header Button Text",
       "default": "SHOP COLLECTION"
     },
     {
       "type": "url",
-      "id": "header_button_link",
+      "id": "header_btn_url",
       "label": "Header Button Link"
     },
     {
       "type": "select",
-      "id": "header_button_type",
+      "id": "header_btn_type",
       "label": "Header Button Style",
       "options": [
-        { "value": "arrow", "label": "Arrow Button (Shop Collection)" },
+        { "value": "arrow", "label": "Arrow Link Button" },
         { "value": "solid", "label": "Solid Button" },
-        { "value": "outline", "label": "Outline Button" },
-        { "value": "none", "label": "None (Hide Button)" }
+        { "value": "outline", "label": "Outline Button" }
       ],
       "default": "arrow"
     },
     {
-      "type": "color",
-      "id": "header_button_bg_color",
-      "label": "Custom Button Background (Solid/Outline)"
-    },
-    {
-      "type": "color",
-      "id": "header_button_text_color",
-      "label": "Custom Button Text Color (Solid/Outline)"
-    },
-    {
-      "type": "range",
-      "id": "header_btn_font_size",
-      "min": 0,
-      "max": 40,
-      "step": 1,
-      "unit": "px",
-      "label": "Font Size Override (0 = Global)",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "header_btn_padding_vertical",
-      "min": 0,
-      "max": 50,
-      "step": 2,
-      "unit": "px",
-      "label": "Padding Top / Bottom Override",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "header_btn_padding_horizontal",
-      "min": 0,
-      "max": 80,
-      "step": 2,
-      "unit": "px",
-      "label": "Padding Left / Right Override",
-      "default": 0
-    },
-    {
-      "type": "header",
-      "content": "Header Arrow Button Customization"
-    },
-    {
       "type": "select",
-      "id": "header_arrow_theme",
-      "label": "Arrow Preset Theme",
+      "id": "header_btn_theme",
+      "label": "Header Arrow Theme",
       "options": [
-        { "value": "dark", "label": "Dark (on light bg)" },
-        { "value": "light", "label": "Light (on dark bg)" }
+        { "value": "dark", "label": "Dark (Forest Green)" },
+        { "value": "light", "label": "Light" }
       ],
       "default": "dark"
     },
     {
       "type": "color",
-      "id": "header_arrow_text_color",
-      "label": "Arrow Text & Underline Color"
-    },
-    {
-      "type": "color",
-      "id": "header_arrow_circle_bg",
-      "label": "Arrow Circle Background"
-    },
-    {
-      "type": "color",
-      "id": "header_arrow_circle_icon",
-      "label": "Arrow Icon Color"
+      "id": "header_btn_color",
+      "label": "Header Button Custom Color"
     },
     {
       "type": "header",
