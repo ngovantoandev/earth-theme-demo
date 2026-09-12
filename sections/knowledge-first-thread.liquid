@@ -99,7 +99,7 @@
             </button>
 
             <!-- Expandable Accordion Body -->
-            <div class="knowledge-thread__content" id="kt-content-{{ block.id }}" {% unless is_open %}style="display: none;"{% endunless %}>
+            <div class="knowledge-thread__content" id="kt-content-{{ block.id }}">
               <div class="knowledge-thread__content-inner">
                 
                 {%- if block.settings.show_comparison -%}
@@ -343,6 +343,7 @@
 
   /* Accordion Item Card with Lime Green Outline */
   .knowledge-thread__item {
+    background: var(--color-cactus, #34601B);
     border: 1.5px solid var(--color-accent, #EAE060);
     border-radius: 2px;
     overflow: hidden;
@@ -422,7 +423,6 @@
     font-size: 18px;
     line-height: 1.45;
     color: var(--kt-text, #F8F9DC);
-    opacity: 0.85;
     margin: 14px 0 0 0;
   }
 
@@ -453,16 +453,24 @@
 
   /* Accordion Body */
   .knowledge-thread__content {
-    padding: 0 clamp(18px, 2.5vw, 32px) clamp(22px, 2.8vw, 32px);
+    display: none;
+    padding: 0;
+    margin: 0;
     box-sizing: border-box;
     background: var(--color-cactus, #34601B);
+    overflow: hidden;
+  }
+
+  .knowledge-thread__item.is-open .knowledge-thread__content {
+    display: block;
   }
 
   .knowledge-thread__content-inner {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding-top: 8px;
+    padding: 8px clamp(18px, 2.5vw, 32px) clamp(22px, 2.8vw, 32px);
+    box-sizing: border-box;
   }
 
   /* 2 Comparison Cards (Side-by-Side on Desktop, Stacked on Mobile) */
@@ -685,7 +693,11 @@
     }
 
     .knowledge-thread__content {
-      padding: 0 16px 20px;
+      padding: 0;
+    }
+
+    .knowledge-thread__content-inner {
+      padding: 8px 16px 20px;
     }
 
     /* Stack 2 comparison cards on Mobile */
@@ -721,19 +733,60 @@
         var content = item.querySelector('.knowledge-thread__content');
         if (!trigger || !content) return;
 
-        trigger.addEventListener('click', function() {
+        if (trigger.dataset.accordionBound === 'true') return;
+        trigger.dataset.accordionBound = 'true';
+
+        var isAnimating = false;
+
+        trigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (isAnimating) return;
+
           var isOpen = item.classList.contains('is-open');
 
           if (isOpen) {
-            // Close
+            isAnimating = true;
             item.classList.remove('is-open');
             trigger.setAttribute('aria-expanded', 'false');
-            content.style.display = 'none';
+
+            content.style.display = 'block';
+            var startH = content.offsetHeight;
+
+            var anim = content.animate([
+              { height: startH + 'px', opacity: 1 },
+              { height: '0px', opacity: 0 }
+            ], {
+              duration: 280,
+              easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
+            });
+
+            anim.onfinish = function() {
+              content.style.display = 'none';
+              content.style.height = '';
+              content.style.opacity = '';
+              isAnimating = false;
+            };
           } else {
-            // Open
+            isAnimating = true;
             item.classList.add('is-open');
             trigger.setAttribute('aria-expanded', 'true');
+
             content.style.display = 'block';
+            var endH = content.offsetHeight;
+
+            var anim = content.animate([
+              { height: '0px', opacity: 0 },
+              { height: endH + 'px', opacity: 1 }
+            ], {
+              duration: 320,
+              easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
+            });
+
+            anim.onfinish = function() {
+              content.style.height = '';
+              content.style.opacity = '';
+              isAnimating = false;
+            };
           }
         });
       });

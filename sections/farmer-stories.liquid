@@ -61,10 +61,11 @@
       {%- assign header_layout = section.settings.header_layout | default: 'stacked_left' -%}
       {%- assign show_leaf_val = section.settings.show_leaf_icons -%}
       {%- if show_leaf_val == nil -%}{%- assign show_leaf_val = section.settings.show_leaf_icon -%}{%- endif -%}
+      {%- assign title_color_val = section.settings.title_color | default: section.settings.section_text_color -%}
       {% render 'section-header',
         layout: header_layout,
         title: section.settings.title,
-        title_color: section.settings.title_color | default: section.settings.section_text_color,
+        title_color: title_color_val,
         title_size: section.settings.title_size_desktop,
         title_size_desktop: section.settings.title_size_desktop,
         title_size_mobile: section.settings.title_size_mobile,

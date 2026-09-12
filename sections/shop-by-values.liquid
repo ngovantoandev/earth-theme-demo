@@ -56,25 +56,30 @@
       {%- assign header_layout = section.settings.header_layout | default: 'centered' -%}
       {%- assign show_leaf_val = section.settings.show_leaf_icons -%}
       {%- if show_leaf_val == nil -%}{%- assign show_leaf_val = section.settings.show_leaf_icon -%}{%- endif -%}
+      {%- assign header_title_color = section.settings.title_color | default: '#F8F9DC' -%}
+      {%- assign header_eyebrow_color = section.settings.eyebrow_color | default: '#F8F9DC' -%}
+      {%- assign header_subtitle_color = section.settings.subtitle_color | default: '#F8F9DC' -%}
+      {%- assign header_leaf_color = section.settings.leaf_color | default: '#EAE060' -%}
+      {%- assign header_text_color = section.settings.text_color | default: '#F8F9DC' -%}
       {% render 'section-header',
         layout: header_layout,
         title: section.settings.title,
-        title_color: section.settings.title_color | default: '#F8F9DC',
+        title_color: header_title_color,
         title_size: section.settings.title_size_desktop,
         title_size_desktop: section.settings.title_size_desktop,
         title_size_mobile: section.settings.title_size_mobile,
         eyebrow: section.settings.eyebrow,
         show_eyebrow_icon: section.settings.show_eyebrow_icon,
-        eyebrow_color: section.settings.eyebrow_color | default: '#F8F9DC',
+        eyebrow_color: header_eyebrow_color,
         eyebrow_size_desktop: section.settings.eyebrow_size_desktop,
         eyebrow_size_mobile: section.settings.eyebrow_size_mobile,
         subtitle: section.settings.subtitle,
-        subtitle_color: section.settings.subtitle_color | default: '#F8F9DC',
+        subtitle_color: header_subtitle_color,
         subtitle_size_desktop: section.settings.subtitle_size_desktop,
         subtitle_size_mobile: section.settings.subtitle_size_mobile,
         show_leaf: show_leaf_val,
         leaf_position: section.settings.leaf_position,
-        leaf_color: section.settings.leaf_color | default: '#EAE060',
+        leaf_color: header_leaf_color,
         leaf_size: section.settings.leaf_size,
         leaf_gap: section.settings.leaf_gap,
         btn_text: section.settings.header_btn_text,
@@ -83,7 +88,7 @@
         btn_theme: section.settings.header_btn_theme,
         btn_color: section.settings.header_btn_color,
         btn_block: header_button_block,
-        text_color: section.settings.text_color | default: '#F8F9DC'
+        text_color: header_text_color
       %}
     </div>
 
