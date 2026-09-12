@@ -464,7 +464,7 @@
             "number": "50k+",
             "icon_position": "right",
             "show_smile": true,
-            "text": "Liters of water saved compared to traditional manufacturing processes."
+            "text": "<p>Liters of water saved compared to traditional manufacturing processes.</p>"
           }
         },
         "metric_2": {
@@ -473,7 +473,7 @@
             "number": "100%",
             "icon_position": "left",
             "show_smile": true,
-            "text": "Plastic-free packaging. Every box we ship returns to the earth as compost."
+            "text": "<p>Plastic-free packaging. Every box we ship returns to the earth as compost.</p>"
           }
         },
         "metric_3": {
@@ -482,16 +482,45 @@
             "number": "12,400",
             "icon_position": "right",
             "show_smile": true,
-            "text": "Native trees planted across our partner organic farms this year."
+            "text": "<p>Native trees planted across our partner organic farms this year.</p>"
+          }
+        },
+        "gallery_img_1": {
+          "type": "image_item",
+          "settings": {
+            "badge": ""
+          }
+        },
+        "gallery_img_2": {
+          "type": "image_item",
+          "settings": {
+            "badge": ""
+          }
+        },
+        "gallery_img_3": {
+          "type": "image_item",
+          "settings": {
+            "badge": ""
+          }
+        },
+        "gallery_img_4": {
+          "type": "image_item",
+          "settings": {
+            "badge": ""
           }
         }
       },
       "block_order": [
         "metric_1",
         "metric_2",
-        "metric_3"
+        "metric_3",
+        "gallery_img_1",
+        "gallery_img_2",
+        "gallery_img_3",
+        "gallery_img_4"
       ],
       "settings": {
+        "full_width": true,
         "eyebrow": "Measurable Change",
         "heading": "Our footprint is small, but our impact is deep.",
         "bg_color": "#F1F4D8",

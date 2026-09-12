@@ -1,148 +1,330 @@
 {% comment %}
   Measurable Impact / Metrics Section
-  Matching exact design with Left Column (Eyebrow, Heading, Metrics with Smile icon)
-  and Right Column (Asymmetric 4-image grid)
-  Fully responsive on Desktop, Tablet, and Mobile with Full-Width Layout (34px padding)
+  Left Column: Section Header & Metric Items (with optional Action Button block)
+  Right Column: Gallery Image Blocks (with Asymmetric, 2x2 Equal, or Hero layouts)
+  Fully responsive with Full-Width toggle (34px edge padding) and rich UI options.
 {% endcomment %}
 
-<section class="measurable-impact-section full-width" id="measurableImpact-{{ section.id }}" style="--mi-bg-color: {{ section.settings.bg_color | default: '#F1F4D8' }}; --mi-text-color: {{ section.settings.text_color | default: '#003225' }};">
+{%- liquid
+  assign section_title = section.settings.title | default: section.settings.heading | default: 'Our footprint is small, but our impact is deep.'
+  assign header_layout = section.settings.header_layout | default: 'stacked_left'
+  assign header_btn_text = section.settings.header_btn_text
+  assign header_btn_url = section.settings.header_btn_url
+  assign gallery_layout = section.settings.gallery_layout | default: 'asymmetric'
+  assign col_order = section.settings.column_order | default: 'content_left'
+  assign v_align = section.settings.vertical_alignment | default: 'start'
+  assign metric_card_style = section.settings.metric_style | default: 'clean'
+
+  assign metric_blocks = section.blocks | where: 'type', 'metric'
+  assign image_blocks = section.blocks | where: 'type', 'image_item'
+  assign button_blocks = section.blocks | where: 'type', 'button'
+-%}
+
+{%- capture header_button_block -%}
+  {%- for block in button_blocks -%}
+    <div class="earth-section-header__btn-wrap" {{ block.shopify_attributes }}>
+      {%- assign btn_style = block.settings.button_type | default: 'arrow' -%}
+      {%- assign btn_theme = block.settings.arrow_theme | default: 'dark' -%}
+      {%- if btn_style == 'arrow' -%}
+        {% render 'btn-arrow',
+          text: block.settings.button_text,
+          url: block.settings.button_link,
+          theme: btn_theme,
+          color: block.settings.custom_color
+        %}
+      {%- else -%}
+        {% render 'btn-action',
+          text: block.settings.button_text,
+          url: block.settings.button_link,
+          variant: btn_style,
+          custom_bg: block.settings.custom_color
+        %}
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+{%- endcapture -%}
+
+<section
+  class="measurable-impact-section full-width{% if section.settings.full_width %} measurable-impact-section--full{% else %} measurable-impact-section--contained{% endif %} measurable-impact-section--order-{{ col_order }} measurable-impact-section--valign-{{ v_align }} measurable-impact-section--gallery-{{ gallery_layout }} measurable-impact-section--style-{{ metric_card_style }}"
+  id="measurableImpact-{{ section.id }}"
+  style="
+    --mi-bg-color: {{ section.settings.bg_color | default: '#F1F4D8' }};
+    --mi-text-color: {{ section.settings.text_color | default: '#003225' }};
+    --mi-pt: {{ section.settings.padding_top | default: 115 }}px;
+    --mi-pb: {{ section.settings.padding_bottom | default: 96 }}px;
+    --mi-mpt: {{ section.settings.mobile_padding_top | default: 48 }}px;
+    --mi-mpb: {{ section.settings.mobile_padding_bottom | default: 56 }}px;
+    --mi-card-radius: {{ section.settings.image_corner_radius | default: 0 }}px;
+    --mi-metric-num-color: {{ section.settings.metric_number_color | default: section.settings.text_color | default: '#003225' }};
+    --mi-metric-text-color: {{ section.settings.metric_text_color | default: section.settings.text_color | default: '#003225' }};
+    --mi-metric-icon-color: {{ section.settings.metric_icon_color | default: '#556B3A' }};
+    --mi-metric-card-bg: {{ section.settings.metric_card_bg | default: '#ffffff' }};
+    --mi-metric-card-border: {{ section.settings.metric_card_border | default: 'rgba(0, 50, 37, 0.12)' }};
+  "
+>
   <div class="measurable-impact__container">
     
-    <!-- Left Column: Content & Metrics -->
+    <!-- Left / Content Column: Header & Metrics List -->
     <div class="measurable-impact__left">
-      {%- if section.settings.eyebrow != blank -%}
-        <div class="measurable-impact__eyebrow">
-          <span class="measurable-impact__sparkle-icon" aria-hidden="true">✨</span>
-          <span>{{ section.settings.eyebrow }}</span>
-        </div>
-      {%- endif -%}
+      <!-- 1. Unified Section Header -->
+      <div class="measurable-impact__header-wrap">
+        {% render 'section-header',
+          layout: header_layout,
+          title: section_title,
+          eyebrow: section.settings.eyebrow,
+          show_eyebrow_icon: section.settings.show_eyebrow_icon,
+          eyebrow_color: section.settings.eyebrow_color,
+          eyebrow_size_desktop: section.settings.eyebrow_size_desktop,
+          eyebrow_size_mobile: section.settings.eyebrow_size_mobile,
+          subtitle: section.settings.subtitle,
+          subtitle_color: section.settings.subtitle_color,
+          subtitle_size_desktop: section.settings.subtitle_size_desktop,
+          subtitle_size_mobile: section.settings.subtitle_size_mobile,
+          show_leaf: section.settings.show_leaf_icons,
+          leaf_position: section.settings.leaf_position,
+          leaf_color: section.settings.leaf_color,
+          leaf_size: section.settings.leaf_size,
+          leaf_gap: section.settings.leaf_gap,
+          btn_text: header_btn_text,
+          btn_url: header_btn_url,
+          btn_type: section.settings.header_btn_type,
+          btn_theme: section.settings.header_btn_theme,
+          btn_color: section.settings.header_btn_color,
+          btn_block: header_button_block,
+          title_color: section.settings.title_color,
+          text_color: section.settings.text_color
+        %}
+      </div>
 
-      {%- if section.settings.heading != blank -%}
-        <h2 class="measurable-impact__heading">
-          {{ section.settings.heading }}
-        </h2>
-      {%- endif -%}
-
-      <!-- Metrics List -->
-      <div class="measurable-impact__metrics-list">
-        {%- if section.blocks.size > 0 -%}
-          {%- for block in section.blocks -%}
-            <div class="measurable-impact__metric-item" {{ block.shopify_attributes }}>
-              <div class="measurable-impact__metric-header measurable-impact__metric-header--{{ block.settings.icon_position | default: 'right' }}">
-                {%- if block.settings.icon_position == 'left' -%}
-                  {%- if block.settings.show_smile -%}
+      <!-- 2. Metrics List -->
+      <div class="measurable-impact__metrics-list measurable-impact__metrics-list--{{ metric_card_style }}">
+        {%- if metric_blocks.size > 0 -%}
+          {%- for block in metric_blocks -%}
+            {%- assign icon_pos = block.settings.icon_position | default: 'right' -%}
+            {%- assign icon_type = block.settings.icon_type | default: 'smile' -%}
+            <div class="measurable-impact__metric-item measurable-impact__metric-item--{{ metric_card_style }}" {{ block.shopify_attributes }}>
+              <div class="measurable-impact__metric-header measurable-impact__metric-header--{{ icon_pos }}">
+                {%- capture icon_markup -%}
+                  {%- if block.settings.show_smile != false and icon_type != 'none' -%}
                     <span class="measurable-impact__smile-icon" aria-hidden="true">
                       {%- if block.settings.custom_icon != blank -%}
                         <img src="{{ block.settings.custom_icon | image_url: width: 120 }}" width="52" height="52" alt="" loading="lazy">
+                      {%- elsif icon_type == 'smile' -%}
+                        {{ 'icon-smile.svg' | inline_asset_content }}
+                      {%- elsif icon_type == 'leaf' -%}
+                        {{ 'icon-leaf-2.svg' | inline_asset_content }}
+                      {%- elsif icon_type == 'drop' -%}
+                        {{ 'icon-Drop.svg' | inline_asset_content }}
+                      {%- elsif icon_type == 'tree' -%}
+                        {{ 'icon-tree.svg' | inline_asset_content }}
+                      {%- elsif icon_type == 'co2' -%}
+                        {{ 'icon-zero-emissions.svg' | inline_asset_content }}
+                      {%- elsif icon_type == 'sparkle' -%}
+                        <span class="measurable-impact__sparkle-text">✨</span>
                       {%- else -%}
                         {{ 'icon-smile.svg' | inline_asset_content }}
                       {%- endif -%}
                     </span>
                   {%- endif -%}
+                {%- endcapture -%}
+
+                {%- if icon_pos == 'left' -%}
+                  {{ icon_markup }}
                   <span class="measurable-impact__metric-number">{{ block.settings.number }}</span>
                 {%- else -%}
                   <span class="measurable-impact__metric-number">{{ block.settings.number }}</span>
-                  {%- if block.settings.show_smile -%}
-                    <span class="measurable-impact__smile-icon" aria-hidden="true">
-                      {%- if block.settings.custom_icon != blank -%}
-                        <img src="{{ block.settings.custom_icon | image_url: width: 120 }}" width="52" height="52" alt="" loading="lazy">
-                      {%- else -%}
-                        {{ 'icon-smile.svg' | inline_asset_content }}
-                      {%- endif -%}
-                    </span>
-                  {%- endif -%}
+                  {{ icon_markup }}
                 {%- endif -%}
               </div>
               {%- if block.settings.text != blank -%}
-                <p class="measurable-impact__metric-text">
+                <div class="measurable-impact__metric-text">
                   {{ block.settings.text }}
-                </p>
+                </div>
               {%- endif -%}
             </div>
           {%- endfor -%}
         {%- else -%}
-          <!-- Default Fallback Metrics if no blocks configured -->
-          <div class="measurable-impact__metric-item">
+          <!-- Default Fallback Metrics if no metric blocks configured -->
+          <div class="measurable-impact__metric-item measurable-impact__metric-item--{{ metric_card_style }}">
             <div class="measurable-impact__metric-header measurable-impact__metric-header--right">
               <span class="measurable-impact__metric-number">50k+</span>
               <span class="measurable-impact__smile-icon" aria-hidden="true">
                 {{ 'icon-smile.svg' | inline_asset_content }}
               </span>
             </div>
-            <p class="measurable-impact__metric-text">
-              Liters of water saved compared to traditional manufacturing processes.
-            </p>
+            <div class="measurable-impact__metric-text">
+              <p>Liters of water saved compared to traditional manufacturing processes.</p>
+            </div>
           </div>
 
-          <div class="measurable-impact__metric-item">
+          <div class="measurable-impact__metric-item measurable-impact__metric-item--{{ metric_card_style }}">
             <div class="measurable-impact__metric-header measurable-impact__metric-header--left">
               <span class="measurable-impact__smile-icon" aria-hidden="true">
                 {{ 'icon-smile.svg' | inline_asset_content }}
               </span>
               <span class="measurable-impact__metric-number">100%</span>
             </div>
-            <p class="measurable-impact__metric-text">
-              Plastic-free packaging. Every box we ship returns to the earth as compost.
-            </p>
+            <div class="measurable-impact__metric-text">
+              <p>Plastic-free packaging. Every box we ship returns to the earth as compost.</p>
+            </div>
           </div>
 
-          <div class="measurable-impact__metric-item">
+          <div class="measurable-impact__metric-item measurable-impact__metric-item--{{ metric_card_style }}">
             <div class="measurable-impact__metric-header measurable-impact__metric-header--right">
               <span class="measurable-impact__metric-number">12,400</span>
               <span class="measurable-impact__smile-icon" aria-hidden="true">
                 {{ 'icon-smile.svg' | inline_asset_content }}
               </span>
             </div>
-            <p class="measurable-impact__metric-text">
-              Native trees planted across our partner organic farms this year.
-            </p>
+            <div class="measurable-impact__metric-text">
+              <p>Native trees planted across our partner organic farms this year.</p>
+            </div>
           </div>
         {%- endif -%}
       </div>
     </div>
 
-    <!-- Right Column: Asymmetric 4-Image Grid -->
+    <!-- Right / Media Column: Image Gallery Blocks -->
     <div class="measurable-impact__right">
-      <div class="measurable-impact__gallery-grid">
-        
-        <!-- Subcolumn 1 (Left): Portrait Image 1 (Top 346x448) + Square Image 3 (Bottom 346x346) -->
-        <div class="measurable-impact__gallery-col measurable-impact__gallery-col--left">
-          <div class="measurable-impact__gallery-item measurable-impact__gallery-item--portrait">
-            {%- if section.settings.image_1 != blank -%}
-              <img src="{{ section.settings.image_1 | image_url: width: 800 }}" width="346" height="448" alt="{{ section.settings.image_1.alt | default: 'Sustainable fashion model in nature' }}" loading="lazy">
+      <div class="measurable-impact__gallery-grid measurable-impact__gallery-grid--{{ gallery_layout }} measurable-impact__gallery-grid--hover-{{ section.settings.image_hover_effect | default: 'zoom' }}">
+        {%- if image_blocks.size > 0 -%}
+          {%- case gallery_layout -%}
+            {%- when 'equal_grid' -%}
+              <!-- 2x2 Equal Grid -->
+              <div class="measurable-impact__gallery-equal">
+                {%- for block in image_blocks -%}
+                  {%- assign shape_class = block.settings.shape -%}
+                  {%- if shape_class == 'auto' or shape_class == blank -%}
+                    {%- assign shape_class = 'square' -%}
+                  {%- endif -%}
+                  <div class="measurable-impact__gallery-item measurable-impact__gallery-item--{{ shape_class }}" {{ block.shopify_attributes }}>
+                    {%- if block.settings.image != blank -%}
+                      {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: block.settings.image.alt | default: 'Impact gallery image' }}
+                    {%- else -%}
+                      {%- assign img_idx = forloop.index | modulo: 4 -%}
+                      {%- if img_idx == 0 -%}{%- assign img_idx = 4 -%}{%- endif -%}
+                      {%- assign fallback_name = 'impact-' | append: img_idx | append: '.jpg' -%}
+                      <img src="{{ fallback_name | asset_url }}" width="400" height="400" alt="Impact image" loading="lazy">
+                    {%- endif -%}
+                    {%- if block.settings.badge != blank -%}
+                      <span class="measurable-impact__img-badge">{{ block.settings.badge }}</span>
+                    {%- endif -%}
+                  </div>
+                {%- endfor -%}
+              </div>
+
+            {%- when 'single_hero' -%}
+              <!-- 1 Big Hero Top + Mini Thumbnails Bottom -->
+              <div class="measurable-impact__gallery-hero">
+                {%- for block in image_blocks -%}
+                  {%- if forloop.first -%}
+                    <div class="measurable-impact__gallery-item measurable-impact__gallery-item--hero" {{ block.shopify_attributes }}>
+                      {%- if block.settings.image != blank -%}
+                        {{ block.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', alt: block.settings.image.alt | default: 'Main impact image' }}
+                      {%- else -%}
+                        <img src="{{ 'impact-1.jpg' | asset_url }}" width="700" height="440" alt="Sustainable fashion showcase" loading="lazy">
+                      {%- endif -%}
+                      {%- if block.settings.badge != blank -%}
+                        <span class="measurable-impact__img-badge">{{ block.settings.badge }}</span>
+                      {%- endif -%}
+                    </div>
+                    <div class="measurable-impact__gallery-row">
+                  {%- else -%}
+                    <div class="measurable-impact__gallery-item measurable-impact__gallery-item--thumb" {{ block.shopify_attributes }}>
+                      {%- if block.settings.image != blank -%}
+                        {{ block.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: block.settings.image.alt | default: 'Thumbnail image' }}
+                      {%- else -%}
+                        {%- assign img_idx = forloop.index | modulo: 4 -%}
+                        {%- if img_idx == 0 -%}{%- assign img_idx = 4 -%}{%- endif -%}
+                        {%- assign fallback_name = 'impact-' | append: img_idx | append: '.jpg' -%}
+                        <img src="{{ fallback_name | asset_url }}" width="220" height="220" alt="Thumbnail" loading="lazy">
+                      {%- endif -%}
+                      {%- if block.settings.badge != blank -%}
+                        <span class="measurable-impact__img-badge">{{ block.settings.badge }}</span>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                  {%- if forloop.last and forloop.index > 1 -%}
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+
             {%- else -%}
+              <!-- Asymmetric Staggered Grid (Design Default) -->
+              <div class="measurable-impact__gallery-col measurable-impact__gallery-col--left">
+                {%- assign col1_count = 0 -%}
+                {%- for block in image_blocks -%}
+                  {%- assign is_col1 = forloop.index | modulo: 2 -%}
+                  {%- if is_col1 == 1 -%}
+                    {%- assign default_shape = 'portrait' -%}
+                    {%- if col1_count > 0 -%}{%- assign default_shape = 'square' -%}{%- endif -%}
+                    {%- assign item_shape = block.settings.shape -%}
+                    {%- if item_shape == 'auto' or item_shape == blank -%}{%- assign item_shape = default_shape -%}{%- endif -%}
+                    <div class="measurable-impact__gallery-item measurable-impact__gallery-item--{{ item_shape }}" {{ block.shopify_attributes }}>
+                      {%- if block.settings.image != blank -%}
+                        {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: block.settings.image.alt | default: 'Impact Gallery Image' }}
+                      {%- else -%}
+                        {%- assign img_idx = forloop.index | modulo: 4 -%}
+                        {%- if img_idx == 0 -%}{%- assign img_idx = 4 -%}{%- endif -%}
+                        {%- assign fallback_name = 'impact-' | append: img_idx | append: '.jpg' -%}
+                        <img src="{{ fallback_name | asset_url }}" width="346" height="448" alt="Impact image" loading="lazy">
+                      {%- endif -%}
+                      {%- if block.settings.badge != blank -%}
+                        <span class="measurable-impact__img-badge">{{ block.settings.badge }}</span>
+                      {%- endif -%}
+                    </div>
+                    {%- assign col1_count = col1_count | plus: 1 -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+
+              <div class="measurable-impact__gallery-col measurable-impact__gallery-col--right">
+                {%- assign col2_count = 0 -%}
+                {%- for block in image_blocks -%}
+                  {%- assign is_col1 = forloop.index | modulo: 2 -%}
+                  {%- if is_col1 == 0 -%}
+                    {%- assign default_shape = 'square' -%}
+                    {%- if col2_count > 0 -%}{%- assign default_shape = 'portrait' -%}{%- endif -%}
+                    {%- assign item_shape = block.settings.shape -%}
+                    {%- if item_shape == 'auto' or item_shape == blank -%}{%- assign item_shape = default_shape -%}{%- endif -%}
+                    <div class="measurable-impact__gallery-item measurable-impact__gallery-item--{{ item_shape }}" {{ block.shopify_attributes }}>
+                      {%- if block.settings.image != blank -%}
+                        {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: block.settings.image.alt | default: 'Impact Gallery Image' }}
+                      {%- else -%}
+                        {%- assign img_idx = forloop.index | modulo: 4 -%}
+                        {%- if img_idx == 0 -%}{%- assign img_idx = 4 -%}{%- endif -%}
+                        {%- assign fallback_name = 'impact-' | append: img_idx | append: '.jpg' -%}
+                        <img src="{{ fallback_name | asset_url }}" width="346" height="448" alt="Impact image" loading="lazy">
+                      {%- endif -%}
+                      {%- if block.settings.badge != blank -%}
+                        <span class="measurable-impact__img-badge">{{ block.settings.badge }}</span>
+                      {%- endif -%}
+                    </div>
+                    {%- assign col2_count = col2_count | plus: 1 -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+          {%- endcase -%}
+        {%- else -%}
+          <!-- Default Fallback if no image blocks configured in Theme Editor -->
+          <div class="measurable-impact__gallery-col measurable-impact__gallery-col--left">
+            <div class="measurable-impact__gallery-item measurable-impact__gallery-item--portrait">
               <img src="{{ 'impact-1.jpg' | asset_url }}" width="346" height="448" alt="Sustainable fashion model in linen dress" loading="lazy">
-            {%- endif -%}
-          </div>
-
-          <div class="measurable-impact__gallery-item measurable-impact__gallery-item--square">
-            {%- if section.settings.image_3 != blank -%}
-              <img src="{{ section.settings.image_3 | image_url: width: 800 }}" width="346" height="346" alt="{{ section.settings.image_3.alt | default: 'Folded organic knitwear sweaters' }}" loading="lazy">
-            {%- else -%}
+            </div>
+            <div class="measurable-impact__gallery-item measurable-impact__gallery-item--square">
               <img src="{{ 'impact-3.jpg' | asset_url }}" width="346" height="346" alt="Folded organic wool knitwear sweaters" loading="lazy">
-            {%- endif -%}
+            </div>
           </div>
-        </div>
-
-        <!-- Subcolumn 2 (Right): Square Image 2 (Top 346x346) + Portrait Image 4 (Bottom 346x448) -->
-        <div class="measurable-impact__gallery-col measurable-impact__gallery-col--right">
-          <div class="measurable-impact__gallery-item measurable-impact__gallery-item--square">
-            {%- if section.settings.image_2 != blank -%}
-              <img src="{{ section.settings.image_2 | image_url: width: 800 }}" width="346" height="346" alt="{{ section.settings.image_2.alt | default: 'Man in sustainable polo' }}" loading="lazy">
-            {%- else -%}
+          <div class="measurable-impact__gallery-col measurable-impact__gallery-col--right">
+            <div class="measurable-impact__gallery-item measurable-impact__gallery-item--square">
               <img src="{{ 'impact-2.jpg' | asset_url }}" width="346" height="346" alt="Man in olive organic polo shirt" loading="lazy">
-            {%- endif -%}
-          </div>
-
-          <div class="measurable-impact__gallery-item measurable-impact__gallery-item--portrait">
-            {%- if section.settings.image_4 != blank -%}
-              <img src="{{ section.settings.image_4 | image_url: width: 1000 }}" width="346" height="448" alt="{{ section.settings.image_4.alt | default: 'Couple walking in organic clothes' }}" loading="lazy">
-            {%- else -%}
+            </div>
+            <div class="measurable-impact__gallery-item measurable-impact__gallery-item--portrait">
               <img src="{{ 'impact-4.jpg' | asset_url }}" width="346" height="448" alt="Couple walking outdoors in sustainable clothing" loading="lazy">
-            {%- endif -%}
+            </div>
           </div>
-        </div>
-
+        {%- endif -%}
       </div>
     </div>
 
@@ -151,27 +333,58 @@
 
 {% stylesheet %}
   /* ==========================================================================
-     Measurable Impact Section (Full Width with 34px edge padding)
+     Measurable Impact Section (Full Width background with inner element control)
      ========================================================================== */
   .measurable-impact-section {
     grid-column: 1 / -1 !important;
     width: 100%;
     background-color: var(--mi-bg-color, #F1F4D8);
     color: var(--mi-text-color, #003225);
-    padding: 115px 34px 0;
+    padding: var(--mi-pt, 115px) 0 var(--mi-pb, 96px);
     box-sizing: border-box;
     overflow: hidden;
   }
 
   .measurable-impact__container {
     width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1.25fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
     gap: clamp(40px, 6vw, 100px);
     align-items: start;
     box-sizing: border-box;
+  }
+
+  /* 1. Full Width Mode (Inner elements expand edge-to-edge with 34px padding) */
+  .measurable-impact-section--full .measurable-impact__container {
+    max-width: 100%;
+    padding-left: clamp(20px, 2.5vw, 34px);
+    padding-right: clamp(20px, 2.5vw, 34px);
+    margin: 0 auto;
+  }
+
+  /* 2. Contained Mode (Inner elements constrained by Page Max Width & Page Margin) */
+  .measurable-impact-section--contained .measurable-impact__container {
+    max-width: var(--page-width, 1920px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(20px, 3vw, var(--page-margin, 20px));
+    padding-right: clamp(20px, 3vw, var(--page-margin, 20px));
+  }
+
+  /* Column Order Modifiers */
+  .measurable-impact-section--order-content_right .measurable-impact__container {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  }
+  .measurable-impact-section--order-content_right .measurable-impact__left {
+    order: 2;
+  }
+  .measurable-impact-section--order-content_right .measurable-impact__right {
+    order: 1;
+  }
+
+  /* Vertical Alignment */
+  .measurable-impact-section--valign-center .measurable-impact__container {
+    align-items: center;
   }
 
   /* Left Column Styling */
@@ -180,41 +393,59 @@
     flex-direction: column;
     justify-content: center;
     max-width: 600px;
-  }
-  .measurable-impact__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #556B3A;
-    margin-bottom: clamp(18px, 2.2vw, 28px);
-    letter-spacing: -0.01em;
+    min-width: 0;
   }
 
-  .measurable-impact__sparkle-icon {
-    flex-shrink: 0;
+  .measurable-impact__header-wrap {
+    width: 100%;
+    margin-bottom: clamp(32px, 4vw, 48px);
   }
 
-  .measurable-impact__heading {
-    font-size: var(--type-section-title, 2.625rem);
-    font-weight: 800;
-    line-height: 1.12;
-    letter-spacing: -0.035em;
-    color: var(--mi-text-color, #003225);
-    margin: 0 0 clamp(36px, 4.5vw, 56px) 0;
-  }
-
+  /* Metrics List */
   .measurable-impact__metrics-list {
     display: flex;
     flex-direction: column;
-    gap: clamp(30px, 4vw, 48px);
+    gap: clamp(28px, 3.5vw, 44px);
+    width: 100%;
   }
 
-  .measurable-impact__metric-item {
+  /* Style 1: Clean (Default Minimalist) */
+  .measurable-impact__metric-item--clean {
     display: flex;
     flex-direction: column;
     gap: 8px;
+  }
+
+  /* Style 2: Cards */
+  .measurable-impact__metric-item--cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: var(--mi-metric-card-bg, #ffffff);
+    padding: clamp(20px, 2.5vw, 28px);
+    border-radius: var(--mi-card-radius, 0px);
+    box-shadow: 0 4px 20px rgba(0, 50, 37, 0.05);
+    border: 1px solid var(--mi-metric-card-border, rgba(0, 50, 37, 0.08));
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .measurable-impact__metric-item--cards:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0, 50, 37, 0.1);
+  }
+
+  /* Style 3: Bordered */
+  .measurable-impact__metric-item--bordered {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: clamp(18px, 2vw, 24px);
+    border-radius: var(--mi-card-radius, 0px);
+    border: 1.5px solid var(--mi-metric-card-border, rgba(0, 50, 37, 0.18));
+    background-color: transparent;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+  }
+  .measurable-impact__metric-item--bordered:hover {
+    background-color: rgba(255, 255, 255, 0.35);
   }
 
   .measurable-impact__metric-header {
@@ -228,7 +459,7 @@
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.03em;
-    color: var(--mi-text-color, #003225);
+    color: var(--mi-metric-num-color, #003225);
   }
 
   .measurable-impact__smile-icon {
@@ -238,6 +469,7 @@
     width: clamp(44px, 3.8vw, 56px);
     height: clamp(44px, 3.8vw, 56px);
     flex-shrink: 0;
+    color: var(--mi-metric-icon-color, #556B3A);
   }
 
   .measurable-impact__smile-icon img,
@@ -246,41 +478,55 @@
     height: 100%;
     object-fit: contain;
     display: block;
+    fill: currentColor;
+  }
+
+  .measurable-impact__sparkle-text {
+    font-size: 2.2rem;
+    line-height: 1;
   }
 
   .measurable-impact__metric-text {
     font-size: clamp(0.9375rem, 1.2vw, 1.09375rem);
     line-height: 1.45;
-    color: var(--mi-text-color, #003225);
+    color: var(--mi-metric-text-color, #003225);
     margin: 0;
     max-width: 460px;
     letter-spacing: -0.01em;
     opacity: 0.92;
   }
-
-  .measurable-impact__right {
-    width: 100%;
+  .measurable-impact__metric-text p {
+    margin: 0;
   }
 
-  .measurable-impact__gallery-grid {
+  /* Right Column Styling: Gallery */
+  .measurable-impact__right {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Layout 1: Asymmetric Staggered Grid */
+  .measurable-impact__gallery-grid--asymmetric {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 30px;
+    gap: clamp(16px, 2.5vw, 30px);
     width: 100%;
   }
 
   .measurable-impact__gallery-col {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: clamp(16px, 2.5vw, 30px);
   }
 
   .measurable-impact__gallery-item {
     position: relative;
-    border-radius: 0px;
+    border-radius: var(--mi-card-radius, 0px);
     overflow: hidden;
     background-color: rgba(0, 50, 37, 0.04);
     width: 100%;
+    box-sizing: border-box;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
   }
 
   .measurable-impact__gallery-item--portrait {
@@ -295,62 +541,124 @@
     overflow: hidden;
   }
 
+  .measurable-impact__gallery-item--landscape {
+    aspect-ratio: 16 / 10;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .measurable-impact__gallery-item--hero {
+    aspect-ratio: 16 / 10;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .measurable-impact__gallery-item--thumb {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    overflow: hidden;
+  }
+
   .measurable-impact__gallery-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .measurable-impact__img-placeholder {
+  /* Layout 2: Equal 2x2 Grid */
+  .measurable-impact__gallery-equal {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(16px, 2.5vw, 24px);
     width: 100%;
-    height: 100%;
-    background-color: #E2E8CE;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .measurable-impact__img-placeholder svg {
-    width: 48px;
-    height: 48px;
-    opacity: 0.4;
   }
 
-  /* Responsive Design */
+  /* Layout 3: Hero + Thumbs */
+  .measurable-impact__gallery-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+  .measurable-impact__gallery-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  /* Floating Image Badge */
+  .measurable-impact__img-badge {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    z-index: 2;
+    background-color: rgba(0, 50, 37, 0.88);
+    color: #F8F9DC;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Hover Effects */
+  .measurable-impact__gallery-grid--hover-zoom .measurable-impact__gallery-item:hover img {
+    transform: scale(1.05);
+  }
+  .measurable-impact__gallery-grid--hover-lift .measurable-impact__gallery-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(0, 50, 37, 0.16);
+  }
+  .measurable-impact__gallery-grid--hover-glow .measurable-impact__gallery-item:hover {
+    box-shadow: 0 0 0 2px var(--color-secondary, #71CC3B), 0 12px 28px rgba(113, 204, 59, 0.2);
+  }
+
+  /* Responsive Breakpoints */
   @media (max-width: 1024px) {
     .measurable-impact-section {
-      padding: 60px 24px 70px;
+      padding: var(--mi-mpt, 60px) 0 var(--mi-mpb, 70px);
+    }
+
+    .measurable-impact-section--full .measurable-impact__container,
+    .measurable-impact-section--contained .measurable-impact__container {
+      padding-left: 24px;
+      padding-right: 24px;
     }
 
     .measurable-impact__container {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr !important;
       gap: 48px;
     }
 
-    .measurable-impact__heading {
+    .measurable-impact__left {
       max-width: 100%;
     }
   }
 
   @media (max-width: 768px) {
     .measurable-impact-section {
-      padding: 48px 20px 56px;
+      padding: var(--mi-mpt, 48px) 0 var(--mi-mpb, 56px);
+    }
+
+    .measurable-impact-section--full .measurable-impact__container,
+    .measurable-impact-section--contained .measurable-impact__container {
+      padding-left: 20px;
+      padding-right: 20px;
     }
 
     .measurable-impact__container {
       gap: 36px;
     }
 
-    .measurable-impact__heading {
-      font-size: 2.25rem !important;
-      line-height: 1.18;
-      margin-bottom: 28px;
+    .measurable-impact__header-wrap {
+      margin-bottom: 24px;
     }
 
     .measurable-impact__metrics-list {
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
+      gap: 24px;
     }
 
     .measurable-impact__metric-number {
@@ -367,13 +675,13 @@
       line-height: 1.4;
     }
 
-    .measurable-impact__gallery-grid {
+    .measurable-impact__gallery-grid--asymmetric {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
+      gap: 16px;
     }
 
     .measurable-impact__gallery-col {
-      gap: 20px;
+      gap: 16px;
     }
   }
 {% endstylesheet %}
@@ -383,52 +691,333 @@
   "name": "Measurable Impact",
   "settings": [
     {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make section full width",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "select",
+      "id": "header_layout",
+      "label": "Header Layout",
+      "options": [
+        { "value": "stacked_left", "label": "Stacked Left (Design Default)" },
+        { "value": "centered", "label": "Centered" },
+        { "value": "split", "label": "Split Columns" },
+        { "value": "split_btn", "label": "Split with Button" }
+      ],
+      "default": "stacked_left"
+    },
+    {
       "type": "text",
       "id": "eyebrow",
-      "label": "Eyebrow Text",
+      "label": "Eyebrow / Sub-tag",
       "default": "Measurable Change"
     },
     {
-      "type": "textarea",
+      "type": "checkbox",
+      "id": "show_eyebrow_icon",
+      "label": "Show Eyebrow Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow Color"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_desktop",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Desktop",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Size Mobile",
+      "default": 15
+    },
+    {
+      "type": "text",
       "id": "heading",
       "label": "Heading",
       "default": "Our footprint is small, but our impact is deep."
     },
     {
       "type": "color",
+      "id": "title_color",
+      "label": "Heading Color"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_leaf_icons",
+      "label": "Show Decorative Leaf Icon",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "leaf_position",
+      "label": "Leaf Icon Position",
+      "options": [
+        { "value": "none", "label": "None (Design Default)" },
+        { "value": "top", "label": "Top (Above Heading)" },
+        { "value": "left", "label": "Left of Heading" },
+        { "value": "both_sides", "label": "Both Sides of Heading" },
+        { "value": "right", "label": "Right of Heading" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "color",
+      "id": "leaf_color",
+      "label": "Leaf Icon Color",
+      "default": "#556B3A"
+    },
+    {
+      "type": "range",
+      "id": "leaf_gap",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Leaf Spacing / Gap",
+      "default": 12
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "min": 15,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Size Desktop",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Size Mobile",
+      "default": 18
+    },
+    {
+      "type": "text",
+      "id": "header_btn_text",
+      "label": "Action Button Text"
+    },
+    {
+      "type": "url",
+      "id": "header_btn_url",
+      "label": "Action Button Link"
+    },
+    {
+      "type": "select",
+      "id": "header_btn_type",
+      "label": "Action Button Style",
+      "options": [
+        { "value": "arrow", "label": "Arrow Button (Shop Collection →)" },
+        { "value": "solid", "label": "Solid Button (Shop Now)" },
+        { "value": "outline", "label": "Outline Button" }
+      ],
+      "default": "arrow"
+    },
+    {
+      "type": "select",
+      "id": "header_btn_theme",
+      "label": "Arrow Theme",
+      "options": [
+        { "value": "dark", "label": "Dark (on light bg)" },
+        { "value": "light", "label": "Light (on dark bg)" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_color",
+      "label": "Custom Button Color"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Presentation"
+    },
+    {
+      "type": "select",
+      "id": "column_order",
+      "label": "Column Alignment",
+      "options": [
+        { "value": "content_left", "label": "Content Left, Gallery Right" },
+        { "value": "content_right", "label": "Gallery Left, Content Right" }
+      ],
+      "default": "content_left"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Vertical Alignment",
+      "options": [
+        { "value": "start", "label": "Top Aligned" },
+        { "value": "center", "label": "Center Aligned" }
+      ],
+      "default": "start"
+    },
+    {
+      "type": "select",
+      "id": "metric_style",
+      "label": "Metric Items Style",
+      "options": [
+        { "value": "clean", "label": "Clean Minimal (Design Default)" },
+        { "value": "cards", "label": "Soft Cards with Shadow" },
+        { "value": "bordered", "label": "Bordered Outline Cards" }
+      ],
+      "default": "clean"
+    },
+    {
+      "type": "select",
+      "id": "gallery_layout",
+      "label": "Gallery Layout",
+      "options": [
+        { "value": "asymmetric", "label": "Asymmetric Collage (Design Default)" },
+        { "value": "equal_grid", "label": "Equal 2x2 Grid" },
+        { "value": "single_hero", "label": "1 Hero + Thumbnails" }
+      ],
+      "default": "asymmetric"
+    },
+    {
+      "type": "select",
+      "id": "image_hover_effect",
+      "label": "Image Hover Effect",
+      "options": [
+        { "value": "zoom", "label": "Smooth Zoom" },
+        { "value": "lift", "label": "Card Lift with Shadow" },
+        { "value": "glow", "label": "Green Accent Glow" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "zoom"
+    },
+    {
+      "type": "range",
+      "id": "image_corner_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Image Corner Radius",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Colors & Styling"
+    },
+    {
+      "type": "color",
       "id": "bg_color",
-      "label": "Background Color",
+      "label": "Section Background",
       "default": "#F1F4D8"
     },
     {
       "type": "color",
       "id": "text_color",
-      "label": "Text Color",
+      "label": "General Text Color",
       "default": "#003225"
     },
     {
+      "type": "color",
+      "id": "metric_number_color",
+      "label": "Metric Number Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "metric_text_color",
+      "label": "Metric Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "metric_icon_color",
+      "label": "Metric Icon Color",
+      "default": "#556B3A"
+    },
+    {
+      "type": "color",
+      "id": "metric_card_bg",
+      "label": "Card Background (Card Style)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "metric_card_border",
+      "label": "Card Border Color (Bordered Style)",
+      "default": "rgba(0, 50, 37, 0.18)"
+    },
+    {
       "type": "header",
-      "content": "Images Grid"
+      "content": "Section Padding"
     },
     {
-      "type": "image_picker",
-      "id": "image_1",
-      "label": "Image 1 (Top Left - Tall)"
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top (Desktop)",
+      "default": 116
     },
     {
-      "type": "image_picker",
-      "id": "image_2",
-      "label": "Image 2 (Top Right - Medium)"
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom (Desktop)",
+      "default": 96
     },
     {
-      "type": "image_picker",
-      "id": "image_3",
-      "label": "Image 3 (Bottom Left - Landscape)"
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top (Mobile)",
+      "default": 48
     },
     {
-      "type": "image_picker",
-      "id": "image_4",
-      "label": "Image 4 (Bottom Right - Portrait)"
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom (Mobile)",
+      "default": 56
     }
   ],
   "blocks": [
@@ -444,8 +1033,24 @@
         },
         {
           "type": "select",
+          "id": "icon_type",
+          "label": "Icon Type",
+          "options": [
+            { "value": "smile", "label": "Smile Icon (Design Default)" },
+            { "value": "leaf", "label": "Leaf Icon" },
+            { "value": "drop", "label": "Water Drop Icon" },
+            { "value": "tree", "label": "Tree Icon" },
+            { "value": "co2", "label": "CO₂ / Net Zero Icon" },
+            { "value": "sparkle", "label": "Sparkle ✨" },
+            { "value": "custom", "label": "Custom Image (Upload below)" },
+            { "value": "none", "label": "None (Hide Icon)" }
+          ],
+          "default": "smile"
+        },
+        {
+          "type": "select",
           "id": "icon_position",
-          "label": "Smile Icon Position",
+          "label": "Icon Position",
           "options": [
             {
               "value": "right",
@@ -461,19 +1066,96 @@
         {
           "type": "checkbox",
           "id": "show_smile",
-          "label": "Show Smile Icon",
+          "label": "Show Icon",
           "default": true
         },
         {
           "type": "image_picker",
           "id": "custom_icon",
-          "label": "Custom Icon (Optional override)"
+          "label": "Custom Icon Image"
         },
         {
-          "type": "textarea",
+          "type": "richtext",
           "id": "text",
           "label": "Description Text",
-          "default": "Liters of water saved compared to traditional manufacturing processes."
+          "default": "<p>Liters of water saved compared to traditional manufacturing processes.</p>"
+        }
+      ]
+    },
+    {
+      "type": "image_item",
+      "name": "Gallery Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Floating Badge Text (Optional)"
+        },
+        {
+          "type": "select",
+          "id": "shape",
+          "label": "Aspect Ratio / Shape",
+          "options": [
+            { "value": "auto", "label": "Auto (Follow Gallery Grid)" },
+            { "value": "portrait", "label": "Portrait (Tall 3:4)" },
+            { "value": "square", "label": "Square (1:1)" },
+            { "value": "landscape", "label": "Landscape (16:10)" }
+          ],
+          "default": "auto"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Image Link (Optional)"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Action Button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Label",
+          "default": "EXPLORE JOURNAL"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "select",
+          "id": "button_type",
+          "label": "Button Style",
+          "options": [
+            { "value": "arrow", "label": "Arrow Button (Shop Collection →)" },
+            { "value": "solid", "label": "Solid Button (Shop Now)" },
+            { "value": "outline", "label": "Outline Button" }
+          ],
+          "default": "arrow"
+        },
+        {
+          "type": "select",
+          "id": "arrow_theme",
+          "label": "Arrow Theme",
+          "options": [
+            { "value": "dark", "label": "Dark (on light bg)" },
+            { "value": "light", "label": "Light (on dark bg)" }
+          ],
+          "default": "dark"
+        },
+        {
+          "type": "color",
+          "id": "custom_color",
+          "label": "Custom Button Color"
         }
       ]
     }
@@ -486,27 +1168,54 @@
           "type": "metric",
           "settings": {
             "number": "50k+",
+            "icon_type": "smile",
             "icon_position": "right",
             "show_smile": true,
-            "text": "Liters of water saved compared to traditional manufacturing processes."
+            "text": "<p>Liters of water saved compared to traditional manufacturing processes.</p>"
           }
         },
         {
           "type": "metric",
           "settings": {
             "number": "100%",
+            "icon_type": "smile",
             "icon_position": "left",
             "show_smile": true,
-            "text": "Plastic-free packaging. Every box we ship returns to the earth as compost."
+            "text": "<p>Plastic-free packaging. Every box we ship returns to the earth as compost.</p>"
           }
         },
         {
           "type": "metric",
           "settings": {
             "number": "12,400",
+            "icon_type": "smile",
             "icon_position": "right",
             "show_smile": true,
-            "text": "Native trees planted across our partner organic farms this year."
+            "text": "<p>Native trees planted across our partner organic farms this year.</p>"
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "badge": ""
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "badge": ""
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "badge": ""
+          }
+        },
+        {
+          "type": "image_item",
+          "settings": {
+            "badge": ""
           }
         }
       ]
