@@ -1,242 +1,335 @@
-<section class="earth-farmers earth-farmers-{{ section.id }} full-width" id="earthFarmers-{{ section.id }}">
-  <!-- 1. Full-Width Section Header (34px Padding on left & right) -->
-  <div class="earth-farmers__header-container">
-    <div class="earth-farmers__header">
-      <div class="earth-farmers__header-left">
-        <div class="earth-farmers__leaf-icon-wrap" aria-hidden="true">
-          <svg class="earth-farmers__leaf-icon" width="34" height="30" viewBox="0 0 41 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M36.5053 0C31.3399 8.60515 23.6183 8.25605 18.7209 16.5435C18.1501 17.5098 17.7216 18.4694 17.4006 19.4141C17.9201 19.9982 18.4198 20.6252 18.8896 21.3102C21.8992 25.6864 22.0051 29.5861 21.469 32.2433C28.2393 23.9243 33.6728 14.439 36.3796 4.02875C33.8597 15.1885 28.2277 25.4233 21.1299 34.3842C24.0269 34.7664 31.8942 34.8442 37.1803 25.7609C44.5942 13.0194 36.5053 0 36.5053 0Z" fill="currentColor"/>
-            <path d="M18.1567 21.8148C12.4933 13.5753 2.73161 13.3403 0 13.4462C1.99535 16.7238 2.37093 19.7351 2.73492 22.652C3.11711 25.7112 3.4778 28.6 5.61213 31.7518C9.73022 37.8305 16.8298 37.081 18.3536 36.8378C14.5465 28.4031 9.27192 20.5375 2.15915 14.5548C9.4109 20.1818 14.9651 27.7198 19.1229 35.9047C20.435 33.7439 22.6801 28.3931 18.1567 21.8148Z" fill="currentColor"/>
-          </svg>
+<section class="earth-farmers earth-farmers-{{ section.id }}{% if section.settings.full_width %} earth-farmers--full{% else %} earth-farmers--contained{% endif %}{% if section.settings.full_width %} full-width{% endif %}" id="earthFarmers-{{ section.id }}">
+  <div class="earth-farmers__inner-container">
+    
+    <!-- 1. Section Header -->
+    <div class="earth-farmers__header-container earth-farmers__header-container--align-{{ section.settings.heading_alignment | default: 'left' }}">
+      <div class="earth-farmers__header">
+        <div class="earth-farmers__header-content">
+          {%- if section.settings.show_leaf_icon -%}
+            <div class="earth-farmers__leaf-icon-wrap" aria-hidden="true">
+              <svg class="earth-farmers__leaf-icon" width="34" height="30" viewBox="0 0 41 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M36.5053 0C31.3399 8.60515 23.6183 8.25605 18.7209 16.5435C18.1501 17.5098 17.7216 18.4694 17.4006 19.4141C17.9201 19.9982 18.4198 20.6252 18.8896 21.3102C21.8992 25.6864 22.0051 29.5861 21.469 32.2433C28.2393 23.9243 33.6728 14.439 36.3796 4.02875C33.8597 15.1885 28.2277 25.4233 21.1299 34.3842C24.0269 34.7664 31.8942 34.8442 37.1803 25.7609C44.5942 13.0194 36.5053 0 36.5053 0Z" fill="currentColor"/>
+                <path d="M18.1567 21.8148C12.4933 13.5753 2.73161 13.3403 0 13.4462C1.99535 16.7238 2.37093 19.7351 2.73492 22.652C3.11711 25.7112 3.4778 28.6 5.61213 31.7518C9.73022 37.8305 16.8298 37.081 18.3536 36.8378C14.5465 28.4031 9.27192 20.5375 2.15915 14.5548C9.4109 20.1818 14.9651 27.7198 19.1229 35.9047C20.435 33.7439 22.6801 28.3931 18.1567 21.8148Z" fill="currentColor"/>
+              </svg>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.title != blank -%}
+            <h2 class="earth-farmers__title">{{ section.settings.title }}</h2>
+          {%- endif -%}
+
+          {%- if section.settings.subtitle != blank -%}
+            <div class="earth-farmers__subtitle">{{ section.settings.subtitle }}</div>
+          {%- endif -%}
         </div>
-        <h2 class="earth-farmers__title">{{ section.settings.title | default: 'The hands that hold the harvest' }}</h2>
-        {%- if section.settings.subtitle != blank -%}
-          <p class="earth-farmers__subtitle">{{ section.settings.subtitle }}</p>
-        {%- endif -%}
       </div>
     </div>
-  </div>
 
-  <!-- 2. Full-Width Edge-to-Edge Slider Track (34px Padding & Gap) -->
-  <div class="earth-farmers__slider-wrapper">
-    <!-- Left Floating Navigation Arrow (Appears on hover) -->
-    <button type="button" class="earth-farmers__nav-btn earth-farmers__nav-btn--prev" id="earthFarmersPrev-{{ section.id }}" aria-label="Previous artisan story">
-      <span class="earth-farmers__icon-arrow earth-farmers__icon-arrow--prev" aria-hidden="true">{{ 'icon-prev-left.svg' | inline_asset_content }}</span>
-    </button>
-
-    <div class="earth-farmers__track" id="earthFarmersTrack-{{ section.id }}" tabindex="0" role="region" aria-label="Artisan Stories Slider">
+    <!-- 2. Slider / Grid Showcase Area -->
+    <div class="earth-farmers__showcase-wrapper earth-farmers__showcase-wrapper--{{ section.settings.layout_mode | default: 'slider' }}" id="earthFarmersWrapper-{{ section.id }}">
       
-      {%- if section.blocks.size > 0 -%}
-        {%- for block in section.blocks -%}
-          <div class="earth-farmers__slide" {{ block.shopify_attributes }}>
-            <div class="earth-farmers__card">
-              
-              <!-- Card Image Box -->
-              <div class="earth-farmers__media-box">
-                {%- if block.settings.image != blank -%}
-                  {{ block.settings.image | image_url: width: 900 | image_tag: 
-                    alt: block.settings.name, 
-                    class: 'earth-farmers__img', 
-                    loading: 'lazy',
-                    widths: '300, 450, 600, 900' 
-                  }}
-                {%- else -%}
-                  {%- assign fallback_num = forloop.index0 | modulo: 6 | plus: 1 -%}
-                  {%- assign fallback_img = 'farmer-' | append: fallback_num | append: '.jpg' -%}
-                  <img 
-                    src="{{ fallback_img | asset_url }}" 
-                    alt="{{ block.settings.name | default: 'Artisan Story' }}" 
-                    class="earth-farmers__img" 
-                    width="600" 
-                    height="500" 
-                    loading="lazy"
-                  >
-                {%- endif -%}
-              </div>
+      {%- if section.settings.layout_mode != 'grid' and section.settings.show_nav_arrows != false -%}
+        <!-- Left Floating Navigation Arrow -->
+        <button 
+          type="button" 
+          class="earth-farmers__nav-btn earth-farmers__nav-btn--prev is-disabled{% if section.settings.nav_arrow_visibility == 'always' %} earth-farmers__nav-btn--always{% endif %}" 
+          id="earthFarmersPrev-{{ section.id }}" 
+          aria-label="Previous artisan story"
+        >
+          <span class="earth-farmers__icon-arrow earth-farmers__icon-arrow--prev" aria-hidden="true">{{ 'icon-prev-left.svg' | inline_asset_content }}</span>
+        </button>
+      {%- endif -%}
 
-              <!-- Quote Text -->
-              {%- if block.settings.quote != blank -%}
-                <blockquote class="earth-farmers__quote">
-                  “{{ block.settings.quote }}”
-                </blockquote>
-              {%- endif -%}
-
-              <!-- Bottom Meta Row: Name, Role & Badge -->
-              <div class="earth-farmers__meta-row">
-                <div class="earth-farmers__author">
-                  <span class="earth-farmers__name">{{ block.settings.name }}</span>
-                  {%- if block.settings.role_location != blank -%}
-                    <span class="earth-farmers__role">{{ block.settings.role_location }}</span>
+      <!-- Horizontal Slider Track or Grid Layout -->
+      <div 
+        class="earth-farmers__track earth-farmers__track--{{ section.settings.layout_mode | default: 'slider' }} earth-farmers__track--cols-{{ section.settings.columns_desktop | default: '3' }}" 
+        id="earthFarmersTrack-{{ section.id }}" 
+        tabindex="0" 
+        role="region" 
+        aria-label="Artisan Stories"
+      >
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            <div class="earth-farmers__slide" {{ block.shopify_attributes }}>
+              <div 
+                class="earth-farmers__card{% if section.settings.card_shadow != 'none' %} earth-farmers__card--shadow-{{ section.settings.card_shadow }}{% endif %}{% if section.settings.card_border %} earth-farmers__card--bordered{% endif %}"
+                style="{% if block.settings.custom_card_bg != blank and block.settings.custom_card_bg != 'rgba(0,0,0,0)' %}background-color: {{ block.settings.custom_card_bg }};{% endif %}"
+              >
+                
+                <!-- Card Image Box -->
+                <div class="earth-farmers__media-box earth-farmers__media-box--aspect-{{ section.settings.card_image_aspect | default: '0.95' }}">
+                  {%- if block.settings.image != blank -%}
+                    {{ block.settings.image | image_url: width: 900 | image_tag: 
+                      alt: block.settings.name, 
+                      class: 'earth-farmers__img', 
+                      loading: 'lazy',
+                      widths: '300, 450, 600, 900' 
+                    }}
+                  {%- else -%}
+                    {%- assign fallback_num = forloop.index0 | modulo: 6 | plus: 1 -%}
+                    {%- assign fallback_img = 'farmer-' | append: fallback_num | append: '.jpg' -%}
+                    <img 
+                      src="{{ fallback_img | asset_url }}" 
+                      alt="{{ block.settings.name | default: 'Artisan Story' }}" 
+                      class="earth-farmers__img" 
+                      width="600" 
+                      height="500" 
+                      loading="lazy"
+                    >
                   {%- endif -%}
                 </div>
 
-                {%- if block.settings.badge != blank -%}
-                  <div class="earth-farmers__badge-wrap">
-                    <span class="earth-farmers__badge">{{ block.settings.badge }}</span>
-                  </div>
+                <!-- Quote Text -->
+                {%- if block.settings.quote != blank -%}
+                  <blockquote class="earth-farmers__quote{% if section.settings.quote_style == 'italic' %} earth-farmers__quote--italic{% endif %}">
+                    {%- if section.settings.show_quote_marks -%}“{%- endif -%}
+                    {{ block.settings.quote }}
+                    {%- if section.settings.show_quote_marks -%}”{%- endif -%}
+                  </blockquote>
                 {%- endif -%}
-              </div>
 
-            </div>
-          </div>
-        {%- endfor -%}
+                <!-- Bottom Meta Row: Name, Role & Practice Badge -->
+                <div class="earth-farmers__meta-row">
+                  <div class="earth-farmers__author">
+                    {%- if block.settings.name != blank -%}
+                      <span class="earth-farmers__name">{{ block.settings.name }}</span>
+                    {%- endif -%}
+                    {%- if block.settings.role_location != blank -%}
+                      <span class="earth-farmers__role">{{ block.settings.role_location }}</span>
+                    {%- endif -%}
+                  </div>
 
-      {%- else -%}
-        <!-- Default Curated Stories (6 Items) -->
-        <!-- Story 1: Ananya R. -->
-        <div class="earth-farmers__slide">
-          <div class="earth-farmers__card">
-            <div class="earth-farmers__media-box">
-              <img src="{{ 'farmer-1.jpg' | asset_url }}" alt="Ananya R." class="earth-farmers__img" width="600" height="500" loading="lazy">
-            </div>
-            <blockquote class="earth-farmers__quote">
-              “I grow this cotton for my children, so they may inherit a soil that is healthy and full of life.”
-            </blockquote>
-            <div class="earth-farmers__meta-row">
-              <div class="earth-farmers__author">
-                <span class="earth-farmers__name">Ananya R.</span>
-                <span class="earth-farmers__role">Organic Farmer, Gujarat</span>
-              </div>
-              <div class="earth-farmers__badge-wrap">
-                <span class="earth-farmers__badge">Regenerative Practice</span>
-              </div>
-            </div>
-          </div>
-        </div>
+                  {%- if block.settings.badge != blank -%}
+                    <div class="earth-farmers__badge-wrap">
+                      <span class="earth-farmers__badge">{{ block.settings.badge }}</span>
+                    </div>
+                  {%- endif -%}
+                </div>
 
-        <!-- Story 2: Mateo S. -->
-        <div class="earth-farmers__slide">
-          <div class="earth-farmers__card">
-            <div class="earth-farmers__media-box">
-              <img src="{{ 'farmer-2.jpg' | asset_url }}" alt="Mateo S." class="earth-farmers__img" width="600" height="500" loading="lazy">
-            </div>
-            <blockquote class="earth-farmers__quote">
-              “Every thread is a silent conversation between my hands and the fibers of the Earth.”
-            </blockquote>
-            <div class="earth-farmers__meta-row">
-              <div class="earth-farmers__author">
-                <span class="earth-farmers__name">Mateo S.</span>
-                <span class="earth-farmers__role">Master Weaver, Peru</span>
               </div>
-              <div class="earth-farmers__badge-wrap">
-                <span class="earth-farmers__badge">Fair Trade Certified</span>
+            </div>
+          {%- endfor -%}
+
+        {%- else -%}
+          <!-- Fallback Preset Items if no blocks exist -->
+          <!-- Story 1: Ananya R. -->
+          <div class="earth-farmers__slide">
+            <div class="earth-farmers__card">
+              <div class="earth-farmers__media-box earth-farmers__media-box--aspect-{{ section.settings.card_image_aspect | default: '0.95' }}">
+                <img src="{{ 'farmer-1.jpg' | asset_url }}" alt="Ananya R." class="earth-farmers__img" width="600" height="500" loading="lazy">
+              </div>
+              <blockquote class="earth-farmers__quote">
+                “I grow this cotton for my children, so they may inherit a soil that is healthy and full of life.”
+              </blockquote>
+              <div class="earth-farmers__meta-row">
+                <div class="earth-farmers__author">
+                  <span class="earth-farmers__name">Ananya R.</span>
+                  <span class="earth-farmers__role">Organic Farmer, Gujarat</span>
+                </div>
+                <div class="earth-farmers__badge-wrap">
+                  <span class="earth-farmers__badge">Regenerative Practice</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Story 3: Elias K. -->
-        <div class="earth-farmers__slide">
-          <div class="earth-farmers__card">
-            <div class="earth-farmers__media-box">
-              <img src="{{ 'farmer-3.jpg' | asset_url }}" alt="Elias K." class="earth-farmers__img" width="600" height="500" loading="lazy">
-            </div>
-            <blockquote class="earth-farmers__quote">
-              “Sustainability is not a modern trend to us; it is the only way we know how to work with flax — patiently and respectfully.”
-            </blockquote>
-            <div class="earth-farmers__meta-row">
-              <div class="earth-farmers__author">
-                <span class="earth-farmers__name">Elias K.</span>
-                <span class="earth-farmers__role">Flax Cultivator, Belgium</span>
+          <!-- Story 2: Mateo S. -->
+          <div class="earth-farmers__slide">
+            <div class="earth-farmers__card">
+              <div class="earth-farmers__media-box earth-farmers__media-box--aspect-{{ section.settings.card_image_aspect | default: '0.95' }}">
+                <img src="{{ 'farmer-2.jpg' | asset_url }}" alt="Mateo S." class="earth-farmers__img" width="600" height="500" loading="lazy">
               </div>
-              <div class="earth-farmers__badge-wrap">
-                <span class="earth-farmers__badge">Zero Chemical</span>
+              <blockquote class="earth-farmers__quote">
+                “Every thread is a silent conversation between my hands and the fibers of the Earth.”
+              </blockquote>
+              <div class="earth-farmers__meta-row">
+                <div class="earth-farmers__author">
+                  <span class="earth-farmers__name">Mateo S.</span>
+                  <span class="earth-farmers__role">Master Weaver, Peru</span>
+                </div>
+                <div class="earth-farmers__badge-wrap">
+                  <span class="earth-farmers__badge">Fair Trade Certified</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Story 4: Sophia L. -->
-        <div class="earth-farmers__slide">
-          <div class="earth-farmers__card">
-            <div class="earth-farmers__media-box">
-              <img src="{{ 'farmer-4.jpg' | asset_url }}" alt="Sophia L." class="earth-farmers__img" width="600" height="500" loading="lazy">
-            </div>
-            <blockquote class="earth-farmers__quote">
-              “Colors harvested from nature contain a soul and softness that synthetic chemicals can never replicate.”
-            </blockquote>
-            <div class="earth-farmers__meta-row">
-              <div class="earth-farmers__author">
-                <span class="earth-farmers__name">Sophia L.</span>
-                <span class="earth-farmers__role">Botanical Dye Specialist, Portugal</span>
+          <!-- Story 3: Elias K. -->
+          <div class="earth-farmers__slide">
+            <div class="earth-farmers__card">
+              <div class="earth-farmers__media-box earth-farmers__media-box--aspect-{{ section.settings.card_image_aspect | default: '0.95' }}">
+                <img src="{{ 'farmer-3.jpg' | asset_url }}" alt="Elias K." class="earth-farmers__img" width="600" height="500" loading="lazy">
               </div>
-              <div class="earth-farmers__badge-wrap">
-                <span class="earth-farmers__badge">Non-Toxic Dyes</span>
+              <blockquote class="earth-farmers__quote">
+                “Sustainability is not a modern trend to us; it is the only way we know how to work with flax — patiently and respectfully.”
+              </blockquote>
+              <div class="earth-farmers__meta-row">
+                <div class="earth-farmers__author">
+                  <span class="earth-farmers__name">Elias K.</span>
+                  <span class="earth-farmers__role">Flax Cultivator, Belgium</span>
+                </div>
+                <div class="earth-farmers__badge-wrap">
+                  <span class="earth-farmers__badge">Zero Chemical</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Story 5: Hiroshi T. -->
-        <div class="earth-farmers__slide">
-          <div class="earth-farmers__card">
-            <div class="earth-farmers__media-box">
-              <img src="{{ 'farmer-5.jpg' | asset_url }}" alt="Hiroshi T." class="earth-farmers__img" width="600" height="500" loading="lazy">
-            </div>
-            <blockquote class="earth-farmers__quote">
-              “True circular denim begins with reverence for the harvest and ends with garments crafted to outlast a lifetime.”
-            </blockquote>
-            <div class="earth-farmers__meta-row">
-              <div class="earth-farmers__author">
-                <span class="earth-farmers__name">Hiroshi T.</span>
-                <span class="earth-farmers__role">Organic Denim Artisan, Japan</span>
+          <!-- Story 4: Sophia L. -->
+          <div class="earth-farmers__slide">
+            <div class="earth-farmers__card">
+              <div class="earth-farmers__media-box earth-farmers__media-box--aspect-{{ section.settings.card_image_aspect | default: '0.95' }}">
+                <img src="{{ 'farmer-4.jpg' | asset_url }}" alt="Sophia L." class="earth-farmers__img" width="600" height="500" loading="lazy">
               </div>
-              <div class="earth-farmers__badge-wrap">
-                <span class="earth-farmers__badge">Zero Waste Artisan</span>
+              <blockquote class="earth-farmers__quote">
+                “Colors harvested from nature contain a soul and softness that synthetic chemicals can never replicate.”
+              </blockquote>
+              <div class="earth-farmers__meta-row">
+                <div class="earth-farmers__author">
+                  <span class="earth-farmers__name">Sophia L.</span>
+                  <span class="earth-farmers__role">Botanical Dye Specialist, Portugal</span>
+                </div>
+                <div class="earth-farmers__badge-wrap">
+                  <span class="earth-farmers__badge">Non-Toxic Dyes</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Story 6: Nadia B. -->
-        <div class="earth-farmers__slide">
-          <div class="earth-farmers__card">
-            <div class="earth-farmers__media-box">
-              <img src="{{ 'farmer-6.jpg' | asset_url }}" alt="Nadia B." class="earth-farmers__img" width="600" height="500" loading="lazy">
-            </div>
-            <blockquote class="earth-farmers__quote">
-              “Protecting pasture biodiversity ensures our sheep thrive naturally without harming water systems.”
-            </blockquote>
-            <div class="earth-farmers__meta-row">
-              <div class="earth-farmers__author">
-                <span class="earth-farmers__name">Nadia B.</span>
-                <span class="earth-farmers__role">Regenerative Wool Shepherd, New Zealand</span>
+          <!-- Story 5: Hiroshi T. -->
+          <div class="earth-farmers__slide">
+            <div class="earth-farmers__card">
+              <div class="earth-farmers__media-box earth-farmers__media-box--aspect-{{ section.settings.card_image_aspect | default: '0.95' }}">
+                <img src="{{ 'farmer-5.jpg' | asset_url }}" alt="Hiroshi T." class="earth-farmers__img" width="600" height="500" loading="lazy">
               </div>
-              <div class="earth-farmers__badge-wrap">
-                <span class="earth-farmers__badge">Animal Welfare</span>
+              <blockquote class="earth-farmers__quote">
+                “True circular denim begins with reverence for the harvest and ends with garments crafted to outlast a lifetime.”
+              </blockquote>
+              <div class="earth-farmers__meta-row">
+                <div class="earth-farmers__author">
+                  <span class="earth-farmers__name">Hiroshi T.</span>
+                  <span class="earth-farmers__role">Organic Denim Artisan, Japan</span>
+                </div>
+                <div class="earth-farmers__badge-wrap">
+                  <span class="earth-farmers__badge">Zero Waste Artisan</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
+          <!-- Story 6: Nadia B. -->
+          <div class="earth-farmers__slide">
+            <div class="earth-farmers__card">
+              <div class="earth-farmers__media-box earth-farmers__media-box--aspect-{{ section.settings.card_image_aspect | default: '0.95' }}">
+                <img src="{{ 'farmer-6.jpg' | asset_url }}" alt="Nadia B." class="earth-farmers__img" width="600" height="500" loading="lazy">
+              </div>
+              <blockquote class="earth-farmers__quote">
+                “Protecting pasture biodiversity ensures our sheep thrive naturally without harming water systems.”
+              </blockquote>
+              <div class="earth-farmers__meta-row">
+                <div class="earth-farmers__author">
+                  <span class="earth-farmers__name">Nadia B.</span>
+                  <span class="earth-farmers__role">Regenerative Wool Shepherd, New Zealand</span>
+                </div>
+                <div class="earth-farmers__badge-wrap">
+                  <span class="earth-farmers__badge">Animal Welfare</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.layout_mode != 'grid' and section.settings.show_nav_arrows != false -%}
+        <!-- Right Floating Navigation Arrow -->
+        <button 
+          type="button" 
+          class="earth-farmers__nav-btn earth-farmers__nav-btn--next{% if section.settings.nav_arrow_visibility == 'always' %} earth-farmers__nav-btn--always{% endif %}" 
+          id="earthFarmersNext-{{ section.id }}" 
+          aria-label="Next artisan story"
+        >
+          <span class="earth-farmers__icon-arrow earth-farmers__icon-arrow--next" aria-hidden="true">{{ 'icon-next-right.svg' | inline_asset_content }}</span>
+        </button>
       {%- endif -%}
 
     </div>
-
-    <!-- Right Floating Navigation Arrow (Appears on hover) -->
-    <button type="button" class="earth-farmers__nav-btn earth-farmers__nav-btn--next" id="earthFarmersNext-{{ section.id }}" aria-label="Next artisan story">
-      <span class="earth-farmers__icon-arrow earth-farmers__icon-arrow--next" aria-hidden="true">{{ 'icon-next-right.svg' | inline_asset_content }}</span>
-    </button>
   </div>
 </section>
+
+<style>
+  .earth-farmers-{{ section.id }} {
+    --farmer-bg: {{ section.settings.section_bg_color | default: '#F1F4D8' }};
+    --farmer-text: {{ section.settings.section_text_color | default: '#003225' }};
+    --farmer-leaf: {{ section.settings.leaf_color | default: '#71CC3B' }};
+    --farmer-card-bg: {{ section.settings.card_bg_color | default: '#EAE060' }};
+    --farmer-card-text: {{ section.settings.card_text_color | default: '#003225' }};
+    --farmer-card-radius: {{ section.settings.card_corner_radius | default: 0 }}px;
+    --farmer-card-padding: {{ section.settings.card_padding | default: 36 }}px;
+    --farmer-card-border-color: {{ section.settings.card_border_color | default: '#E0D650' }};
+    --farmer-img-radius: {{ section.settings.image_corner_radius | default: 0 }}px;
+    --farmer-quote-size: {{ section.settings.quote_font_size | default: 19 }}px;
+    --farmer-author-size: {{ section.settings.author_name_size | default: 19 }}px;
+    --farmer-badge-bg: {{ section.settings.badge_bg_color | default: '#003225' }};
+    --farmer-badge-text: {{ section.settings.badge_text_color | default: '#F8F9DC' }};
+    --farmer-badge-radius: {{ section.settings.badge_border_radius | default: 20 }}px;
+    --farmer-nav-size: {{ section.settings.nav_btn_size | default: 48 }}px;
+    --farmer-nav-bg: {{ section.settings.nav_bg_color | default: '#F8F9DC' }};
+    --farmer-nav-color: {{ section.settings.nav_icon_color | default: '#003225' }};
+    --farmer-nav-hover-bg: {{ section.settings.nav_hover_bg_color | default: '#71CC3B' }};
+    --farmer-nav-hover-color: {{ section.settings.nav_hover_icon_color | default: '#003225' }};
+    --farmer-pt: {{ section.settings.padding_top | default: 116 }}px;
+    --farmer-pb: {{ section.settings.padding_bottom | default: 116 }}px;
+    --farmer-pt-mob: {{ section.settings.mobile_padding_top | default: 50 }}px;
+    --farmer-pb-mob: {{ section.settings.mobile_padding_bottom | default: 60 }}px;
+    --farmer-gap: {{ section.settings.columns_gap | default: 34 }}px;
+  }
+</style>
 
 {% stylesheet %}
   .earth-farmers {
     grid-column: 1 / -1 !important;
     width: 100%;
-    background-color: #F1F4D8;
-    color: var(--color-black, #003225);
-    padding-top: 115px;
+    background-color: var(--farmer-bg, #F1F4D8);
+    color: var(--farmer-text, #003225);
+    padding-top: var(--farmer-pt, 116px);
+    padding-bottom: var(--farmer-pb, 116px);
     box-sizing: border-box;
     overflow: hidden;
+    position: relative;
   }
 
-  /* 1. Header (Full Width with 34px padding) */
+  /* Full Width vs Contained inner layout */
+  .earth-farmers--full .earth-farmers__inner-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .earth-farmers--contained .earth-farmers__inner-container {
+    max-width: var(--page-width, 1440px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(20px, 3vw, 40px);
+    padding-right: clamp(20px, 3vw, 40px);
+    box-sizing: border-box;
+  }
+
+  /* 1. Header (Full Width with 34px padding or Contained) */
   .earth-farmers__header-container {
     width: 100%;
+    box-sizing: border-box;
+  }
+
+  .earth-farmers--full .earth-farmers__header-container {
     padding-left: 34px;
     padding-right: 34px;
-    box-sizing: border-box;
+  }
+
+  .earth-farmers--contained .earth-farmers__header-container {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .earth-farmers__header {
@@ -246,16 +339,26 @@
     gap: 24px;
   }
 
-  .earth-farmers__header-left {
+  .earth-farmers__header-container--align-left .earth-farmers__header-content {
     max-width: 680px;
+    text-align: left;
+    margin-right: auto;
+  }
+
+  .earth-farmers__header-container--align-center .earth-farmers__header-content {
+    max-width: 780px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .earth-farmers__leaf-icon-wrap {
     margin-bottom: 12px;
     display: inline-block;
   }
+
   .earth-farmers__leaf-icon {
-    color: var(--color-secondary, #71CC3B);
+    color: var(--farmer-leaf, #71CC3B);
     width: clamp(28px, 3vw, 36px);
     height: auto;
     display: block;
@@ -266,37 +369,40 @@
     font-weight: 800;
     line-height: 1.12;
     letter-spacing: -0.02em;
-    color: var(--color-black, #003225);
+    color: var(--farmer-text, #003225);
     margin: 0 0 14px;
   }
 
   .earth-farmers__subtitle {
     font-size: var(--type-section-subtitle, 1.3125rem);
     line-height: 1.55;
-    color: var(--color-black, #003225);
+    color: var(--farmer-text, #003225);
     opacity: 0.88;
     margin: 0;
   }
+  .earth-farmers__subtitle p {
+    margin: 0;
+  }
 
-  /* 2. Full-Width Edge-to-Edge Slider Track (34px Padding & 34px Gap) */
-  .earth-farmers__slider-wrapper {
+  /* 2. Slider & Showcase Wrapper */
+  .earth-farmers__showcase-wrapper {
     position: relative;
     width: 100%;
     margin-top: clamp(36px, 4.5vw, 52px);
   }
 
-  /* Floating Navigation Arrows (Visible on hover of slider wrapper) */
+  /* Floating Navigation Arrows */
   .earth-farmers__nav-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
-    width: 48px;
-    height: 48px;
+    width: var(--farmer-nav-size, 48px);
+    height: var(--farmer-nav-size, 48px);
     border-radius: 50%;
-    background-color: var(--color-white, #F8F9DC);
-    border: 1.5px solid var(--color-white, #F8F9DC);
-    color: var(--color-black, #003225);
+    background-color: var(--farmer-nav-bg, #F8F9DC);
+    border: 1.5px solid var(--farmer-nav-bg, #F8F9DC);
+    color: var(--farmer-nav-color, #003225);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -304,20 +410,37 @@
     box-shadow: 0 4px 16px rgba(0, 50, 37, 0.16);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s ease, background-color 0.25s ease, border-color 0.25s ease;
+    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
   }
-  .earth-farmers__slider-wrapper:hover .earth-farmers__nav-btn {
+
+  .earth-farmers__nav-btn--always {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .earth-farmers__showcase-wrapper:hover .earth-farmers__nav-btn {
     opacity: 1;
     visibility: visible;
   }
-  .earth-farmers__nav-btn:hover {
-    background-color: var(--color-secondary, #71CC3B);
-    border-color: var(--color-secondary, #71CC3B);
+
+  .earth-farmers__nav-btn:hover:not(.is-disabled) {
+    background-color: var(--farmer-nav-hover-bg, #71CC3B);
+    border-color: var(--farmer-nav-hover-bg, #71CC3B);
+    color: var(--farmer-nav-hover-color, #003225);
     transform: translateY(-50%) scale(1.06);
   }
+
+  .earth-farmers__nav-btn.is-disabled {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    cursor: default;
+  }
+
   .earth-farmers__nav-btn--prev {
     left: clamp(16px, 2.5vw, 36px);
   }
+
   .earth-farmers__nav-btn--next {
     right: clamp(16px, 2.5vw, 36px);
   }
@@ -341,84 +464,158 @@
   .earth-farmers__icon-arrow--next {
     transform: rotate(0deg);
   }
-  .earth-farmers__nav-btn--next:hover .earth-farmers__icon-arrow--next {
+  .earth-farmers__nav-btn--next:hover:not(.is-disabled) .earth-farmers__icon-arrow--next {
     transform: rotate(45deg);
   }
   .earth-farmers__icon-arrow--prev {
     transform: rotate(0deg);
   }
-  .earth-farmers__nav-btn--prev:hover .earth-farmers__icon-arrow--prev {
+  .earth-farmers__nav-btn--prev:hover:not(.is-disabled) .earth-farmers__icon-arrow--prev {
     transform: rotate(-45deg);
   }
 
-  .earth-farmers__track {
+  /* Slider Track vs Grid Container */
+  .earth-farmers__track--slider {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    scroll-padding-left: 34px;
-    scroll-padding-right: 34px;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    gap: 34px;
-    padding-left: 34px;
-    padding-right: 34px;
+    gap: var(--farmer-gap, 34px);
     padding-top: 0;
     padding-bottom: 0;
     box-sizing: border-box;
   }
-  .earth-farmers__track::-webkit-scrollbar {
+
+  .earth-farmers--full .earth-farmers__track--slider,
+  .earth-farmers--full .earth-farmers__track--grid {
+    padding-left: 34px;
+    padding-right: 34px;
+  }
+
+  .earth-farmers--full .earth-farmers__track--slider {
+    scroll-padding-left: 34px;
+    scroll-padding-right: 34px;
+  }
+
+  .earth-farmers--contained .earth-farmers__track--slider,
+  .earth-farmers--contained .earth-farmers__track--grid {
+    padding-left: 0;
+    padding-right: 0;
+    scroll-padding-left: 0;
+    scroll-padding-right: 0;
+  }
+
+  .earth-farmers__track--slider::-webkit-scrollbar {
     display: none;
   }
 
-  /* Slide Items: Prominent, wide cards */
-  .earth-farmers__slide {
+  .earth-farmers__track--slider .earth-farmers__slide {
     flex: 0 0 clamp(360px, 36vw, 540px);
     min-width: 320px;
     scroll-snap-align: start;
     box-sizing: border-box;
   }
 
+  /* Grid Layout Mode */
+  .earth-farmers__track--grid {
+    display: grid;
+    gap: var(--farmer-gap, 34px);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .earth-farmers__track--grid.earth-farmers__track--cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .earth-farmers__track--grid.earth-farmers__track--cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .earth-farmers__track--grid.earth-farmers__track--cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .earth-farmers__track--grid .earth-farmers__slide {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
   /* Card */
   .earth-farmers__card {
-    background-color: var(--color-accent);
-    color: var(--color-black, #003225);
-    padding: clamp(24px, 2.8vw, 36px);
+    background-color: var(--farmer-card-bg, #EAE060);
+    color: var(--farmer-card-text, #003225);
+    padding: var(--farmer-card-padding, clamp(24px, 2.8vw, 36px));
+    border-radius: var(--farmer-card-radius, 0px);
     display: flex;
     flex-direction: column;
     height: 100%;
     box-sizing: border-box;
-    border-radius: 0px;
   }
 
-  /* Media Box */
+  /* Card Shadows */
+  .earth-farmers__card--shadow-soft {
+    box-shadow: 0 6px 20px rgba(0, 50, 37, 0.08);
+  }
+  .earth-farmers__card--shadow-elevated {
+    box-shadow: 0 12px 32px rgba(0, 50, 37, 0.14);
+  }
+  .earth-farmers__card--bordered {
+    border: 1px solid var(--farmer-card-border-color, #E0D650);
+  }
+
+  /* Media Box & Aspect Ratios */
   .earth-farmers__media-box {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 0.95;
     overflow: hidden;
+    border-radius: var(--farmer-img-radius, 0px);
     background-color: #c9d23e;
     margin-bottom: clamp(20px, 2.2vw, 28px);
   }
+
+  .earth-farmers__media-box--aspect-0\.95 {
+    aspect-ratio: 1 / 0.95;
+  }
+  .earth-farmers__media-box--aspect-1 {
+    aspect-ratio: 1 / 1;
+  }
+  .earth-farmers__media-box--aspect-1\.25 {
+    aspect-ratio: 4 / 5;
+  }
+  .earth-farmers__media-box--aspect-0\.75 {
+    aspect-ratio: 4 / 3;
+  }
+
   .earth-farmers__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center top;
     display: block;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+  }
+
+  .earth-farmers__card:hover .earth-farmers__img {
+    transform: scale(1.04);
   }
 
   /* Quote */
   .earth-farmers__quote {
-    font-size: clamp(17px, 1.4vw, 21px);
+    font-size: clamp(16px, 1.4vw, var(--farmer-quote-size, 19px));
     font-weight: 500;
     line-height: 1.45;
-    color: var(--color-black, #003225);
+    color: var(--farmer-card-text, #003225);
     margin: 0 0 clamp(24px, 2.8vw, 36px);
     padding: 0;
     border: none;
     flex-grow: 1;
     font-style: normal;
+  }
+
+  .earth-farmers__quote--italic {
+    font-style: italic;
   }
 
   /* Meta Row */
@@ -439,15 +636,15 @@
   }
 
   .earth-farmers__name {
-    font-size: 19px;
+    font-size: var(--farmer-author-size, 19px);
     font-weight: 800;
-    color: var(--color-black, #003225);
+    color: var(--farmer-card-text, #003225);
     letter-spacing: -0.01em;
   }
 
   .earth-farmers__role {
-    font-size: 18px;
-    color: var(--color-black, #003225);
+    font-size: clamp(15px, 1.2vw, 18px);
+    color: var(--farmer-card-text, #003225);
     opacity: 0.85;
     line-height: 1.2;
   }
@@ -455,33 +652,45 @@
   .earth-farmers__badge-wrap {
     flex-shrink: 0;
   }
+
   .earth-farmers__badge {
     display: inline-block;
-    background-color: var(--color-black, #003225);
-    color: var(--color-white, #F8F9DC);
+    background-color: var(--farmer-badge-bg, #003225);
+    color: var(--farmer-badge-text, #F8F9DC);
     font-size: 15px;
     font-weight: 400;
     padding: 6px 16px;
-    border-radius: 20px;
+    border-radius: var(--farmer-badge-radius, 20px);
     letter-spacing: 0.02em;
     white-space: nowrap;
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
 
   /* Responsive Breakpoints */
   @media (max-width: 1024px) {
-    .earth-farmers__header-container {
+    .earth-farmers--full .earth-farmers__header-container {
       padding-left: 24px;
       padding-right: 24px;
     }
-    .earth-farmers__slide {
+    .earth-farmers--full .earth-farmers__track--slider,
+    .earth-farmers--full .earth-farmers__track--grid {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    .earth-farmers__track--slider .earth-farmers__slide {
       flex: 0 0 clamp(320px, 46vw, 440px);
       min-width: 290px;
+    }
+    .earth-farmers__track--grid.earth-farmers__track--cols-3,
+    .earth-farmers__track--grid.earth-farmers__track--cols-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
   @media (max-width: 768px) {
     .earth-farmers {
-      padding: 50px 0 60px;
+      padding-top: var(--farmer-pt-mob, 50px);
+      padding-bottom: var(--farmer-pb-mob, 60px);
     }
     .earth-farmers__title {
       font-size: 2.25rem !important;
@@ -489,7 +698,7 @@
     .earth-farmers__subtitle {
       font-size: 1.125rem;
     }
-    .earth-farmers__header-container {
+    .earth-farmers--full .earth-farmers__header-container {
       padding-left: 20px;
       padding-right: 20px;
     }
@@ -501,18 +710,18 @@
     .earth-farmers__leaf-icon-wrap {
       display: none !important;
     }
-    .earth-farmers__header-right {
-      display: none !important;
-    }
-    .earth-farmers__slider-wrapper {
+    .earth-farmers__showcase-wrapper {
       margin-top: 24px;
       width: 100% !important;
       overflow: visible;
     }
     .earth-farmers__nav-btn {
-      display: none;
+      display: none !important;
     }
-    .earth-farmers__track {
+    
+    /* Mobile track scrolls smoothly horizontally */
+    .earth-farmers__track--slider,
+    .earth-farmers__track--grid {
       display: flex !important;
       overflow-x: auto !important;
       scroll-snap-type: x mandatory !important;
@@ -524,7 +733,8 @@
       margin: 0 !important;
       gap: 16px !important;
     }
-    .earth-farmers__track::-webkit-scrollbar {
+    .earth-farmers__track--slider::-webkit-scrollbar,
+    .earth-farmers__track--grid::-webkit-scrollbar {
       display: none !important;
     }
     .earth-farmers__slide {
@@ -561,7 +771,31 @@
       var prevBtn = document.getElementById('earthFarmersPrev-' + sectionId);
       var nextBtn = document.getElementById('earthFarmersNext-' + sectionId);
 
-      if (!track || !prevBtn || !nextBtn) return;
+      if (!track) return;
+
+      function updateNavState() {
+        if (!prevBtn || !nextBtn) return;
+        var scrollLeft = track.scrollLeft;
+        var maxScroll = track.scrollWidth - track.clientWidth;
+
+        if (maxScroll <= 4) {
+          prevBtn.classList.add('is-disabled');
+          nextBtn.classList.add('is-disabled');
+          return;
+        }
+
+        if (scrollLeft <= 4) {
+          prevBtn.classList.add('is-disabled');
+        } else {
+          prevBtn.classList.remove('is-disabled');
+        }
+
+        if (scrollLeft >= maxScroll - 4) {
+          nextBtn.classList.add('is-disabled');
+        } else {
+          nextBtn.classList.remove('is-disabled');
+        }
+      }
 
       function getScrollStep() {
         var slide = track.querySelector('.earth-farmers__slide');
@@ -571,24 +805,29 @@
         return slide.offsetWidth + gap;
       }
 
-      nextBtn.addEventListener('click', function() {
-        var maxScroll = track.scrollWidth - track.clientWidth;
-        if (track.scrollLeft >= maxScroll - 2) {
-          // Already at the last item - do nothing, no overscroll
-          return;
-        }
-        var target = Math.min(track.scrollLeft + getScrollStep(), maxScroll);
-        track.scrollTo({ left: target, behavior: 'smooth' });
-      });
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+          var maxScroll = track.scrollWidth - track.clientWidth;
+          if (track.scrollLeft >= maxScroll - 2) return;
+          var target = Math.min(track.scrollLeft + getScrollStep(), maxScroll);
+          track.scrollTo({ left: target, behavior: 'smooth' });
+        });
+      }
 
-      prevBtn.addEventListener('click', function() {
-        if (track.scrollLeft <= 2) {
-          // Already at the first item - do nothing
-          return;
-        }
-        var target = Math.max(track.scrollLeft - getScrollStep(), 0);
-        track.scrollTo({ left: target, behavior: 'smooth' });
-      });
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+          if (track.scrollLeft <= 2) return;
+          var target = Math.max(track.scrollLeft - getScrollStep(), 0);
+          track.scrollTo({ left: target, behavior: 'smooth' });
+        });
+      }
+
+      // Scroll listener for disabled buttons state
+      track.addEventListener('scroll', updateNavState, { passive: true });
+      window.addEventListener('resize', updateNavState, { passive: true });
+
+      // Initial check
+      updateNavState();
 
       // Keyboard navigation
       track.addEventListener('keydown', function(e) {
@@ -621,16 +860,383 @@
   "class": "earth-farmers-section",
   "settings": [
     {
+      "type": "header",
+      "content": "Section Content & Data"
+    },
+    {
       "type": "text",
       "id": "title",
       "label": "Heading",
       "default": "The hands that hold the harvest"
     },
     {
-      "type": "textarea",
+      "type": "checkbox",
+      "id": "show_leaf_icon",
+      "label": "Show Decorative Leaf Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "leaf_color",
+      "label": "Leaf Icon Color",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "richtext",
       "id": "subtitle",
       "label": "Subtitle",
-      "default": "Meet the farmers and artisans who cultivate our materials with generations of wisdom and care for the earth."
+      "default": "<p>Meet the farmers and artisans who cultivate our materials with generations of wisdom and care for the earth.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Presentation"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make Section Full Width",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "layout_mode",
+      "label": "Layout Mode",
+      "options": [
+        {
+          "value": "slider",
+          "label": "Edge-to-Edge Slider / Carousel"
+        },
+        {
+          "value": "grid",
+          "label": "Grid Showcase"
+        }
+      ],
+      "default": "slider"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Columns in Grid Mode",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "columns_gap",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Card Spacing / Gap",
+      "default": 34
+    },
+    {
+      "type": "header",
+      "content": "Card Styling & Shape"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card Background Color",
+      "default": "#EAE060"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Card Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "card_corner_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Card Corner Radius",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Card Inner Padding",
+      "default": 36
+    },
+    {
+      "type": "select",
+      "id": "card_shadow",
+      "label": "Card Shadow Effect",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "soft",
+          "label": "Soft Floating Shadow"
+        },
+        {
+          "value": "elevated",
+          "label": "Elevated Shadow"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_border",
+      "label": "Show Card Border",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card Border Color",
+      "default": "#E0D650"
+    },
+    {
+      "type": "header",
+      "content": "Media & Portrait Image"
+    },
+    {
+      "type": "select",
+      "id": "card_image_aspect",
+      "label": "Portrait Aspect Ratio",
+      "options": [
+        {
+          "value": "0.95",
+          "label": "Original Natural (1:0.95)"
+        },
+        {
+          "value": "1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "1.25",
+          "label": "Portrait (4:5)"
+        },
+        {
+          "value": "0.75",
+          "label": "Landscape (4:3)"
+        }
+      ],
+      "default": "0.95"
+    },
+    {
+      "type": "range",
+      "id": "image_corner_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Image Corner Radius",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Typography & Badge"
+    },
+    {
+      "type": "range",
+      "id": "quote_font_size",
+      "min": 15,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Quote Font Size",
+      "default": 19
+    },
+    {
+      "type": "select",
+      "id": "quote_style",
+      "label": "Quote Style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quote_marks",
+      "label": "Show Quotation Marks",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "author_name_size",
+      "min": 15,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Author Name Font Size",
+      "default": 19
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Badge Background Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge Text Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "range",
+      "id": "badge_border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Badge Pill Radius",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Slider Navigation Controls"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_nav_arrows",
+      "label": "Show Navigation Arrows",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "nav_arrow_visibility",
+      "label": "Arrow Visibility",
+      "options": [
+        {
+          "value": "hover",
+          "label": "Show on Hover"
+        },
+        {
+          "value": "always",
+          "label": "Always Visible"
+        }
+      ],
+      "default": "hover"
+    },
+    {
+      "type": "range",
+      "id": "nav_btn_size",
+      "min": 36,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Arrow Button Size",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "nav_bg_color",
+      "label": "Arrow Button Background",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "nav_icon_color",
+      "label": "Arrow Icon Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "nav_hover_bg_color",
+      "label": "Arrow Hover Background",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "color",
+      "id": "nav_hover_icon_color",
+      "label": "Arrow Hover Icon Color",
+      "default": "#003225"
+    },
+    {
+      "type": "header",
+      "content": "Section Colors & Padding"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section Background Color",
+      "default": "#F1F4D8"
+    },
+    {
+      "type": "color",
+      "id": "section_text_color",
+      "label": "Heading & Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Padding Top",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Padding Bottom",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile Padding Top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile Padding Bottom",
+      "default": 60
     }
   ],
   "blocks": [
@@ -639,15 +1245,13 @@
       "name": "Artisan Story",
       "settings": [
         {
+          "type": "header",
+          "content": "Artisan Data & Content"
+        },
+        {
           "type": "image_picker",
           "id": "image",
           "label": "Artisan Portrait Image"
-        },
-        {
-          "type": "textarea",
-          "id": "quote",
-          "label": "Quote / Testimonial",
-          "default": "I grow this cotton for my children, so they may inherit a soil that is healthy and full of life."
         },
         {
           "type": "text",
@@ -662,10 +1266,26 @@
           "default": "Organic Farmer, Gujarat"
         },
         {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote / Testimonial",
+          "default": "I grow this cotton for my children, so they may inherit a soil that is healthy and full of life."
+        },
+        {
           "type": "text",
           "id": "badge",
           "label": "Practice Badge",
           "default": "Regenerative Practice"
+        },
+        {
+          "type": "header",
+          "content": "Card Custom Styling (Optional)"
+        },
+        {
+          "type": "color",
+          "id": "custom_card_bg",
+          "label": "Custom Card Background",
+          "info": "Leave blank to use the section-wide card background color."
         }
       ]
     }
@@ -673,6 +1293,9 @@
   "presets": [
     {
       "name": "Farmer & Artisan Stories",
+      "settings": {
+        "full_width": true
+      },
       "blocks": [
         {
           "type": "farmer_story",

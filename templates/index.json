@@ -451,7 +451,8 @@
       ],
       "settings": {
         "title": "The hands that hold the harvest",
-        "subtitle": "Meet the farmers and artisans who cultivate our materials with generations of wisdom and care for the earth."
+        "subtitle": "Meet the farmers and artisans who cultivate our materials with generations of wisdom and care for the earth.",
+        "full_width": true
       }
     },
     "measurable_impact": {
