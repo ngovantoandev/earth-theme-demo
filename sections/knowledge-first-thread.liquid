@@ -20,7 +20,7 @@
         {%- endif -%}
         <h2 class="knowledge-thread__title">
           {%- if section.settings.show_leaf_icon != false -%}
-            <span class="knowledge-thread__title-leaf" aria-hidden="true">
+            <span class="knowledge-thread__title-leaf" aria-hidden="true" style="{% if section.settings.leaf_color != blank %}--leaf-color: {{ section.settings.leaf_color }};{% else %}--leaf-color: var(--color-accent, #EAE060);{% endif %}">
               {{ 'icon-leaf-2.svg' | inline_asset_content }}
             </span>
           {%- endif -%}
@@ -305,14 +305,17 @@
     width: clamp(28px, 2.5vw, 36px);
     height: clamp(28px, 2.5vw, 36px);
     flex-shrink: 0;
+    color: var(--leaf-color, var(--color-accent, #EAE060));
   }
   .knowledge-thread__title-leaf img,
   .knowledge-thread__title-leaf svg {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: brightness(0) invert(1);
     display: block;
+  }
+  .knowledge-thread__title-leaf svg path {
+    fill: var(--leaf-color, var(--color-accent, #EAE060)) !important;
   }
 
   .knowledge-thread__header-right {
@@ -849,6 +852,12 @@
       "id": "show_leaf_icon",
       "label": "Show Decorative Leaf in Heading",
       "default": true
+    },
+    {
+      "type": "color",
+      "id": "leaf_color",
+      "label": "Leaf Icon Color",
+      "info": "Leave blank for theme accent color"
     },
     {
       "type": "text",
