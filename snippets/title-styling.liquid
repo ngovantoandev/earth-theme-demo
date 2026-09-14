@@ -356,41 +356,16 @@
 
   /* 2 & 3. Split Layouts (Left Title, Right column with Subtitle & Button) */
   .earth-section-header__split {
-    display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
-    align-items: flex-start;
-    gap: clamp(32px, 5vw, 64px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     width: 100%;
     box-sizing: border-box;
   }
 
-  /* Split Ratios (1.4fr/1fr, 1fr/1fr, 2fr/1fr, 1fr/2fr) */
-  .earth-section-header__split--ratio-1fr_1fr,
-  .earth-section-header__split--ratio-equal,
-  .earth-section-header--split_equal .earth-section-header__split,
-  .earth-section-header__split--equal {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-  }
-  .earth-section-header__split--ratio-1fr_1fr .earth-section-header__split-right,
-  .earth-section-header__split--ratio-equal .earth-section-header__split-right,
-  .earth-section-header--split_equal .earth-section-header__split-right,
-  .earth-section-header__split--equal .earth-section-header__split-right {
-    max-width: 100% !important;
-  }
-
-  .earth-section-header__split--ratio-2fr_1fr {
-    grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr) !important;
-  }
-
-  .earth-section-header__split--ratio-1fr_2fr {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) !important;
-  }
-  .earth-section-header__split--ratio-1fr_2fr .earth-section-header__split-right {
-    max-width: 100% !important;
-  }
-
   .earth-section-header__split-left {
     min-width: 0;
+    width: 100%;
   }
 
   .earth-section-header__split-right {
@@ -399,12 +374,51 @@
     align-items: flex-start;
     text-align: left;
     gap: 16px;
-    max-width: 440px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .earth-section-header__btn-wrap {
     margin-top: 4px;
     display: inline-flex;
+  }
+
+  @media (min-width: 769px) {
+    .earth-section-header__split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+      align-items: flex-start;
+      gap: clamp(32px, 5vw, 64px);
+    }
+
+    /* Split Ratios (1.4fr/1fr, 1fr/1fr, 2fr/1fr, 1fr/2fr) */
+    .earth-section-header__split--ratio-1fr_1fr,
+    .earth-section-header__split--ratio-equal,
+    .earth-section-header--split_equal .earth-section-header__split,
+    .earth-section-header__split--equal {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .earth-section-header__split--ratio-1fr_1fr .earth-section-header__split-right,
+    .earth-section-header__split--ratio-equal .earth-section-header__split-right,
+    .earth-section-header--split_equal .earth-section-header__split-right,
+    .earth-section-header__split--equal .earth-section-header__split-right {
+      max-width: 100%;
+    }
+
+    .earth-section-header__split--ratio-2fr_1fr {
+      grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+    }
+
+    .earth-section-header__split--ratio-1fr_2fr {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
+    .earth-section-header__split--ratio-1fr_2fr .earth-section-header__split-right {
+      max-width: 100%;
+    }
+
+    .earth-section-header__split-right {
+      max-width: 440px;
+    }
   }
 
   /* 4. Stacked Left Layout */
@@ -419,11 +433,14 @@
       font-size: var(--header-eyebrow-size-mobile, 15px);
     }
     .earth-section-header__split {
-      grid-template-columns: 1fr;
-      gap: 14px;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 14px !important;
     }
+    .earth-section-header__split-left,
     .earth-section-header__split-right {
-      max-width: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
     }
     .earth-section-header__title {
       font-size: var(--header-title-size-mobile, 2.125rem) !important;
@@ -431,8 +448,10 @@
     .earth-section-header__subtitle {
       font-size: var(--header-sub-size-mobile, 18px);
     }
+    .earth-section-header__leaf,
+    .earth-section-header__leaf-wrap,
     .earth-section-header__leaf-top {
-      margin-bottom: 8px;
+      display: none !important;
     }
   }
 </style>

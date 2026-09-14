@@ -221,8 +221,11 @@
       padding-top: var(--truth-pt, 0px);
       padding-bottom: calc(var(--truth-pb, 96px) * 0.7);
     }
+    .earth-truth--full .earth-truth__container,
+    .earth-truth--contained .earth-truth__container,
     .earth-truth__container {
-      padding: 0 24px;
+      padding-left: 24px;
+      padding-right: 24px;
     }
   }
 
@@ -231,26 +234,50 @@
       padding-top: var(--truth-mpt, 0px);
       padding-bottom: var(--truth-mpb, 48px);
     }
+    .earth-truth--full .earth-truth__container,
+    .earth-truth--contained .earth-truth__container,
     .earth-truth__container {
-      padding: 0 20px;
+      padding-left: 20px !important;
+      padding-right: 20px !important;
     }
     .earth-truth__banner {
-      padding: 30px 20px 26px 20px;
+      padding: 32px 22px 30px 22px;
       margin-bottom: 28px;
-      border-radius: 0;
-      background: linear-gradient(180deg, #1b470f 0%, #12340a 100%);
+      border-radius: 2px;
+      background: linear-gradient(170deg, #245817 0%, #173f0d 100%);
+    }
+    .earth-truth__banner-header .earth-section-header__eyebrow {
+      font-size: 14px !important;
+      margin-bottom: 12px !important;
+    }
+    .earth-truth__banner-header .earth-section-header__title {
+      font-size: clamp(28px, 8vw, 36px) !important;
+      line-height: 1.15 !important;
+      margin-bottom: 16px !important;
+      letter-spacing: -0.02em;
     }
     .earth-truth__banner-header .earth-section-header__subtitle {
-      font-size: var(--header-sub-size-mobile, 18px) !important;
+      font-size: 16px !important;
+      line-height: 1.55 !important;
+      margin-bottom: 24px !important;
+      opacity: 0.95;
+    }
+    .earth-truth__banner-header .earth-section-header__btn-wrap {
+      margin-top: 0;
+      width: auto;
     }
     .earth-truth__banner-header .earth-btn-action {
       width: auto;
       display: inline-block;
-      padding: 12px 22px;
-      font-size: 13px;
+      padding: 13px 24px;
+      font-size: 14px;
       font-weight: 800;
-      letter-spacing: 0.05em;
-      border-radius: 0;
+      letter-spacing: 0.04em;
+      border-radius: 2px;
+      text-align: center;
+      background-color: #F8F9DC;
+      color: #003225;
+      border: 1.5px solid #F8F9DC;
     }
     /* Horizontal Scrolling Metrics Row on Mobile */
     .earth-truth__metrics-row {

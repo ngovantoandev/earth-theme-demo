@@ -515,8 +515,11 @@
       padding-top: calc(var(--transparency-pt, 96px) * 0.7);
       padding-bottom: calc(var(--transparency-pb, 40px) * 0.7);
     }
+    .earth-transparency--full .earth-transparency__container,
+    .earth-transparency--contained .earth-transparency__container,
     .earth-transparency__container {
-      padding: 0 24px;
+      padding-left: 24px;
+      padding-right: 24px;
     }
     .earth-transparency__cards-grid {
       grid-template-columns: 1fr !important;
@@ -532,8 +535,11 @@
       padding-top: var(--transparency-mpt, 48px);
       padding-bottom: var(--transparency-mpb, 24px);
     }
+    .earth-transparency--full .earth-transparency__container,
+    .earth-transparency--contained .earth-transparency__container,
     .earth-transparency__container {
-      padding: 0 20px;
+      padding-left: 20px !important;
+      padding-right: 20px !important;
     }
     .earth-transparency__header-container {
       margin-bottom: 28px;
