@@ -7,7 +7,7 @@
 {% endcomment %}
 
 <section 
-  class="earth-transparency full-width" 
+  class="earth-transparency full-width{% if section.settings.full_width != false %} earth-transparency--full{% else %} earth-transparency--contained{% endif %}" 
   id="earthTransparency-{{ section.id }}"
   style="
     --transparency-bg: {{ section.settings.bg_color | default: '#F8F9DC' }}; 
@@ -261,9 +261,19 @@
     overflow: hidden;
   }
 
-  .earth-transparency__container {
+  .earth-transparency--full .earth-transparency__container {
     width: 100%;
+    max-width: 100%;
     padding: 0 34px;
+    box-sizing: border-box;
+  }
+
+  .earth-transparency--contained .earth-transparency__container {
+    max-width: var(--page-width, 1440px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(20px, 3vw, 40px);
+    padding-right: clamp(20px, 3vw, 40px);
     box-sizing: border-box;
   }
 
@@ -695,6 +705,12 @@
       "unit": "px",
       "label": "Cards Grid Spacing Gap",
       "default": 36
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make section full width",
+      "default": true
     },
     {
       "type": "header",

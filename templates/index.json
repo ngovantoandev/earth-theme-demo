@@ -748,6 +748,7 @@
         "supply_chain"
       ],
       "settings": {
+        "full_width": true,
         "header_layout": "split",
         "eyebrow": "Our Commitment",
         "title": "Transparency Spotlight",
@@ -795,6 +796,7 @@
         "m_4"
       ],
       "settings": {
+        "full_width": true,
         "bg_color": "#F8F9DC",
         "header_layout": "split",
         "header_split_ratio": "1fr_1fr",

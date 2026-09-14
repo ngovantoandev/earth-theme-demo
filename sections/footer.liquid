@@ -1,22 +1,48 @@
 {{ 'critical.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign bg_color = section.settings.bg_color | default: '#F8F9DC'
+  assign text_color = section.settings.text_color | default: '#003225'
+  assign nl_bg = section.settings.newsletter_bg_color | default: '#18420C'
+  assign nl_text = section.settings.newsletter_text_color | default: '#F8F9DC'
+  assign nl_input_bg = section.settings.newsletter_input_bg | default: '#F8F9DC'
+  assign nl_input_color = section.settings.newsletter_input_color | default: '#003225'
+  assign nl_btn_bg = section.settings.newsletter_btn_bg | default: '#71CC3B'
+  assign nl_btn_color = section.settings.newsletter_btn_color | default: '#003225'
+  assign nl_btn_radius = section.settings.newsletter_btn_radius | default: 2
+  assign social_btn_bg = section.settings.social_btn_bg | default: '#18420C'
+  assign social_btn_color = section.settings.social_btn_color | default: '#F8F9DC'
+  assign social_btn_hover = section.settings.social_btn_hover_bg | default: '#71CC3B'
+  assign pt_d = section.settings.desktop_padding_top | default: 110
+  assign pb_d = section.settings.desktop_padding_bottom | default: 36
+  assign pt_m = section.settings.mobile_padding_top | default: 36
+  assign pb_m = section.settings.mobile_padding_bottom | default: 28
+-%}
+
 {%- style -%}
   .earth-footer-section {
     width: 100%;
     margin-top: 0;
-    color: #003225;
-    background-color: #F8F9DC;
+    color: {{ text_color }};
+    background-color: {{ bg_color }};
     font-family: var(--font-primary--family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    --footer-bg: {{ bg_color }};
+    --footer-text: {{ text_color }};
+    --footer-pt-d: {{ pt_d }}px;
+    --footer-pb-d: {{ pb_d }}px;
+    --footer-pt-m: {{ pt_m }}px;
+    --footer-pb-m: {{ pb_m }}px;
   }
 
   /* ==========================================================================
      Top Newsletter Banner
      ========================================================================== */
   .earth-footer__newsletter {
-    background-color: #18420C;
-    color: #F8F9DC;
+    background-color: {{ nl_bg }};
+    color: {{ nl_text }};
     padding: clamp(36px, 4vw, 56px) 34px;
     width: 100%;
+    box-sizing: border-box;
   }
 
   .earth-footer__newsletter-container {
@@ -29,12 +55,28 @@
     gap: 32px;
   }
 
+  .earth-footer__newsletter-container--stacked {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .earth-footer__newsletter-container--stacked .earth-footer__newsletter-title {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .earth-footer__newsletter-container--stacked .earth-footer__newsletter-form-wrap {
+    max-width: 520px;
+  }
+
   .earth-footer__newsletter-title {
-    font-size: 42px;
+    font-size: {{ section.settings.newsletter_title_size_desktop | default: 42 }}px;
     font-weight: 800;
     line-height: 1.15;
     letter-spacing: -0.025em;
-    color: #F8F9DC;
+    color: {{ nl_text }};
     margin: 0;
     max-width: 580px;
   }
@@ -50,8 +92,8 @@
   .earth-footer__newsletter-form {
     display: flex;
     align-items: center;
-    background-color: #F8F9DC;
-    border-radius: 2px;
+    background-color: {{ nl_input_bg }};
+    border-radius: {{ nl_btn_radius }}px;
     padding: 3px 4px 3px 16px;
     position: relative;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -62,14 +104,14 @@
     border: none;
     background: transparent;
     font-size: 18px;
-    color: var(--color-black);
+    color: {{ nl_input_color }};
     outline: none;
     padding: 9px 0;
     font-family: inherit;
   }
 
   .earth-footer__newsletter-input::placeholder {
-    color: #003225;
+    color: {{ nl_input_color }};
     opacity: 0.85;
     font-weight: 400;
   }
@@ -77,15 +119,21 @@
   .earth-footer__newsletter-submit {
     width: 42px;
     height: 42px;
-    background-color: #71CC3B;
+    background-color: {{ nl_btn_bg }};
     border: none;
-    border-radius: 2px;
+    border-radius: {{ nl_btn_radius }}px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     flex-shrink: 0;
     padding: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .earth-footer__newsletter-submit:hover {
+    opacity: 0.92;
+    transform: scale(1.03);
   }
 
   .earth-footer__submit-arrow {
@@ -94,18 +142,19 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    color: {{ nl_btn_color }};
   }
 
   .earth-footer__submit-arrow svg {
     width: 13px;
     height: auto;
     display: block;
-    filter: brightness(0) saturate(100%) invert(14%) sepia(45%) saturate(1750%) hue-rotate(124deg) brightness(95%) contrast(102%);
+    color: {{ nl_btn_color }};
   }
 
   .earth-footer__newsletter-subtext {
     font-size: 15px;
-    color: #F8F9DC;
+    color: {{ nl_text }};
     opacity: 0.92;
     display: flex;
     align-items: center;
@@ -126,13 +175,28 @@
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
-    padding: 110px 34px 36px;
+    padding: var(--footer-pt-d) 34px var(--footer-pb-d);
+    box-sizing: border-box;
   }
 
-  /* Big Branding Header - Exact match with UI crop (Full Width) */
+  /* Big Branding Header */
   .earth-footer__brand {
     margin-bottom: clamp(32px, 3.5vw, 44px);
     width: 100%;
+  }
+
+  .earth-footer__brand--center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .earth-footer__brand--right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
   }
 
   .earth-footer__brand-logo-wrap {
@@ -155,22 +219,40 @@
     display: block;
   }
 
+  .earth-footer__brand-custom-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .earth-footer__brand-text-logo {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: {{ text_color }};
+    line-height: 1;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
   .earth-footer__tagline {
-    font-size: 21px;
-    color: var(--color-primary);
+    font-size: {{ section.settings.brand_tagline_size_desktop | default: 21 }}px;
+    color: {{ section.settings.brand_tagline_color | default: text_color }};
     line-height: 1.45;
     margin: 36px 0 0;
     font-weight: 400;
   }
 
   /* ==========================================================================
-     4 Columns Navigation Grid
+     Navigation Columns Grid
      ========================================================================== */
   .earth-footer__nav-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: clamp(20px, 3.5vw, 56px);
+    grid-template-columns: repeat({{ section.settings.nav_columns_count | default: 4 }}, minmax(0, 1fr));
+    gap: clamp(20px, 3.5vw, {{ section.settings.nav_grid_gap | default: 56 }}px);
     margin-bottom: clamp(36px, 4.5vw, 54px);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .earth-footer__nav-col {
@@ -179,11 +261,11 @@
   }
 
   .earth-footer__col-heading {
-    font-size: 19px;
+    font-size: {{ section.settings.heading_font_size | default: 19 }}px;
     font-weight: 800;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #003225;
+    color: {{ text_color }};
     margin: 0 0 18px 0;
     display: flex;
     justify-content: space-between;
@@ -212,12 +294,17 @@
   }
 
   .earth-footer__link {
-    color: var(--color-primary);
-    font-size: 18px;
-    font-weight: 700;
+    color: {{ text_color }};
+    font-size: {{ section.settings.link_font_size | default: 18 }}px;
+    font-weight: {{ section.settings.link_font_weight | default: 700 }};
     line-height: 1.35;
     text-decoration: none;
     display: inline-block;
+    transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+  }
+
+  .earth-footer__link:hover {
+    opacity: 0.75;
   }
 
   /* Support Divider & Contact Info */
@@ -244,9 +331,10 @@
     gap: 10px;
     font-size: 18px;
     font-weight: 500;
-    color: #003225;
+    color: {{ text_color }};
     text-decoration: none;
     line-height: 1.3;
+    transition: opacity 0.2s ease;
   }
 
   .earth-footer__contact-item:hover {
@@ -260,6 +348,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: {{ text_color }};
   }
 
   .earth-footer__contact-icon img,
@@ -267,6 +356,8 @@
     width: 100%;
     height: auto;
     max-height: 18px;
+    display: block;
+    color: inherit;
   }
 
   /* ==========================================================================
@@ -277,6 +368,8 @@
     grid-template-columns: repeat(4, 1fr);
     gap: clamp(20px, 3.5vw, 56px);
     margin-bottom: clamp(36px, 4vw, 48px);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .earth-footer__lower-col:first-child {
@@ -294,7 +387,7 @@
     font-weight: 800;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #003225;
+    color: {{ text_color }};
     margin: 0 0 14px 0;
   }
 
@@ -304,25 +397,37 @@
     align-items: center;
     gap: 8px;
     margin-bottom: 12px;
+    flex-wrap: wrap;
   }
 
   .earth-footer__social-btn {
     width: 36px;
     height: 36px;
-    background-color: #18420C;
-    border-radius: 2px;
+    background-color: {{ social_btn_bg }};
+    border-radius: {% if section.settings.social_btn_style == 'circle' %}50%{% elsif section.settings.social_btn_style == 'rounded' %}8px{% elsif section.settings.social_btn_style == 'outline' %}2px{% else %}2px{% endif %};
+    {% if section.settings.social_btn_style == 'outline' %}
+      border: 1px solid {{ text_color }};
+      background-color: transparent;
+      color: {{ text_color }};
+    {% else %}
+      border: none;
+      color: {{ social_btn_color }};
+    {% endif %}
     display: inline-flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    color: #F8F9DC;
+    transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
   }
 
   .earth-footer__social-btn:hover {
-    background-color: #71CC3B;
+    background-color: {{ social_btn_hover }};
+    color: #003225;
+    transform: translateY(-2px);
   }
 
-  .earth-footer__social-btn:hover svg path {
+  .earth-footer__social-btn:hover svg path,
+  .earth-footer__social-btn:hover svg {
     fill: #003225;
   }
 
@@ -336,7 +441,7 @@
   .earth-footer__social-tagline {
     font-size: 16px;
     font-weight: 500;
-    color: #003225;
+    color: {{ text_color }};
     margin: 0 0 14px 0;
     line-height: 1.4;
   }
@@ -353,14 +458,14 @@
     position: relative;
     display: inline-flex;
     align-items: center;
-    border: 1px solid #003225;
+    border: 1px solid {{ section.settings.selectors_border_color | default: text_color }};
     border-radius: 2px;
     padding: 6px 12px;
     background: transparent;
     cursor: pointer;
     font-size: 16px;
     font-weight: 500;
-    color: #003225;
+    color: {{ text_color }};
     min-width: 120px;
   }
 
@@ -373,7 +478,7 @@
     font-family: inherit;
     font-size: 13px;
     font-weight: 500;
-    color: #003225;
+    color: {{ text_color }};
     width: 100%;
     cursor: pointer;
     padding-right: 18px;
@@ -392,7 +497,7 @@
     width: 10px;
     height: 6px;
     fill: none;
-    stroke: #003225;
+    stroke: {{ text_color }};
     stroke-width: 1.5;
   }
 
@@ -402,7 +507,7 @@
     font-weight: 300;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #003225;
+    color: {{ text_color }};
     margin: 0 0 10px 0;
   }
 
@@ -419,6 +524,11 @@
     width: auto;
     display: inline-flex;
     align-items: center;
+    transition: transform 0.2s ease;
+  }
+
+  .earth-footer__badge-img:hover {
+    transform: scale(1.05);
   }
 
   .earth-footer__badge-img svg {
@@ -444,6 +554,11 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.15s ease;
+  }
+
+  .earth-footer__payment-card:hover {
+    transform: scale(1.06);
   }
 
   .earth-footer__payment-card svg,
@@ -457,15 +572,24 @@
      Bottom Sub-Footer
      ========================================================================== */
   .earth-footer__bottom {
-    border-top: 1px solid rgba(0, 50, 37, 0.2);
+    border-top: 1px solid {{ section.settings.divider_color | default: 'rgba(0, 50, 37, 0.2)' }};
     padding-top: 22px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 16px;
-    color: #003225;
+    color: {{ text_color }};
     flex-wrap: wrap;
     gap: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .earth-footer__bottom--center {
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .earth-footer__copyright {
@@ -477,7 +601,7 @@
   }
 
   .earth-footer__copyright a {
-    color: #003225;
+    color: {{ text_color }};
     text-decoration: underline;
     font-weight: 500;
   }
@@ -491,8 +615,9 @@
   }
 
   .earth-footer__legal-links a {
-    color: #003225;
+    color: {{ text_color }};
     text-decoration: none;
+    transition: opacity 0.2s ease;
   }
 
   .earth-footer__legal-links a:hover {
@@ -500,7 +625,7 @@
   }
 
   .earth-footer__legal-dot {
-    color: #003225;
+    color: {{ text_color }};
     opacity: 0.6;
   }
 
@@ -540,7 +665,7 @@
     }
 
     .earth-footer__newsletter-title {
-      font-size: 26px;
+      font-size: {{ section.settings.newsletter_title_size_mobile | default: 26 }}px;
       line-height: 1.2;
     }
 
@@ -549,11 +674,11 @@
     }
 
     .earth-footer__main {
-      padding: 36px 20px 28px;
+      padding: var(--footer-pt-m) 20px var(--footer-pb-m);
     }
 
     .earth-footer__tagline {
-      font-size: 21px;
+      font-size: {{ section.settings.brand_tagline_size_mobile | default: 21 }}px;
       margin-top: 14px;
       margin-bottom: 28px;
     }
@@ -567,7 +692,7 @@
     }
 
     .earth-footer__nav-col {
-      border-bottom: 1px solid #003225;
+      border-bottom: 1px solid {{ text_color }};
     }
 
     .earth-footer__col-heading {
@@ -597,7 +722,7 @@
       align-items: center;
       justify-content: center;
       transform: rotate(90deg);
-      transition: none;
+      transition: transform 0.25s ease;
     }
 
     .earth-footer__accordion-arrow svg {
@@ -613,10 +738,11 @@
     .earth-footer__accordion-content {
       max-height: 0;
       overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
     }
 
     .earth-footer__nav-col--open .earth-footer__accordion-content {
-      max-height: 500px;
+      max-height: 600px;
       padding-bottom: 18px;
     }
 
@@ -641,7 +767,6 @@
     .earth-footer__select-box {
       width: 100%;
       min-width: 0;
-
     }
 
     .earth-footer__bottom {
@@ -666,319 +791,477 @@
 {%- endstyle -%}
 
 <footer class="earth-footer-section full-width" data-section-id="{{ section.id }}">
-  <!-- Top Newsletter Banner -->
-  <div class="earth-footer__newsletter">
-    <div class="earth-footer__newsletter-container">
-      <h2 class="earth-footer__newsletter-title">
-        {{ section.settings.newsletter_title | default: 'Join 50,000+ Eco-Conscious Fashion Lovers' }}
-      </h2>
+  <!-- 1. Top Newsletter Banner -->
+  {%- if section.settings.show_newsletter != false -%}
+    <div class="earth-footer__newsletter">
+      <div class="earth-footer__newsletter-container earth-footer__newsletter-container--{{ section.settings.newsletter_layout | default: 'split' }}">
+        <h2 class="earth-footer__newsletter-title">
+          {{ section.settings.newsletter_title | default: 'Join 50,000+ Eco-Conscious Fashion Lovers' }}
+        </h2>
 
-      <div class="earth-footer__newsletter-form-wrap">
-        {% form 'customer', class: 'earth-footer__newsletter-form', id: 'footer-newsletter-form' %}
-          <input type="hidden" name="contact[tags]" value="newsletter">
-          <input
-            type="email"
-            name="contact[email]"
-            class="earth-footer__newsletter-input"
-            placeholder="{{ section.settings.newsletter_placeholder | default: 'Enter your email address' }}"
-            aria-label="Email address"
-            autocorrect="off"
-            autocapitalize="off"
-            required
-          >
-          <button type="submit" class="earth-footer__newsletter-submit" aria-label="Subscribe">
-            <span class="earth-footer__submit-arrow" aria-hidden="true">
-              {{ 'icon-arrow-right.svg' | inline_asset_content }}
-            </span>
-          </button>
-        {% endform %}
+        <div class="earth-footer__newsletter-form-wrap">
+          {% form 'customer', class: 'earth-footer__newsletter-form', id: 'footer-newsletter-form' %}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <input
+              type="email"
+              name="contact[email]"
+              class="earth-footer__newsletter-input"
+              placeholder="{{ section.settings.newsletter_placeholder | default: 'Enter your email address' }}"
+              aria-label="Email address"
+              autocorrect="off"
+              autocapitalize="off"
+              required
+            >
+            <button type="submit" class="earth-footer__newsletter-submit" aria-label="Subscribe">
+              <span class="earth-footer__submit-arrow" aria-hidden="true">
+                {{ 'icon-arrow-right.svg' | inline_asset_content }}
+              </span>
+            </button>
+          {% endform %}
 
-        <p class="earth-footer__newsletter-subtext">
-          <span class="sparkle">✨</span>
-          {{ section.settings.newsletter_subtext | default: 'Be first to wear change — exclusive drops + 10% off' }}
-        </p>
+          {%- if section.settings.newsletter_subtext != blank -%}
+            <p class="earth-footer__newsletter-subtext">
+              {%- if section.settings.newsletter_show_sparkle != false -%}<span class="sparkle">✨</span>{%- endif -%}
+              {{ section.settings.newsletter_subtext }}
+            </p>
+          {%- endif -%}
+        </div>
       </div>
     </div>
-  </div>
+  {%- endif -%}
 
-  <!-- Main Footer Body -->
+  <!-- 2. Main Footer Body -->
   <div class="earth-footer__main">
     <!-- Brand Header -->
-    <div class="earth-footer__brand">
-      <a href="{{ routes.root_url }}" class="earth-footer__brand-logo-wrap" aria-label="Earth Home">
-        <span class="earth-footer__brand-full-logo" aria-hidden="true">
-          {{ 'icon-earth-logo copy.svg' | inline_asset_content }}
-        </span>
-      </a>
-      <p class="earth-footer__tagline">
-        {{ section.settings.tagline | default: 'Redefining fashion through sustainable practices, transparent supply chains, and timeless design.' }}
-      </p>
-    </div>
+    {%- if section.settings.show_brand != false -%}
+      <div class="earth-footer__brand earth-footer__brand--{{ section.settings.brand_alignment | default: 'left' }}">
+        <a href="{{ routes.root_url }}" class="earth-footer__brand-logo-wrap" aria-label="{{ shop.name }} Home">
+          {%- if section.settings.brand_logo_type == 'custom_image' and section.settings.brand_logo_image != blank -%}
+            <img 
+              src="{{ section.settings.brand_logo_image | image_url: width: 600 }}" 
+              alt="{{ shop.name }}" 
+              class="earth-footer__brand-custom-img"
+              style="width: {{ section.settings.brand_logo_width | default: 220 }}px;"
+              width="600"
+              height="200"
+              loading="lazy"
+            >
+          {%- elsif section.settings.brand_logo_type == 'text' -%}
+            <h2 class="earth-footer__brand-text-logo">{{ shop.name | default: 'EARTH' }}</h2>
+          {%- else -%}
+            <span class="earth-footer__brand-full-logo" aria-hidden="true">
+              {{ 'icon-earth-logo copy.svg' | inline_asset_content }}
+            </span>
+          {%- endif -%}
+        </a>
 
-    <!-- 4 Navigation Columns -->
+        {%- if section.settings.show_tagline != false and section.settings.tagline != blank -%}
+          <p class="earth-footer__tagline">
+            {{ section.settings.tagline }}
+          </p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <!-- 3. Navigation Columns Grid -->
     <div class="earth-footer__nav-grid">
       <!-- Column 1: COMPANY -->
-      <div class="earth-footer__nav-col earth-footer__nav-col--open">
-        <button type="button" class="earth-footer__col-heading" aria-expanded="true">
-          <span>{{ section.settings.col_1_title | default: 'COMPANY' }}</span>
-          <span class="earth-footer__accordion-icon" aria-hidden="true">
-            <span class="earth-footer__accordion-arrow">
-              {{ 'icon-next-right.svg' | inline_asset_content }}
+      {%- if section.settings.col_1_show != false -%}
+        <div class="earth-footer__nav-col{% if section.settings.col_1_default_open_mobile != false %} earth-footer__nav-col--open{% endif %}">
+          <button type="button" class="earth-footer__col-heading" aria-expanded="{% if section.settings.col_1_default_open_mobile != false %}true{% else %}false{% endif %}">
+            <span>{{ section.settings.col_1_title | default: 'COMPANY' }}</span>
+            <span class="earth-footer__accordion-icon" aria-hidden="true">
+              <span class="earth-footer__accordion-arrow">
+                {{ 'icon-next-right.svg' | inline_asset_content }}
+              </span>
             </span>
-          </span>
-        </button>
-        <div class="earth-footer__accordion-content">
-          <ul class="earth-footer__col-links">
-            <li><a href="#about-us" class="earth-footer__link">About Us</a></li>
-            <li><a href="#our-story" class="earth-footer__link">Our Story</a></li>
-            <li><a href="#sustainability-journey" class="earth-footer__link">Sustainability Journey</a></li>
-            <li><a href="#careers" class="earth-footer__link">Careers</a></li>
-            <li><a href="{{ routes.all_products_collection_url }}" class="earth-footer__link">Blog</a></li>
-          </ul>
+          </button>
+          <div class="earth-footer__accordion-content">
+            <ul class="earth-footer__col-links">
+              {%- if section.settings.col_1_menu != blank and linklists[section.settings.col_1_menu].links.size > 0 -%}
+                {%- for link in linklists[section.settings.col_1_menu].links -%}
+                  <li><a href="{{ link.url }}" class="earth-footer__link">{{ link.title }}</a></li>
+                {%- endfor -%}
+              {%- else -%}
+                <li><a href="#about-us" class="earth-footer__link">About Us</a></li>
+                <li><a href="#our-story" class="earth-footer__link">Our Story</a></li>
+                <li><a href="#sustainability-journey" class="earth-footer__link">Sustainability Journey</a></li>
+                <li><a href="#careers" class="earth-footer__link">Careers</a></li>
+                <li><a href="{{ routes.all_products_collection_url }}" class="earth-footer__link">Blog</a></li>
+              {%- endif -%}
+            </ul>
+          </div>
         </div>
-      </div>
+      {%- endif -%}
 
       <!-- Column 2: SHOP -->
-      <div class="earth-footer__nav-col">
-        <button type="button" class="earth-footer__col-heading" aria-expanded="false">
-          <span>{{ section.settings.col_2_title | default: 'SHOP' }}</span>
-          <span class="earth-footer__accordion-icon" aria-hidden="true">
-            <span class="earth-footer__accordion-arrow">
-              {{ 'icon-next-right.svg' | inline_asset_content }}
+      {%- if section.settings.col_2_show != false -%}
+        <div class="earth-footer__nav-col">
+          <button type="button" class="earth-footer__col-heading" aria-expanded="false">
+            <span>{{ section.settings.col_2_title | default: 'SHOP' }}</span>
+            <span class="earth-footer__accordion-icon" aria-hidden="true">
+              <span class="earth-footer__accordion-arrow">
+                {{ 'icon-next-right.svg' | inline_asset_content }}
+              </span>
             </span>
-          </span>
-        </button>
-        <div class="earth-footer__accordion-content">
-          <ul class="earth-footer__col-links">
-            <li><a href="{{ routes.all_products_collection_url }}?sort_by=created-descending" class="earth-footer__link">New Arrivals</a></li>
-            <li><a href="{{ routes.collections_url }}/women" class="earth-footer__link">Women's</a></li>
-            <li><a href="{{ routes.collections_url }}/men" class="earth-footer__link">Men's</a></li>
-            <li><a href="{{ routes.collections_url }}/essentials" class="earth-footer__link">Essentials</a></li>
-            <li><a href="{{ routes.collections_url }}/limited-edition" class="earth-footer__link">Limited Edition</a></li>
-            <li><a href="{{ routes.collections_url }}/sale" class="earth-footer__link">Sale</a></li>
-          </ul>
+          </button>
+          <div class="earth-footer__accordion-content">
+            <ul class="earth-footer__col-links">
+              {%- if section.settings.col_2_menu != blank and linklists[section.settings.col_2_menu].links.size > 0 -%}
+                {%- for link in linklists[section.settings.col_2_menu].links -%}
+                  <li><a href="{{ link.url }}" class="earth-footer__link">{{ link.title }}</a></li>
+                {%- endfor -%}
+              {%- else -%}
+                <li><a href="{{ routes.all_products_collection_url }}?sort_by=created-descending" class="earth-footer__link">New Arrivals</a></li>
+                <li><a href="{{ routes.collections_url }}/women" class="earth-footer__link">Women's</a></li>
+                <li><a href="{{ routes.collections_url }}/men" class="earth-footer__link">Men's</a></li>
+                <li><a href="{{ routes.collections_url }}/essentials" class="earth-footer__link">Essentials</a></li>
+                <li><a href="{{ routes.collections_url }}/limited-edition" class="earth-footer__link">Limited Edition</a></li>
+                <li><a href="{{ routes.collections_url }}/sale" class="earth-footer__link">Sale</a></li>
+              {%- endif -%}
+            </ul>
+          </div>
         </div>
-      </div>
+      {%- endif -%}
 
       <!-- Column 3: SUSTAINABILITY -->
-      <div class="earth-footer__nav-col">
-        <button type="button" class="earth-footer__col-heading" aria-expanded="false">
-          <span>{{ section.settings.col_3_title | default: 'SUSTAINABILITY' }}</span>
-          <span class="earth-footer__accordion-icon" aria-hidden="true">
-            <span class="earth-footer__accordion-arrow">
-              {{ 'icon-next-right.svg' | inline_asset_content }}
+      {%- if section.settings.col_3_show != false -%}
+        <div class="earth-footer__nav-col">
+          <button type="button" class="earth-footer__col-heading" aria-expanded="false">
+            <span>{{ section.settings.col_3_title | default: 'SUSTAINABILITY' }}</span>
+            <span class="earth-footer__accordion-icon" aria-hidden="true">
+              <span class="earth-footer__accordion-arrow">
+                {{ 'icon-next-right.svg' | inline_asset_content }}
+              </span>
             </span>
-          </span>
-        </button>
-        <div class="earth-footer__accordion-content">
-          <ul class="earth-footer__col-links">
-            <li><a href="#impact-tracker" class="earth-footer__link">Impact Tracker</a></li>
-            <li><a href="#transparency" class="earth-footer__link">Transparency</a></li>
-            <li><a href="#carbon-footprint" class="earth-footer__link">Carbon Footprint</a></li>
-            <li><a href="#supply-chain" class="earth-footer__link">Supply Chain</a></li>
-          </ul>
+          </button>
+          <div class="earth-footer__accordion-content">
+            <ul class="earth-footer__col-links">
+              {%- if section.settings.col_3_menu != blank and linklists[section.settings.col_3_menu].links.size > 0 -%}
+                {%- for link in linklists[section.settings.col_3_menu].links -%}
+                  <li><a href="{{ link.url }}" class="earth-footer__link">{{ link.title }}</a></li>
+                {%- endfor -%}
+              {%- else -%}
+                <li><a href="#impact-tracker" class="earth-footer__link">Impact Tracker</a></li>
+                <li><a href="#transparency" class="earth-footer__link">Transparency</a></li>
+                <li><a href="#carbon-footprint" class="earth-footer__link">Carbon Footprint</a></li>
+                <li><a href="#supply-chain" class="earth-footer__link">Supply Chain</a></li>
+              {%- endif -%}
+            </ul>
+          </div>
         </div>
-      </div>
+      {%- endif -%}
 
-      <!-- Column 4: SUPPORT -->
-      <div class="earth-footer__nav-col">
-        <button type="button" class="earth-footer__col-heading" aria-expanded="false">
-          <span>{{ section.settings.col_4_title | default: 'SUPPORT' }}</span>
-          <span class="earth-footer__accordion-icon" aria-hidden="true">
-            <span class="earth-footer__accordion-arrow">
-              {{ 'icon-next-right.svg' | inline_asset_content }}
+      <!-- Column 4: SUPPORT & Contact Info -->
+      {%- if section.settings.col_4_show != false -%}
+        <div class="earth-footer__nav-col">
+          <button type="button" class="earth-footer__col-heading" aria-expanded="false">
+            <span>{{ section.settings.col_4_title | default: 'SUPPORT' }}</span>
+            <span class="earth-footer__accordion-icon" aria-hidden="true">
+              <span class="earth-footer__accordion-arrow">
+                {{ 'icon-next-right.svg' | inline_asset_content }}
+              </span>
             </span>
-          </span>
-        </button>
-        <div class="earth-footer__accordion-content">
-          <ul class="earth-footer__col-links">
-            <li><a href="#contact" class="earth-footer__link">Contact Us</a></li>
-            <li><a href="#shipping-returns" class="earth-footer__link">Shipping & Returns</a></li>
-            <li><a href="#size-guide" class="earth-footer__link">Size Guide</a></li>
-            <li><a href="#faq" class="earth-footer__link">FAQ</a></li>
-          </ul>
+          </button>
+          <div class="earth-footer__accordion-content">
+            <ul class="earth-footer__col-links">
+              {%- if section.settings.col_4_menu != blank and linklists[section.settings.col_4_menu].links.size > 0 -%}
+                {%- for link in linklists[section.settings.col_4_menu].links -%}
+                  <li><a href="{{ link.url }}" class="earth-footer__link">{{ link.title }}</a></li>
+                {%- endfor -%}
+              {%- else -%}
+                <li><a href="#contact" class="earth-footer__link">Contact Us</a></li>
+                <li><a href="#shipping-returns" class="earth-footer__link">Shipping & Returns</a></li>
+                <li><a href="#size-guide" class="earth-footer__link">Size Guide</a></li>
+                <li><a href="#faq" class="earth-footer__link">FAQ</a></li>
+              {%- endif -%}
+            </ul>
 
-          <hr class="earth-footer__contact-divider">
+            {%- if section.settings.show_contact_info != false -%}
+              <hr class="earth-footer__contact-divider">
 
-          <ul class="earth-footer__contact-list">
-            <li>
-              <a href="mailto:hello@earthecoshop.com" class="earth-footer__contact-item">
-                <span class="earth-footer__contact-icon" aria-hidden="true">
-                  {{ 'icon-mail.svg' | inline_asset_content }}
-                </span>
-                <span>hello@earthecoshop.com</span>
-              </a>
-            </li>
-            <li>
-              <a href="tel:5551234567" class="earth-footer__contact-item">
-                <span class="earth-footer__contact-icon" aria-hidden="true">
-                  {{ 'icon-telephone-call.svg' | inline_asset_content }}
-                </span>
-                <span>(555) 123-4567</span>
-              </a>
-            </li>
-            <li>
-              <div class="earth-footer__contact-item">
-                <span class="earth-footer__contact-icon" aria-hidden="true">
-                  {{ 'icon-location copy.svg' | inline_asset_content }}
-                </span>
-                <span>1234 Palm Boulevard, Miami</span>
-              </div>
-            </li>
-          </ul>
+              <ul class="earth-footer__contact-list">
+                {%- if section.settings.contact_email != blank -%}
+                  <li>
+                    <a href="mailto:{{ section.settings.contact_email }}" class="earth-footer__contact-item">
+                      <span class="earth-footer__contact-icon" aria-hidden="true">
+                        {{ 'icon-mail.svg' | inline_asset_content }}
+                      </span>
+                      <span>{{ section.settings.contact_email }}</span>
+                    </a>
+                  </li>
+                {%- endif -%}
+                {%- if section.settings.contact_phone != blank -%}
+                  <li>
+                    <a href="tel:{{ section.settings.contact_phone | replace: ' ', '' | replace: '(', '' | replace: ')', '' | replace: '-', '' }}" class="earth-footer__contact-item">
+                      <span class="earth-footer__contact-icon" aria-hidden="true">
+                        {{ 'icon-telephone-call.svg' | inline_asset_content }}
+                      </span>
+                      <span>{{ section.settings.contact_phone }}</span>
+                    </a>
+                  </li>
+                {%- endif -%}
+                {%- if section.settings.contact_address != blank -%}
+                  <li>
+                    <div class="earth-footer__contact-item">
+                      <span class="earth-footer__contact-icon" aria-hidden="true">
+                        {{ 'icon-location.svg' | inline_asset_content }}
+                      </span>
+                      <span>{{ section.settings.contact_address }}</span>
+                    </div>
+                  </li>
+                {%- endif -%}
+              </ul>
+            {%- endif -%}
+          </div>
         </div>
-      </div>
+      {%- endif -%}
     </div>
 
-    <!-- Lower Footer (Follow Us & Trust/Security) -->
+    <!-- 4. Lower Footer (Follow Us & Trust/Security) -->
     <div class="earth-footer__lower-grid">
       <!-- Follow Us Column -->
-      <div class="earth-footer__lower-col">
-        <h3 class="earth-footer__lower-title">{{ section.settings.follow_us_title | default: 'FOLLOW US' }}</h3>
-        
-        <div class="earth-footer__social-row">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="Facebook">
-            {{ 'icon-facebook.svg' | inline_asset_content }}
-          </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="Instagram">
-            {{ 'icon-instagram.svg' | inline_asset_content }}
-          </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="Twitter / X">
-            {{ 'icon-twitter.svg' | inline_asset_content }}
-          </a>
-          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="YouTube">
-            {{ 'icon-youtube.svg' | inline_asset_content }}
-          </a>
-        </div>
+      {%- if section.settings.show_social_section != false -%}
+        <div class="earth-footer__lower-col">
+          <h3 class="earth-footer__lower-title">{{ section.settings.follow_us_title | default: 'FOLLOW US' }}</h3>
+          
+          {%- assign fb_link = section.settings.social_facebook -%}
+          {%- if fb_link == blank and settings.social_facebook_link != blank -%}
+            {%- assign fb_link = settings.social_facebook_link -%}
+          {%- endif -%}
 
-        <p class="earth-footer__social-tagline">
-          {{ section.settings.social_tagline | default: 'Share your sustainable style with #Earth' }}
-        </p>
+          {%- assign ig_link = section.settings.social_instagram -%}
+          {%- if ig_link == blank and settings.social_instagram_link != blank -%}
+            {%- assign ig_link = settings.social_instagram_link -%}
+          {%- endif -%}
 
-        <!-- Localization Dropdowns -->
-        <div class="earth-footer__selectors">
-          <div class="earth-footer__select-box">
-            <select aria-label="Country / Currency">
-              <option value="US" selected>United States (USD $)</option>
-              <option value="CA">Canada (CAD $)</option>
-              <option value="GB">United Kingdom (GBP £)</option>
-              <option value="EU">European Union (EUR €)</option>
-              <option value="AU">Australia (AUD $)</option>
-            </select>
-            <span class="earth-footer__select-arrow">
-              <svg viewBox="0 0 10 6">
-                <path d="M1 1L5 5L9 1"/>
-              </svg>
-            </span>
+          {%- assign tw_link = section.settings.social_twitter -%}
+          {%- if tw_link == blank and settings.social_twitter_link != blank -%}
+            {%- assign tw_link = settings.social_twitter_link -%}
+          {%- endif -%}
+
+          {%- assign yt_link = section.settings.social_youtube -%}
+          {%- if yt_link == blank and settings.social_youtube_link != blank -%}
+            {%- assign yt_link = settings.social_youtube_link -%}
+          {%- endif -%}
+
+          {%- assign tt_link = section.settings.social_tiktok -%}
+          {%- if tt_link == blank and settings.social_tiktok_link != blank -%}
+            {%- assign tt_link = settings.social_tiktok_link -%}
+          {%- endif -%}
+
+          {%- assign pin_link = section.settings.social_pinterest -%}
+          {%- if pin_link == blank and settings.social_pinterest_link != blank -%}
+            {%- assign pin_link = settings.social_pinterest_link -%}
+          {%- endif -%}
+
+          <div class="earth-footer__social-row">
+            {%- if fb_link != blank -%}
+              <a href="{{ fb_link }}" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="Facebook">
+                {{ 'icon-facebook.svg' | inline_asset_content }}
+              </a>
+            {%- endif -%}
+            {%- if ig_link != blank -%}
+              <a href="{{ ig_link }}" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="Instagram">
+                {{ 'icon-instagram.svg' | inline_asset_content }}
+              </a>
+            {%- endif -%}
+            {%- if tw_link != blank -%}
+              <a href="{{ tw_link }}" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="Twitter / X">
+                {{ 'icon-twitter.svg' | inline_asset_content }}
+              </a>
+            {%- endif -%}
+            {%- if yt_link != blank -%}
+              <a href="{{ yt_link }}" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="YouTube">
+                {{ 'icon-youtube.svg' | inline_asset_content }}
+              </a>
+            {%- endif -%}
+            {%- if tt_link != blank -%}
+              <a href="{{ tt_link }}" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="TikTok">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.12V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.48 6.3 6.3 0 0 0 1.86-4.48v-6.9a8.16 8.16 0 0 0 4.71 1.51v-3.48a4.85 4.85 0 0 1-.8-.1z"/>
+                </svg>
+              </a>
+            {%- endif -%}
+            {%- if pin_link != blank -%}
+              <a href="{{ pin_link }}" target="_blank" rel="noopener noreferrer" class="earth-footer__social-btn" aria-label="Pinterest">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0a12 12 0 0 0-4.37 23.18c-.06-.94-.12-2.39.03-3.42l1-4.25s-.25-.51-.25-1.27c0-1.19.69-2.08 1.55-2.08.73 0 1.08.55 1.08 1.21 0 .73-.47 1.84-.71 2.86-.2.86.43 1.56 1.28 1.56 1.53 0 2.71-1.61 2.71-3.94 0-2.06-1.48-3.5-3.6-3.5-2.45 0-3.89 1.84-3.89 3.73 0 .74.28 1.53.64 1.96a.32.32 0 0 1 .07.31l-.24 1c-.04.16-.14.2-.32.12-1.19-.55-1.93-2.29-1.93-3.69 0-3 2.18-5.76 6.3-5.76 3.3 0 5.87 2.36 5.87 5.5 0 3.28-2.07 5.93-4.94 5.93-.96 0-1.87-.5-2.18-1.09l-.59 2.27c-.22.83-.8 1.87-1.19 2.51A12 12 0 1 0 12 0z"/>
+                </svg>
+              </a>
+            {%- endif -%}
           </div>
 
-          <div class="earth-footer__select-box">
-            <select aria-label="Language">
-              <option value="en" selected>English</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-              <option value="de">Deutsch</option>
-            </select>
-            <span class="earth-footer__select-arrow">
-              <svg viewBox="0 0 10 6">
-                <path d="M1 1L5 5L9 1"/>
-              </svg>
-            </span>
-          </div>
+          {%- if section.settings.social_tagline != blank -%}
+            <p class="earth-footer__social-tagline">
+              {{ section.settings.social_tagline }}
+            </p>
+          {%- endif -%}
+
+          <!-- Localization Dropdowns -->
+          {%- if section.settings.show_country_selector != false or section.settings.show_language_selector != false -%}
+            <div class="earth-footer__selectors">
+              {%- if section.settings.show_country_selector != false -%}
+                <div class="earth-footer__select-box">
+                  <select aria-label="Country / Currency">
+                    <option value="US" selected>United States (USD $)</option>
+                    <option value="CA">Canada (CAD $)</option>
+                    <option value="GB">United Kingdom (GBP £)</option>
+                    <option value="EU">European Union (EUR €)</option>
+                    <option value="AU">Australia (AUD $)</option>
+                  </select>
+                  <span class="earth-footer__select-arrow">
+                    <svg viewBox="0 0 10 6">
+                      <path d="M1 1L5 5L9 1"/>
+                    </svg>
+                  </span>
+                </div>
+              {%- endif -%}
+
+              {%- if section.settings.show_language_selector != false -%}
+                <div class="earth-footer__select-box">
+                  <select aria-label="Language">
+                    <option value="en" selected>English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                  </select>
+                  <span class="earth-footer__select-arrow">
+                    <svg viewBox="0 0 10 6">
+                      <path d="M1 1L5 5L9 1"/>
+                    </svg>
+                  </span>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
         </div>
-      </div>
+      {%- endif -%}
 
       <!-- Trust & Security Column -->
-      <div class="earth-footer__lower-col">
-        <h3 class="earth-footer__lower-title">{{ section.settings.trust_title | default: 'TRUST & SECURITY' }}</h3>
-        
-        <p class="earth-footer__subhead">CERTIFIED BY</p>
-        <div class="earth-footer__badges-row">
-          <span class="earth-footer__badge-img" aria-hidden="true">{{ 'icon-1ftp.svg' | inline_asset_content }}</span>
-          <span class="earth-footer__badge-img" aria-hidden="true">{{ 'icon-gots.svg' | inline_asset_content }}</span>
-          <span class="earth-footer__badge-img" aria-hidden="true">{{ 'icon-B-CORP.svg' | inline_asset_content }}</span>
-          <span class="earth-footer__badge-img" aria-hidden="true">{{ 'icon-OEKO-TEX.svg' | inline_asset_content }}</span>
-        </div>
+      {%- if section.settings.show_trust_section != false -%}
+        <div class="earth-footer__lower-col">
+          <h3 class="earth-footer__lower-title">{{ section.settings.trust_title | default: 'TRUST & SECURITY' }}</h3>
+          
+          {%- if section.settings.show_trust_badges != false -%}
+            <p class="earth-footer__subhead">{{ section.settings.trust_subhead | default: 'CERTIFIED BY' }}</p>
+            <div class="earth-footer__badges-row">
+              {%- if section.settings.show_badge_1ftp != false -%}
+                <span class="earth-footer__badge-img" title="1% For The Planet" aria-hidden="true">{{ 'icon-1ftp.svg' | inline_asset_content }}</span>
+              {%- endif -%}
+              {%- if section.settings.show_badge_gots != false -%}
+                <span class="earth-footer__badge-img" title="GOTS Certified Organic" aria-hidden="true">{{ 'icon-gots.svg' | inline_asset_content }}</span>
+              {%- endif -%}
+              {%- if section.settings.show_badge_bcorp != false -%}
+                <span class="earth-footer__badge-img" title="Certified B Corporation" aria-hidden="true">{{ 'icon-B-CORP.svg' | inline_asset_content }}</span>
+              {%- endif -%}
+              {%- if section.settings.show_badge_oeko != false -%}
+                <span class="earth-footer__badge-img" title="OEKO-TEX Standard 100" aria-hidden="true">{{ 'icon-OEKO-TEX.svg' | inline_asset_content }}</span>
+              {%- endif -%}
+              {%- if section.settings.show_badge_fair_trade -%}
+                <span class="earth-footer__badge-img" title="Fair Trade Certified" aria-hidden="true">{{ 'icon-Fair-Trade.svg' | inline_asset_content }}</span>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
 
-        <p class="earth-footer__subhead">SECURE PAYMENT</p>
-        <div class="earth-footer__payments-row">
-          <!-- Amex -->
-          <div class="earth-footer__payment-card" title="American Express">
-            <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="28" height="16" rx="2" fill="#007BC1"/>
-              <path d="M4 11.5L6.5 4.5H8.2L10.7 11.5H8.9L8.4 10.1H6.3L5.8 11.5H4ZM6.7 8.8H8L7.35 6.6H7.3L6.7 8.8ZM11 11.5V4.5H13.2L14.7 9.2H14.8L16.3 4.5H18.5V11.5H17V6.5H16.9L15.3 11.5H14.2L12.6 6.5H12.5V11.5H11ZM19.5 11.5V4.5H24.5V5.8H21.2V7.3H24.2V8.6H21.2V10.2H24.6V11.5H19.5Z" fill="white"/>
-            </svg>
-          </div>
-          <!-- Diners Club -->
-          <div class="earth-footer__payment-card" title="Diners Club">
-            <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="28" height="16" rx="2" fill="#004A97"/>
-              <circle cx="14" cy="8" r="5" fill="white"/>
-              <path d="M12.5 5.5C11.1 5.5 10 6.6 10 8C10 9.4 11.1 10.5 12.5 10.5V5.5ZM15.5 10.5C16.9 10.5 18 9.4 18 8C18 6.6 16.9 5.5 15.5 5.5V10.5Z" fill="#004A97"/>
-            </svg>
-          </div>
-          <!-- Discover -->
-          <div class="earth-footer__payment-card" title="Discover">
-            <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="28" height="16" rx="2" fill="#FF6000"/>
-              <circle cx="14" cy="8" r="3.2" fill="#FFA800"/>
-              <path d="M4 11V5H6.5C8 5 9 6.2 9 8C9 9.8 8 11 6.5 11H4ZM5.5 9.7H6.4C7.2 9.7 7.7 9 7.7 8C7.7 7 7.2 6.3 6.4 6.3H5.5V9.7Z" fill="white"/>
-            </svg>
-          </div>
-          <!-- Mastercard -->
-          <div class="earth-footer__payment-card" title="Mastercard">
-            <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="11.5" cy="8" r="5.5" fill="#EB001B"/>
-              <circle cx="16.5" cy="8" r="5.5" fill="#F79E1B"/>
-              <path d="M14 4.5C15.2 5.5 16 7 16 8.7C16 10.4 15.2 11.9 14 12.9C12.8 11.9 12 10.4 12 8.7C12 7 12.8 5.5 14 4.5Z" fill="#FF5F00"/>
-            </svg>
-          </div>
-          <!-- Visa -->
-          <div class="earth-footer__payment-card" title="Visa">
-            <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.2 11.5L12.8 4.5H14.8L13.2 11.5H11.2ZM19.7 4.7C19.3 4.5 18.7 4.4 18 4.4C16.2 4.4 15 5.3 15 6.6C15 7.6 15.9 8.1 16.6 8.4C17.3 8.7 17.5 8.9 17.5 9.2C17.5 9.7 16.9 9.9 16.3 9.9C15.5 9.9 15 9.8 14.4 9.5L14.1 9.4L13.8 11C14.3 11.2 15.2 11.4 16.1 11.4C18 11.4 19.3 10.5 19.3 9C19.3 7.8 18.5 7.2 17.3 6.6C16.7 6.3 16.3 6.1 16.3 5.7C16.3 5.3 16.8 5 17.5 5C18.1 5 18.6 5.1 19 5.3L19.2 5.4L19.7 4.7ZM24.4 11.5H26L24.5 4.5H23.1C22.6 4.5 22.2 4.8 22 5.2L19.4 11.5H21.5L21.9 10.4H24.1L24.4 11.5ZM22.4 9.1L23.3 6.6L23.8 9.1H22.4ZM9.8 4.5L7.9 9.6L7.7 8.5C7.4 7.4 6.4 6.2 5.3 5.6L7 11.5H9.1L12.2 4.5H9.8ZM5.2 4.5H2L2.05 4.7C4.1 5.2 5.7 6.4 6.3 8.1L5.6 4.8C5.5 4.6 5.3 4.5 5.2 4.5Z" fill="#1A1F71"/>
-            </svg>
-          </div>
-          <!-- Shop Pay -->
-          <div class="earth-footer__payment-card" title="Shop Pay">
-            <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="28" height="16" rx="2" fill="#5A31F4"/>
-              <path d="M8.5 11.2C7 11.2 6.2 10.3 6.2 9.1C6.2 7.7 7.4 7 8.7 7C9.3 7 9.8 7.1 10.1 7.3V7C10.1 6.3 9.6 5.8 8.7 5.8C8 5.8 7.4 6.1 7 6.4L6.5 5.5C7.1 5 8 4.7 9 4.7C10.6 4.7 11.5 5.6 11.5 7.1V11H10.1V10.3C9.7 10.8 9.1 11.2 8.5 11.2ZM8.8 10.1C9.4 10.1 9.9 9.7 10.1 9.1V8.2C9.8 8.1 9.4 8 8.9 8C8 8 7.5 8.4 7.5 9C7.5 9.7 8 10.1 8.8 10.1ZM13 11V4.8H14.4V5.6C14.8 5 15.5 4.7 16.2 4.7C17.6 4.7 18.5 5.7 18.5 7.2C18.5 8.7 17.6 9.7 16.2 9.7C15.5 9.7 14.8 9.4 14.4 8.8V11H13ZM15.7 8.6C16.5 8.6 17.1 8 17.1 7.2C17.1 6.4 16.5 5.8 15.7 5.8C14.9 5.8 14.3 6.4 14.3 7.2C14.3 8 14.9 8.6 15.7 8.6ZM20.5 11V4.8H21.9V11H20.5Z" fill="white"/>
-            </svg>
-          </div>
-          <!-- Google Pay -->
-          <div class="earth-footer__payment-card" title="Google Pay">
-            <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12.5 8C12.5 7.7 12.47 7.45 12.42 7.2H9.5V8.7H11.2C11.12 9.1 10.88 9.45 10.5 9.7V10.55H11.6C12.25 9.95 12.5 9.05 12.5 8Z" fill="#4285F4"/>
-              <path d="M9.5 11C10.35 11 11.05 10.7 11.6 10.2L10.5 9.35C10.2 9.55 9.88 9.7 9.5 9.7C8.68 9.7 8 9.15 7.75 8.4H6.6V9.3C7.15 10.35 8.25 11 9.5 11Z" fill="#34A853"/>
-              <path d="M7.75 8.4C7.68 8.2 7.65 8 7.65 7.8C7.65 7.6 7.68 7.4 7.75 7.2V6.3H6.6C6.35 6.8 6.2 7.3 6.2 7.8C6.2 8.3 6.35 8.8 6.6 9.3L7.75 8.4Z" fill="#FBBC04"/>
-              <path d="M9.5 5.9C9.95 5.9 10.35 6.05 10.68 6.35L11.65 5.38C11.05 4.8 10.35 4.5 9.5 4.5C8.25 4.5 7.15 5.15 6.6 6.2L7.75 7.1C8 6.35 8.68 5.9 9.5 5.9Z" fill="#EA4335"/>
-              <path d="M15.5 9.8V4.8H14.2V11.2H15.5V9.8ZM18.8 7.3C18 7.3 17.3 7.9 17.3 8.8C17.3 9.7 18 10.3 18.8 10.3C19.6 10.3 20.3 9.7 20.3 8.8C20.3 7.9 19.6 7.3 18.8 7.3ZM18.8 9.3C18.4 9.3 18.1 9 18.1 8.5C18.1 8 18.4 7.7 18.8 7.7C19.2 7.7 19.5 8 19.5 8.5C19.5 9 19.2 9.3 18.8 9.3ZM22 10.8V7.5H21.2V8.5H21.1C21 8.2 20.6 7.9 20.2 7.9C19.4 7.9 18.8 8.6 18.8 9.5C18.8 10.4 19.4 11.1 20.2 11.1C20.6 11.1 21 10.8 21.1 10.5H21.2V10.8C21.2 11.4 20.8 11.8 20.2 11.8C19.8 11.8 19.5 11.6 19.4 11.3L18.6 11.6C18.8 12.2 19.4 12.7 20.2 12.7C21.4 12.7 22.3 11.9 22.3 10.5V7.5H22V10.8Z" fill="#5F6368"/>
-            </svg>
-          </div>
-          <!-- Apple Pay -->
-          <div class="earth-footer__payment-card" title="Apple Pay">
-            <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8.5 5.8C8.9 5.3 9.2 4.6 9.1 3.9C8.5 3.9 7.7 4.3 7.3 4.8C7 5.2 6.7 5.9 6.8 6.6C7.5 6.6 8.2 6.2 8.5 5.8ZM9.1 6.7C8.1 6.7 7.6 6.1 6.8 6.1C6 6.1 5.4 6.7 4.7 6.7C3.6 6.7 2.6 7.7 2.6 9.3C2.6 10.4 3 11.5 3.6 12.3C4.1 13 4.6 13.7 5.4 13.7C6.1 13.7 6.4 13.3 7.3 13.3C8.2 13.3 8.4 13.7 9.2 13.7C10 13.7 10.5 13 11 12.3C11.6 11.5 11.8 10.7 11.8 10.6C11.8 10.5 10.2 9.9 10.2 8.2C10.2 6.8 11.4 6.1 11.4 6C10.7 5 9.7 4.9 9.1 4.9V6.7ZM14.5 11.5H13.2V5.2H15.4C16.7 5.2 17.6 6.1 17.6 7.3C17.6 8.5 16.7 9.4 15.4 9.4H14.5V11.5ZM14.5 8.3H15.3C16.1 8.3 16.5 7.9 16.5 7.3C16.5 6.7 16.1 6.3 15.3 6.3H14.5V8.3ZM18.5 11.5V6.8H19.7V7.5H19.8C20.1 7 20.7 6.7 21.4 6.7C22.6 6.7 23.3 7.6 23.3 8.9V11.5H22V9C22 8.2 21.6 7.8 20.9 7.8C20.3 7.8 19.8 8.3 19.8 9V11.5H18.5Z" fill="#000000"/>
-            </svg>
-          </div>
+          {%- if section.settings.show_payment_methods != false -%}
+            <p class="earth-footer__subhead">{{ section.settings.payment_subhead | default: 'SECURE PAYMENT' }}</p>
+            <div class="earth-footer__payments-row">
+              {%- if section.settings.show_pay_amex != false -%}
+                <div class="earth-footer__payment-card" title="American Express">
+                  <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="28" height="16" rx="2" fill="#007BC1"/>
+                    <path d="M4 11.5L6.5 4.5H8.2L10.7 11.5H8.9L8.4 10.1H6.3L5.8 11.5H4ZM6.7 8.8H8L7.35 6.6H7.3L6.7 8.8ZM11 11.5V4.5H13.2L14.7 9.2H14.8L16.3 4.5H18.5V11.5H17V6.5H16.9L15.3 11.5H14.2L12.6 6.5H12.5V11.5H11ZM19.5 11.5V4.5H24.5V5.8H21.2V7.3H24.2V8.6H21.2V10.2H24.6V11.5H19.5Z" fill="white"/>
+                  </svg>
+                </div>
+              {%- endif -%}
+              {%- if section.settings.show_pay_diners != false -%}
+                <div class="earth-footer__payment-card" title="Diners Club">
+                  <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="28" height="16" rx="2" fill="#004A97"/>
+                    <circle cx="14" cy="8" r="5" fill="white"/>
+                    <path d="M12.5 5.5C11.1 5.5 10 6.6 10 8C10 9.4 11.1 10.5 12.5 10.5V5.5ZM15.5 10.5C16.9 10.5 18 9.4 18 8C18 6.6 16.9 5.5 15.5 5.5V10.5Z" fill="#004A97"/>
+                  </svg>
+                </div>
+              {%- endif -%}
+              {%- if section.settings.show_pay_discover != false -%}
+                <div class="earth-footer__payment-card" title="Discover">
+                  <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="28" height="16" rx="2" fill="#FF6000"/>
+                    <circle cx="14" cy="8" r="3.2" fill="#FFA800"/>
+                    <path d="M4 11V5H6.5C8 5 9 6.2 9 8C9 9.8 8 11 6.5 11H4ZM5.5 9.7H6.4C7.2 9.7 7.7 9 7.7 8C7.7 7 7.2 6.3 6.4 6.3H5.5V9.7Z" fill="white"/>
+                  </svg>
+                </div>
+              {%- endif -%}
+              {%- if section.settings.show_pay_mastercard != false -%}
+                <div class="earth-footer__payment-card" title="Mastercard">
+                  <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11.5" cy="8" r="5.5" fill="#EB001B"/>
+                    <circle cx="16.5" cy="8" r="5.5" fill="#F79E1B"/>
+                    <path d="M14 4.5C15.2 5.5 16 7 16 8.7C16 10.4 15.2 11.9 14 12.9C12.8 11.9 12 10.4 12 8.7C12 7 12.8 5.5 14 4.5Z" fill="#FF5F00"/>
+                  </svg>
+                </div>
+              {%- endif -%}
+              {%- if section.settings.show_pay_visa != false -%}
+                <div class="earth-footer__payment-card" title="Visa">
+                  <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11.2 11.5L12.8 4.5H14.8L13.2 11.5H11.2ZM19.7 4.7C19.3 4.5 18.7 4.4 18 4.4C16.2 4.4 15 5.3 15 6.6C15 7.6 15.9 8.1 16.6 8.4C17.3 8.7 17.5 8.9 17.5 9.2C17.5 9.7 16.9 9.9 16.3 9.9C15.5 9.9 15 9.8 14.4 9.5L14.1 9.4L13.8 11C14.3 11.2 15.2 11.4 16.1 11.4C18 11.4 19.3 10.5 19.3 9C19.3 7.8 18.5 7.2 17.3 6.6C16.7 6.3 16.3 6.1 16.3 5.7C16.3 5.3 16.8 5 17.5 5C18.1 5 18.6 5.1 19 5.3L19.2 5.4L19.7 4.7ZM24.4 11.5H26L24.5 4.5H23.1C22.6 4.5 22.2 4.8 22 5.2L19.4 11.5H21.5L21.9 10.4H24.1L24.4 11.5ZM22.4 9.1L23.3 6.6L23.8 9.1H22.4ZM9.8 4.5L7.9 9.6L7.7 8.5C7.4 7.4 6.4 6.2 5.3 5.6L7 11.5H9.1L12.2 4.5H9.8ZM5.2 4.5H2L2.05 4.7C4.1 5.2 5.7 6.4 6.3 8.1L5.6 4.8C5.5 4.6 5.3 4.5 5.2 4.5Z" fill="#1A1F71"/>
+                  </svg>
+                </div>
+              {%- endif -%}
+              {%- if section.settings.show_pay_shoppay != false -%}
+                <div class="earth-footer__payment-card" title="Shop Pay">
+                  <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="28" height="16" rx="2" fill="#5A31F4"/>
+                    <path d="M8.5 11.2C7 11.2 6.2 10.3 6.2 9.1C6.2 7.7 7.4 7 8.7 7C9.3 7 9.8 7.1 10.1 7.3V7C10.1 6.3 9.6 5.8 8.7 5.8C8 5.8 7.4 6.1 7 6.4L6.5 5.5C7.1 5 8 4.7 9 4.7C10.6 4.7 11.5 5.6 11.5 7.1V11H10.1V10.3C9.7 10.8 9.1 11.2 8.5 11.2ZM8.8 10.1C9.4 10.1 9.9 9.7 10.1 9.1V8.2C9.8 8.1 9.4 8 8.9 8C8 8 7.5 8.4 7.5 9C7.5 9.7 8 10.1 8.8 10.1ZM13 11V4.8H14.4V5.6C14.8 5 15.5 4.7 16.2 4.7C17.6 4.7 18.5 5.7 18.5 7.2C18.5 8.7 17.6 9.7 16.2 9.7C15.5 9.7 14.8 9.4 14.4 8.8V11H13ZM15.7 8.6C16.5 8.6 17.1 8 17.1 7.2C17.1 6.4 16.5 5.8 15.7 5.8C14.9 5.8 14.3 6.4 14.3 7.2C14.3 8 14.9 8.6 15.7 8.6ZM20.5 11V4.8H21.9V11H20.5Z" fill="white"/>
+                  </svg>
+                </div>
+              {%- endif -%}
+              {%- if section.settings.show_pay_gpay != false -%}
+                <div class="earth-footer__payment-card" title="Google Pay">
+                  <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.5 8C12.5 7.7 12.47 7.45 12.42 7.2H9.5V8.7H11.2C11.12 9.1 10.88 9.45 10.5 9.7V10.55H11.6C12.25 9.95 12.5 9.05 12.5 8Z" fill="#4285F4"/>
+                    <path d="M9.5 11C10.35 11 11.05 10.7 11.6 10.2L10.5 9.35C10.2 9.55 9.88 9.7 9.5 9.7C8.68 9.7 8 9.15 7.75 8.4H6.6V9.3C7.15 10.35 8.25 11 9.5 11Z" fill="#34A853"/>
+                    <path d="M7.75 8.4C7.68 8.2 7.65 8 7.65 7.8C7.65 7.6 7.68 7.4 7.75 7.2V6.3H6.6C6.35 6.8 6.2 7.3 6.2 7.8C6.2 8.3 6.35 8.8 6.6 9.3L7.75 8.4Z" fill="#FBBC04"/>
+                    <path d="M9.5 5.9C9.95 5.9 10.35 6.05 10.68 6.35L11.65 5.38C11.05 4.8 10.35 4.5 9.5 4.5C8.25 4.5 7.15 5.15 6.6 6.2L7.75 7.1C8 6.35 8.68 5.9 9.5 5.9Z" fill="#EA4335"/>
+                    <path d="M15.5 9.8V4.8H14.2V11.2H15.5V9.8ZM18.8 7.3C18 7.3 17.3 7.9 17.3 8.8C17.3 9.7 18 10.3 18.8 10.3C19.6 10.3 20.3 9.7 20.3 8.8C20.3 7.9 19.6 7.3 18.8 7.3ZM18.8 9.3C18.4 9.3 18.1 9 18.1 8.5C18.1 8 18.4 7.7 18.8 7.7C19.2 7.7 19.5 8 19.5 8.5C19.5 9 19.2 9.3 18.8 9.3ZM22 10.8V7.5H21.2V8.5H21.1C21 8.2 20.6 7.9 20.2 7.9C19.4 7.9 18.8 8.6 18.8 9.5C18.8 10.4 19.4 11.1 20.2 11.1C20.6 11.1 21 10.8 21.1 10.5H21.2V10.8C21.2 11.4 20.8 11.8 20.2 11.8C19.8 11.8 19.5 11.6 19.4 11.3L18.6 11.6C18.8 12.2 19.4 12.7 20.2 12.7C21.4 12.7 22.3 11.9 22.3 10.5V7.5H22V10.8Z" fill="#5F6368"/>
+                  </svg>
+                </div>
+              {%- endif -%}
+              {%- if section.settings.show_pay_applepay != false -%}
+                <div class="earth-footer__payment-card" title="Apple Pay">
+                  <svg width="28" height="16" viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.5 5.8C8.9 5.3 9.2 4.6 9.1 3.9C8.5 3.9 7.7 4.3 7.3 4.8C7 5.2 6.7 5.9 6.8 6.6C7.5 6.6 8.2 6.2 8.5 5.8ZM9.1 6.7C8.1 6.7 7.6 6.1 6.8 6.1C6 6.1 5.4 6.7 4.7 6.7C3.6 6.7 2.6 7.7 2.6 9.3C2.6 10.4 3 11.5 3.6 12.3C4.1 13 4.6 13.7 5.4 13.7C6.1 13.7 6.4 13.3 7.3 13.3C8.2 13.3 8.4 13.7 9.2 13.7C10 13.7 10.5 13 11 12.3C11.6 11.5 11.8 10.7 11.8 10.6C11.8 10.5 10.2 9.9 10.2 8.2C10.2 6.8 11.4 6.1 11.4 6C10.7 5 9.7 4.9 9.1 4.9V6.7ZM14.5 11.5H13.2V5.2H15.4C16.7 5.2 17.6 6.1 17.6 7.3C17.6 8.5 16.7 9.4 15.4 9.4H14.5V11.5ZM14.5 8.3H15.3C16.1 8.3 16.5 7.9 16.5 7.3C16.5 6.7 16.1 6.3 15.3 6.3H14.5V8.3ZM18.5 11.5V6.8H19.7V7.5H19.8C20.1 7 20.7 6.7 21.4 6.7C22.6 6.7 23.3 7.6 23.3 8.9V11.5H22V9C22 8.2 21.6 7.8 20.9 7.8C20.3 7.8 19.8 8.3 19.8 9V11.5H18.5Z" fill="#000000"/>
+                  </svg>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
         </div>
-      </div>
+      {%- endif -%}
     </div>
 
-    <!-- Bottom Sub-Footer Bar -->
-    <div class="earth-footer__bottom">
+    <!-- 5. Bottom Sub-Footer Bar -->
+    <div class="earth-footer__bottom earth-footer__bottom--{{ section.settings.bottom_layout | default: 'split' }}">
       <div class="earth-footer__copyright">
-        <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | default: 'Earth' }}. All rights reserved</span>
-        <span class="earth-footer__legal-divider">|</span>
-        <span><a href="https://www.shopify.com" target="_blank" rel="noopener noreferrer">Powered by Shopify</a></span>
+        <span>&copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_text | default: shop.name | default: 'Earth' }}. All rights reserved</span>
+        {%- if section.settings.show_powered_by != false -%}
+          <span class="earth-footer__legal-divider">|</span>
+          <span><a href="https://www.shopify.com" target="_blank" rel="noopener noreferrer">Powered by Shopify</a></span>
+        {%- endif -%}
       </div>
 
-      <div class="earth-footer__legal-links">
-        <a href="/policies/privacy-policy">Privacy Policy</a>
-        <span class="earth-footer__legal-dot">•</span>
-        <a href="/policies/terms-of-service">Terms of Service</a>
-      </div>
+      {%- if section.settings.show_legal_links != false -%}
+        <div class="earth-footer__legal-links">
+          <a href="{{ section.settings.privacy_policy_url | default: '/policies/privacy-policy' }}">{{ section.settings.privacy_policy_text | default: 'Privacy Policy' }}</a>
+          <span class="earth-footer__legal-dot">•</span>
+          <a href="{{ section.settings.terms_service_url | default: '/policies/terms-of-service' }}">{{ section.settings.terms_service_text | default: 'Terms of Service' }}</a>
+          {%- if section.settings.legal_link_3_text != blank -%}
+            <span class="earth-footer__legal-dot">•</span>
+            <a href="{{ section.settings.legal_link_3_url | default: '#' }}">{{ section.settings.legal_link_3_text }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
   </div>
 </footer>
@@ -1026,10 +1309,46 @@
       "content": "Newsletter Bar"
     },
     {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show Newsletter Bar",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "newsletter_layout",
+      "label": "Newsletter Layout",
+      "options": [
+        { "value": "split", "label": "Split (Title Left, Form Right)" },
+        { "value": "stacked", "label": "Stacked / Centered" }
+      ],
+      "default": "split"
+    },
+    {
       "type": "text",
       "id": "newsletter_title",
       "label": "Newsletter Title",
       "default": "Join 50,000+ Eco-Conscious Fashion Lovers"
+    },
+    {
+      "type": "range",
+      "id": "newsletter_title_size_desktop",
+      "min": 24,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "label": "Title Font Size (Desktop)",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "newsletter_title_size_mobile",
+      "min": 18,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "label": "Title Font Size (Mobile)",
+      "default": 26
     },
     {
       "type": "text",
@@ -1044,8 +1363,109 @@
       "default": "Be first to wear change — exclusive drops + 10% off"
     },
     {
+      "type": "checkbox",
+      "id": "newsletter_show_sparkle",
+      "label": "Show Sparkle Icon in Subtext",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "newsletter_bg_color",
+      "label": "Newsletter Background",
+      "default": "#18420C"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_text_color",
+      "label": "Newsletter Text Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_input_bg",
+      "label": "Input Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_input_color",
+      "label": "Input Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_btn_bg",
+      "label": "Submit Button Background",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_btn_color",
+      "label": "Submit Button Arrow Color",
+      "default": "#003225"
+    },
+    {
+      "type": "range",
+      "id": "newsletter_btn_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Form & Button Border Radius",
+      "default": 2
+    },
+    {
       "type": "header",
       "content": "Brand & Tagline"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_brand",
+      "label": "Show Brand Section",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "brand_logo_type",
+      "label": "Brand Logo Type",
+      "options": [
+        { "value": "svg_full", "label": "Default Full Brand SVG Logo" },
+        { "value": "custom_image", "label": "Custom Uploaded Logo" },
+        { "value": "text", "label": "Text Store Name" }
+      ],
+      "default": "svg_full"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_logo_image",
+      "label": "Custom Logo Image"
+    },
+    {
+      "type": "range",
+      "id": "brand_logo_width",
+      "min": 80,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "label": "Custom Logo Max Width",
+      "default": 220
+    },
+    {
+      "type": "select",
+      "id": "brand_alignment",
+      "label": "Brand Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tagline",
+      "label": "Show Tagline",
+      "default": true
     },
     {
       "type": "textarea",
@@ -1054,8 +1474,97 @@
       "default": "Redefining fashion through sustainable practices, transparent supply chains, and timeless design."
     },
     {
+      "type": "range",
+      "id": "brand_tagline_size_desktop",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tagline Font Size (Desktop)",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "brand_tagline_size_mobile",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tagline Font Size (Mobile)",
+      "default": 21
+    },
+    {
+      "type": "color",
+      "id": "brand_tagline_color",
+      "label": "Tagline Color",
+      "default": "#003225"
+    },
+    {
       "type": "header",
-      "content": "Navigation Columns"
+      "content": "Navigation Columns Layout"
+    },
+    {
+      "type": "select",
+      "id": "nav_columns_count",
+      "label": "Number of Columns (Desktop)",
+      "options": [
+        { "value": "2", "label": "2 Columns" },
+        { "value": "3", "label": "3 Columns" },
+        { "value": "4", "label": "4 Columns (Default)" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "range",
+      "id": "nav_grid_gap",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Columns Gap (Desktop)",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Column Heading Font Size",
+      "default": 19
+    },
+    {
+      "type": "range",
+      "id": "link_font_size",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Links Font Size",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "link_font_weight",
+      "label": "Links Font Weight",
+      "options": [
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-Bold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "header",
+      "content": "Column 1 Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "col_1_show",
+      "label": "Show Column 1",
+      "default": true
     },
     {
       "type": "text",
@@ -1064,10 +1573,48 @@
       "default": "COMPANY"
     },
     {
+      "type": "link_list",
+      "id": "col_1_menu",
+      "label": "Column 1 Menu",
+      "info": "Select a menu to override the default links"
+    },
+    {
+      "type": "checkbox",
+      "id": "col_1_default_open_mobile",
+      "label": "Expand Column 1 by default on Mobile",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Column 2 Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "col_2_show",
+      "label": "Show Column 2",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "col_2_title",
       "label": "Column 2 Title",
       "default": "SHOP"
+    },
+    {
+      "type": "link_list",
+      "id": "col_2_menu",
+      "label": "Column 2 Menu",
+      "info": "Select a menu to override the default links"
+    },
+    {
+      "type": "header",
+      "content": "Column 3 Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "col_3_show",
+      "label": "Show Column 3",
+      "default": true
     },
     {
       "type": "text",
@@ -1076,14 +1623,67 @@
       "default": "SUSTAINABILITY"
     },
     {
+      "type": "link_list",
+      "id": "col_3_menu",
+      "label": "Column 3 Menu",
+      "info": "Select a menu to override the default links"
+    },
+    {
+      "type": "header",
+      "content": "Column 4 Settings (Support & Contact)"
+    },
+    {
+      "type": "checkbox",
+      "id": "col_4_show",
+      "label": "Show Column 4",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "col_4_title",
       "label": "Column 4 Title",
       "default": "SUPPORT"
     },
     {
+      "type": "link_list",
+      "id": "col_4_menu",
+      "label": "Column 4 Menu",
+      "info": "Select a menu to override the default links"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_contact_info",
+      "label": "Show Contact Info below Menu",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "contact_email",
+      "label": "Contact Email",
+      "default": "hello@earthecoshop.com"
+    },
+    {
+      "type": "text",
+      "id": "contact_phone",
+      "label": "Contact Phone",
+      "default": "(555) 123-4567"
+    },
+    {
+      "type": "text",
+      "id": "contact_address",
+      "label": "Store Address",
+      "default": "1234 Palm Boulevard, Miami"
+    },
+    {
       "type": "header",
-      "content": "Social & Trust"
+      "content": "Follow Us & Social Media",
+      "info": "Links are connected to Global Theme Settings > Social media. You can also override them per channel below."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_section",
+      "label": "Show Follow Us Section",
+      "default": true
     },
     {
       "type": "text",
@@ -1098,10 +1698,343 @@
       "default": "Share your sustainable style with #Earth"
     },
     {
+      "type": "select",
+      "id": "social_btn_style",
+      "label": "Social Button Shape",
+      "options": [
+        { "value": "square", "label": "Square (Default 2px)" },
+        { "value": "rounded", "label": "Rounded (8px)" },
+        { "value": "circle", "label": "Circle" },
+        { "value": "outline", "label": "Outline" }
+      ],
+      "default": "square"
+    },
+    {
+      "type": "color",
+      "id": "social_btn_bg",
+      "label": "Social Button Background",
+      "default": "#18420C"
+    },
+    {
+      "type": "color",
+      "id": "social_btn_color",
+      "label": "Social Icon Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "social_btn_hover_bg",
+      "label": "Social Hover Background",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "text",
+      "id": "social_facebook",
+      "label": "Facebook URL",
+      "default": "https://facebook.com"
+    },
+    {
+      "type": "text",
+      "id": "social_instagram",
+      "label": "Instagram URL",
+      "default": "https://instagram.com"
+    },
+    {
+      "type": "text",
+      "id": "social_twitter",
+      "label": "Twitter / X URL",
+      "default": "https://twitter.com"
+    },
+    {
+      "type": "text",
+      "id": "social_youtube",
+      "label": "YouTube URL",
+      "default": "https://youtube.com"
+    },
+    {
+      "type": "text",
+      "id": "social_tiktok",
+      "label": "TikTok URL"
+    },
+    {
+      "type": "text",
+      "id": "social_pinterest",
+      "label": "Pinterest URL"
+    },
+    {
+      "type": "header",
+      "content": "Localization Selectors"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country_selector",
+      "label": "Show Country / Currency Selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_language_selector",
+      "label": "Show Language Selector",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "selectors_border_color",
+      "label": "Selectors Border Color",
+      "default": "#003225"
+    },
+    {
+      "type": "header",
+      "content": "Trust & Security Badges"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_section",
+      "label": "Show Trust & Security Section",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "trust_title",
-      "label": "Trust & Security Title",
+      "label": "Trust Section Title",
       "default": "TRUST & SECURITY"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_badges",
+      "label": "Show Certification Badges",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust_subhead",
+      "label": "Badges Subhead",
+      "default": "CERTIFIED BY"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge_1ftp",
+      "label": "Show 1% for the Planet",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge_gots",
+      "label": "Show GOTS Certified Organic",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge_bcorp",
+      "label": "Show B Corporation",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge_oeko",
+      "label": "Show OEKO-TEX Standard",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge_fair_trade",
+      "label": "Show Fair Trade Certified",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Payment Methods"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_methods",
+      "label": "Show Payment Methods Row",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "payment_subhead",
+      "label": "Payments Subhead",
+      "default": "SECURE PAYMENT"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pay_amex",
+      "label": "Show American Express",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pay_diners",
+      "label": "Show Diners Club",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pay_discover",
+      "label": "Show Discover",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pay_mastercard",
+      "label": "Show Mastercard",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pay_visa",
+      "label": "Show Visa",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pay_shoppay",
+      "label": "Show Shop Pay",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pay_gpay",
+      "label": "Show Google Pay",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pay_applepay",
+      "label": "Show Apple Pay",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Bottom Sub-Footer"
+    },
+    {
+      "type": "select",
+      "id": "bottom_layout",
+      "label": "Sub-Footer Layout",
+      "options": [
+        { "value": "split", "label": "Space Between (Default)" },
+        { "value": "center", "label": "Centered" }
+      ],
+      "default": "split"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright Name Override",
+      "info": "Leave blank to use Shop Name"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_powered_by",
+      "label": "Show 'Powered by Shopify'",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_legal_links",
+      "label": "Show Legal Links",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "privacy_policy_text",
+      "label": "Privacy Policy Label",
+      "default": "Privacy Policy"
+    },
+    {
+      "type": "url",
+      "id": "privacy_policy_url",
+      "label": "Privacy Policy Link"
+    },
+    {
+      "type": "text",
+      "id": "terms_service_text",
+      "label": "Terms of Service Label",
+      "default": "Terms of Service"
+    },
+    {
+      "type": "url",
+      "id": "terms_service_url",
+      "label": "Terms of Service Link"
+    },
+    {
+      "type": "text",
+      "id": "legal_link_3_text",
+      "label": "Additional Legal Link Label"
+    },
+    {
+      "type": "url",
+      "id": "legal_link_3_url",
+      "label": "Additional Legal Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Spacing"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Footer Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Footer Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider Lines Color",
+      "default": "rgba(0, 50, 37, 0.2)"
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_top",
+      "min": 40,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "label": "Desktop Padding Top",
+      "default": 110
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_bottom",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Padding Bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Padding Top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 16,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Padding Bottom",
+      "default": 28
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer"
     }
   ]
 }

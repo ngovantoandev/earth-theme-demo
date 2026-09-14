@@ -15,7 +15,11 @@
       "type": "footer",
       "settings": {
         "menu": "",
-        "show_payment_icons": true
+        "show_payment_icons": true,
+        "social_facebook": "https://facebook.com",
+        "social_instagram": "https://instagram.com",
+        "social_twitter": "https://twitter.com",
+        "social_youtube": "https://youtube.com"
       }
     }
   },

@@ -26,6 +26,12 @@
     "btn_arrow_circle_icon": "#F8F9DC",
     "btn_arrow_padding_v": 6,
     "btn_arrow_padding_h": 0,
+    "social_facebook_link": "https://facebook.com",
+    "social_instagram_link": "https://instagram.com",
+    "social_twitter_link": "https://twitter.com",
+    "social_youtube_link": "https://youtube.com",
+    "social_tiktok_link": "",
+    "social_pinterest_link": "",
     "content_for_index": []
   }
 }

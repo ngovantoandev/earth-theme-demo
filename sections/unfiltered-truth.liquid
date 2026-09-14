@@ -6,7 +6,7 @@
 {% endcomment %}
 
 <section 
-  class="earth-truth full-width" 
+  class="earth-truth full-width{% if section.settings.full_width != false %} earth-truth--full{% else %} earth-truth--contained{% endif %}" 
   id="earthTruth-{{ section.id }}"
   style="
     --truth-bg: {{ section.settings.bg_color | default: '#F8F9DC' }}; 
@@ -126,9 +126,19 @@
     overflow: hidden;
   }
 
-  .earth-truth__container {
+  .earth-truth--full .earth-truth__container {
     width: 100%;
+    max-width: 100%;
     padding: 0 34px;
+    box-sizing: border-box;
+  }
+
+  .earth-truth--contained .earth-truth__container {
+    max-width: var(--page-width, 1440px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(20px, 3vw, 40px);
+    padding-right: clamp(20px, 3vw, 40px);
     box-sizing: border-box;
   }
 
@@ -287,6 +297,12 @@
   "tag": "section",
   "class": "section-unfiltered-truth",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Make section full width",
+      "default": true
+    },
     {
       "type": "header",
       "content": "Section Colors & Padding"
