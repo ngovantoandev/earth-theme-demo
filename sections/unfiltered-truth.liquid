@@ -1,0 +1,667 @@
+{% comment %}
+  The Unfiltered Truth / Honesty Commitment Section (Part 2)
+  - Forest Green Banner Header with title-styling & Action Button
+  - 4-Column Metrics Row with customizable metric blocks
+  Fully responsive on Desktop, Tablet, and Mobile with Full-Width Layout.
+{% endcomment %}
+
+<section 
+  class="earth-truth full-width" 
+  id="earthTruth-{{ section.id }}"
+  style="
+    --truth-bg: {{ section.settings.bg_color | default: '#F8F9DC' }}; 
+    --truth-pt: {{ section.settings.desktop_padding_top | default: 0 }}px;
+    --truth-pb: {{ section.settings.desktop_padding_bottom | default: 96 }}px;
+    --truth-mpt: {{ section.settings.mobile_padding_top | default: 0 }}px;
+    --truth-mpb: {{ section.settings.mobile_padding_bottom | default: 48 }}px;
+  "
+>
+  <div class="earth-truth__container">
+
+    <!-- 1. Forest Green Banner Header (Title Styling Snippet) -->
+    {%- liquid
+      assign h_layout = section.settings.header_layout | default: 'split'
+      assign h_ratio = section.settings.header_split_ratio | default: '1fr_1fr'
+      assign h_leaf_pos = section.settings.leaf_position | default: 'left'
+      assign h_btn_type = section.settings.header_btn_type | default: 'solid'
+      assign h_btn_theme = section.settings.header_btn_theme | default: 'light'
+      assign h_btn_bg = section.settings.header_btn_bg_color | default: '#F8F9DC'
+      assign h_btn_text = section.settings.header_btn_text_color | default: '#003225'
+      assign h_title_color = section.settings.title_color | default: '#F8F9DC'
+      assign h_sub_color = section.settings.subtitle_color | default: '#F8F9DC'
+      assign h_eyebrow_color = section.settings.eyebrow_color | default: '#F8F9DC'
+      assign h_leaf_show = section.settings.show_leaf_icons | default: false
+      assign h_title_sz_d = section.settings.title_size_desktop | default: 42
+      assign h_title_sz_m = section.settings.title_size_mobile | default: 32
+      assign h_eye_sz_d = section.settings.eyebrow_size_desktop | default: 16
+      assign h_eye_sz_m = section.settings.eyebrow_size_mobile | default: 13
+      assign h_sub_sz_d = section.settings.subtitle_size_desktop | default: 21
+      assign h_sub_sz_m = section.settings.subtitle_size_mobile | default: 18
+      assign h_btn_show = section.settings.show_header_btn
+      if h_btn_show == nil
+        assign h_btn_show = true
+      endif
+    -%}
+    <div 
+      class="earth-truth__banner" 
+      style="
+        {% if section.settings.banner_bg != blank %}background: {{ section.settings.banner_bg }};{% endif %}
+      "
+    >
+      {% render 'title-styling',
+        layout: h_layout,
+        split_ratio: h_ratio,
+        title: section.settings.title,
+        title_color: h_title_color,
+        title_size_desktop: h_title_sz_d,
+        title_size_mobile: h_title_sz_m,
+        eyebrow: section.settings.eyebrow,
+        show_eyebrow_icon: section.settings.show_eyebrow_icon,
+        eyebrow_color: h_eyebrow_color,
+        eyebrow_size_desktop: h_eye_sz_d,
+        eyebrow_size_mobile: h_eye_sz_m,
+        subtitle: section.settings.subtitle,
+        subtitle_color: h_sub_color,
+        subtitle_size_desktop: h_sub_sz_d,
+        subtitle_size_mobile: h_sub_sz_m,
+        show_leaf: h_leaf_show,
+        leaf_position: h_leaf_pos,
+        leaf_color: section.settings.leaf_color,
+        leaf_size: section.settings.leaf_size,
+        leaf_gap: section.settings.leaf_gap,
+        show_btn: h_btn_show,
+        btn_text: section.settings.header_btn_text,
+        btn_url: section.settings.header_btn_url,
+        btn_type: h_btn_type,
+        btn_theme: h_btn_theme,
+        btn_bg_color: h_btn_bg,
+        btn_text_color: h_btn_text,
+        btn_arrow_circle_bg: section.settings.header_btn_circle_bg,
+        btn_arrow_circle_color: section.settings.header_btn_circle_color,
+        text_color: '#F8F9DC',
+        class: 'earth-truth__banner-header'
+      %}
+    </div>
+
+    <!-- 2. Bottom Metrics Row -->
+    <div class="earth-truth__metrics-row">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          <div class="earth-truth__metric-item" {{ block.shopify_attributes }}>
+            <span class="earth-truth__metric-val" style="{% if section.settings.metric_value_color != blank %}color: {{ section.settings.metric_value_color }};{% endif %}">{{ block.settings.value }}</span>
+            <span class="earth-truth__metric-label" style="{% if section.settings.metric_label_color != blank %}color: {{ section.settings.metric_label_color }};{% endif %}">{{ block.settings.label }}</span>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="earth-truth__metric-item">
+          <span class="earth-truth__metric-val">94%</span>
+          <span class="earth-truth__metric-label">Traceable Origin</span>
+        </div>
+        <div class="earth-truth__metric-item">
+          <span class="earth-truth__metric-val">0%</span>
+          <span class="earth-truth__metric-label">Plastic Packaging</span>
+        </div>
+        <div class="earth-truth__metric-item">
+          <span class="earth-truth__metric-val">100+</span>
+          <span class="earth-truth__metric-label">Fair Wage Artisans</span>
+        </div>
+        <div class="earth-truth__metric-item">
+          <span class="earth-truth__metric-val">B-Corp</span>
+          <span class="earth-truth__metric-label">Pending Status</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .earth-truth {
+    grid-column: 1 / -1 !important;
+    width: 100%;
+    background-color: var(--truth-bg, #F8F9DC);
+    padding-top: var(--truth-pt, 0px);
+    padding-bottom: var(--truth-pb, 96px);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .earth-truth__container {
+    width: 100%;
+    padding: 0 34px;
+    box-sizing: border-box;
+  }
+
+  /* 1. Forest Green Banner */
+  .earth-truth__banner {
+    background: linear-gradient(135deg, #18420C 0%, #225310 50%, #2E6516 100%);
+    border-radius: 4px;
+    padding: clamp(36px, 4.5vw, 56px) clamp(28px, 4vw, 52px);
+    margin-bottom: clamp(36px, 4.5vw, 52px);
+    box-sizing: border-box;
+    color: var(--color-white, #F8F9DC);
+  }
+
+  .earth-truth__banner-header .earth-section-header__eyebrow {
+    color: var(--header-eyebrow, #F8F9DC) !important;
+  }
+
+  .earth-truth__banner-header .earth-section-header__title {
+    color: var(--header-title, #F8F9DC) !important;
+  }
+
+  .earth-truth__banner-header .earth-section-header__subtitle {
+    color: var(--header-subtitle, #F8F9DC) !important;
+    font-size: var(--header-sub-size-desktop, 21px);
+    line-height: 1.6;
+    opacity: 0.95;
+  }
+
+  .earth-truth__banner-header .earth-btn-action {
+    background-color: var(--color-white, #F8F9DC);
+    color: #003225;
+    border: 1.5px solid var(--color-white, #F8F9DC);
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 14px 28px;
+    border-radius: 2px;
+  }
+
+  .earth-truth__banner-header .earth-btn-action:hover {
+    background-color: var(--color-secondary, #71CC3B);
+    color: #003225;
+    border-color: var(--color-secondary, #71CC3B);
+  }
+
+  /* 2. Bottom Metrics Row */
+  .earth-truth__metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(16px, 2.5vw, 36px);
+    text-align: center;
+    padding-top: clamp(12px, 2vw, 24px);
+  }
+
+  .earth-truth__metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .earth-truth__metric-val {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--color-black, #003225);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .earth-truth__metric-label {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--color-primary, #003225);
+    opacity: 0.88;
+    line-height: 1.3;
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 1024px) {
+    .earth-truth {
+      padding-top: var(--truth-pt, 0px);
+      padding-bottom: calc(var(--truth-pb, 96px) * 0.7);
+    }
+    .earth-truth__container {
+      padding: 0 24px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .earth-truth {
+      padding-top: var(--truth-mpt, 0px);
+      padding-bottom: var(--truth-mpb, 48px);
+    }
+    .earth-truth__container {
+      padding: 0 20px;
+    }
+    .earth-truth__banner {
+      padding: 30px 20px 26px 20px;
+      margin-bottom: 28px;
+      border-radius: 0;
+      background: linear-gradient(180deg, #1b470f 0%, #12340a 100%);
+    }
+    .earth-truth__banner-header .earth-section-header__subtitle {
+      font-size: var(--header-sub-size-mobile, 18px) !important;
+    }
+    .earth-truth__banner-header .earth-btn-action {
+      width: auto;
+      display: inline-block;
+      padding: 12px 22px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      border-radius: 0;
+    }
+    /* Horizontal Scrolling Metrics Row on Mobile */
+    .earth-truth__metrics-row {
+      display: flex;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      gap: 32px;
+      text-align: left;
+      margin: 0 -20px;
+      padding: 10px 20px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      scroll-padding: 0 20px;
+    }
+    .earth-truth__metrics-row::-webkit-scrollbar {
+      display: none;
+    }
+    .earth-truth__metrics-row::after {
+      content: '';
+      flex: 0 0 1px;
+      margin-left: -32px;
+      padding-right: 20px;
+    }
+    .earth-truth__metric-item {
+      flex: 0 0 auto;
+      align-items: flex-start;
+      min-width: 110px;
+    }
+    .earth-truth__metric-val {
+      font-size: 28px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .earth-truth__metric-label {
+      font-size: 13.5px;
+      white-space: nowrap;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "The Unfiltered Truth",
+  "tag": "section",
+  "class": "section-unfiltered-truth",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Colors & Padding"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Padding Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Padding Bottom",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Padding Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Padding Bottom",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Banner Background"
+    },
+    {
+      "type": "color_background",
+      "id": "banner_bg",
+      "label": "Banner Custom Background",
+      "info": "Leave blank to use default gradient"
+    },
+    {
+      "type": "header",
+      "content": "Title Styling"
+    },
+    {
+      "type": "select",
+      "id": "header_layout",
+      "label": "Header Layout Style",
+      "options": [
+        { "value": "split", "label": "Split Columns (Title Left, Description Right)" },
+        { "value": "centered", "label": "Centered Layout" },
+        { "value": "stacked_left", "label": "Stacked Left (Classic)" }
+      ],
+      "default": "split"
+    },
+    {
+      "type": "select",
+      "id": "header_split_ratio",
+      "label": "Header Split Ratio",
+      "info": "Applies when Split Columns layout is selected",
+      "options": [
+        { "value": "1fr_1fr", "label": "1fr / 1fr (Equal 50/50 - Default)" },
+        { "value": "1.4fr_1fr", "label": "1.4fr / 1fr (Standard 60/40)" },
+        { "value": "2fr_1fr", "label": "2fr / 1fr (Wide 66/33)" },
+        { "value": "1fr_2fr", "label": "1fr / 2fr (Reverse 33/66)" }
+      ],
+      "default": "1fr_1fr"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow / Sub-tag",
+      "default": "The Unfiltered Truth"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_eyebrow_icon",
+      "label": "Show Eyebrow Sparkle Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow Custom Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_desktop",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Font Size (Desktop)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow Font Size (Mobile)",
+      "default": 13
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Main Heading",
+      "default": "Real Growth, Real Challenges"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Heading Text Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Desktop)",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Mobile)",
+      "default": 32
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle Description",
+      "default": "\"True sustainability is hard. We aren't 100% there yet, but we refuse to hide our hurdles. From logistics carbon footprints to dye-house water usage, we are iterating every day.\""
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Text Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Desktop)",
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 13,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Mobile)",
+      "default": 18
+    },
+    {
+      "type": "checkbox",
+      "id": "show_leaf_icons",
+      "label": "Show Decorative Leaf in Heading",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "leaf_position",
+      "label": "Leaf Icon Position",
+      "options": [
+        { "value": "left", "label": "Left of Title" },
+        { "value": "top", "label": "Top of Title" },
+        { "value": "both_sides", "label": "Both Sides of Title" },
+        { "value": "right", "label": "Right of Title" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "leaf_color",
+      "label": "Leaf Icon Color",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "range",
+      "id": "leaf_size",
+      "min": 20,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Leaf Icon Size",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "leaf_gap",
+      "min": 4,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Leaf Icon Spacing Gap",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Action Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header_btn",
+      "label": "Show Action Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "header_btn_text",
+      "label": "Button Label",
+      "default": "HONESTY COMMITMENT"
+    },
+    {
+      "type": "url",
+      "id": "header_btn_url",
+      "label": "Button Link"
+    },
+    {
+      "type": "select",
+      "id": "header_btn_type",
+      "label": "Button Style Type",
+      "options": [
+        { "value": "solid", "label": "Solid Fill Button" },
+        { "value": "outline", "label": "Outlined Button" },
+        { "value": "arrow", "label": "Arrow Pill Button" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "select",
+      "id": "header_btn_theme",
+      "label": "Arrow Button Theme",
+      "options": [
+        { "value": "light", "label": "Light Theme" },
+        { "value": "dark", "label": "Dark Theme" }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_bg_color",
+      "label": "Button Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_text_color",
+      "label": "Button Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_circle_bg",
+      "label": "Arrow Circle Background"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_circle_color",
+      "label": "Arrow Circle Icon Color"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_color",
+      "label": "Button Custom Accent Color"
+    },
+    {
+      "type": "header",
+      "content": "Metrics Settings"
+    },
+    {
+      "type": "color",
+      "id": "metric_value_color",
+      "label": "Metric Number Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "metric_label_color",
+      "label": "Metric Label Color",
+      "default": "#003225"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "metric",
+      "name": "Metric Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Metric Value",
+          "default": "94%"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Metric Label",
+          "default": "Traceable Origin"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "The Unfiltered Truth",
+      "blocks": [
+        {
+          "type": "metric",
+          "settings": {
+            "value": "94%",
+            "label": "Traceable Origin"
+          }
+        },
+        {
+          "type": "metric",
+          "settings": {
+            "value": "0%",
+            "label": "Plastic Packaging"
+          }
+        },
+        {
+          "type": "metric",
+          "settings": {
+            "value": "100+",
+            "label": "Fair Wage Artisans"
+          }
+        },
+        {
+          "type": "metric",
+          "settings": {
+            "value": "B-Corp",
+            "label": "Pending Status"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
