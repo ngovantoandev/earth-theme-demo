@@ -34,6 +34,12 @@
     {%- if btn_theme_val == blank -%}{%- assign btn_theme_val = section.settings.header_arrow_theme | default: 'dark' -%}{%- endif -%}
     {%- assign btn_color_val = section.settings.header_btn_color -%}
     {%- if btn_color_val == blank -%}{%- assign btn_color_val = section.settings.header_arrow_text_color -%}{%- endif -%}
+    {%- assign show_btn_val = section.settings.show_header_btn -%}
+    {%- if show_btn_val == nil -%}
+      {%- if btn_text_val != blank -%}
+        {%- assign show_btn_val = true -%}
+      {%- endif -%}
+    {%- endif -%}
     <div class="earth-essentials__header-container">
       {% render 'title-styling',
         layout: header_layout,
@@ -57,6 +63,7 @@
         leaf_size: section.settings.leaf_size,
         leaf_gap: section.settings.leaf_gap,
         split_ratio: section.settings.header_split_ratio,
+        show_btn: show_btn_val,
         btn_text: btn_text_val,
         btn_url: btn_url_val,
         btn_type: btn_type_val,

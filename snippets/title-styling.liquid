@@ -77,6 +77,8 @@
 
   assign sub_size_d = subtitle_size_desktop | default: 21
   assign sub_size_m = subtitle_size_mobile | default: 18
+  assign title_sz_d = title_size_desktop | default: title_size
+  assign title_sz_m = title_size_mobile
   assign leaf_sz = leaf_size | default: 34
   assign leaf_spacing = leaf_gap | default: 12
   assign eye_sz_d = eyebrow_size_desktop | default: eyebrow_size | default: 16
@@ -104,7 +106,7 @@
 {%- capture button_markup -%}
   {%- if btn_block != blank -%}
     {{ btn_block }}
-  {%- elsif btn_text != blank and btn_url != blank -%}
+  {%- elsif show_btn == true and btn_text != blank -%}
     {%- assign b_type = btn_type | default: 'arrow' -%}
     {%- assign b_theme = btn_theme | default: 'dark' -%}
     {%- assign b_bg = btn_bg_color | default: btn_color -%}
@@ -136,6 +138,8 @@
   style="
     --header-eyebrow-size-desktop: {{ eye_sz_d }}px;
     --header-eyebrow-size-mobile: {{ eye_sz_m }}px;
+    {%- if title_sz_d != blank %}--header-title-size-desktop: {{ title_sz_d }}px;{% endif -%}
+    {%- if title_sz_m != blank %}--header-title-size-mobile: {{ title_sz_m }}px;{% endif -%}
     --header-sub-size-desktop: {{ sub_size_d }}px;
     --header-sub-size-mobile: {{ sub_size_m }}px;
     --header-leaf-size: {{ leaf_sz }}px;
@@ -282,7 +286,7 @@
   }
 
   .earth-section-header__title {
-    font-size: var(--type-section-title, 2.625rem);
+    font-size: var(--header-title-size-desktop, var(--type-section-title, 2.625rem));
     font-weight: 800;
     line-height: 1.15;
     letter-spacing: -0.02em;
@@ -422,7 +426,7 @@
       max-width: 100%;
     }
     .earth-section-header__title {
-      font-size: 2.125rem !important;
+      font-size: var(--header-title-size-mobile, 2.125rem) !important;
     }
     .earth-section-header__subtitle {
       font-size: var(--header-sub-size-mobile, 18px);
