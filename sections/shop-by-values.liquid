@@ -104,7 +104,7 @@
         <!-- Left Floating Navigation Arrow -->
         <button 
           type="button" 
-          class="earth-values__nav-btn earth-values__nav-btn--prev is-disabled{% if section.settings.nav_arrow_visibility == 'always' %} earth-values__nav-btn--always{% endif %}" 
+          class="earth-values__nav-btn earth-values__nav-btn--prev{% if section.settings.nav_arrow_visibility == 'always' %} earth-values__nav-btn--always{% endif %}" 
           id="earthValuesPrev-{{ section.id }}" 
           aria-label="Previous value"
         >
@@ -112,184 +112,228 @@
         </button>
       {%- endif -%}
 
-      <!-- Horizontal Slider Track or Grid Container -->
-      <div class="earth-values__track earth-values__track--{{ section.settings.layout_mode | default: 'slider' }} earth-values__track--cols-{{ section.settings.columns_desktop | default: '1' }}" id="earthValuesTrack-{{ section.id }}">
-        {%- if section.blocks.size > 0 -%}
-          {%- assign slide_idx = 0 -%}
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'value_item' -%}
-              <div class="earth-values__slide" data-index="{{ slide_idx }}" {{ block.shopify_attributes }}>
-              <div class="earth-values__card">
-                <div class="earth-values__media-box">
-                  {%- if block.settings.image != blank -%}
-                    {{ block.settings.image | image_url: width: 800 | image_tag: alt: block.settings.title, class: 'earth-values__img', loading: 'lazy' }}
-                  {%- else -%}
-                    {%- case forloop.index0 -%}
-                      {%- when 0 -%}
-                        <img src="{{ 'cat-organic.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
-                      {%- when 1 -%}
-                        <img src="{{ 'cat-ocean.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
-                      {%- when 2 -%}
-                        <img src="{{ 'earth-3.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
-                      {%- when 3 -%}
-                        <img src="{{ 'cat-activewear.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+      {%- if section.settings.layout_mode == 'grid' -%}
+        <!-- Grid Layout Container -->
+        <div class="earth-values__grid earth-values__grid--cols-{{ section.settings.columns_desktop | default: '1' }}" id="earthValuesGrid-{{ section.id }}">
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'value_item' -%}
+                <div class="earth-values__grid-item" {{ block.shopify_attributes }}>
+                  <div class="earth-values__card">
+                    <div class="earth-values__media-box">
+                      {%- if block.settings.image != blank -%}
+                        {{ block.settings.image | image_url: width: 800 | image_tag: alt: block.settings.title, class: 'earth-values__img', loading: 'lazy' }}
                       {%- else -%}
-                        <img src="{{ 'earth-4.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
-                    {%- endcase -%}
-                  {%- endif -%}
+                        {%- case forloop.index0 -%}
+                          {%- when 0 -%}
+                            <img src="{{ 'cat-organic.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                          {%- when 1 -%}
+                            <img src="{{ 'cat-ocean.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                          {%- when 2 -%}
+                            <img src="{{ 'earth-3.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                          {%- when 3 -%}
+                            <img src="{{ 'cat-activewear.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                          {%- else -%}
+                            <img src="{{ 'earth-4.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                        {%- endcase -%}
+                      {%- endif -%}
+                    </div>
+
+                    <div class="earth-values__info-box">
+                      <h3 class="earth-values__item-title">{{ block.settings.title }}</h3>
+                      
+                      {%- if block.settings.badge != blank -%}
+                        <div class="earth-values__badge-wrap">
+                          <span class="earth-values__badge">{{ block.settings.badge }}</span>
+                        </div>
+                      {%- endif -%}
+
+                      {%- if block.settings.highlight != blank -%}
+                        <div class="earth-values__highlight">
+                          {%- assign icon_file = block.settings.icon | default: 'icon-handshake.svg' -%}
+                          <span class="earth-values__highlight-icon" aria-hidden="true">{{ icon_file | inline_asset_content }}</span>
+                          <span>{{ block.settings.highlight }}</span>
+                        </div>
+                      {%- endif -%}
+
+                      {%- if block.settings.desc != blank -%}
+                        <div class="earth-values__description">{{ block.settings.desc }}</div>
+                      {%- endif -%}
+
+                      {%- assign cta_label = block.settings.cta_text | default: 'EXPLORE PRODUCTS' -%}
+                      {%- assign cta_url = block.settings.link | default: routes.all_products_collection_url -%}
+                      {%- assign cta_theme = block.settings.cta_theme | default: 'dark' -%}
+                      <div class="earth-values__cta-wrap">
+                        {% render 'btn-arrow', text: cta_label, url: cta_url, theme: cta_theme %}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                <div class="earth-values__info-box">
-                  <h3 class="earth-values__item-title">{{ block.settings.title }}</h3>
-                  
-                  {%- if block.settings.badge != blank -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            <!-- Fallback Preset Items -->
+            {%- for i in (1..5) -%}
+              <div class="earth-values__grid-item">
+                <div class="earth-values__card">
+                  <div class="earth-values__media-box">
+                    {%- case i -%}
+                      {%- when 1 -%}<img src="{{ 'cat-organic.jpg' | asset_url }}" alt="Organic Cotton" class="earth-values__img" width="600" height="600" loading="lazy">
+                      {%- when 2 -%}<img src="{{ 'cat-ocean.jpg' | asset_url }}" alt="Recycled Materials" class="earth-values__img" width="600" height="600" loading="lazy">
+                      {%- when 3 -%}<img src="{{ 'earth-3.jpg' | asset_url }}" alt="Fair Trade" class="earth-values__img" width="600" height="600" loading="lazy">
+                      {%- when 4 -%}<img src="{{ 'cat-activewear.jpg' | asset_url }}" alt="Carbon Neutral" class="earth-values__img" width="600" height="600" loading="lazy">
+                      {%- when 5 -%}<img src="{{ 'earth-4.jpg' | asset_url }}" alt="Vegan & Cruelty-Free" class="earth-values__img" width="600" height="600" loading="lazy">
+                    {%- endcase -%}
+                  </div>
+                  <div class="earth-values__info-box">
+                    <h3 class="earth-values__item-title">
+                      {%- case i -%}{%- when 1 -%}Organic Cotton{%- when 2 -%}Recycled Materials{%- when 3 -%}Fair Trade{%- when 4 -%}Carbon Neutral{%- when 5 -%}Vegan & Cruelty-Free{%- endcase -%}
+                    </h3>
                     <div class="earth-values__badge-wrap">
-                      <span class="earth-values__badge">{{ block.settings.badge }}</span>
+                      <span class="earth-values__badge">
+                        {%- case i -%}{%- when 1 -%}GOTS Certified Organic{%- when 2 -%}Ocean & Land Waste Diverted{%- when 3 -%}Ethical wages guaranteed{%- when 4 -%}Net-Zero Supply Chain{%- when 5 -%}PETA Approved Vegan{%- endcase -%}
+                      </span>
                     </div>
-                  {%- endif -%}
-
-                  {%- if block.settings.highlight != blank -%}
                     <div class="earth-values__highlight">
-                      {%- assign icon_file = block.settings.icon | default: 'icon-handshake.svg' -%}
-                      <span class="earth-values__highlight-icon" aria-hidden="true">{{ icon_file | inline_asset_content }}</span>
-                      <span>{{ block.settings.highlight }}</span>
+                      <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
+                      <span>
+                        {%- case i -%}{%- when 1 -%}100% Pesticide & GMO Free{%- when 2 -%}7.8 plastic bottles per garment{%- when 3 -%}100% worker-owned cooperatives{%- when 4 -%}100% renewable energy powered{%- when 5 -%}Zero animal testing or materials{%- endcase -%}
+                      </span>
                     </div>
-                  {%- endif -%}
-
-                  {%- if block.settings.desc != blank -%}
-                    <div class="earth-values__description">{{ block.settings.desc }}</div>
-                  {%- endif -%}
-
-                  {%- assign cta_label = block.settings.cta_text | default: 'EXPLORE PRODUCTS' -%}
-                  {%- assign cta_url = block.settings.link | default: routes.all_products_collection_url -%}
-                  {%- assign cta_theme = block.settings.cta_theme | default: 'dark' -%}
-                  <div class="earth-values__cta-wrap">
-                    {% render 'btn-arrow', text: cta_label, url: cta_url, theme: cta_theme %}
+                    <div class="earth-values__description">
+                      <p>
+                        {%- case i -%}
+                          {%- when 1 -%}Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton.
+                          {%- when 2 -%}Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments.
+                          {%- when 3 -%}Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.
+                          {%- when 4 -%}Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery.
+                          {%- when 5 -%}100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living.
+                        {%- endcase -%}
+                      </p>
+                    </div>
+                    <div class="earth-values__cta-wrap">
+                      {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            {%- assign slide_idx = slide_idx | plus: 1 -%}
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+
+      {%- else -%}
+        <!-- Swiper Slider Container -->
+        <div class="swiper earth-values__swiper" id="earthValuesSwiper-{{ section.id }}">
+          <div class="swiper-wrapper">
+            {%- if section.blocks.size > 0 -%}
+              {%- assign slide_idx = 0 -%}
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'value_item' -%}
+                  <div class="swiper-slide earth-values__slide" data-index="{{ slide_idx }}" {{ block.shopify_attributes }}>
+                    <div class="earth-values__card">
+                      <div class="earth-values__media-box">
+                        {%- if block.settings.image != blank -%}
+                          {{ block.settings.image | image_url: width: 800 | image_tag: alt: block.settings.title, class: 'earth-values__img', loading: 'lazy' }}
+                        {%- else -%}
+                          {%- case forloop.index0 -%}
+                            {%- when 0 -%}
+                              <img src="{{ 'cat-organic.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                            {%- when 1 -%}
+                              <img src="{{ 'cat-ocean.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                            {%- when 2 -%}
+                              <img src="{{ 'earth-3.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                            {%- when 3 -%}
+                              <img src="{{ 'cat-activewear.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                            {%- else -%}
+                              <img src="{{ 'earth-4.jpg' | asset_url }}" alt="{{ block.settings.title }}" class="earth-values__img" width="600" height="600" loading="lazy">
+                          {%- endcase -%}
+                        {%- endif -%}
+                      </div>
+
+                      <div class="earth-values__info-box">
+                        <h3 class="earth-values__item-title">{{ block.settings.title }}</h3>
+                        
+                        {%- if block.settings.badge != blank -%}
+                          <div class="earth-values__badge-wrap">
+                            <span class="earth-values__badge">{{ block.settings.badge }}</span>
+                          </div>
+                        {%- endif -%}
+
+                        {%- if block.settings.highlight != blank -%}
+                          <div class="earth-values__highlight">
+                            {%- assign icon_file = block.settings.icon | default: 'icon-handshake.svg' -%}
+                            <span class="earth-values__highlight-icon" aria-hidden="true">{{ icon_file | inline_asset_content }}</span>
+                            <span>{{ block.settings.highlight }}</span>
+                          </div>
+                        {%- endif -%}
+
+                        {%- if block.settings.desc != blank -%}
+                          <div class="earth-values__description">{{ block.settings.desc }}</div>
+                        {%- endif -%}
+
+                        {%- assign cta_label = block.settings.cta_text | default: 'EXPLORE PRODUCTS' -%}
+                        {%- assign cta_url = block.settings.link | default: routes.all_products_collection_url -%}
+                        {%- assign cta_theme = block.settings.cta_theme | default: 'dark' -%}
+                        <div class="earth-values__cta-wrap">
+                          {% render 'btn-arrow', text: cta_label, url: cta_url, theme: cta_theme %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {%- assign slide_idx = slide_idx | plus: 1 -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              <!-- Default 5 Values Slides -->
+              {%- for i in (1..5) -%}
+                <div class="swiper-slide earth-values__slide" data-index="{{ i | minus: 1 }}">
+                  <div class="earth-values__card">
+                    <div class="earth-values__media-box">
+                      {%- case i -%}
+                        {%- when 1 -%}<img src="{{ 'cat-organic.jpg' | asset_url }}" alt="Organic Cotton" class="earth-values__img" width="600" height="600" loading="lazy">
+                        {%- when 2 -%}<img src="{{ 'cat-ocean.jpg' | asset_url }}" alt="Recycled Materials" class="earth-values__img" width="600" height="600" loading="lazy">
+                        {%- when 3 -%}<img src="{{ 'earth-3.jpg' | asset_url }}" alt="Fair Trade" class="earth-values__img" width="600" height="600" loading="lazy">
+                        {%- when 4 -%}<img src="{{ 'cat-activewear.jpg' | asset_url }}" alt="Carbon Neutral" class="earth-values__img" width="600" height="600" loading="lazy">
+                        {%- when 5 -%}<img src="{{ 'earth-4.jpg' | asset_url }}" alt="Vegan & Cruelty-Free" class="earth-values__img" width="600" height="600" loading="lazy">
+                      {%- endcase -%}
+                    </div>
+                    <div class="earth-values__info-box">
+                      <h3 class="earth-values__item-title">
+                        {%- case i -%}{%- when 1 -%}Organic Cotton{%- when 2 -%}Recycled Materials{%- when 3 -%}Fair Trade{%- when 4 -%}Carbon Neutral{%- when 5 -%}Vegan & Cruelty-Free{%- endcase -%}
+                      </h3>
+                      <div class="earth-values__badge-wrap">
+                        <span class="earth-values__badge">
+                          {%- case i -%}{%- when 1 -%}GOTS Certified Organic{%- when 2 -%}Ocean & Land Waste Diverted{%- when 3 -%}Ethical wages guaranteed{%- when 4 -%}Net-Zero Supply Chain{%- when 5 -%}PETA Approved Vegan{%- endcase -%}
+                        </span>
+                      </div>
+                      <div class="earth-values__highlight">
+                        <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
+                        <span>
+                          {%- case i -%}{%- when 1 -%}100% Pesticide & GMO Free{%- when 2 -%}7.8 plastic bottles per garment{%- when 3 -%}100% worker-owned cooperatives{%- when 4 -%}100% renewable energy powered{%- when 5 -%}Zero animal testing or materials{%- endcase -%}
+                        </span>
+                      </div>
+                      <div class="earth-values__description">
+                        <p>
+                          {%- case i -%}
+                            {%- when 1 -%}Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton.
+                            {%- when 2 -%}Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments.
+                            {%- when 3 -%}Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.
+                            {%- when 4 -%}Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery.
+                            {%- when 5 -%}100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living.
+                          {%- endcase -%}
+                        </p>
+                      </div>
+                      <div class="earth-values__cta-wrap">
+                        {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {%- endfor -%}
             {%- endif -%}
-          {%- endfor -%}
-        {%- else -%}
-          <!-- Default 5 Values Slides -->
-          <!-- Slide 1: Organic Cotton -->
-          <div class="earth-values__slide" data-index="0">
-            <div class="earth-values__card">
-              <div class="earth-values__media-box">
-                <img src="{{ 'cat-organic.jpg' | asset_url }}" alt="Organic Cotton" class="earth-values__img" width="600" height="600" loading="lazy">
-              </div>
-              <div class="earth-values__info-box">
-                <h3 class="earth-values__item-title">Organic Cotton</h3>
-                <div class="earth-values__badge-wrap">
-                  <span class="earth-values__badge">GOTS Certified Organic</span>
-                </div>
-                <div class="earth-values__highlight">
-                  <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
-                  <span>100% Pesticide & GMO Free</span>
-                </div>
-                <div class="earth-values__description"><p>Cultivated using non-toxic methods that preserve soil health and save up to 91% water compared to conventional cotton.</p></div>
-                <div class="earth-values__cta-wrap">
-                  {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
-                </div>
-              </div>
-            </div>
           </div>
-
-          <!-- Slide 2: Recycled Materials -->
-          <div class="earth-values__slide" data-index="1">
-            <div class="earth-values__card">
-              <div class="earth-values__media-box">
-                <img src="{{ 'cat-ocean.jpg' | asset_url }}" alt="Recycled Materials" class="earth-values__img" width="600" height="600" loading="lazy">
-              </div>
-              <div class="earth-values__info-box">
-                <h3 class="earth-values__item-title">Recycled Materials</h3>
-                <div class="earth-values__badge-wrap">
-                  <span class="earth-values__badge">Ocean & Land Waste Diverted</span>
-                </div>
-                <div class="earth-values__highlight">
-                  <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
-                  <span>7.8 plastic bottles per garment</span>
-                </div>
-                <div class="earth-values__description"><p>Transforming post-consumer plastic and recycled textile scraps into high-performance, ultra-soft circular garments.</p></div>
-                <div class="earth-values__cta-wrap">
-                  {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Slide 3: Fair Trade -->
-          <div class="earth-values__slide" data-index="2">
-            <div class="earth-values__card">
-              <div class="earth-values__media-box">
-                <img src="{{ 'earth-3.jpg' | asset_url }}" alt="Fair Trade" class="earth-values__img" width="600" height="600" loading="lazy">
-              </div>
-              <div class="earth-values__info-box">
-                <h3 class="earth-values__item-title">Fair Trade</h3>
-                <div class="earth-values__badge-wrap">
-                  <span class="earth-values__badge">Ethical wages guaranteed</span>
-                </div>
-                <div class="earth-values__highlight">
-                  <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
-                  <span>100% worker-owned cooperatives</span>
-                </div>
-                <div class="earth-values__description"><p>Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p></div>
-                <div class="earth-values__cta-wrap">
-                  {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Slide 4: Carbon Neutral -->
-          <div class="earth-values__slide" data-index="3">
-            <div class="earth-values__card">
-              <div class="earth-values__media-box">
-                <img src="{{ 'cat-activewear.jpg' | asset_url }}" alt="Carbon Neutral" class="earth-values__img" width="600" height="600" loading="lazy">
-              </div>
-              <div class="earth-values__info-box">
-                <h3 class="earth-values__item-title">Carbon Neutral</h3>
-                <div class="earth-values__badge-wrap">
-                  <span class="earth-values__badge">Net-Zero Supply Chain</span>
-                </div>
-                <div class="earth-values__highlight">
-                  <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
-                  <span>100% renewable energy powered</span>
-                </div>
-                <div class="earth-values__description"><p>Measuring and neutralizing our entire product carbon footprint from raw harvest to final door delivery.</p></div>
-                <div class="earth-values__cta-wrap">
-                  {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Slide 5: Vegan & Cruelty-Free -->
-          <div class="earth-values__slide" data-index="4">
-            <div class="earth-values__card">
-              <div class="earth-values__media-box">
-                <img src="{{ 'earth-4.jpg' | asset_url }}" alt="Vegan & Cruelty-Free" class="earth-values__img" width="600" height="600" loading="lazy">
-              </div>
-              <div class="earth-values__info-box">
-                <h3 class="earth-values__item-title">Vegan & Cruelty-Free</h3>
-                <div class="earth-values__badge-wrap">
-                  <span class="earth-values__badge">PETA Approved Vegan</span>
-                </div>
-                <div class="earth-values__highlight">
-                  <span class="earth-values__highlight-icon" aria-hidden="true">{{ 'icon-handshake.svg' | inline_asset_content }}</span>
-                  <span>Zero animal testing or materials</span>
-                </div>
-                <div class="earth-values__description"><p>100% plant-based and synthetic animal alternatives engineered for durability, comfort, and kind living.</p></div>
-                <div class="earth-values__cta-wrap">
-                  {% render 'btn-arrow', text: 'EXPLORE PRODUCTS', url: routes.all_products_collection_url, theme: 'dark' %}
-                </div>
-              </div>
-            </div>
-          </div>
-        {%- endif -%}
-      </div>
+        </div>
+      {%- endif -%}
 
       {%- if section.settings.layout_mode != 'grid' and section.settings.show_nav_arrows != false -%}
         <!-- Right Floating Navigation Arrow -->
@@ -420,63 +464,58 @@
     margin: 0;
   }
 
-  /* 2. Slider Showcase Track */
+  /* 2. Slider Showcase Swiper & Grid */
   .earth-values__slider-wrapper {
     position: relative;
     width: 100%;
     margin-bottom: clamp(36px, 4.5vw, 56px);
+    overflow: hidden;
   }
 
-  .earth-values__track {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scroll-padding-left: clamp(20px, 3.5vw, 34px);
-    scroll-padding-right: clamp(20px, 3.5vw, 34px);
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: clamp(24px, 2.5vw, 40px);
+  .earth-values__swiper {
+    width: 100%;
+    overflow: visible;
     padding: 64px clamp(20px, 3.5vw, 34px);
     box-sizing: border-box;
   }
-  .earth-values__track::-webkit-scrollbar {
-    display: none;
-  }
 
-  /* Grid Layout Mode */
-  .earth-values__track--grid {
-    display: grid !important;
-    overflow-x: visible !important;
-    scroll-snap-type: none !important;
-    gap: clamp(24px, 3vw, 40px) !important;
-    padding: 0 clamp(20px, 3.5vw, 34px) !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  .earth-values__track--grid.earth-values__track--cols-1 {
-    grid-template-columns: 1fr !important;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .earth-values__track--grid.earth-values__track--cols-2 {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  .earth-values__track--grid .earth-values__slide {
-    flex: none !important;
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-  .earth-values__track--grid.earth-values__track--cols-2 .earth-values__card {
-    grid-template-columns: 1fr !important;
+  .earth-values__swiper .swiper-wrapper {
+    display: flex;
+    align-items: stretch;
   }
 
   /* Each Value Slide */
   .earth-values__slide {
-    flex: 0 0 clamp(660px, 66vw, 80vw);
+    width: clamp(660px, 66vw, 80vw) !important;
+    height: auto !important;
     min-width: 320px;
-    scroll-snap-align: start;
     box-sizing: border-box;
+    flex-shrink: 0;
+  }
+
+  /* Grid Layout Mode */
+  .earth-values__grid {
+    display: grid;
+    gap: clamp(24px, 3vw, 40px);
+    padding: 0 clamp(20px, 3.5vw, 34px);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .earth-values__grid--cols-1 {
+    grid-template-columns: 1fr;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .earth-values__grid--cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .earth-values__grid-item {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .earth-values__grid--cols-2 .earth-values__card {
+    grid-template-columns: 1fr;
   }
 
   /* Split Card (Left: Media Box, Right: Info Box) */
@@ -604,21 +643,19 @@
     visibility: hidden;
     transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
   }
-  .earth-values__slider-wrapper:hover .earth-values__nav-btn:not(.is-disabled) {
+  .earth-values__slider-wrapper:hover .earth-values__nav-btn:not(.swiper-button-disabled):not(.swiper-button-lock),
+  .earth-values__nav-btn--always:not(.swiper-button-disabled):not(.swiper-button-lock) {
     opacity: 1;
     visibility: visible;
   }
-  .earth-values__nav-btn--always:not(.is-disabled) {
-    opacity: 1;
-    visibility: visible;
-  }
-  .earth-values__nav-btn.is-disabled {
+  .earth-values__nav-btn.swiper-button-disabled,
+  .earth-values__nav-btn.swiper-button-lock {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
     transform: translateY(-50%) scale(0.7) !important;
   }
-  .earth-values__nav-btn:hover:not(.is-disabled) {
+  .earth-values__nav-btn:hover:not(.swiper-button-disabled):not(.swiper-button-lock) {
     background-color: var(--values-nav-hover-bg, #71CC3B);
     border-color: var(--values-nav-hover-bg, #71CC3B);
     color: var(--values-nav-hover-color, #003225);
@@ -649,13 +686,13 @@
   .earth-values__icon-arrow--next {
     transform: rotate(0deg);
   }
-  .earth-values__nav-btn--next:hover .earth-values__icon-arrow--next {
+  .earth-values__nav-btn--next:hover:not(.swiper-button-disabled):not(.swiper-button-lock) .earth-values__icon-arrow--next {
     transform: rotate(45deg);
   }
   .earth-values__icon-arrow--prev {
     transform: rotate(0deg);
   }
-  .earth-values__nav-btn--prev:hover .earth-values__icon-arrow--prev {
+  .earth-values__nav-btn--prev:hover:not(.swiper-button-disabled):not(.swiper-button-lock) .earth-values__icon-arrow--prev {
     transform: rotate(-45deg);
   }
 
@@ -774,36 +811,12 @@
       width: 100% !important;
       overflow: visible;
     }
-    .earth-values__track:not(.earth-values__track--grid) {
-      display: flex !important;
-      overflow-x: auto !important;
-      scroll-snap-type: x mandatory !important;
-      scroll-padding-left: 20px !important;
-      scroll-padding-right: 20px !important;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
+    .earth-values__swiper {
       padding: 10px 0 10px 20px !important;
-      margin: 0 !important;
-      gap: 16px !important;
     }
-    .earth-values__track:not(.earth-values__track--grid)::-webkit-scrollbar {
-      display: none !important;
-    }
-    .earth-values__track:not(.earth-values__track--grid) .earth-values__slide {
-      flex: 0 0 86% !important;
+    .earth-values__slide {
+      width: 86vw !important;
       min-width: 280px !important;
-      scroll-snap-align: start !important;
-      margin: 0 !important;
-    }
-    .earth-values__track:not(.earth-values__track--grid)::after {
-      content: '' !important;
-      flex: 0 0 20px !important;
-      min-width: 20px !important;
-      width: 20px !important;
-      height: 1px;
-      margin-left: -16px;
-      display: block !important;
-      pointer-events: none;
     }
     .earth-values__card {
       grid-template-columns: 1fr;
@@ -859,34 +872,14 @@
 
 <script>
   (function() {
-    function initShopByValuesSlider() {
+    function initValuesSwiper() {
       var sectionId = '{{ section.id }}';
-      var track = document.getElementById('earthValuesTrack-' + sectionId);
+      var swiperEl = document.getElementById('earthValuesSwiper-' + sectionId);
       var tabsContainer = document.getElementById('earthValuesTabs-' + sectionId);
       var prevBtn = document.getElementById('earthValuesPrev-' + sectionId);
       var nextBtn = document.getElementById('earthValuesNext-' + sectionId);
 
-      if (!track || track.classList.contains('earth-values__track--grid')) return;
-
-      var slides = track.querySelectorAll('.earth-values__slide');
-      if (slides.length === 0) return;
-
-      function updateNavButtons(currentIdx) {
-        if (prevBtn) {
-          if (currentIdx <= 0) {
-            prevBtn.classList.add('is-disabled');
-          } else {
-            prevBtn.classList.remove('is-disabled');
-          }
-        }
-        if (nextBtn) {
-          if (currentIdx >= slides.length - 1) {
-            nextBtn.classList.add('is-disabled');
-          } else {
-            nextBtn.classList.remove('is-disabled');
-          }
-        }
-      }
+      if (!swiperEl) return;
 
       function updateActiveTab(index) {
         if (!tabsContainer) return;
@@ -908,82 +901,90 @@
             tab.setAttribute('aria-selected', 'false');
           }
         });
-        updateNavButtons(index);
       }
 
-      function scrollToSlide(index) {
-        if (index < 0) index = 0;
-        if (index >= slides.length) index = slides.length - 1;
-        var targetSlide = slides[index];
-        if (targetSlide) {
-          track.scrollTo({
-            left: targetSlide.offsetLeft - (window.innerWidth <= 768 ? 20 : track.offsetLeft),
-            behavior: 'smooth'
-          });
-          updateActiveTab(index);
+      function createSwiper() {
+        if (!window.Swiper) {
+          setTimeout(createSwiper, 50);
+          return;
         }
-      }
 
-      // Tab clicks
-      if (tabsContainer) {
-        tabsContainer.addEventListener('click', function(e) {
-          var tab = e.target.closest('.earth-values__tab');
-          if (tab) {
-            var idx = parseInt(tab.getAttribute('data-index'), 10);
-            if (!isNaN(idx)) {
-              scrollToSlide(idx);
+        if (swiperEl._valuesSwiperInstance) {
+          swiperEl._valuesSwiperInstance.destroy(true, true);
+        }
+
+        var swiper = new window.Swiper(swiperEl, {
+          slidesPerView: 'auto',
+          spaceBetween: 32,
+          grabCursor: true,
+          centeredSlides: false,
+          watchSlidesProgress: true,
+          observer: true,
+          observeParents: true,
+          speed: 450,
+          navigation: {
+            prevEl: prevBtn,
+            nextEl: nextBtn,
+            disabledClass: 'swiper-button-disabled'
+          },
+          breakpoints: {
+            320: {
+              spaceBetween: 16
+            },
+            769: {
+              spaceBetween: 28
+            },
+            1025: {
+              spaceBetween: 32
+            }
+          },
+          on: {
+            slideChange: function() {
+              updateActiveTab(this.activeIndex);
             }
           }
         });
+
+        swiperEl._valuesSwiperInstance = swiper;
+
+        // Tab click interactions
+        if (tabsContainer && !tabsContainer._bound) {
+          tabsContainer._bound = true;
+          tabsContainer.addEventListener('click', function(e) {
+            var tab = e.target.closest('.earth-values__tab');
+            if (tab) {
+              var idx = parseInt(tab.getAttribute('data-index'), 10);
+              var activeSwiper = swiperEl._valuesSwiperInstance || swiper;
+              if (!isNaN(idx) && activeSwiper) {
+                activeSwiper.slideTo(idx);
+                updateActiveTab(idx);
+              }
+            }
+          });
+        }
       }
 
-      // Prev / Next button clicks
-      if (prevBtn) {
-        prevBtn.addEventListener('click', function() {
-          var currentScroll = track.scrollLeft;
-          var slideWidth = slides[0].offsetWidth;
-          var currentIdx = Math.round(currentScroll / slideWidth);
-          scrollToSlide(currentIdx - 1);
-        });
-      }
-
-      if (nextBtn) {
-        nextBtn.addEventListener('click', function() {
-          var currentScroll = track.scrollLeft;
-          var slideWidth = slides[0].offsetWidth;
-          var currentIdx = Math.round(currentScroll / slideWidth);
-          scrollToSlide(currentIdx + 1);
-        });
-      }
-
-      // Scroll listener to update tabs on drag/swipe
-      var scrollTimeout;
-      track.addEventListener('scroll', function() {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(function() {
-          var currentScroll = track.scrollLeft;
-          var slideWidth = slides[0].offsetWidth;
-          var currentIdx = Math.round(currentScroll / slideWidth);
-          if (currentIdx >= 0 && currentIdx < slides.length) {
-            updateActiveTab(currentIdx);
-          }
-        }, 80);
-      });
-
-      // Initial state
-      updateNavButtons(0);
+      createSwiper();
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initShopByValuesSlider);
+      document.addEventListener('DOMContentLoaded', initValuesSwiper);
     } else {
-      initShopByValuesSlider();
+      initValuesSwiper();
     }
 
-    // Support Shopify Theme Editor dynamic re-render
     document.addEventListener('shopify:section:load', function(e) {
       if (e.detail && e.detail.sectionId === '{{ section.id }}') {
-        initShopByValuesSlider();
+        initValuesSwiper();
+      }
+    });
+
+    document.addEventListener('shopify:section:unload', function(e) {
+      if (e.detail && e.detail.sectionId === '{{ section.id }}') {
+        var el = document.getElementById('earthValuesSwiper-{{ section.id }}');
+        if (el && el._valuesSwiperInstance) {
+          el._valuesSwiperInstance.destroy(true, true);
+        }
       }
     });
   })();

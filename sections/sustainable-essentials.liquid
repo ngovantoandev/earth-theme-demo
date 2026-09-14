@@ -78,31 +78,69 @@
 
     <!-- 2. Product Slider / Grid Track Area -->
     <div class="earth-sus__slider-wrapper">
-      <div class="earth-sus__track" id="earthSusTrack-{{ section.id }}">
-        {%- assign selected_collection = section.settings.collection -%}
-        {%- if selected_collection == blank or selected_collection.products_count == 0 -%}
-          {%- assign selected_collection = collections['all'] -%}
-        {%- endif -%}
+      {%- if section.settings.layout_mode != 'grid' and section.settings.show_nav_buttons != false -%}
+        <!-- Left Floating Navigation Arrow -->
+        <button 
+          type="button" 
+          class="earth-sus__nav-btn earth-sus__nav-btn--prev{% if section.settings.nav_button_visibility == 'always' %} earth-sus__nav-btn--always{% endif %}" 
+          id="earthSusPrev-{{ section.id }}" 
+          aria-label="Previous Products"
+        >
+          <span class="earth-sus__icon-arrow earth-sus__icon-arrow--prev" aria-hidden="true">{{ 'icon-prev-left.svg' | inline_asset_content }}</span>
+        </button>
+      {%- endif -%}
 
-        {%- assign prod_list = selected_collection.products -%}
-        {%- case section.settings.sort_by -%}
-          {%- when 'price_asc' -%}
-            {%- assign prod_list = prod_list | sort: 'price' -%}
-          {%- when 'price_desc' -%}
-            {%- assign prod_list = prod_list | sort: 'price' | reverse -%}
-          {%- when 'title_asc' -%}
-            {%- assign prod_list = prod_list | sort: 'title' -%}
-          {%- when 'title_desc' -%}
-            {%- assign prod_list = prod_list | sort: 'title' | reverse -%}
-          {%- when 'created_desc' -%}
-            {%- assign prod_list = prod_list | sort: 'created_at' | reverse -%}
-        {%- endcase -%}
+      {%- assign selected_collection = section.settings.collection -%}
+      {%- if selected_collection == blank or selected_collection.products_count == 0 -%}
+        {%- assign selected_collection = collections['all'] -%}
+      {%- endif -%}
 
-        {%- if selected_collection != blank and selected_collection.products_count > 0 -%}
-          {%- for product in prod_list limit: section.settings.products_to_show -%}
-            <div class="earth-sus__slide" data-product-type="{{ product.type | handleize }}" data-tags="{{ product.tags | join: ',' | downcase }}">
+      {%- assign prod_list = selected_collection.products -%}
+      {%- case section.settings.sort_by -%}
+        {%- when 'price_asc' -%}
+          {%- assign prod_list = prod_list | sort: 'price' -%}
+        {%- when 'price_desc' -%}
+          {%- assign prod_list = prod_list | sort: 'price' | reverse -%}
+        {%- when 'title_asc' -%}
+          {%- assign prod_list = prod_list | sort: 'title' -%}
+        {%- when 'title_desc' -%}
+          {%- assign prod_list = prod_list | sort: 'title' | reverse -%}
+        {%- when 'created_desc' -%}
+          {%- assign prod_list = prod_list | sort: 'created_at' | reverse -%}
+      {%- endcase -%}
+
+      {%- if section.settings.layout_mode == 'grid' -%}
+        <!-- Grid Layout -->
+        <div class="earth-sus__grid" id="earthSusGrid-{{ section.id }}">
+          {%- if selected_collection != blank and selected_collection.products_count > 0 -%}
+            {%- for product in prod_list limit: section.settings.products_to_show -%}
+              <div class="earth-sus__grid-item" data-product-type="{{ product.type | handleize }}" data-tags="{{ product.tags | join: ',' | downcase }}">
+                {% render 'product-card',
+                  product: product,
+                  aspect_ratio: section.settings.card_aspect_ratio,
+                  show_impact_badge: section.settings.show_impact_badge,
+                  show_metrics: section.settings.show_metrics_pills,
+                  show_quick_view: section.settings.show_quick_view,
+                  show_material: section.settings.show_material,
+                  show_tags: section.settings.show_tags,
+                  show_origin: section.settings.show_origin,
+                  show_discount: section.settings.show_discount
+                %}
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <!-- Default Curated Products from Design -->
+            <div class="earth-sus__grid-item" data-product-type="mens" data-tags="organic-cotton,recycled-materials">
               {% render 'product-card',
-                product: product,
+                fallback_image: 'prod-denim.jpg',
+                title: 'Regenerative Denim',
+                material: '100% Regenerative Organic Cotton',
+                impact_score: '97% Impact',
+                water_saved: '3,200 L',
+                co2_saved: '5.5 kg',
+                origin: 'Vietnam',
+                badges: 'Organic Cotton, Recycled Materials',
+                price: '110',
                 aspect_ratio: section.settings.card_aspect_ratio,
                 show_impact_badge: section.settings.show_impact_badge,
                 show_metrics: section.settings.show_metrics_pills,
@@ -113,116 +151,188 @@
                 show_discount: section.settings.show_discount
               %}
             </div>
-          {%- endfor -%}
-        {%- else -%}
-          <!-- Default Curated Products from Design -->
-          <!-- Product 1: Regenerative Denim -->
-          <div class="earth-sus__slide" data-product-type="mens" data-tags="organic-cotton,recycled-materials">
-            {% render 'product-card',
-              fallback_image: 'prod-denim.jpg',
-              title: 'Regenerative Denim',
-              material: '100% Regenerative Organic Cotton',
-              impact_score: '97% Impact',
-              water_saved: '3,200 L',
-              co2_saved: '5.5 kg',
-              origin: 'Vietnam',
-              badges: 'Organic Cotton, Recycled Materials',
-              price: '110',
-              aspect_ratio: section.settings.card_aspect_ratio,
-              show_impact_badge: section.settings.show_impact_badge,
-              show_metrics: section.settings.show_metrics_pills,
-              show_quick_view: section.settings.show_quick_view,
-              show_material: section.settings.show_material,
-              show_tags: section.settings.show_tags,
-              show_origin: section.settings.show_origin,
-              show_discount: section.settings.show_discount
-            %}
-          </div>
+            <div class="earth-sus__grid-item" data-product-type="womens" data-tags="sale,fair-trade,carbon-neutral">
+              {% render 'product-card',
+                fallback_image: 'prod-tee.jpg',
+                title: 'Essential Organic Tee',
+                material: '100% Organic Cotton',
+                impact_score: '95% Impact',
+                water_saved: '2,000 L',
+                co2_saved: '3.5 kg',
+                origin: 'India',
+                discount_text: '52% Off (Price as Marked)',
+                badges: 'Fair Trade, Carbon Neutral',
+                price: '68',
+                compare_price: '128',
+                aspect_ratio: section.settings.card_aspect_ratio,
+                show_impact_badge: section.settings.show_impact_badge,
+                show_metrics: section.settings.show_metrics_pills,
+                show_quick_view: section.settings.show_quick_view,
+                show_material: section.settings.show_material,
+                show_tags: section.settings.show_tags,
+                show_origin: section.settings.show_origin,
+                show_discount: section.settings.show_discount
+              %}
+            </div>
+            <div class="earth-sus__grid-item" data-product-type="mens" data-tags="new-arrivals,plastic-free,organic-cotton">
+              {% render 'product-card',
+                fallback_image: 'prod-oxford.jpg',
+                title: 'Classic Oxford Shirt',
+                material: '100% Organic Cotton',
+                impact_score: '93% Impact',
+                water_saved: '2,100 L',
+                co2_saved: '3.8 kg',
+                origin: 'India',
+                badges: 'Plastic-Free, Organic Cotton',
+                price: '68',
+                aspect_ratio: section.settings.card_aspect_ratio,
+                show_impact_badge: section.settings.show_impact_badge,
+                show_metrics: section.settings.show_metrics_pills,
+                show_quick_view: section.settings.show_quick_view,
+                show_material: section.settings.show_material,
+                show_tags: section.settings.show_tags,
+                show_origin: section.settings.show_origin,
+                show_discount: section.settings.show_discount
+              %}
+            </div>
+            <div class="earth-sus__grid-item" data-product-type="womens" data-tags="new-arrivals,organic-cotton,zero-waste">
+              {% render 'product-card',
+                fallback_image: 'prod-denim.jpg',
+                title: 'Sustainable Linen Trouser',
+                material: '100% Organic Linen & Hemp',
+                impact_score: '96% Impact',
+                water_saved: '2,800 L',
+                co2_saved: '4.2 kg',
+                origin: 'Vietnam',
+                badges: 'Organic Cotton, Zero Waste',
+                price: '120',
+                aspect_ratio: section.settings.card_aspect_ratio,
+                show_impact_badge: section.settings.show_impact_badge,
+                show_metrics: section.settings.show_metrics_pills,
+                show_quick_view: section.settings.show_quick_view,
+                show_material: section.settings.show_material,
+                show_tags: section.settings.show_tags,
+                show_origin: section.settings.show_origin,
+                show_discount: section.settings.show_discount
+              %}
+            </div>
+          {%- endif -%}
+        </div>
 
-          <!-- Product 2: Essential Organic Tee -->
-          <div class="earth-sus__slide" data-product-type="womens" data-tags="sale,fair-trade,carbon-neutral">
-            {% render 'product-card',
-              fallback_image: 'prod-tee.jpg',
-              title: 'Essential Organic Tee',
-              material: '100% Organic Cotton',
-              impact_score: '95% Impact',
-              water_saved: '2,000 L',
-              co2_saved: '3.5 kg',
-              origin: 'India',
-              discount_text: '52% Off (Price as Marked)',
-              badges: 'Fair Trade, Carbon Neutral',
-              price: '68',
-              compare_price: '128',
-              aspect_ratio: section.settings.card_aspect_ratio,
-              show_impact_badge: section.settings.show_impact_badge,
-              show_metrics: section.settings.show_metrics_pills,
-              show_quick_view: section.settings.show_quick_view,
-              show_material: section.settings.show_material,
-              show_tags: section.settings.show_tags,
-              show_origin: section.settings.show_origin,
-              show_discount: section.settings.show_discount
-            %}
+      {%- else -%}
+        <!-- Swiper Slider Container -->
+        <div class="swiper earth-sus__swiper" id="earthSusSwiper-{{ section.id }}">
+          <div class="swiper-wrapper">
+            {%- if selected_collection != blank and selected_collection.products_count > 0 -%}
+              {%- for product in prod_list limit: section.settings.products_to_show -%}
+                <div class="swiper-slide earth-sus__slide" data-product-type="{{ product.type | handleize }}" data-tags="{{ product.tags | join: ',' | downcase }}">
+                  {% render 'product-card',
+                    product: product,
+                    aspect_ratio: section.settings.card_aspect_ratio,
+                    show_impact_badge: section.settings.show_impact_badge,
+                    show_metrics: section.settings.show_metrics_pills,
+                    show_quick_view: section.settings.show_quick_view,
+                    show_material: section.settings.show_material,
+                    show_tags: section.settings.show_tags,
+                    show_origin: section.settings.show_origin,
+                    show_discount: section.settings.show_discount
+                  %}
+                </div>
+              {%- endfor -%}
+            {%- else -%}
+              <!-- Default Curated Products from Design -->
+              <div class="swiper-slide earth-sus__slide" data-product-type="mens" data-tags="organic-cotton,recycled-materials">
+                {% render 'product-card',
+                  fallback_image: 'prod-denim.jpg',
+                  title: 'Regenerative Denim',
+                  material: '100% Regenerative Organic Cotton',
+                  impact_score: '97% Impact',
+                  water_saved: '3,200 L',
+                  co2_saved: '5.5 kg',
+                  origin: 'Vietnam',
+                  badges: 'Organic Cotton, Recycled Materials',
+                  price: '110',
+                  aspect_ratio: section.settings.card_aspect_ratio,
+                  show_impact_badge: section.settings.show_impact_badge,
+                  show_metrics: section.settings.show_metrics_pills,
+                  show_quick_view: section.settings.show_quick_view,
+                  show_material: section.settings.show_material,
+                  show_tags: section.settings.show_tags,
+                  show_origin: section.settings.show_origin,
+                  show_discount: section.settings.show_discount
+                %}
+              </div>
+              <div class="swiper-slide earth-sus__slide" data-product-type="womens" data-tags="sale,fair-trade,carbon-neutral">
+                {% render 'product-card',
+                  fallback_image: 'prod-tee.jpg',
+                  title: 'Essential Organic Tee',
+                  material: '100% Organic Cotton',
+                  impact_score: '95% Impact',
+                  water_saved: '2,000 L',
+                  co2_saved: '3.5 kg',
+                  origin: 'India',
+                  discount_text: '52% Off (Price as Marked)',
+                  badges: 'Fair Trade, Carbon Neutral',
+                  price: '68',
+                  compare_price: '128',
+                  aspect_ratio: section.settings.card_aspect_ratio,
+                  show_impact_badge: section.settings.show_impact_badge,
+                  show_metrics: section.settings.show_metrics_pills,
+                  show_quick_view: section.settings.show_quick_view,
+                  show_material: section.settings.show_material,
+                  show_tags: section.settings.show_tags,
+                  show_origin: section.settings.show_origin,
+                  show_discount: section.settings.show_discount
+                %}
+              </div>
+              <div class="swiper-slide earth-sus__slide" data-product-type="mens" data-tags="new-arrivals,plastic-free,organic-cotton">
+                {% render 'product-card',
+                  fallback_image: 'prod-oxford.jpg',
+                  title: 'Classic Oxford Shirt',
+                  material: '100% Organic Cotton',
+                  impact_score: '93% Impact',
+                  water_saved: '2,100 L',
+                  co2_saved: '3.8 kg',
+                  origin: 'India',
+                  badges: 'Plastic-Free, Organic Cotton',
+                  price: '68',
+                  aspect_ratio: section.settings.card_aspect_ratio,
+                  show_impact_badge: section.settings.show_impact_badge,
+                  show_metrics: section.settings.show_metrics_pills,
+                  show_quick_view: section.settings.show_quick_view,
+                  show_material: section.settings.show_material,
+                  show_tags: section.settings.show_tags,
+                  show_origin: section.settings.show_origin,
+                  show_discount: section.settings.show_discount
+                %}
+              </div>
+              <div class="swiper-slide earth-sus__slide" data-product-type="womens" data-tags="new-arrivals,organic-cotton,zero-waste">
+                {% render 'product-card',
+                  fallback_image: 'prod-denim.jpg',
+                  title: 'Sustainable Linen Trouser',
+                  material: '100% Organic Linen & Hemp',
+                  impact_score: '96% Impact',
+                  water_saved: '2,800 L',
+                  co2_saved: '4.2 kg',
+                  origin: 'Vietnam',
+                  badges: 'Organic Cotton, Zero Waste',
+                  price: '120',
+                  aspect_ratio: section.settings.card_aspect_ratio,
+                  show_impact_badge: section.settings.show_impact_badge,
+                  show_metrics: section.settings.show_metrics_pills,
+                  show_quick_view: section.settings.show_quick_view,
+                  show_material: section.settings.show_material,
+                  show_tags: section.settings.show_tags,
+                  show_origin: section.settings.show_origin,
+                  show_discount: section.settings.show_discount
+                %}
+              </div>
+            {%- endif -%}
           </div>
-
-          <!-- Product 3: Classic Oxford Shirt -->
-          <div class="earth-sus__slide" data-product-type="mens" data-tags="new-arrivals,plastic-free,organic-cotton">
-            {% render 'product-card',
-              fallback_image: 'prod-oxford.jpg',
-              title: 'Classic Oxford Shirt',
-              material: '100% Organic Cotton',
-              impact_score: '93% Impact',
-              water_saved: '2,100 L',
-              co2_saved: '3.8 kg',
-              origin: 'India',
-              badges: 'Plastic-Free, Organic Cotton',
-              price: '68',
-              aspect_ratio: section.settings.card_aspect_ratio,
-              show_impact_badge: section.settings.show_impact_badge,
-              show_metrics: section.settings.show_metrics_pills,
-              show_quick_view: section.settings.show_quick_view,
-              show_material: section.settings.show_material,
-              show_tags: section.settings.show_tags,
-              show_origin: section.settings.show_origin,
-              show_discount: section.settings.show_discount
-            %}
-          </div>
-
-          <!-- Product 4: Sustainable Linen Trouser -->
-          <div class="earth-sus__slide" data-product-type="womens" data-tags="new-arrivals,organic-cotton,zero-waste">
-            {% render 'product-card',
-              fallback_image: 'prod-denim.jpg',
-              title: 'Sustainable Linen Trouser',
-              material: '100% Organic Linen & Hemp',
-              impact_score: '96% Impact',
-              water_saved: '2,800 L',
-              co2_saved: '4.2 kg',
-              origin: 'Vietnam',
-              badges: 'Organic Cotton, Zero Waste',
-              price: '120',
-              aspect_ratio: section.settings.card_aspect_ratio,
-              show_impact_badge: section.settings.show_impact_badge,
-              show_metrics: section.settings.show_metrics_pills,
-              show_quick_view: section.settings.show_quick_view,
-              show_material: section.settings.show_material,
-              show_tags: section.settings.show_tags,
-              show_origin: section.settings.show_origin,
-              show_discount: section.settings.show_discount
-            %}
-          </div>
-        {%- endif -%}
-      </div>
+        </div>
+      {%- endif -%}
 
       {%- if section.settings.layout_mode != 'grid' and section.settings.show_nav_buttons != false -%}
-        <!-- Left Floating Navigation Arrow (Disabled initially at start) -->
-        <button 
-          type="button" 
-          class="earth-sus__nav-btn earth-sus__nav-btn--prev is-disabled{% if section.settings.nav_button_visibility == 'always' %} earth-sus__nav-btn--always{% endif %}" 
-          id="earthSusPrev-{{ section.id }}" 
-          aria-label="Previous Products"
-        >
-          <span class="earth-sus__icon-arrow earth-sus__icon-arrow--prev" aria-hidden="true">{{ 'icon-prev-left.svg' | inline_asset_content }}</span>
-        </button>
-
         <!-- Right Floating Navigation Arrow -->
         <button 
           type="button" 
@@ -361,167 +471,6 @@
   opacity: 1;
   color: var(--sus-tab-active-color, #71CC3B) !important;
 }
-
-  /* 2. Slider Track / Grid */
-  .earth-sus__slider-wrapper {
-    position: relative;
-    width: 100%;
-    margin-top: 0;
-  }
-  .earth-sus__track {
-    display: flex;
-    align-items: stretch;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-left: 34px;
-    scroll-padding-right: 34px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: 20px;
-    padding: 0 34px 20px 34px;
-    box-sizing: border-box;
-  }
-  .earth-sus__track::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Slider Column Widths */
-  .earth-sus__slide {
-    flex: 0 0 31.5%;
-    min-width: 300px;
-    max-width: 440px;
-    display: flex;
-    flex-direction: column;
-    scroll-snap-align: start;
-    box-sizing: border-box;
-  }
-  .earth-sustainable-essentials--cols-2 .earth-sus__slide {
-    flex: 0 0 calc(50% - 10px);
-    max-width: none;
-  }
-  .earth-sustainable-essentials--cols-3 .earth-sus__slide {
-    flex: 0 0 31.5%;
-    min-width: 300px;
-    max-width: 440px;
-  }
-  .earth-sustainable-essentials--cols-4 .earth-sus__slide {
-    flex: 0 0 calc(25% - 15px);
-    min-width: 250px;
-    max-width: 360px;
-  }
-
-  /* Grid Mode */
-  .earth-sustainable-essentials--layout-grid .earth-sus__track {
-    display: grid !important;
-    overflow-x: visible !important;
-    scroll-snap-type: none !important;
-    gap: 24px;
-    padding: 0 34px !important;
-  }
-  .earth-sustainable-essentials--layout-grid.earth-sustainable-essentials--cols-2 .earth-sus__track {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-  .earth-sustainable-essentials--layout-grid.earth-sustainable-essentials--cols-3 .earth-sus__track {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-  .earth-sustainable-essentials--layout-grid.earth-sustainable-essentials--cols-4 .earth-sus__track {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  }
-  .earth-sustainable-essentials--layout-grid .earth-sus__slide {
-    flex: none !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    width: 100% !important;
-  }
-  .earth-sustainable-essentials--layout-grid .earth-sus__nav-btn {
-    display: none !important;
-  }
-
-  /* Floating Navigation Arrows */
-  .earth-sus__nav-btn {
-    position: absolute;
-    top: 42%;
-    transform: translateY(-50%);
-    z-index: 10;
-    width: var(--sus-nav-size, 48px);
-    height: var(--sus-nav-size, 48px);
-    border-radius: 50%;
-    background-color: var(--sus-nav-bg, #F8F9DC);
-    border: 1.5px solid var(--sus-nav-bg, #F8F9DC);
-    color: var(--sus-nav-color, #003225);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(0, 50, 37, 0.16);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.28s ease, visibility 0.28s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
-  }
-  .earth-sus__slider-wrapper:hover .earth-sus__nav-btn:not(.is-disabled) {
-    opacity: 1;
-    visibility: visible;
-  }
-  .earth-sus__nav-btn--always:not(.is-disabled) {
-    opacity: 1;
-    visibility: visible;
-  }
-  .earth-sus__nav-btn.is-disabled {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    transform: translateY(-50%) scale(0.7) !important;
-  }
-  .earth-sus__nav-btn:hover:not(.is-disabled) {
-    background-color: var(--sus-nav-hover-bg, #71CC3B);
-    border-color: var(--sus-nav-hover-bg, #71CC3B);
-    color: var(--sus-nav-hover-color, #003225);
-    transform: translateY(-50%) scale(1.08);
-  }
-  .earth-sus__nav-btn--prev {
-    left: clamp(16px, 2.5vw, 36px);
-  }
-  .earth-sus__nav-btn--next {
-    right: clamp(16px, 2.5vw, 36px);
-  }
-
-  /* Smooth Icon Rotation on Hover */
-  .earth-sus__icon-arrow {
-    width: 15px;
-    height: 15px;
-    object-fit: contain;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .earth-sus__icon-arrow svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-  .earth-sus__icon-arrow--next {
-    transform: rotate(0deg);
-  }
-  .earth-sus__nav-btn--next:hover .earth-sus__icon-arrow--next {
-    transform: rotate(45deg);
-  }
-  .earth-sus__icon-arrow--prev {
-    transform: rotate(0deg);
-  }
-  .earth-sus__nav-btn--prev:hover .earth-sus__icon-arrow--prev {
-    transform: rotate(-45deg);
-  }
-
-  /* Optional Bottom CTA */
-  .earth-sus__bottom-cta {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: clamp(36px, 4.5vw, 60px);
-    width: 100%;
-  }
 
   /* ==========================================================================
      Product Card Component Styles
@@ -874,9 +823,162 @@
     display: block;
   }
 
-  /* ==========================================================================
-     Mobile Responsive Adjustments
-     ========================================================================== */
+  /* 2. Slider Swiper & Grid */
+  .earth-sus__slider-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 0;
+    overflow: hidden;
+  }
+
+  .earth-sus__swiper {
+    width: 100%;
+    overflow: visible;
+    padding: 0 34px 20px 34px;
+    box-sizing: border-box;
+  }
+
+  .earth-sus__swiper .swiper-wrapper {
+    display: flex;
+    align-items: stretch;
+  }
+
+  /* Slider Column Widths in Swiper */
+  .earth-sus__slide {
+    width: clamp(300px, 31.5vw, 440px) !important;
+    height: auto !important;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+  .earth-sustainable-essentials--cols-2 .earth-sus__slide {
+    width: calc(50% - 10px) !important;
+    max-width: none;
+  }
+  .earth-sustainable-essentials--cols-3 .earth-sus__slide {
+    width: clamp(300px, 31.5vw, 440px) !important;
+  }
+  .earth-sustainable-essentials--cols-4 .earth-sus__slide {
+    width: clamp(250px, calc(25% - 15px), 360px) !important;
+  }
+
+  /* Grid Mode */
+  .earth-sus__grid {
+    display: grid !important;
+    gap: 24px;
+    padding: 0 34px 20px 34px !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .earth-sustainable-essentials--cols-2 .earth-sus__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .earth-sustainable-essentials--cols-3 .earth-sus__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  .earth-sustainable-essentials--cols-4 .earth-sus__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  .earth-sus__grid-item {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Floating Navigation Arrows */
+  .earth-sus__nav-btn {
+    position: absolute;
+    top: 42%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: var(--sus-nav-size, 48px);
+    height: var(--sus-nav-size, 48px);
+    border-radius: 50%;
+    background-color: var(--sus-nav-bg, #F8F9DC);
+    border: 1.5px solid var(--sus-nav-bg, #F8F9DC);
+    color: var(--sus-nav-color, #003225);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 50, 37, 0.16);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0.28s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  }
+  .earth-sus__slider-wrapper:hover .earth-sus__nav-btn:not(.swiper-button-disabled):not(.swiper-button-lock),
+  .earth-sus__nav-btn--always:not(.swiper-button-disabled):not(.swiper-button-lock) {
+    opacity: 1;
+    visibility: visible;
+  }
+  .earth-sus__nav-btn:hover:not(.swiper-button-disabled):not(.swiper-button-lock) {
+    background-color: var(--sus-nav-hover-bg, #71CC3B);
+    border-color: var(--sus-nav-hover-bg, #71CC3B);
+    color: var(--sus-nav-hover-color, #003225);
+    transform: translateY(-50%) scale(1.08);
+  }
+  .earth-sus__nav-btn.swiper-button-disabled,
+  .earth-sus__nav-btn.swiper-button-lock {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) scale(0.7) !important;
+  }
+  .earth-sus__nav-btn--prev {
+    left: clamp(16px, 2.5vw, 36px);
+  }
+  .earth-sus__nav-btn--next {
+    right: clamp(16px, 2.5vw, 36px);
+  }
+
+  /* Smooth Icon Rotation on Hover */
+  .earth-sus__icon-arrow {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .earth-sus__icon-arrow svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .earth-sus__icon-arrow--next {
+    transform: rotate(0deg);
+  }
+  .earth-sus__nav-btn--next:hover:not(.swiper-button-disabled):not(.swiper-button-lock) .earth-sus__icon-arrow--next {
+    transform: rotate(45deg);
+  }
+  .earth-sus__icon-arrow--prev {
+    transform: rotate(0deg);
+  }
+  .earth-sus__nav-btn--prev:hover:not(.swiper-button-disabled):not(.swiper-button-lock) .earth-sus__icon-arrow--prev {
+    transform: rotate(-45deg);
+  }
+
+  /* Product Card Customizations */
+  .earth-sus__slide .earth-prod-card,
+  .earth-sus__grid-item .earth-prod-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Bottom Call to Action Button */
+  .earth-sus__bottom-cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: clamp(24px, 3.5vw, 40px);
+    width: 100%;
+  }
+
+  /* Responsive Adjustments */
   @media (max-width: 1024px) {
     .earth-sus__header {
       padding: 0 24px !important;
@@ -885,8 +987,13 @@
       padding-left: 24px !important;
       padding-right: 24px !important;
     }
+    .earth-sus__swiper,
+    .earth-sus__grid {
+      padding-left: 24px !important;
+      padding-right: 24px !important;
+    }
     .earth-sus__slide {
-      flex: 0 0 45%;
+      width: 45vw !important;
     }
   }
 
@@ -979,41 +1086,17 @@
       gap: 6px;
       white-space: nowrap;
     }
-    .earth-sus__track {
-      display: flex !important;
-      overflow-x: auto !important;
-      scroll-snap-type: x mandatory !important;
-      scroll-padding-left: 20px !important;
-      scroll-padding-right: 20px !important;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
+    .earth-sus__swiper {
       padding: 0 0 16px 20px !important;
-      margin: 0 !important;
-      gap: 16px !important;
     }
     .earth-sus__slide {
-      flex: 0 0 78% !important;
+      width: 78vw !important;
       min-width: 260px !important;
-      scroll-snap-align: start !important;
-      margin: 0 !important;
-    }
-    .earth-sus__track::after {
-      content: '' !important;
-      flex: 0 0 20px !important;
-      min-width: 20px !important;
-      width: 20px !important;
-      height: 1px;
-      margin-left: -16px;
-      display: block !important;
-      pointer-events: none;
     }
 
     /* Mobile 2 Column Grid Option */
-    .earth-sustainable-essentials--m-cols-2 .earth-sus__track {
-      display: grid !important;
+    .earth-sustainable-essentials--m-cols-2 .earth-sus__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-      overflow-x: visible !important;
-      scroll-snap-type: none !important;
       padding: 0 20px 16px 20px !important;
       gap: 14px !important;
     }
@@ -1022,9 +1105,6 @@
       min-width: 0 !important;
       max-width: 100% !important;
       width: 100% !important;
-    }
-    .earth-sustainable-essentials--m-cols-2 .earth-sus__track::after {
-      display: none !important;
     }
 
     /* Mobile: Stack Price Box and Add to Cart Button into 2 rows */
@@ -1051,101 +1131,120 @@
 
 <script>
   (function() {
-    function initSusEssentials() {
-      var sectionEl = document.getElementById('earthEssentials-{{ section.id }}');
+    function initSusSwiper(sectionEl) {
       if (!sectionEl) return;
-      var track = document.getElementById('earthSusTrack-{{ section.id }}');
-      var prevBtn = document.getElementById('earthSusPrev-{{ section.id }}');
-      var nextBtn = document.getElementById('earthSusNext-{{ section.id }}');
+      var swiperEl = sectionEl.querySelector('.earth-sus__swiper');
+      if (!swiperEl) return;
 
-      if (!track) return;
+      var prevBtn = sectionEl.querySelector('.earth-sus__nav-btn--prev');
+      var nextBtn = sectionEl.querySelector('.earth-sus__nav-btn--next');
 
-      function updateNavButtons() {
-        if (!prevBtn && !nextBtn) return;
-        var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
-        var currentScroll = track.scrollLeft;
+      if (sectionEl._susSwiper) {
+        sectionEl._susSwiper.destroy(true, true);
+        sectionEl._susSwiper = null;
+      }
 
-        // If all items fit without scrolling
-        if (maxScroll <= 5) {
-          if (prevBtn) prevBtn.classList.add('is-disabled');
-          if (nextBtn) nextBtn.classList.add('is-disabled');
+      function setup() {
+        if (typeof window.Swiper === 'undefined') {
+          setTimeout(setup, 60);
           return;
         }
 
-        // Prev button: hide when at the start
-        if (prevBtn) {
-          if (currentScroll <= 5) {
-            prevBtn.classList.add('is-disabled');
-          } else {
-            prevBtn.classList.remove('is-disabled');
+        sectionEl._susSwiper = new window.Swiper(swiperEl, {
+          slidesPerView: 'auto',
+          spaceBetween: 20,
+          speed: 450,
+          grabCursor: true,
+          watchOverflow: true,
+          watchSlidesProgress: true,
+          observer: true,
+          observeParents: true,
+          resistanceRatio: 0.85,
+          keyboard: {
+            enabled: true,
+            onlyInViewport: true
+          },
+          navigation: {
+            prevEl: prevBtn,
+            nextEl: nextBtn,
+            disabledClass: 'swiper-button-disabled'
+          },
+          breakpoints: {
+            0: { spaceBetween: 16 },
+            768: { spaceBetween: 20 },
+            1024: { spaceBetween: 20 }
           }
-        }
-
-        // Next button: hide when reached the end
-        if (nextBtn) {
-          if (currentScroll >= maxScroll - 8) {
-            nextBtn.classList.add('is-disabled');
-          } else {
-            nextBtn.classList.remove('is-disabled');
-          }
-        }
-      }
-
-      if (prevBtn) {
-        prevBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          var slide = track.querySelector('.earth-sus__slide');
-          var step = slide ? slide.offsetWidth + 20 : 350;
-          track.scrollBy({ left: -step, behavior: 'smooth' });
         });
       }
 
-      if (nextBtn) {
-        nextBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          var slide = track.querySelector('.earth-sus__slide');
-          var step = slide ? slide.offsetWidth + 20 : 350;
-          track.scrollBy({ left: step, behavior: 'smooth' });
-        });
-      }
+      setup();
 
-      track.addEventListener('scroll', updateNavButtons, { passive: true });
-      window.addEventListener('resize', updateNavButtons);
-
-      // Tab switcher filter simulation / interaction
+      // Tab switcher filter interaction
       var tabs = sectionEl.querySelectorAll('.earth-sus__tab');
       var tabsWrapper = sectionEl.querySelector('.earth-sus__tabs-wrapper');
-      tabs.forEach(function(tab) {
-        tab.addEventListener('click', function() {
-          tabs.forEach(function(t) { t.classList.remove('is-active'); });
-          tab.classList.add('is-active');
-          if (tabsWrapper && window.innerWidth <= 768) {
-            tabsWrapper.scrollTo({
-              left: Math.max(0, tab.offsetLeft - 20),
-              behavior: 'smooth'
-            });
-          }
-          // Reset slider track to start on tab change
-          track.scrollTo({ left: 0, behavior: 'smooth' });
-          setTimeout(updateNavButtons, 200);
-        });
-      });
+      if (tabs.length > 0 && !sectionEl._tabsBound) {
+        sectionEl._tabsBound = true;
+        tabs.forEach(function(tab) {
+          tab.addEventListener('click', function() {
+            tabs.forEach(function(t) { t.classList.remove('is-active'); });
+            tab.classList.add('is-active');
+            if (tabsWrapper && window.innerWidth <= 768) {
+              tabsWrapper.scrollTo({
+                left: Math.max(0, tab.offsetLeft - 20),
+                behavior: 'smooth'
+              });
+            }
 
-      // Initialize state on load
-      setTimeout(updateNavButtons, 100);
-      window.addEventListener('load', updateNavButtons);
+            var filter = tab.dataset.tab;
+            var slides = sectionEl.querySelectorAll('.earth-sus__slide, .earth-sus__grid-item');
+            slides.forEach(function(slide) {
+              if (filter === 'all') {
+                slide.style.display = '';
+              } else {
+                var pType = (slide.dataset.productType || '').toLowerCase();
+                var pTags = (slide.dataset.tags || '').toLowerCase();
+                if (pType.includes(filter) || pTags.includes(filter)) {
+                  slide.style.display = '';
+                } else {
+                  slide.style.display = 'none';
+                }
+              }
+            });
+
+            if (sectionEl._susSwiper) {
+              sectionEl._susSwiper.update();
+              sectionEl._susSwiper.slideTo(0);
+            }
+          });
+        });
+      }
+    }
+
+    function initAllSusSections() {
+      var sections = document.querySelectorAll('.earth-sustainable-essentials');
+      sections.forEach(function(sec) {
+        initSusSwiper(sec);
+      });
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initSusEssentials);
+      document.addEventListener('DOMContentLoaded', initAllSusSections);
     } else {
-      initSusEssentials();
+      initAllSusSections();
     }
 
-    // Support Shopify Theme Editor dynamic re-render
     document.addEventListener('shopify:section:load', function(e) {
-      if (e.detail && e.detail.sectionId === '{{ section.id }}') {
-        initSusEssentials();
+      var sec = e.target.classList.contains('earth-sustainable-essentials') ? e.target : e.target.querySelector('.earth-sustainable-essentials');
+      if (sec) {
+        initSusSwiper(sec);
+      }
+    });
+
+    document.addEventListener('shopify:section:unload', function(e) {
+      var sec = e.target.classList.contains('earth-sustainable-essentials') ? e.target : e.target.querySelector('.earth-sustainable-essentials');
+      if (sec && sec._susSwiper) {
+        sec._susSwiper.destroy(true, true);
+        sec._susSwiper = null;
       }
     });
   })();

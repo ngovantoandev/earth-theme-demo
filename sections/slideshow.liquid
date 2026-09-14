@@ -218,6 +218,13 @@
   .earth-hero-slider__arrow--next {
     right: 20px;
   }
+  .earth-hero-slider__arrow.swiper-button-disabled,
+  .earth-hero-slider__arrow.swiper-button-lock {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) scale(0.7) !important;
+  }
 
   /* Responsive Breakpoints */
   @media (max-width: 1024px) {
