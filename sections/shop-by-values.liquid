@@ -61,7 +61,7 @@
       {%- assign header_subtitle_color = section.settings.subtitle_color | default: '#F8F9DC' -%}
       {%- assign header_leaf_color = section.settings.leaf_color | default: '#EAE060' -%}
       {%- assign header_text_color = section.settings.text_color | default: '#F8F9DC' -%}
-      {% render 'section-header',
+      {% render 'title-styling',
         layout: header_layout,
         title: section.settings.title,
         title_color: header_title_color,

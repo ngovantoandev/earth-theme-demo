@@ -62,7 +62,7 @@
       {%- assign show_leaf_val = section.settings.show_leaf_icons -%}
       {%- if show_leaf_val == nil -%}{%- assign show_leaf_val = section.settings.show_leaf_icon -%}{%- endif -%}
       {%- assign title_color_val = section.settings.title_color | default: section.settings.section_text_color -%}
-      {% render 'section-header',
+      {% render 'title-styling',
         layout: header_layout,
         title: section.settings.title,
         title_color: title_color_val,

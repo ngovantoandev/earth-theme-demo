@@ -35,7 +35,7 @@
     {%- assign btn_color_val = section.settings.header_btn_color -%}
     {%- if btn_color_val == blank -%}{%- assign btn_color_val = section.settings.header_arrow_text_color -%}{%- endif -%}
     <div class="earth-essentials__header-container">
-      {% render 'section-header',
+      {% render 'title-styling',
         layout: header_layout,
         title: section.settings.title,
         title_color: section.settings.title_color,

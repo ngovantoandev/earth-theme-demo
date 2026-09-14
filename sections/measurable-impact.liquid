@@ -70,7 +70,7 @@
       <div class="measurable-impact__header-wrap">
         {%- assign show_leaf_val = section.settings.show_leaf_icons -%}
         {%- if show_leaf_val == nil -%}{%- assign show_leaf_val = section.settings.show_leaf_icon -%}{%- endif -%}
-        {% render 'section-header',
+        {% render 'title-styling',
           layout: header_layout,
           title: section_title,
           title_color: section.settings.title_color,

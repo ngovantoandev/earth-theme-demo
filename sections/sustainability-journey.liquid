@@ -45,7 +45,7 @@
 {%- endcapture -%}
 
 <section
-  class="sustainability-journey full-width{% if section.settings.full_width %} sustainability-journey--full{% else %} sustainability-journey--contained{% endif %} sustainability-journey--layout-{{ timeline_layout }} sustainability-journey--card-{{ card_style }} sustainability-journey--node-{{ node_style }} sustainability-journey--line-{{ line_style }} sustainability-journey--hover-{{ hover_effect }} sustainability-journey--year-{{ year_style }}"
+  class="sustainability-journey full-width{% if section.settings.full_width != false %} sustainability-journey--full{% else %} sustainability-journey--contained{% endif %} sustainability-journey--layout-{{ timeline_layout }} sustainability-journey--card-{{ card_style }} sustainability-journey--node-{{ node_style }} sustainability-journey--line-{{ line_style }} sustainability-journey--hover-{{ hover_effect }} sustainability-journey--year-{{ year_style }}"
   id="sustainabilityJourney-{{ section.id }}"
   style="
     --journey-bg: {{ section.settings.bg_color | default: '#F1F4D8' }};
@@ -77,7 +77,7 @@
     
     <!-- 1. Unified Section Header -->
     <div class="sustainability-journey__header-container">
-      {% render 'section-header',
+      {% render 'title-styling',
         layout: header_layout,
         title: section_title,
         title_color: section.settings.title_color,
@@ -117,12 +117,8 @@
               <!-- Top Circle Badge / Node -->
               <div class="sustainability-journey__node-badge" aria-hidden="true">
                 <div class="sustainability-journey__icon-inner">
-                  {%- if block.settings.custom_svg != blank -%}
-                    {{ block.settings.custom_svg }}
-                  {%- elsif block.settings.custom_icon != blank -%}
+                  {%- if block.settings.custom_icon != blank -%}
                     <img src="{{ block.settings.custom_icon | image_url: width: 64 }}" width="28" height="28" alt="{{ block.settings.title | escape }}" loading="lazy">
-                  {%- elsif block.settings.icon_name != blank -%}
-                    {{ block.settings.icon_name | inline_asset_content }}
                   {%- else -%}
                     {%- case block.settings.icon_type -%}
                       {%- when 'idea' -%}
@@ -329,12 +325,8 @@
               {%- for block in pillar_blocks -%}
                 <div class="sustainability-journey__pillar-item" {{ block.shopify_attributes }}>
                   <div class="sustainability-journey__pillar-icon-wrap sustainability-journey__pillar-icon-wrap--{{ section.settings.pillar_icon_style | default: 'circle_badge' }}" aria-hidden="true">
-                    {%- if block.settings.custom_svg != blank -%}
-                      {{ block.settings.custom_svg }}
-                    {%- elsif block.settings.custom_icon != blank -%}
+                    {%- if block.settings.custom_icon != blank -%}
                       <img src="{{ block.settings.custom_icon | image_url: width: 64 }}" width="30" height="30" alt="{{ block.settings.label | escape }}" loading="lazy">
-                    {%- elsif block.settings.icon_name != blank -%}
-                      {{ block.settings.icon_name | inline_asset_content }}
                     {%- else -%}
                       {%- case block.settings.icon_type -%}
                         {%- when 'plant' -%}
@@ -441,7 +433,6 @@
     width: 100%;
     margin-bottom: clamp(40px, 5.5vw, 68px);
     box-sizing: border-box;
-    text-align: center;
   }
 
   /* ==========================================================================
@@ -1572,18 +1563,6 @@
           "default": "tree"
         },
         {
-          "type": "text",
-          "id": "icon_name",
-          "label": "Custom SVG Asset Name",
-          "info": "e.g. icon-tree.svg, icon-idea.svg"
-        },
-        {
-          "type": "html",
-          "id": "custom_svg",
-          "label": "Custom SVG Code",
-          "info": "Paste custom <svg> code here"
-        },
-        {
           "type": "image_picker",
           "id": "custom_icon",
           "label": "Custom Icon Image"
@@ -1625,8 +1604,7 @@
         {
           "type": "text",
           "id": "sublabel",
-          "label": "Pillar Sub-label (Optional)",
-          "default": "GOTS Certified"
+          "label": "Pillar Sub-label (Optional)"
         },
         {
           "type": "select",
@@ -1641,16 +1619,6 @@
             { "value": "fairtrade", "label": "Fair Trade" }
           ],
           "default": "plant"
-        },
-        {
-          "type": "text",
-          "id": "icon_name",
-          "label": "SVG Asset Name (e.g. icon-plant-based.svg)"
-        },
-        {
-          "type": "html",
-          "id": "custom_svg",
-          "label": "Custom SVG Code"
         },
         {
           "type": "image_picker",
@@ -1727,7 +1695,6 @@
           "settings": {
             "year": "2018",
             "icon_type": "idea",
-            "icon_name": "icon-idea.svg",
             "title": "The Beginning",
             "description": "<p>Founded in Hanoi with mission to source 100% organic cotton from local farms</p>"
           }
@@ -1737,7 +1704,6 @@
           "settings": {
             "year": "2020",
             "icon_type": "handshake",
-            "icon_name": "icon-handshake.svg",
             "title": "Fair Trade Partnership",
             "description": "<p>Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans</p>"
           }
@@ -1747,7 +1713,6 @@
           "settings": {
             "year": "2022",
             "icon_type": "tree",
-            "icon_name": "icon-tree.svg",
             "title": "Reforestation Initiative",
             "description": "<p>Launched \"1 Tree Per Product\" – planted 50K trees in Vietnam reforestation</p>"
           }
@@ -1757,7 +1722,6 @@
           "settings": {
             "year": "2024",
             "icon_type": "badge",
-            "icon_name": "icon-badge.svg",
             "title": "Carbon Neutral",
             "highlight": false,
             "description": "<p>Achieved B Corp certification and full carbon-neutral shipping</p>"
@@ -1768,7 +1732,6 @@
           "settings": {
             "year": "2026",
             "icon_type": "repost",
-            "icon_name": "icon-repost.svg",
             "title": "Circular Economy",
             "description": "<p>Closed-loop recycling: turn old clothes into new collections</p>"
           }

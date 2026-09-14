@@ -27,7 +27,7 @@
     <div class="earth-impact__header-container">
       {%- assign show_leaf_val = section.settings.show_leaf_icons -%}
       {%- if show_leaf_val == nil -%}{%- assign show_leaf_val = section.settings.show_leaf_icon -%}{%- endif -%}
-      {% render 'section-header',
+      {% render 'title-styling',
         layout: header_layout,
         title: section.settings.title,
         title_color: section.settings.title_color,

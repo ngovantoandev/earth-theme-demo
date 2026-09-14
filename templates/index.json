@@ -608,6 +608,7 @@
         "pillar_3"
       ],
       "settings": {
+        "full_width": true,
         "title": "Our Sustainability Journey",
         "subtitle": "From a small organic farm to global impact – our story unfolds through transparent milestones and unwavering commitment to the planet",
         "bg_color": "#F1F4D8",
