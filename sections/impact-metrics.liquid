@@ -48,11 +48,16 @@
         leaf_color: section.settings.leaf_color,
         leaf_size: section.settings.leaf_size,
         leaf_gap: section.settings.leaf_gap,
+        split_ratio: section.settings.header_split_ratio,
         btn_text: section.settings.header_btn_text,
         btn_url: section.settings.header_btn_url,
         btn_type: section.settings.header_btn_type,
         btn_theme: section.settings.header_btn_theme,
         btn_color: section.settings.header_btn_color,
+        btn_bg_color: section.settings.header_btn_bg_color,
+        btn_text_color: section.settings.header_btn_text_color,
+        btn_arrow_circle_bg: section.settings.header_btn_circle_bg,
+        btn_arrow_circle_color: section.settings.header_btn_circle_color,
         text_color: section.settings.text_color
       %}
     </div>
@@ -624,12 +629,24 @@
       "id": "header_layout",
       "label": "Header Layout",
       "options": [
-        { "value": "centered", "label": "Centered (Design Default)" },
+        { "value": "centered", "label": "Centered" },
         { "value": "stacked_left", "label": "Stacked Left" },
-        { "value": "split", "label": "Split Columns" },
-        { "value": "split_btn", "label": "Split with Button" }
+        { "value": "split", "label": "Split Columns" }
       ],
       "default": "centered"
+    },
+    {
+      "type": "select",
+      "id": "header_split_ratio",
+      "label": "Split Column Ratio",
+      "info": "Only applies when Header Layout is set to Split Columns",
+      "options": [
+        { "value": "1.4fr_1fr", "label": "Design Default (~60% / 40%)" },
+        { "value": "1fr_1fr", "label": "1fr / 1fr (Equal 50% / 50%)" },
+        { "value": "2fr_1fr", "label": "2fr / 1fr (Wide Title)" },
+        { "value": "1fr_2fr", "label": "1fr / 2fr (Wide Description)" }
+      ],
+      "default": "1.4fr_1fr"
     },
     {
       "type": "text",
@@ -816,8 +833,29 @@
     },
     {
       "type": "color",
+      "id": "header_btn_bg_color",
+      "label": "Button Background / Border Color",
+      "info": "Applies to Solid/Outline buttons"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_text_color",
+      "label": "Button Text Color (Solid Button)"
+    },
+    {
+      "type": "color",
       "id": "header_btn_color",
-      "label": "Header Button Custom Color"
+      "label": "Button Text / Line Color (Arrow Button)"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_circle_bg",
+      "label": "Arrow Circle Background Color"
+    },
+    {
+      "type": "color",
+      "id": "header_btn_circle_color",
+      "label": "Arrow Icon Color"
     },
     {
       "type": "header",

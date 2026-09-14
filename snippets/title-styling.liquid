@@ -34,6 +34,11 @@
 
 {%- liquid
   assign header_layout = layout | default: 'stacked_left'
+  assign ratio = split_ratio | default: '1.4fr_1fr'
+  if header_layout == 'split_equal'
+    assign ratio = '1fr_1fr'
+  endif
+
   assign show_leaf_icon = true
   if show_leaf == false or leaf_position == 'none'
     assign show_leaf_icon = false
@@ -46,7 +51,7 @@
         assign pos = 'both_sides'
       when 'stacked_left'
         assign pos = 'top'
-      when 'split', 'split_btn'
+      when 'split', 'split_btn', 'split_equal'
         assign pos = 'left'
       else
         assign pos = 'left'
@@ -102,11 +107,25 @@
   {%- elsif btn_text != blank and btn_url != blank -%}
     {%- assign b_type = btn_type | default: 'arrow' -%}
     {%- assign b_theme = btn_theme | default: 'dark' -%}
+    {%- assign b_bg = btn_bg_color | default: btn_color -%}
     <div class="earth-section-header__btn-wrap">
       {%- if b_type == 'arrow' -%}
-        {% render 'btn-arrow', text: btn_text, url: btn_url, theme: b_theme, color: btn_color %}
+        {% render 'btn-arrow', 
+          text: btn_text, 
+          url: btn_url, 
+          theme: b_theme, 
+          color: btn_color,
+          circle_bg: btn_arrow_circle_bg,
+          circle_color: btn_arrow_circle_color
+        %}
       {%- else -%}
-        {% render 'btn-action', text: btn_text, url: btn_url, variant: b_type, custom_bg: btn_color %}
+        {% render 'btn-action', 
+          text: btn_text, 
+          url: btn_url, 
+          variant: b_type, 
+          custom_bg: b_bg,
+          custom_color: btn_text_color
+        %}
       {%- endif -%}
     </div>
   {%- endif -%}
@@ -159,9 +178,9 @@
         {{ button_markup }}
       </div>
 
-    {%- when 'split' -%}
-      <!-- 2. Split Columns (Title Left, Subtitle Right 1/3) -->
-      <div class="earth-section-header__split">
+    {%- when 'split', 'split_btn', 'split_equal' -%}
+      <!-- 2 & 3. Split Columns Layout (Title Left, Subtitle & Button Right) -->
+      <div class="earth-section-header__split earth-section-header__split--ratio-{{ ratio }}{% if header_layout == 'split_btn' %} earth-section-header__split--with-btn{% endif %}{% if header_layout == 'split_equal' %} earth-section-header__split--equal{% endif %}">
         <div class="earth-section-header__split-left">
           {{ eyebrow_markup }}
 
@@ -182,47 +201,17 @@
           {%- endif -%}
         </div>
 
-        {%- if subtitle != blank -%}
+        {%- if subtitle != blank or button_markup != blank -%}
           <div class="earth-section-header__split-right">
-            <div class="earth-section-header__subtitle">
-              {{ subtitle }}
-            </div>
+            {%- if subtitle != blank -%}
+              <div class="earth-section-header__subtitle">
+                {{ subtitle }}
+              </div>
+            {%- endif -%}
+
+            {{ button_markup }}
           </div>
         {%- endif -%}
-      </div>
-
-    {%- when 'split_btn' -%}
-      <!-- 3. Split Columns with CTA Button (Title Left, Subtitle & Button Right 1/3) -->
-      <div class="earth-section-header__split earth-section-header__split--with-btn">
-        <div class="earth-section-header__split-left">
-          {{ eyebrow_markup }}
-
-          {%- if render_leaf_top -%}
-            <div class="earth-section-header__leaf-top" aria-hidden="true">{{ leaf_svg }}</div>
-          {%- endif -%}
-
-          {%- if title != blank -%}
-            <h2 class="earth-section-header__title">
-              {%- if render_leaf_left -%}
-                <span class="earth-section-header__leaf-wrap earth-section-header__leaf-wrap--left" aria-hidden="true">{{ leaf_svg }}</span>
-              {%- endif -%}
-              <span class="earth-section-header__title-text">{{ title }}</span>
-              {%- if render_leaf_right -%}
-                <span class="earth-section-header__leaf-wrap earth-section-header__leaf-wrap--right" aria-hidden="true">{{ leaf_svg }}</span>
-              {%- endif -%}
-            </h2>
-          {%- endif -%}
-        </div>
-
-        <div class="earth-section-header__split-right">
-          {%- if subtitle != blank -%}
-            <div class="earth-section-header__subtitle">
-              {{ subtitle }}
-            </div>
-          {%- endif -%}
-
-          {{ button_markup }}
-        </div>
       </div>
 
     {%- else -%}
@@ -361,7 +350,7 @@
     margin-right: auto;
   }
 
-  /* 2 & 3. Split Layouts (Left Title ~2/3, Right 1/3 column with Left-Aligned Subtitle & Button) */
+  /* 2 & 3. Split Layouts (Left Title, Right column with Subtitle & Button) */
   .earth-section-header__split {
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
@@ -369,6 +358,31 @@
     gap: clamp(32px, 5vw, 64px);
     width: 100%;
     box-sizing: border-box;
+  }
+
+  /* Split Ratios (1.4fr/1fr, 1fr/1fr, 2fr/1fr, 1fr/2fr) */
+  .earth-section-header__split--ratio-1fr_1fr,
+  .earth-section-header__split--ratio-equal,
+  .earth-section-header--split_equal .earth-section-header__split,
+  .earth-section-header__split--equal {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  }
+  .earth-section-header__split--ratio-1fr_1fr .earth-section-header__split-right,
+  .earth-section-header__split--ratio-equal .earth-section-header__split-right,
+  .earth-section-header--split_equal .earth-section-header__split-right,
+  .earth-section-header__split--equal .earth-section-header__split-right {
+    max-width: 100% !important;
+  }
+
+  .earth-section-header__split--ratio-2fr_1fr {
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr) !important;
+  }
+
+  .earth-section-header__split--ratio-1fr_2fr {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) !important;
+  }
+  .earth-section-header__split--ratio-1fr_2fr .earth-section-header__split-right {
+    max-width: 100% !important;
   }
 
   .earth-section-header__split-left {
