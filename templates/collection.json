@@ -1,17 +1,50 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "collection",
-      "settings": {}
+      "blocks": {
+        "badge_gots": {
+          "type": "header_badge",
+          "settings": {
+            "text": "GOTS Certified",
+            "icon": "icon-GOTS-1.svg"
+          }
+        },
+        "badge_trees": {
+          "type": "header_badge",
+          "settings": {
+            "text": "50+ Trees Planted",
+            "icon": "icon-tree-2.svg"
+          }
+        }
+      },
+      "block_order": [
+        "badge_gots",
+        "badge_trees"
+      ],
+      "settings": {
+        "full_width": true,
+        "show_breadcrumbs": true,
+        "breadcrumb_parent": "",
+        "fallback_title": "Organic Essentials",
+        "show_collection_impact": true,
+        "impact_label": "Collection Impact",
+        "impact_value": "2700L Water Saved",
+        "impact_progress": 78,
+        "enable_filtering": true,
+        "enable_sorting": true,
+        "products_per_page": 12,
+        "columns_desktop": 3,
+        "columns_mobile": "1",
+        "card_aspect_ratio": "portrait",
+        "show_impact_badge": true,
+        "show_metrics_pills": true,
+        "show_quick_view": true,
+        "show_material": true,
+        "show_tags": true,
+        "show_origin": true,
+        "show_discount": true
+      }
     }
   },
   "order": [

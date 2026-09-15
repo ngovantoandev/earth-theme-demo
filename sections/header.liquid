@@ -44,7 +44,7 @@
   class="earth-header-wrapper{% if section.settings.full_width %} full-width{% endif %} earth-header--sticky-{{ sticky_mode }} {{ icon_size_class }}"
   id="earthHeaderWrapper-{{ section.id }}"
   style="
-    --header-bg: {{ section.settings.bg_color | default: '#f3f6e4' }};
+    --header-bg: {{ section.settings.bg_color | default: '#F8F9DC' }};
     --header-color: {{ section.settings.text_color | default: '#224E09' }};
     --header-pt: {{ section.settings.top_padding | default: 0 }}px;
     --header-pb: {{ section.settings.bottom_padding | default: 0 }}px;
@@ -284,9 +284,9 @@
 
   /* Main Header Container */
   .earth-main-header {
-    background-color: var(--header-bg, #f3f6e4);
-    color: var(--header-color, #224E09);
-    border-bottom: 1px solid rgba(34, 78, 9, 0.08);
+    background-color: var(--header-bg, #F8F9DC);
+    color: var(--header-color, #003225);
+    border-bottom: 1px solid rgba(0, 50, 37, 0.08);
     width: 100%;
     box-sizing: border-box;
     transition: background-color 0.3s ease;
@@ -303,8 +303,8 @@
     min-height: 70px;
     padding-top: var(--header-pt, 0px);
     padding-bottom: var(--header-pb, 0px);
-    padding-left: clamp(20px, 3.5vw, 56px);
-    padding-right: clamp(20px, 3.5vw, 56px);
+    padding-left: 34px;
+    padding-right: 34px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -546,7 +546,7 @@
     align-items: center;
     justify-content: center;
     line-height: 1;
-    border: 1.5px solid var(--header-bg, #f3f6e4);
+    border: 1.5px solid var(--header-bg, #F8F9DC);
   }
 
   /* Mobile Button */
@@ -586,7 +586,7 @@
     max-width: 85vw;
     height: 100vh;
     height: 100dvh;
-    background-color: var(--header-bg, #f3f6e4);
+    background-color: var(--header-bg, #F8F9DC);
     color: var(--header-color, #224E09);
     z-index: 100001;
     padding: max(24px, env(safe-area-inset-top)) 24px 24px 24px;
@@ -958,13 +958,13 @@
       "type": "color",
       "id": "text_color",
       "label": "Text",
-      "default": "#224E09"
+      "default": "#003225"
     },
     {
       "type": "color",
       "id": "bg_color",
       "label": "Background",
-      "default": "#f3f6e4"
+      "default": "#F8F9DC"
     },
     {
       "type": "header",

@@ -1,47 +1,1693 @@
 {% comment %}
-  This section is used in the collection template to render collection page
-  listing all products within a collection.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
+  Earth Theme - Master Collection Template
+  - Organic Essentials Header with Breadcrumbs, Badges & Collection Impact Progress Bar
+  - Interactive Filter Dropdowns (Availability, Price, Color, etc.) & Sort By Bar
+  - Highly Optimized Product Grid (2, 3, or 4 columns) with Product Cards
+  - Custom Round/Pill Pagination with SVG Arrow Navigation
+  - Full SEO schema, semantic HTML, and multi-device responsive design.
 {% endcomment %}
 
-<h1>{{ collection.title }}</h1>
+{%- liquid
+  assign col_title = collection.title | default: section.settings.fallback_title | default: 'Organic Essentials'
+  assign desktop_cols = section.settings.columns_desktop | default: 3
+  assign mobile_cols = section.settings.columns_mobile | default: 1
+-%}
 
-<div class="collection-products">
-  {% paginate collection.products by 20 %}
-    {% for product in collection.products %}
-      <div class="collection-product">
-        {% if product.featured_image %}
-          {% render 'image',
-            class: 'collection-product__image',
-            image: product.featured_image,
-            url: product.url,
-            width: 400,
-            height: 400,
-            crop: 'center'
-          %}
-        {% endif %}
-        <div class="collection-product__content">
-          <p>{{ product.title | escape | link_to: product.url }}</p>
-          <p>{{ product.price | money }}</p>
+<section 
+  class="earth-collection full-width{% if section.settings.full_width != false %} earth-collection--full{% else %} earth-collection--contained{% endif %}"
+  id="earthCollection-{{ section.id }}"
+  style="
+    --col-bg: {{ section.settings.bg_color | default: '#F8F9DC' }};
+    --col-text: {{ section.settings.text_color | default: '#003225' }};
+    --col-accent: {{ section.settings.accent_color | default: '#EAE060' }};
+    --col-secondary: {{ section.settings.secondary_color | default: '#71CC3B' }};
+    --col-pt-desktop: {{ section.settings.desktop_padding_top | default: 48 }}px;
+    --col-pb-desktop: {{ section.settings.desktop_padding_bottom | default: 96 }}px;
+    --col-pt-mobile: {{ section.settings.mobile_padding_top | default: 28 }}px;
+    --col-pb-mobile: {{ section.settings.mobile_padding_bottom | default: 60 }}px;
+  "
+>
+  <div class="earth-collection__container">
+
+    <!-- 1. Breadcrumbs Navigation (SEO & Dynamic Hierarchy) -->
+    {%- if section.settings.show_breadcrumbs != false -%}
+      <nav class="earth-collection__breadcrumbs" aria-label="Breadcrumbs">
+        <a href="{{ routes.collections_url | default: '/collections' }}" class="earth-collection__crumb-back" aria-label="Back to Collections">
+          <span class="earth-collection__crumb-back-icon" aria-hidden="true">{{ 'icon-Previous.svg' | inline_asset_content }}</span>
+        </a>
+        <ol class="earth-collection__crumbs-list" itemscope itemtype="https://schema.org/BreadcrumbList">
+          <li class="earth-collection__crumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ routes.collections_url | default: '/collections' }}" class="earth-collection__crumb-link" itemprop="item">
+              <span itemprop="name">Collections</span>
+            </a>
+            <meta itemprop="position" content="1" />
+          </li>
+
+          <li class="earth-collection__crumb-sep" aria-hidden="true">
+            <span class="earth-collection__crumb-sep-icon">{{ 'icon-Next.svg' | inline_asset_content }}</span>
+          </li>
+
+          {%- if section.settings.breadcrumb_parent != blank -%}
+            <li class="earth-collection__crumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="{{ section.settings.breadcrumb_parent_url | default: routes.all_products_collection_url }}" class="earth-collection__crumb-link" itemprop="item">
+                <span itemprop="name">{{ section.settings.breadcrumb_parent }}</span>
+              </a>
+              <meta itemprop="position" content="2" />
+            </li>
+            <li class="earth-collection__crumb-sep" aria-hidden="true">
+              <span class="earth-collection__crumb-sep-icon">{{ 'icon-Next.svg' | inline_asset_content }}</span>
+            </li>
+          {%- endif -%}
+
+          {%- if current_tags -%}
+            <li class="earth-collection__crumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="{{ collection.url | default: routes.all_products_collection_url }}" class="earth-collection__crumb-link" itemprop="item">
+                <span itemprop="name">{{ collection.title | default: col_title }}</span>
+              </a>
+              <meta itemprop="position" content="{% if section.settings.breadcrumb_parent != blank %}3{% else %}2{% endif %}" />
+            </li>
+            <li class="earth-collection__crumb-sep" aria-hidden="true">
+              <span class="earth-collection__crumb-sep-icon">{{ 'icon-Next.svg' | inline_asset_content }}</span>
+            </li>
+            <li class="earth-collection__crumb-item earth-collection__crumb-item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="earth-collection__crumb-current" itemprop="name" aria-current="page">{{ current_tags | join: " + " }}</span>
+              <meta itemprop="position" content="{% if section.settings.breadcrumb_parent != blank %}4{% else %}3{% endif %}" />
+            </li>
+          {%- else -%}
+            <li class="earth-collection__crumb-item earth-collection__crumb-item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="earth-collection__crumb-current" itemprop="name" aria-current="page">{{ collection.title | default: col_title }}</span>
+              <meta itemprop="position" content="{% if section.settings.breadcrumb_parent != blank %}3{% else %}2{% endif %}" />
+            </li>
+          {%- endif -%}
+        </ol>
+      </nav>
+    {%- endif -%}
+
+    <!-- 2. Collection Header Hero Area -->
+    <header class="earth-collection__header">
+      <div class="earth-collection__header-left">
+        <h1 class="earth-collection__title">{{ col_title }}</h1>
+
+        <!-- Badges Under Heading -->
+        <div class="earth-collection__badges">
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'header_badge' -%}
+                <span class="earth-collection__badge-pill" {{ block.shopify_attributes }}>
+                  {%- if block.settings.icon != blank -%}
+                    <span class="earth-collection__badge-icon" aria-hidden="true">{{ block.settings.icon | inline_asset_content }}</span>
+                  {%- else -%}
+                    <span class="earth-collection__badge-icon" aria-hidden="true">{{ 'icon-GOTS-1.svg' | inline_asset_content }}</span>
+                  {%- endif -%}
+                  <span>{{ block.settings.text }}</span>
+                </span>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            <!-- Default Badges from Design -->
+            <span class="earth-collection__badge-pill">
+              <span class="earth-collection__badge-icon" aria-hidden="true">{{ 'icon-GOTS-1.svg' | inline_asset_content }}</span>
+              <span>GOTS Certified</span>
+            </span>
+            <span class="earth-collection__badge-pill">
+              <span class="earth-collection__badge-icon" aria-hidden="true">{{ 'icon-tree-2.svg' | inline_asset_content }}</span>
+              <span>50+ Trees Planted</span>
+            </span>
+          {%- endif -%}
         </div>
-      </div>
-    {% endfor %}
 
-    {{ paginate | default_pagination }}
-  {% endpaginate %}
-</div>
+        {%- if section.settings.show_description and collection.description != blank -%}
+          <div class="earth-collection__description">
+            {{ collection.description }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Right Side: Collection Impact Meter -->
+      {%- if section.settings.show_collection_impact != false -%}
+        <div class="earth-collection__impact-box" aria-label="Collection Sustainability Impact">
+          <div class="earth-collection__impact-meta">
+            <span class="earth-collection__impact-label">{{ section.settings.impact_label | default: 'Collection Impact' }}</span>
+            <span class="earth-collection__impact-val">{{ section.settings.impact_value | default: '2700L Water Saved' }}</span>
+          </div>
+          <div class="earth-collection__impact-bar">
+            <div 
+              class="earth-collection__impact-progress" 
+              style="width: {{ section.settings.impact_progress | default: 78 }}%;"
+              role="progressbar" 
+              aria-valuenow="{{ section.settings.impact_progress | default: 78 }}" 
+              aria-valuemin="0" 
+              aria-valuemax="100"
+            ></div>
+          </div>
+        </div>
+      {%- endif -%}
+    </header>
+
+    <!-- 3. Filter & Sort Toolbar -->
+    {%- paginate collection.products by 12 -%}
+      <div class="earth-collection__toolbar" id="earthCollectionToolbar-{{ section.id }}">
+        
+        <!-- Left Filters Group -->
+        <div class="earth-collection__filters-group">
+          {%- if section.settings.enable_filtering != false -%}
+            <span class="earth-collection__filter-label">
+              <span class="earth-collection__filter-icon" aria-hidden="true">
+                {{ 'icon-Filters.svg' | inline_asset_content }}
+              </span>
+              <span>Filters</span>
+            </span>
+
+            <!-- Filter Dropdowns Container -->
+            <div class="earth-collection__filter-dropdowns">
+              <!-- Filter: Availability -->
+              <div class="earth-collection__dropdown-wrap" data-dropdown="availability">
+                <button type="button" class="earth-collection__dropdown-btn" aria-expanded="false">
+                  <span>Availability</span>
+                  <span class="earth-collection__dropdown-arrow" aria-hidden="true">{{ 'icon-down.svg' | inline_asset_content }}</span>
+                </button>
+                <div class="earth-collection__dropdown-menu">
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter.v.availability" value="1" onchange="this.form ? this.form.submit() : null">
+                    <span class="earth-collection__check-box"></span>
+                    <span>In Stock ({{ collection.products_count | default: 24 }})</span>
+                  </label>
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter.v.availability" value="0" onchange="this.form ? this.form.submit() : null">
+                    <span class="earth-collection__check-box"></span>
+                    <span>Out of Stock (2)</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Filter: Price -->
+              <div class="earth-collection__dropdown-wrap" data-dropdown="price">
+                <button type="button" class="earth-collection__dropdown-btn" aria-expanded="false">
+                  <span>Price</span>
+                  <span class="earth-collection__dropdown-arrow" aria-hidden="true">{{ 'icon-down.svg' | inline_asset_content }}</span>
+                </button>
+                <div class="earth-collection__dropdown-menu earth-collection__dropdown-menu--price">
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_price" value="under_50">
+                    <span class="earth-collection__check-box"></span>
+                    <span>Under $50</span>
+                  </label>
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_price" value="50_100">
+                    <span class="earth-collection__check-box"></span>
+                    <span>$50 - $100</span>
+                  </label>
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_price" value="100_200">
+                    <span class="earth-collection__check-box"></span>
+                    <span>$100 - $200</span>
+                  </label>
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_price" value="above_200">
+                    <span class="earth-collection__check-box"></span>
+                    <span>$200+</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Filter: Color -->
+              <div class="earth-collection__dropdown-wrap" data-dropdown="color">
+                <button type="button" class="earth-collection__dropdown-btn" aria-expanded="false">
+                  <span>Color</span>
+                  <span class="earth-collection__dropdown-arrow" aria-hidden="true">{{ 'icon-down.svg' | inline_asset_content }}</span>
+                </button>
+                <div class="earth-collection__dropdown-menu earth-collection__dropdown-menu--color">
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_color" value="denim">
+                    <span class="earth-collection__color-swatch" style="background-color: #5b7f95;"></span>
+                    <span>Denim Blue</span>
+                  </label>
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_color" value="olive">
+                    <span class="earth-collection__color-swatch" style="background-color: #4a5d23;"></span>
+                    <span>Olive Green</span>
+                  </label>
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_color" value="natural">
+                    <span class="earth-collection__color-swatch" style="background-color: #f1ebd9; border: 1px solid #ccc;"></span>
+                    <span>Natural Ecru</span>
+                  </label>
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_color" value="black">
+                    <span class="earth-collection__color-swatch" style="background-color: #1a1a1a;"></span>
+                    <span>Charcoal</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Filter: Material / Sustainability -->
+              <div class="earth-collection__dropdown-wrap" data-dropdown="material">
+                <button type="button" class="earth-collection__dropdown-btn" aria-expanded="false">
+                  <span>Material</span>
+                  <span class="earth-collection__dropdown-arrow" aria-hidden="true">{{ 'icon-down.svg' | inline_asset_content }}</span>
+                </button>
+                <div class="earth-collection__dropdown-menu">
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_mat" value="organic_cotton">
+                    <span class="earth-collection__check-box"></span>
+                    <span>100% Organic Cotton</span>
+                  </label>
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_mat" value="regenerative">
+                    <span class="earth-collection__check-box"></span>
+                    <span>Regenerative Denim</span>
+                  </label>
+                  <label class="earth-collection__filter-check">
+                    <input type="checkbox" name="filter_mat" value="recycled">
+                    <span class="earth-collection__check-box"></span>
+                    <span>Recycled Fibers</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+
+        <!-- Right Sort & Count Group -->
+        <div class="earth-collection__sort-group">
+          {%- if section.settings.enable_sorting != false -%}
+            <div class="earth-collection__sort-wrap">
+              <span class="earth-collection__sort-label">Sort by</span>
+              <div class="earth-collection__custom-select">
+                <select 
+                  id="earthCollectionSort-{{ section.id }}" 
+                  class="earth-collection__select-native"
+                  aria-label="Sort collection products"
+                  onchange="location.href = this.value;"
+                >
+                  {%- assign current_sort = collection.sort_by | default: collection.default_sort_by -%}
+                  <option value="{{ collection.url }}?sort_by=best-selling" {% if current_sort == 'best-selling' %}selected{% endif %}>Best selling</option>
+                  <option value="{{ collection.url }}?sort_by=manual" {% if current_sort == 'manual' %}selected{% endif %}>Featured</option>
+                  <option value="{{ collection.url }}?sort_by=price-ascending" {% if current_sort == 'price-ascending' %}selected{% endif %}>Price: Low to High</option>
+                  <option value="{{ collection.url }}?sort_by=price-descending" {% if current_sort == 'price-descending' %}selected{% endif %}>Price: High to Low</option>
+                  <option value="{{ collection.url }}?sort_by=title-ascending" {% if current_sort == 'title-ascending' %}selected{% endif %}>Alphabetically, A-Z</option>
+                  <option value="{{ collection.url }}?sort_by=created-descending" {% if current_sort == 'created-descending' %}selected{% endif %}>Date: New to Old</option>
+                </select>
+                <span class="earth-collection__select-arrow" aria-hidden="true">{{ 'icon-down.svg' | inline_asset_content }}</span>
+              </div>
+            </div>
+          {%- endif -%}
+
+          <span class="earth-collection__product-count">
+            {%- if collection.products_count > 0 -%}
+              {{ collection.products_count }} products
+            {%- else -%}
+              26 products
+            {%- endif -%}
+          </span>
+        </div>
+
+      </div>
+
+      <!-- 4. Product Cards Grid -->
+      {%- assign card_ratio = section.settings.card_aspect_ratio | default: 'portrait' -%}
+      <div 
+        class="earth-collection__grid earth-collection__grid--cols-{{ desktop_cols }} earth-collection__grid--mobile-{{ mobile_cols }}" 
+        id="earthCollectionGrid-{{ section.id }}"
+      >
+        {%- if collection.products.size > 0 -%}
+          {%- for product in collection.products -%}
+            <div class="earth-collection__grid-item">
+              {% render 'product-card',
+                product: product,
+                aspect_ratio: card_ratio,
+                show_impact_badge: section.settings.show_impact_badge,
+                show_metrics: section.settings.show_metrics_pills,
+                show_quick_view: section.settings.show_quick_view,
+                show_material: section.settings.show_material,
+                show_tags: section.settings.show_tags,
+                show_origin: section.settings.show_origin,
+                show_discount: section.settings.show_discount
+              %}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <!-- Curated Demo Product Showcase matching Design Layout -->
+          {%- for i in (1..9) -%}
+            {%- case i -%}
+              {%- when 2 -%}
+                {%- assign demo_title = 'One Shoulder Twisted Wrap Dress' -%}
+              {%- else -%}
+                {%- assign demo_title = 'Regenerative Denim' -%}
+            {%- endcase -%}
+
+            <div class="earth-collection__grid-item">
+              {% render 'product-card',
+                fallback_image: 'prod-denim.jpg',
+                title: demo_title,
+                material: '100% Regenerative Organic Cotton',
+                impact_score: '97% Impact',
+                water_saved: '3,200 L',
+                co2_saved: '5.5 kg',
+                origin: 'Vietnam',
+                price: '110',
+                aspect_ratio: card_ratio,
+                show_impact_badge: section.settings.show_impact_badge,
+                show_metrics: section.settings.show_metrics_pills,
+                show_quick_view: section.settings.show_quick_view,
+                show_material: section.settings.show_material,
+                show_tags: section.settings.show_tags,
+                show_origin: section.settings.show_origin,
+                show_discount: section.settings.show_discount
+              %}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      <!-- 5. Rounded Pagination Unit -->
+      <div class="earth-collection__pagination">
+        {%- if paginate.pages > 1 -%}
+          <nav class="earth-collection__pagination-nav" aria-label="Pagination Navigation">
+            {%- if paginate.previous -%}
+              <a href="{{ paginate.previous.url }}" class="earth-collection__page-btn earth-collection__page-btn--prev" aria-label="Previous page">
+                <span class="earth-collection__page-icon" aria-hidden="true">{{ 'icon-arrow-left.svg' | inline_asset_content }}</span>
+              </a>
+            {%- endif -%}
+
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}" class="earth-collection__page-btn">{{ part.title }}</a>
+              {%- elsif part.title == paginate.current_page -%}
+                <span class="earth-collection__page-btn earth-collection__page-btn--active" aria-current="page">{{ part.title }}</span>
+              {%- else -%}
+                <span class="earth-collection__page-btn earth-collection__page-btn--dots">{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if paginate.next -%}
+              <a href="{{ paginate.next.url }}" class="earth-collection__page-btn earth-collection__page-btn--next" aria-label="Next page">
+                <span class="earth-collection__page-icon" aria-hidden="true">{{ 'icon-arrow-right.svg' | inline_asset_content }}</span>
+              </a>
+            {%- endif -%}
+          </nav>
+        {%- else -%}
+          <!-- Mock Pagination for preview -->
+          <nav class="earth-collection__pagination-nav" aria-label="Pagination">
+            <span class="earth-collection__page-btn earth-collection__page-btn--active" aria-current="page">1</span>
+            <button type="button" class="earth-collection__page-btn">2</button>
+            <button type="button" class="earth-collection__page-btn">3</button>
+            <button type="button" class="earth-collection__page-btn earth-collection__page-btn--next" aria-label="Next page">
+              <span class="earth-collection__page-icon" aria-hidden="true">{{ 'icon-arrow-right.svg' | inline_asset_content }}</span>
+            </button>
+          </nav>
+        {%- endif -%}
+      </div>
+
+    {%- endpaginate -%}
+
+  </div>
+</section>
+
+<!-- JSON-LD SEO Schema for Collection Page -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": {{ col_title | json }},
+  "url": {{ canonical_url | json }},
+  {% if collection.description != blank %}
+  "description": {{ collection.description | strip_html | json }},
+  {% endif %}
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": [
+      {%- for product in collection.products limit: 12 -%}
+        {
+          "@type": "ListItem",
+          "position": {{ forloop.index }},
+          "url": "{{ shop.url }}{{ product.url }}",
+          "name": {{ product.title | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+}
+</script>
 
 {% stylesheet %}
-  .collection-products {
+  /* Master Collection Styling */
+  .earth-collection {
+    grid-column: 1 / -1 !important;
+    width: 100%;
+    background-color: var(--col-bg, #F8F9DC);
+    color: var(--col-text, #003225);
+    border-top: 1px solid var(--col-text, #003225);
+    padding-top: var(--col-pt-desktop, 48px);
+    padding-bottom: var(--col-pb-desktop, 96px);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .earth-collection--full .earth-collection__container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 34px;
+    box-sizing: border-box;
+  }
+
+  .earth-collection--contained .earth-collection__container {
+    max-width: var(--page-width, 1440px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(20px, 3vw, 40px);
+    padding-right: clamp(20px, 3vw, 40px);
+    box-sizing: border-box;
+  }
+
+  /* 1. Breadcrumbs */
+  .earth-collection__breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: clamp(16px, 2vw, 24px);
+    color: var(--col-text, #003225);
+  }
+  .earth-collection__crumb-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--col-text, #003225);
+    text-decoration: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0.9;
+  }
+  .earth-collection__crumb-back:hover {
+    transform: translateX(-2px);
+    opacity: 1;
+  }
+  .earth-collection__crumb-back-icon {
+    width: 10px;
+    height: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--col-text, #003225);
+  }
+  .earth-collection__crumb-back-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .earth-collection__crumbs-list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--col-text, #003225);
+    flex-wrap: wrap;
+  }
+  .earth-collection__crumb-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .earth-collection__crumb-link {
+    color: var(--col-text, #003225);
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+  }
+  .earth-collection__crumb-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+  .earth-collection__crumb-sep {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--col-text, #003225);
+    opacity: 0.85;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .earth-collection__crumb-sep-icon {
+    width: 8px;
+    height: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--col-text, #003225);
+  }
+  .earth-collection__crumb-sep-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: currentColor;
+  }
+  .earth-collection__crumb-current {
+    font-weight: 400;
+    color: var(--col-text, #003225);
+    opacity: 0.85;
+  }
+
+  /* 2. Header Hero Area */
+  .earth-collection__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: clamp(28px, 3.5vw, 44px);
+    flex-wrap: wrap;
+  }
+  .earth-collection__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 720px;
+  }
+  .earth-collection__title {
+    font-size: 64px;
+    font-weight: 800;
+    color: var(--col-text, #003225);
+    margin: 0;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+  }
+  .earth-collection__badges {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .earth-collection__badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--col-accent, #EAE060);
+    color: var(--col-text, #003225);
+    font-size: 15px;
+    font-weight: 400;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.01em;
+  }
+  .earth-collection__badge-icon {
+    width: 15px;
+    height: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .earth-collection__badge-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .earth-collection__description {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--col-text, #003225);
+    opacity: 0.9;
+    margin-top: 6px;
+  }
+
+  /* Right Side: Impact Meter Box */
+  .earth-collection__impact-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 260px;
+    text-align: right;
+  }
+  .earth-collection__impact-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    font-size: 15px;
+    color: var(--col-text, #003225);
+    font-weight: 400;
+  }
+  .earth-collection__impact-label {
+    opacity: 0.85;
+    font-weight: 400;
+  }
+  .earth-collection__impact-val {
+    letter-spacing: 0.02em;
+  }
+  .earth-collection__impact-bar {
+    width: 100%;
+    height: 8px;
+    background-color: rgba(0, 50, 37, 0.12);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .earth-collection__impact-progress {
+    height: 100%;
+    background-color: var(--col-secondary, #71CC3B);
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* 3. Filter & Sort Toolbar */
+  .earth-collection__toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    margin-bottom: clamp(28px, 3.5vw, 44px);
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .earth-collection__filters-group {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .earth-collection__filter-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--col-text, #003225);
+    cursor: pointer;
+  }
+  .earth-collection__filter-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    color: var(--col-text, #003225);
+  }
+  .earth-collection__filter-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    stroke: currentColor;
+  }
+  .earth-collection__filter-dropdowns {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .earth-collection__dropdown-wrap {
+    position: relative;
+  }
+  .earth-collection__dropdown-btn {
+    background: transparent;
+    border: 1px solid var(--col-text, #003225);
+    border-radius: 2px;
+    padding: 7px 14px;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--col-text, #003225);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .earth-collection__dropdown-btn:hover,
+  .earth-collection__dropdown-wrap.is-open .earth-collection__dropdown-btn {
+    border-color: var(--col-text, #003225);
+    background-color: rgba(0, 50, 37, 0.05);
+  }
+  .earth-collection__dropdown-arrow {
+    width: 10px;
+    height: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease;
+  }
+  .earth-collection__dropdown-wrap.is-open .earth-collection__dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  /* Dropdown Menu Popup */
+  .earth-collection__dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 50;
+    background-color: #F8F9DC;
+    border: 1px solid rgba(0, 50, 37, 0.18);
+    box-shadow: 0 10px 28px rgba(0, 50, 37, 0.14);
+    border-radius: 2px;
+    padding: 14px 18px;
+    min-width: 200px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .earth-collection__dropdown-wrap.is-open .earth-collection__dropdown-menu {
+    display: flex;
+  }
+  .earth-collection__filter-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--col-text, #003225);
+    cursor: pointer;
+    user-select: none;
+  }
+  .earth-collection__filter-check input {
+    display: none;
+  }
+  .earth-collection__check-box {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--col-text, #003225);
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .earth-collection__filter-check input:checked + .earth-collection__check-box {
+    background-color: var(--col-text, #003225);
+  }
+  .earth-collection__filter-check input:checked + .earth-collection__check-box::after {
+    content: '';
+    width: 4px;
+    height: 8px;
+    border: solid #F8F9DC;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    margin-bottom: 2px;
+  }
+  .earth-collection__color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* Sort By Group */
+  .earth-collection__sort-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .earth-collection__sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .earth-collection__sort-label {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--col-text, #003225);
+    opacity: 0.85;
+  }
+  .earth-collection__custom-select {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  .earth-collection__select-native {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: 1px solid var(--col-text, #003225);
+    border-radius: 2px;
+    padding: 7px 32px 7px 12px;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--col-text, #003225);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .earth-collection__select-native:focus {
+    outline: none;
+    border-color: var(--col-text, #003225);
+  }
+  .earth-collection__select-arrow {
+    position: absolute;
+    right: 10px;
+    pointer-events: none;
+    width: 10px;
+    height: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-collection__product-count {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--col-text, #003225);
+    opacity: 0.85;
+    white-space: nowrap;
+  }
+
+  /* 4. Product Cards Grid */
+  .earth-collection__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: clamp(20px, 2.8vw, 36px);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .earth-collection__grid--cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .earth-collection__grid--cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .earth-collection__grid--cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .earth-collection__grid-item {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Product Card Integration */
+  .earth-collection__grid-item .earth-prod-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  .earth-prod-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+  }
+  .earth-prod-card__media {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 2px;
+    background-color: #E6E8CA;
+  }
+  .earth-prod-card__media--aspect-portrait {
+    aspect-ratio: 3 / 4;
+  }
+  .earth-prod-card__media--aspect-square {
+    aspect-ratio: 1 / 1;
+  }
+  .earth-prod-card__media--aspect-tall {
+    aspect-ratio: 2 / 3;
+  }
+  .earth-prod-card__image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+  }
+  .earth-prod-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .earth-prod-card__media:hover .earth-prod-card__img {
+    transform: scale(1.04);
+  }
+  .earth-prod-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 50, 37, 0.02) 0%, rgba(0, 50, 37, 0.28) 100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .earth-prod-card__media:hover .earth-prod-card__overlay {
+    opacity: 1;
+  }
+
+  /* Impact Badge & Metrics */
+  .earth-prod-card__impact-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 3;
+    background-color: var(--col-text, #003225);
+    color: var(--col-bg, #F8F9DC);
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.02em;
+  }
+  .earth-prod-card__badge-icon {
+    width: 12px;
+    height: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-prod-card__badge-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .earth-prod-card__metrics {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .earth-prod-card__metric-pill {
+    background-color: var(--col-accent, #EAE060);
+    color: var(--col-text, #003225);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .earth-prod-card__metric-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-prod-card__metric-icon svg {
+    width: 12px;
+    height: 12px;
+    display: block;
+  }
+
+  /* Quick View Button */
+  .earth-prod-card__quick-view {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    z-index: 4;
+    background-color: var(--col-secondary, #71CC3B);
+    color: var(--col-text, #003225);
+    padding: 11px 22px;
+    border-radius: 2px;
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    box-shadow: 0 4px 14px rgba(0, 50, 37, 0.2);
+    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+    text-decoration: none;
+  }
+  .earth-prod-card__media:hover .earth-prod-card__quick-view {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .earth-prod-card__quick-view:hover {
+    background-color: #63b930;
+  }
+  .earth-prod-card__quick-view-icon {
+    width: 16px;
+    height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-prod-card__quick-view-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Content & Details */
+  .earth-prod-card__content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding-top: 14px;
+  }
+  .earth-prod-card__title {
+    font-size: clamp(17px, 1.4vw, 20px);
+    font-weight: 800;
+    line-height: 1.25;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.015em;
+  }
+  .earth-prod-card__title a {
+    color: var(--col-text, #003225);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .earth-prod-card__title a:hover {
+    color: #224E09;
+  }
+  .earth-prod-card__material {
+    font-size: 14px;
+    color: var(--col-text, #003225);
+    opacity: 0.85;
+    margin: 0 0 10px 0;
+    line-height: 1.35;
+  }
+  .earth-prod-card__tags {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .earth-prod-card__tag-pill {
+    background-color: var(--col-accent, #EAE060);
+    color: var(--col-text, #003225);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    line-height: 1.2;
+  }
+  .earth-prod-card__meta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: #224E09;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .earth-prod-card__origin {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+  }
+  .earth-prod-card__meta-icon {
+    width: 14px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-prod-card__meta-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .earth-prod-card__discount {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+  }
+  .earth-prod-card__discount-icon {
+    width: 15px;
+    height: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-prod-card__discount-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Integrated Action Unit (Price + Add to Cart) */
+  .earth-prod-card__action-group {
+    display: flex;
+    align-items: stretch;
+    margin-top: auto;
+    width: 100%;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .earth-prod-card__price-box {
+    background-color: var(--col-text, #003225);
+    color: var(--col-bg, #F8F9DC);
+    padding: 10px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .earth-prod-card__compare-price {
+    text-decoration: line-through;
+    opacity: 0.6;
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+  .earth-prod-card__form {
+    flex-grow: 1;
+    display: flex;
+    margin: 0;
+  }
+  .earth-prod-card__add-btn {
+    background-color: var(--col-accent, #EAE060);
+    color: var(--col-text, #003225);
+    border: none;
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 10px 16px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    text-decoration: none;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+  }
+  .earth-prod-card__add-btn:hover:not(:disabled) {
+    background-color: #dfd452;
+  }
+  .earth-prod-card__add-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .earth-prod-card__add-icon {
+    width: 14px;
+    height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-prod-card__add-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* 5. Pagination Component */
+  .earth-collection__pagination {
+    margin-top: clamp(48px, 6vw, 72px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .earth-collection__pagination-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .earth-collection__page-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--col-secondary, #71CC3B);
+    color: var(--col-text, #003225);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 3px 10px rgba(0, 50, 37, 0.1);
+    transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+  }
+  .earth-collection__page-btn:hover {
+    background-color: #5fb82d;
+    transform: translateY(-2px);
+  }
+  .earth-collection__page-btn--active {
+    background-color: var(--col-text, #003225) !important;
+    color: var(--col-bg, #F8F9DC) !important;
+    cursor: default;
+    transform: none !important;
+  }
+  .earth-collection__page-btn--dots {
+    background: transparent;
+    box-shadow: none;
+    cursor: default;
+  }
+  .earth-collection__page-icon {
+    width: 14px;
+    height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+  }
+  .earth-collection__page-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 1024px) {
+    .earth-collection--full .earth-collection__container,
+    .earth-collection--contained .earth-collection__container,
+    .earth-collection__container {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    .earth-collection__grid--cols-3,
+    .earth-collection__grid--cols-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .earth-collection__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .earth-collection__impact-box {
+      width: 100%;
+      text-align: left;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .earth-collection {
+      padding-top: var(--col-pt-mobile, 28px);
+      padding-bottom: var(--col-pb-mobile, 60px);
+    }
+    .earth-collection--full .earth-collection__container,
+    .earth-collection--contained .earth-collection__container,
+    .earth-collection__container {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+    .earth-collection__title {
+      font-size: clamp(28px, 8vw, 38px);
+    }
+    .earth-collection__toolbar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .earth-collection__filters-group {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .earth-collection__filter-dropdowns {
+      width: 100%;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .earth-collection__filter-dropdowns::-webkit-scrollbar {
+      display: none;
+    }
+    .earth-collection__sort-group {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .earth-collection__grid--mobile-1 {
+      grid-template-columns: 1fr !important;
+    }
+    .earth-collection__grid--mobile-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 16px;
+    }
+    .earth-collection__page-btn {
+      width: 38px;
+      height: 38px;
+      font-size: 14px;
+    }
   }
 {% endstylesheet %}
 
+<script>
+  (function() {
+    function initCollectionFilters() {
+      var section = document.getElementById('earthCollection-{{ section.id }}');
+      if (!section) return;
+
+      var dropdownWraps = section.querySelectorAll('.earth-collection__dropdown-wrap');
+      
+      dropdownWraps.forEach(function(wrap) {
+        var btn = wrap.querySelector('.earth-collection__dropdown-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var isOpen = wrap.classList.contains('is-open');
+          
+          // Close all other dropdowns
+          dropdownWraps.forEach(function(w) { 
+            w.classList.remove('is-open'); 
+            var b = w.querySelector('.earth-collection__dropdown-btn');
+            if (b) b.setAttribute('aria-expanded', 'false');
+          });
+
+          if (!isOpen) {
+            wrap.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      // Close when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!section.contains(e.target)) {
+          dropdownWraps.forEach(function(w) { 
+            w.classList.remove('is-open'); 
+            var b = w.querySelector('.earth-collection__dropdown-btn');
+            if (b) b.setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCollectionFilters);
+    } else {
+      initCollectionFilters();
+    }
+
+    // Support Shopify Theme Editor Re-render
+    document.addEventListener('shopify:section:load', function(e) {
+      if (e.detail.sectionId === '{{ section.id }}') {
+        initCollectionFilters();
+      }
+    });
+  })();
+</script>
+
 {% schema %}
 {
-  "name": "t:general.collection",
-  "settings": []
+  "name": "Collection Grid & Filters",
+  "tag": "section",
+  "class": "section-collection-main",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full Width Section",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F8F9DC"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#003225"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / Tag Color",
+      "default": "#EAE060"
+    },
+    {
+      "type": "color",
+      "id": "secondary_color",
+      "label": "Secondary / Active Color",
+      "default": "#71CC3B"
+    },
+    {
+      "type": "header",
+      "content": "Breadcrumbs"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show Breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "breadcrumb_parent",
+      "label": "Parent Category Title",
+      "default": "Women"
+    },
+    {
+      "type": "url",
+      "id": "breadcrumb_parent_url",
+      "label": "Parent Category URL"
+    },
+    {
+      "type": "header",
+      "content": "Collection Header"
+    },
+    {
+      "type": "text",
+      "id": "fallback_title",
+      "label": "Fallback Title (if blank)",
+      "default": "Organic Essentials"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show Collection Description",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Collection Impact Progress Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_impact",
+      "label": "Show Collection Impact Meter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "impact_label",
+      "label": "Impact Label",
+      "default": "Collection Impact"
+    },
+    {
+      "type": "text",
+      "id": "impact_value",
+      "label": "Impact Metric Value",
+      "default": "2700L Water Saved"
+    },
+    {
+      "type": "range",
+      "id": "impact_progress",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Progress Bar Fill Percentage",
+      "default": 78
+    },
+    {
+      "type": "header",
+      "content": "Filtering & Sorting"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable Facet Filtering",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable Sorting Dropdown",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Grid & Product Cards Layout"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 6,
+      "max": 36,
+      "step": 3,
+      "label": "Products per page",
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Desktop Columns",
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Mobile Columns",
+      "options": [
+        { "value": "1", "label": "1 Column" },
+        { "value": "2", "label": "2 Columns" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "card_aspect_ratio",
+      "label": "Product Image Aspect Ratio",
+      "options": [
+        { "value": "portrait", "label": "Portrait (3:4 - Default)" },
+        { "value": "tall", "label": "Tall (2:3)" },
+        { "value": "square", "label": "Square (1:1)" }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_impact_badge",
+      "label": "Show Top Left Impact Badge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_metrics_pills",
+      "label": "Show Bottom Left Water / CO2 Metrics",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_view",
+      "label": "Show Hover Quick View Button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_material",
+      "label": "Show Material Subtitle",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show Feature Tag Pills",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_origin",
+      "label": "Show Origin / Made in Location",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount",
+      "label": "Show Sale / Discount Promotion Pill",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Padding Top",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Padding Bottom",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Padding Top",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Padding Bottom",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "header_badge",
+      "name": "Header Pill Badge",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Badge Label",
+          "default": "GOTS Certified"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Badge Icon",
+          "options": [
+            { "value": "icon-GOTS-1.svg", "label": "GOTS Organic" },
+            { "value": "icon-tree-2.svg", "label": "Tree / Nature" },
+            { "value": "icon-sustainability.svg", "label": "Sustainability Sprout" },
+            { "value": "icon-B-CORP.svg", "label": "B-Corp" },
+            { "value": "icon-Fair-Trade.svg", "label": "Fair Trade" }
+          ],
+          "default": "icon-GOTS-1.svg"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Grid & Filters",
+      "blocks": [
+        {
+          "type": "header_badge",
+          "settings": {
+            "text": "GOTS Certified",
+            "icon": "icon-GOTS-1.svg"
+          }
+        },
+        {
+          "type": "header_badge",
+          "settings": {
+            "text": "50+ Trees Planted",
+            "icon": "icon-tree-2.svg"
+          }
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}
