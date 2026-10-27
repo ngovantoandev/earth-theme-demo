@@ -1,0 +1,384 @@
+{
+  "type": "footer",
+  "name": "t:general.footer",
+  "sections": {
+    "newsletter": {
+      "type": "newsletter",
+      "blocks": {
+        "newsletter_columns": {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 2,
+            "tablet_column_count": 1,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/2|50",
+            "desktop_column_2_width": "lg:w-1/2|50",
+            "tablet_column_1_width": "md:w-full|100",
+            "mobile_column_1_width": "w-full|100",
+            "swipe_columns_mobile": false,
+            "vertical_alignment": "center",
+            "desktop_gap_x": "lg:gap-x-12",
+            "desktop_gap_y": "lg:gap-y-6",
+            "tablet_gap_x": "md:gap-x-0",
+            "tablet_gap_y": "md:gap-y-6",
+            "mobile_gap_x": "gap-x-0",
+            "mobile_gap_y": "gap-y-6"
+          },
+          "blocks": {
+            "newsletter_heading": {
+              "type": "heading",
+              "settings": {
+                "heading": "Join 50,000+ Eco-Conscious Fashion Lovers",
+                "heading_size": "vt-heading-h2",
+                "heading_tag": "h2",
+                "heading_width": "fill",
+                "enable_max_width": false
+              }
+            },
+            "newsletter_stack": {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "flex-start",
+                "wrap_content": "wrap",
+                "width": "fill",
+                "height": "fit",
+                "position_type": "default",
+                "gap_desktop": 10,
+                "gap_mobile": 8
+              },
+              "blocks": {
+                "newsletter_form": {
+                  "type": "email-signup",
+                  "settings": {
+                    "placeholder": "Enter your email address",
+                    "max_width": 500,
+                    "border_radius": 4
+                  }
+                },
+                "newsletter_subtext": {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>✨ Be first to wear change – exclusive drops + 10% off</p>",
+                    "paragraph_size": "vt-paragraph-extra-small"
+                  }
+                }
+              },
+              "block_order": [
+                "newsletter_form",
+                "newsletter_subtext"
+              ]
+            }
+          },
+          "block_order": [
+            "newsletter_heading",
+            "newsletter_stack"
+          ]
+        }
+      },
+      "block_order": [
+        "newsletter_columns"
+      ],
+      "settings": {
+        "apply_max_width": true,
+        "background_color": "",
+        "text_color": "",
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "padding_top_mobile": 32,
+        "padding_bottom_mobile": 32,
+        "padding_horizontal": 34,
+        "padding_horizontal_mobile": 20
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "logo_block": {
+          "type": "logo",
+          "settings": {
+            "logo_width_desktop": 1100,
+            "logo_width_mobile": 300,
+            "alignment": "left"
+          }
+        },
+        "tagline_block": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Redefining fashion through sustainable practices, transparent supply chains, and timeless design.</p>",
+            "paragraph_size": "vt-paragraph-medium",
+            "enable_max_width": false,
+            "paragraph_width": "fill"
+          }
+        },
+        "menus_column_layout": {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 4,
+            "tablet_column_count": 2,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/4|25",
+            "desktop_column_2_width": "lg:w-1/4|25",
+            "desktop_column_3_width": "lg:w-1/4|25",
+            "desktop_column_4_width": "lg:w-1/4|25",
+            "tablet_column_1_width": "md:w-1/2|50",
+            "tablet_column_2_width": "md:w-1/2|50",
+            "mobile_column_1_width": "w-full|100",
+            "swipe_columns_mobile": false,
+            "desktop_gap_x": "lg:gap-x-8",
+            "desktop_gap_y": "lg:gap-y-8",
+            "tablet_gap_x": "md:gap-x-6",
+            "tablet_gap_y": "md:gap-y-6",
+            "mobile_gap_x": "gap-x-0",
+            "mobile_gap_y": "gap-y-0"
+          },
+          "blocks": {
+            "menu_company": {
+              "type": "menu",
+              "settings": {
+                "menu": "footer-company",
+                "title": "COMPANY",
+                "link_gap": 12
+              }
+            },
+            "menu_shop": {
+              "type": "menu",
+              "settings": {
+                "menu": "footer-shop",
+                "title": "SHOP",
+                "link_gap": 12
+              }
+            },
+            "menu_sustainability": {
+              "type": "menu",
+              "settings": {
+                "menu": "footer-sustainability",
+                "title": "SUSTAINABILITY",
+                "link_gap": 12
+              }
+            },
+            "menu_support": {
+              "type": "menu",
+              "settings": {
+                "menu": "footer-support",
+                "title": "SUPPORT",
+                "link_gap": 12,
+                "show_contact_info": true,
+                "contact_email": "hello@earthecoshop.com",
+                "contact_phone": "(555) 123-4567",
+                "contact_address": "1234 Palm Boulevard, Miami"
+              }
+            }
+          },
+          "block_order": [
+            "menu_company",
+            "menu_shop",
+            "menu_sustainability",
+            "menu_support"
+          ]
+        },
+        "middle_column_layout": {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 2,
+            "tablet_column_count": 2,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/2|50",
+            "desktop_column_2_width": "lg:w-1/2|50",
+            "tablet_column_1_width": "md:w-1/2|50",
+            "tablet_column_2_width": "md:w-1/2|50",
+            "mobile_column_1_width": "w-full|100",
+            "swipe_columns_mobile": false,
+            "desktop_gap_x": "lg:gap-x-12",
+            "desktop_gap_y": "lg:gap-y-8",
+            "mobile_gap_y": "gap-y-8"
+          },
+          "blocks": {
+            "follow_us_stack": {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "gap_desktop": 14,
+                "gap_mobile": 12
+              },
+              "blocks": {
+                "follow_us_heading": {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "FOLLOW US",
+                    "heading_size": "vt-heading-h6",
+                    "heading_tag": "h3"
+                  }
+                },
+                "social_icons_block": {
+                  "type": "social-icons",
+                  "settings": {
+                    "button_size": 44,
+                    "alignment": "left"
+                  }
+                },
+                "follow_us_caption": {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Share your sustainable style with #Earth</p>",
+                    "paragraph_size": "vt-paragraph-small"
+                  }
+                },
+                "localization_block": {
+                  "type": "localization",
+                  "settings": {
+                    "enable_country_selector": true,
+                    "enable_language_selector": true
+                  }
+                }
+              },
+              "block_order": [
+                "follow_us_heading",
+                "social_icons_block",
+                "follow_us_caption",
+                "localization_block"
+              ]
+            },
+            "trust_stack": {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "gap_desktop": 12,
+                "gap_mobile": 10
+              },
+              "blocks": {
+                "trust_heading": {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "TRUST & SECURITY",
+                    "heading_size": "vt-heading-h6",
+                    "heading_tag": "h3"
+                  }
+                },
+                "certified_by_label": {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p><strong>CERTIFIED BY</strong></p>",
+                    "paragraph_size": "vt-paragraph-extra-small"
+                  }
+                },
+                "certifications_block": {
+                  "type": "trust-badges",
+                  "settings": {
+                    "badge_height": 36,
+                    "gap": 20
+                  }
+                },
+                "secure_payment_label": {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p><strong>SECURE PAYMENT</strong></p>",
+                    "paragraph_size": "vt-paragraph-extra-small"
+                  }
+                },
+                "payment_icons_block": {
+                  "type": "payment-icons",
+                  "settings": {
+                    "icon_height": 24,
+                    "gap": 8
+                  }
+                }
+              },
+              "block_order": [
+                "trust_heading",
+                "certified_by_label",
+                "certifications_block",
+                "secure_payment_label",
+                "payment_icons_block"
+              ]
+            }
+          },
+          "block_order": [
+            "follow_us_stack",
+            "trust_stack"
+          ]
+        },
+        "divider_block": {
+          "type": "divider",
+          "settings": {
+            "height": 1,
+            "style": "solid",
+            "margin_top_desktop": 16,
+            "margin_bottom_desktop": 24,
+            "margin_top_mobile": 16,
+            "margin_bottom_mobile": 20
+          }
+        },
+        "bottom_column_layout": {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 2,
+            "tablet_column_count": 2,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/2|50",
+            "desktop_column_2_width": "lg:w-1/2|50",
+            "tablet_column_1_width": "md:w-1/2|50",
+            "tablet_column_2_width": "md:w-1/2|50",
+            "mobile_column_1_width": "w-full|100",
+            "swipe_columns_mobile": false,
+            "mobile_gap_y": "gap-y-2"
+          },
+          "blocks": {
+            "copyright_paragraph": {
+              "type": "paragraph",
+              "settings": {
+                "text": "<p>© 2026 Earth. All rights reserved | Powered by Shopify</p>",
+                "paragraph_size": "vt-paragraph-extra-small",
+                "paragraph_alignment": "text-left"
+              }
+            },
+            "policy_links_block": {
+              "type": "policy-links",
+              "settings": {
+                "privacy_label": "Privacy Policy",
+                "terms_label": "Terms of Service",
+                "alignment": "right"
+              }
+            }
+          },
+          "block_order": [
+            "copyright_paragraph",
+            "policy_links_block"
+          ]
+        }
+      },
+      "block_order": [
+        "logo_block",
+        "tagline_block",
+        "menus_column_layout",
+        "middle_column_layout",
+        "divider_block",
+        "bottom_column_layout"
+      ],
+      "settings": {
+        "apply_max_width": true,
+        "background_color": "#F8F9DC",
+        "text_color": "#003225",
+        "padding_top": 60,
+        "padding_bottom": 48,
+        "padding_top_mobile": 32,
+        "padding_bottom_mobile": 32,
+        "padding_horizontal": 34,
+        "padding_horizontal_mobile": 20,
+        "blocks_gap": 48,
+        "blocks_gap_mobile": 32
+      }
+    }
+  },
+  "order": [
+    "newsletter",
+    "footer"
+  ]
+}

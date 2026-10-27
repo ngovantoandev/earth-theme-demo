@@ -1,0 +1,1248 @@
+{% doc %}
+  Renders an individual Accordion Item container block.
+  - Header uses static child blocks: `icons`, `heading`, `paragraph`.
+  - Content uses dynamic child blocks (`content_for 'blocks'`).
+  - Smooth expansion with grid-template-rows (0fr -> 1fr).
+  - Background: cactus-green when open, primary when closed.
+  - Arrow rotates ↘ (closed) to ↗ (open).
+  - 1px divider between header and content shown only when open.
+
+  @example
+  {% content_for 'block', type: 'accordion-item', id: 'accordion-item' %}
+{% enddoc %}
+
+{%- liquid
+  assign is_open = false
+  if block.settings.open_by_default or request.visual_preview_mode
+    assign is_open = true
+  endif
+
+  assign pad_desktop = block.settings.padding_desktop | default: 36
+  assign pad_mobile = block.settings.padding_mobile | default: 20
+
+  assign gap_desktop = block.settings.gap_desktop | default: 32
+  assign gap_mobile = block.settings.gap_mobile | default: 20
+
+  assign title_color = block.settings.title_color
+  assign title_color_style = ''
+  if title_color != blank and title_color != 'rgba(0,0,0,0)' and title_color != '#00000000'
+    assign title_color_style = '--vt-acc-title-color: ' | append: title_color | append: ';'
+  endif
+
+  assign subtitle_color = block.settings.subtitle_color
+  assign subtitle_color_style = ''
+  if subtitle_color != blank and subtitle_color != 'rgba(0,0,0,0)' and subtitle_color != '#00000000'
+    assign subtitle_color_style = '--vt-acc-subtitle-color: ' | append: subtitle_color | append: ';'
+  endif
+
+  assign arrow_color = block.settings.arrow_color
+  assign arrow_color_style = ''
+  if arrow_color != blank and arrow_color != 'rgba(0,0,0,0)' and arrow_color != '#00000000'
+    assign arrow_color_style = '--vt-acc-arrow-color: ' | append: arrow_color | append: ';'
+  endif
+
+  assign bg_color = block.settings.background_color
+  assign bg_color_style = ''
+  if bg_color != blank and bg_color != 'rgba(0,0,0,0)' and bg_color != '#00000000'
+    assign bg_color_style = '--vt-acc-bg: ' | append: bg_color | append: ';'
+  endif
+
+  assign bg_open_color = block.settings.background_color_open
+  assign bg_open_color_style = ''
+  if bg_open_color != blank and bg_open_color != 'rgba(0,0,0,0)' and bg_open_color != '#00000000'
+    assign bg_open_color_style = '--vt-acc-bg-open: ' | append: bg_open_color | append: ';'
+  endif
+
+  assign border_color = block.settings.border_color
+  assign border_color_style = ''
+  if border_color != blank and border_color != 'rgba(0,0,0,0)' and border_color != '#00000000'
+    assign border_color_style = '--vt-accordion-border-color: ' | append: border_color | append: ';'
+  endif
+
+  assign divider_color = block.settings.divider_color
+  assign divider_color_style = ''
+  if divider_color != blank and divider_color != 'rgba(0,0,0,0)' and divider_color != '#00000000'
+    assign divider_color_style = '--vt-accordion-divider-color: ' | append: divider_color | append: ';'
+  endif
+
+  assign animation_type = block.settings.animation_type
+  assign vt_anim_classes = ''
+  unless animation_type == 'none' or request.visual_preview_mode
+    assign vt_anim_classes = 'vt-animate vt-animate--' | append: animation_type
+    if animation_type == 'slide' or animation_type == 'float'
+      assign vt_anim_classes = vt_anim_classes | append: ' vt-animate--dir-' | append: block.settings.animation_direction
+    endif
+  endunless
+
+  assign vt_easing_value = 'cubic-bezier(0.61, 1, 0.88, 1)'
+  case block.settings.animation_easing
+    when 'linear'
+      assign vt_easing_value = 'linear'
+    when 'ease-out-sine'
+      assign vt_easing_value = 'cubic-bezier(0.61, 1, 0.88, 1)'
+    when 'ease-in-sine'
+      assign vt_easing_value = 'cubic-bezier(0.12, 0, 0.39, 0)'
+    when 'ease-in-out-sine'
+      assign vt_easing_value = 'cubic-bezier(0.37, 0, 0.63, 1)'
+    when 'ease-in-cubic'
+      assign vt_easing_value = 'cubic-bezier(0.32, 0, 0.67, 0)'
+    when 'ease-out-cubic'
+      assign vt_easing_value = 'cubic-bezier(0.33, 1, 0.68, 1)'
+    when 'ease-in-out-cubic'
+      assign vt_easing_value = 'cubic-bezier(0.65, 0, 0.35, 1)'
+  endcase
+-%}
+
+<vt-accordion-item
+  class="vt-accordion-item-wrapper block w-full{% if vt_anim_classes != blank %} {{ vt_anim_classes }}{% endif %}"
+  style="
+    --vt-accordion-pad: {{ pad_desktop }}px;
+    --vt-accordion-pad-mobile: {{ pad_mobile }}px;
+    --vt-accordion-gap: {{ gap_desktop }}px;
+    --vt-accordion-gap-mobile: {{ gap_mobile }}px;
+    --vt-accordion-border-width: {{ block.settings.border_width | default: 1 }}px;
+    --vt-accordion-border-opacity: {{ block.settings.border_opacity | default: 100 }}%;
+    --vt-accordion-border-radius: {{ block.settings.border_radius | default: 0 }}px;
+    --vt-accordion-divider-width: {{ block.settings.divider_width | default: 1 }}px;
+    --vt-accordion-divider-opacity: {{ block.settings.divider_opacity | default: 100 }}%;
+    {{ title_color_style }}
+    {{ subtitle_color_style }}
+    {{ arrow_color_style }}
+    {{ bg_color_style }}
+    {{ bg_open_color_style }}
+    {{ border_color_style }}
+    {{ divider_color_style }}
+    {%- if vt_anim_classes != blank %}
+    --vt-duration: {{ block.settings.animation_duration }}s;
+    --vt-delay: {{ block.settings.animation_delay }}s;
+    {%- endif %}
+    {%- if animation_type == 'slide' or animation_type == 'float' or animation_type == 'blur' %}
+    --vt-easing: {{ vt_easing_value }};
+    {%- endif %}
+    {%- if animation_type == 'blur' %}
+    --vt-blur: {{ block.settings.animation_blur_intensity }}px;
+    {%- endif %}
+  "
+  {{ block.shopify_attributes }}
+>
+  <details
+    class="vt-accordion-item{% if block.settings.show_border %} vt-accordion-item--has-border{% endif %}{% if block.settings.show_divider %} vt-accordion-item--has-divider{% endif %}"
+    {% if is_open %}open{% endif %}
+  >
+    <summary class="vt-accordion-item__summary">
+      <div class="vt-accordion-item__summary-left">
+        {% content_for 'block', type: 'icons', id: 'icon' %}
+        <div class="vt-accordion-item__header-text">
+          {% content_for 'block', type: 'heading', id: 'heading' %}
+          {% content_for 'block', type: 'paragraph', id: 'paragraph' %}
+        </div>
+      </div>
+      <span class="vt-accordion-item__arrow" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <path d="M0.238921 0V1.81557H11.8999L0 13.7155L1.28332 15L13.1844 3.10006V14.7611H15V0H0.238921Z" fill="currentColor"/>
+        </svg>
+      </span>
+    </summary>
+
+    <div class="vt-accordion-item__grid">
+      <div class="vt-accordion-item__inner">
+        <div class="vt-accordion-item__content">
+          {% content_for 'blocks' %}
+        </div>
+      </div>
+    </div>
+  </details>
+</vt-accordion-item>
+
+<script>
+  if (!customElements.get('vt-accordion-item')) {
+    class VtAccordionItem extends HTMLElement {
+      connectedCallback() {
+        const details = this.querySelector('details');
+        if (!details) return;
+        const summary = details.querySelector('summary');
+        const grid = details.querySelector('.vt-accordion-item__grid');
+        if (!summary || !grid) return;
+
+        let isAnimating = false;
+
+        summary.addEventListener('click', (e) => {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+          if (isAnimating) {
+            e.preventDefault();
+            return;
+          }
+
+          if (details.open) {
+            e.preventDefault();
+            isAnimating = true;
+            grid.style.gridTemplateRows = '0fr';
+
+            const onEnd = (event) => {
+              if (event.target !== grid) return;
+              grid.removeEventListener('transitionend', onEnd);
+              details.removeAttribute('open');
+              grid.style.gridTemplateRows = '';
+              isAnimating = false;
+            };
+            grid.addEventListener('transitionend', onEnd);
+            setTimeout(() => {
+              if (isAnimating) {
+                details.removeAttribute('open');
+                grid.style.gridTemplateRows = '';
+                isAnimating = false;
+              }
+            }, 380);
+          } else {
+            isAnimating = true;
+            grid.style.gridTemplateRows = '0fr';
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                grid.style.gridTemplateRows = '1fr';
+                const onEnd = (event) => {
+                  if (event.target !== grid) return;
+                  grid.removeEventListener('transitionend', onEnd);
+                  grid.style.gridTemplateRows = '';
+                  isAnimating = false;
+                };
+                grid.addEventListener('transitionend', onEnd);
+                setTimeout(() => {
+                  if (isAnimating) {
+                    grid.style.gridTemplateRows = '';
+                    isAnimating = false;
+                  }
+                }, 380);
+              });
+            });
+          }
+        });
+      }
+    }
+    customElements.define('vt-accordion-item', VtAccordionItem);
+  }
+</script>
+
+{% stylesheet %}
+  .vt-accordion-item-wrapper {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .vt-accordion-item {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--vt-acc-bg, var(--vt-color-primary, #224E09));
+    color: var(--color-white, #F8F9DC);
+    transition: background-color 0.35s ease, border-color 0.35s ease;
+    overflow: hidden;
+    border-radius: var(--vt-accordion-border-radius, 0px);
+  }
+
+  .vt-accordion-item--has-border {
+    border-style: solid;
+    border-width: var(--vt-accordion-border-width, 1px);
+    border-color: color-mix(
+      in srgb,
+      var(--vt-accordion-border-color, var(--vt-color-accent, #EAE060)) var(--vt-accordion-border-opacity, 100%),
+      transparent
+    );
+  }
+
+  .vt-accordion-item[open] {
+    background-color: var(--vt-acc-bg-open, var(--vt-color-cactus-green, #34601B));
+  }
+
+  /* Summary header layout */
+  .vt-accordion-item__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: var(--vt-accordion-pad, 36px);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    outline: none;
+  }
+
+  .vt-accordion-item__summary::-webkit-details-marker,
+  .vt-accordion-item__summary::marker {
+    display: none;
+  }
+
+  .vt-accordion-item__summary:focus-visible {
+    outline: 2px solid var(--vt-color-accent, #EAE060);
+    outline-offset: -2px;
+  }
+
+  .vt-accordion-item__summary-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .vt-accordion-item__summary-left > .shopify-block {
+    display: contents;
+  }
+
+  .vt-accordion-item__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .vt-accordion-item__header-text > .shopify-block {
+    display: contents;
+  }
+
+  .vt-accordion-item__summary .vt-heading,
+  .vt-accordion-item__summary .vt-heading h1,
+  .vt-accordion-item__summary .vt-heading h2,
+  .vt-accordion-item__summary .vt-heading h3,
+  .vt-accordion-item__summary .vt-heading h4,
+  .vt-accordion-item__summary .vt-heading h5,
+  .vt-accordion-item__summary .vt-heading h6 {
+    margin: 0;
+    color: var(--vt-acc-title-color, #F8F9DC);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .vt-accordion-item__summary .vt-paragraph,
+  .vt-accordion-item__summary .vt-paragraph p {
+    margin: 0;
+    color: var(--vt-acc-subtitle-color, #F8F9DC);
+    line-height: 1.45;
+  }
+
+  /* Diagonal arrow rotation: ↘ down-right closed, ↗ up-right open */
+  .vt-accordion-item__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    flex-shrink: 0;
+    color: var(--vt-acc-arrow-color, var(--vt-color-accent, #EAE060));
+    transition: transform 0.35s ease;
+    transform: rotate(90deg);
+  }
+
+  .vt-accordion-item__arrow svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
+  .vt-accordion-item[open] .vt-accordion-item__arrow {
+    transform: rotate(0deg);
+  }
+
+  /* Smooth grid-template-rows expansion */
+  .vt-accordion-item__grid {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .vt-accordion-item[open] > .vt-accordion-item__grid {
+    grid-template-rows: 1fr;
+  }
+
+  .vt-accordion-item__inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* Content area with divider */
+  .vt-accordion-item__content {
+    border-top: none;
+    padding: var(--vt-accordion-pad, 36px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--vt-accordion-gap, 32px);
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .vt-accordion-item--has-divider .vt-accordion-item__content {
+    border-top-style: solid;
+    border-top-width: var(--vt-accordion-divider-width, 1px);
+    border-top-color: color-mix(
+      in srgb,
+      var(--vt-accordion-divider-color, var(--vt-accordion-border-color, var(--vt-color-accent, #EAE060))) var(--vt-accordion-divider-opacity, 100%),
+      transparent
+    );
+  }
+
+  @media (max-width: 768px) {
+    .vt-accordion-item__summary {
+      padding: var(--vt-accordion-pad-mobile, 20px);
+      gap: 12px;
+    }
+    .vt-accordion-item__summary-left {
+      gap: 12px;
+    }
+    .vt-accordion-item__content {
+      padding: var(--vt-accordion-pad-mobile, 20px);
+      gap: var(--vt-accordion-gap-mobile, 20px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vt-accordion-item,
+    .vt-accordion-item__grid,
+    .vt-accordion-item__arrow {
+      transition: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Accordion item",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header Colors"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#00000000",
+      "info": "Mặc định sử dụng màu kem (#F8F9DC) của theme. Chọn màu nếu muốn tùy biến riêng."
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#00000000",
+      "info": "Mặc định sử dụng màu kem (#F8F9DC) của theme. Chọn màu nếu muốn tùy biến riêng."
+    },
+    {
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow color",
+      "default": "#00000000",
+      "info": "Mặc định sử dụng màu Accent của theme."
+    },
+    {
+      "type": "header",
+      "content": "Item Background"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background (closed)",
+      "default": "#00000000",
+      "info": "Mặc định sử dụng màu Primary của theme."
+    },
+    {
+      "type": "color",
+      "id": "background_color_open",
+      "label": "Background (open)",
+      "default": "#00000000",
+      "info": "Mặc định sử dụng màu Cactus green của theme."
+    },
+    {
+      "type": "header",
+      "content": "State"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_by_default",
+      "label": "Open by default",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Border"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show border",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#00000000",
+      "info": "Mặc định sử dụng màu Accent của theme.",
+      "visible_if": "{{ block.settings.show_border == true }}"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border width",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.show_border == true }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Border opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.show_border == true }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.show_border == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Content Divider"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show content divider",
+      "default": true,
+      "info": "Hiển thị đường phân cách giữa header và nội dung khi mở."
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#00000000",
+      "info": "Mặc định sử dụng màu viền hoặc màu Accent của theme.",
+      "visible_if": "{{ block.settings.show_divider == true }}"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "Divider width",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.show_divider == true }}"
+    },
+    {
+      "type": "range",
+      "id": "divider_opacity",
+      "label": "Divider opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.show_divider == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Padding (desktop)",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Padding (mobile)",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "label": "Content gap (desktop)",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Content gap (mobile)",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "t:blocks.heading.settings.header_animation.content"
+    },
+    {
+      "type": "select",
+      "id": "animation_type",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:blocks.heading.settings.animation_type.options__1.label"
+        },
+        {
+          "value": "fade",
+          "label": "t:blocks.heading.settings.animation_type.options__2.label"
+        },
+        {
+          "value": "slide",
+          "label": "t:blocks.heading.settings.animation_type.options__3.label"
+        },
+        {
+          "value": "float",
+          "label": "t:blocks.heading.settings.animation_type.options__4.label"
+        },
+        {
+          "value": "blur",
+          "label": "t:blocks.heading.settings.animation_type.options__5.label"
+        }
+      ],
+      "default": "none",
+      "label": "t:blocks.heading.settings.animation_type.label"
+    },
+    {
+      "type": "select",
+      "id": "animation_direction",
+      "options": [
+        {
+          "value": "from-left",
+          "label": "t:blocks.heading.settings.animation_direction.options__1.label"
+        },
+        {
+          "value": "from-right",
+          "label": "t:blocks.heading.settings.animation_direction.options__2.label"
+        },
+        {
+          "value": "from-top",
+          "label": "t:blocks.heading.settings.animation_direction.options__3.label"
+        },
+        {
+          "value": "from-bottom",
+          "label": "t:blocks.heading.settings.animation_direction.options__4.label"
+        }
+      ],
+      "default": "from-bottom",
+      "label": "t:blocks.heading.settings.animation_direction.label",
+      "visible_if": "{{ block.settings.animation_type == 'slide' or block.settings.animation_type == 'float' }}"
+    },
+    {
+      "type": "range",
+      "id": "animation_duration",
+      "min": 0.1,
+      "max": 3,
+      "step": 0.1,
+      "unit": "s",
+      "default": 1.2,
+      "label": "t:blocks.heading.settings.animation_duration.label",
+      "visible_if": "{{ block.settings.animation_type != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "animation_delay",
+      "min": 0,
+      "max": 2,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0.2,
+      "label": "t:blocks.heading.settings.animation_delay.label",
+      "visible_if": "{{ block.settings.animation_type != 'none' }}"
+    },
+    {
+      "type": "select",
+      "id": "animation_easing",
+      "options": [
+        {
+          "value": "linear",
+          "label": "t:blocks.heading.settings.animation_easing.options__1.label"
+        },
+        {
+          "value": "ease-out-sine",
+          "label": "t:blocks.heading.settings.animation_easing.options__2.label"
+        },
+        {
+          "value": "ease-in-sine",
+          "label": "t:blocks.heading.settings.animation_easing.options__3.label"
+        },
+        {
+          "value": "ease-in-out-sine",
+          "label": "t:blocks.heading.settings.animation_easing.options__4.label"
+        },
+        {
+          "value": "ease-in-cubic",
+          "label": "t:blocks.heading.settings.animation_easing.options__5.label"
+        },
+        {
+          "value": "ease-out-cubic",
+          "label": "t:blocks.heading.settings.animation_easing.options__6.label"
+        },
+        {
+          "value": "ease-in-out-cubic",
+          "label": "t:blocks.heading.settings.animation_easing.options__7.label"
+        }
+      ],
+      "default": "ease-out-sine",
+      "label": "t:blocks.heading.settings.animation_easing.label",
+      "visible_if": "{{ block.settings.animation_type == 'slide' or block.settings.animation_type == 'float' or block.settings.animation_type == 'blur' }}"
+    },
+    {
+      "type": "range",
+      "id": "animation_blur_intensity",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "t:blocks.heading.settings.animation_blur_intensity.label",
+      "visible_if": "{{ block.settings.animation_type == 'blur' }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "icons"
+    },
+    {
+      "type": "heading"
+    },
+    {
+      "type": "paragraph"
+    },
+    {
+      "type": "sub-heading"
+    },
+    {
+      "type": "column-layout"
+    },
+    {
+      "type": "card"
+    },
+    {
+      "type": "stack"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "button"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Accordion item",
+      "settings": {
+        "open_by_default": true,
+        "show_border": true,
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "show_divider": true,
+        "divider_width": 1,
+        "divider_opacity": 100,
+        "padding_desktop": 36,
+        "padding_mobile": 20,
+        "gap_desktop": 32,
+        "gap_mobile": 20
+      },
+      "blocks": [
+        {
+          "type": "icons",
+          "id": "icon",
+          "static": true,
+          "settings": {
+            "icon": "heart",
+            "icon_color": "#003225",
+            "icon_size_desktop": 24,
+            "icon_size_mobile": 20,
+            "show_box": true,
+            "box_size_desktop": 48,
+            "box_size_mobile": 40,
+            "box_bg_color": "#EAE060",
+            "box_radius": "50%"
+          }
+        },
+        {
+          "type": "heading",
+          "id": "heading",
+          "static": true,
+          "settings": {
+            "heading": "Accordion item title",
+            "heading_size": "vt-heading-h4",
+            "heading_tag": "h3",
+            "heading_alignment": "text-left"
+          }
+        },
+        {
+          "type": "paragraph",
+          "id": "paragraph",
+          "static": true,
+          "settings": {
+            "text": "<p>Accordion item description or subtitle</p>",
+            "paragraph_size": "vt-paragraph-small",
+            "paragraph_alignment": "text-left"
+          }
+        },
+        {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 2,
+            "tablet_column_count": 2,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/2|50",
+            "desktop_column_2_width": "lg:w-1/2|50",
+            "tablet_column_1_width": "md:w-1/2|50",
+            "tablet_column_2_width": "md:w-1/2|50",
+            "mobile_column_1_width": "w-full|100",
+            "swipe_columns_mobile": false,
+            "vertical_alignment": "stretch"
+          },
+          "blocks": [
+            {
+              "type": "card",
+              "settings": {
+                "background_color": "#EAE060",
+                "heading_color": "#003225",
+                "text_color": "#003225",
+                "border": "none",
+                "border_radius": 0,
+                "padding_vertical": 24,
+                "padding_horizontal": 24,
+                "gap": 16,
+                "width": "fill",
+                "position": "top",
+                "alignment": "left"
+              },
+              "blocks": [
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Column 1",
+                    "heading_tag": "h4",
+                    "heading_size": "vt-heading-h5",
+                    "heading_alignment": "left"
+                  }
+                },
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "gap_desktop": 12,
+                    "gap_mobile": 12,
+                    "alignment": "flex-start",
+                    "position": "flex-start",
+                    "width": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "x-circle",
+                            "icon_color": "#D32F2F",
+                            "icon_size_desktop": 18,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Example feature description 1</p>",
+                            "paragraph_size": "vt-paragraph-small"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "x-circle",
+                            "icon_color": "#D32F2F",
+                            "icon_size_desktop": 18,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Example feature description 2</p>",
+                            "paragraph_size": "vt-paragraph-small"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "x-circle",
+                            "icon_color": "#D32F2F",
+                            "icon_size_desktop": 18,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Example feature description 3</p>",
+                            "paragraph_size": "vt-paragraph-small"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "x-circle",
+                            "icon_color": "#D32F2F",
+                            "icon_size_desktop": 18,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Example feature description 4</p>",
+                            "paragraph_size": "vt-paragraph-small"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "card",
+              "settings": {
+                "background_color": "#00241A",
+                "heading_color": "#F8F9DC",
+                "text_color": "#F8F9DC",
+                "border": "none",
+                "border_radius": 0,
+                "padding_vertical": 24,
+                "padding_horizontal": 24,
+                "gap": 16,
+                "width": "fill",
+                "position": "top",
+                "alignment": "left"
+              },
+              "blocks": [
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Column 2",
+                    "heading_tag": "h4",
+                    "heading_size": "vt-heading-h5",
+                    "heading_alignment": "left"
+                  }
+                },
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "gap_desktop": 12,
+                    "gap_mobile": 12,
+                    "alignment": "flex-start",
+                    "position": "flex-start",
+                    "width": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "check-circle",
+                            "icon_color": "#71CC3B",
+                            "icon_size_desktop": 18,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Example benefit description 1</p>",
+                            "paragraph_size": "vt-paragraph-small"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "check-circle",
+                            "icon_color": "#71CC3B",
+                            "icon_size_desktop": 18,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Example benefit description 2</p>",
+                            "paragraph_size": "vt-paragraph-small"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "check-circle",
+                            "icon_color": "#71CC3B",
+                            "icon_size_desktop": 18,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Example benefit description 3</p>",
+                            "paragraph_size": "vt-paragraph-small"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "check-circle",
+                            "icon_color": "#71CC3B",
+                            "icon_size_desktop": 18,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Example benefit description 4</p>",
+                            "paragraph_size": "vt-paragraph-small"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "card",
+          "settings": {
+            "background_color": "#224E09",
+            "heading_color": "#F8F9DC",
+            "text_color": "#F8F9DC",
+            "border": "solid",
+            "border_width": 1,
+            "border_color": "#71CC3B",
+            "border_radius": 0,
+            "padding_vertical": 20,
+            "padding_horizontal": 24,
+            "gap": 8,
+            "width": "fill",
+            "position": "top",
+            "alignment": "left"
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--horizontal",
+                "alignment": "flex-start",
+                "position": "center",
+                "gap_desktop": 10,
+                "gap_mobile": 8,
+                "width": "fill"
+              },
+              "blocks": [
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "info",
+                    "icon_size_desktop": 20,
+                    "icon_size_mobile": 18,
+                    "icon_color": "#F8F9DC",
+                    "show_box": false,
+                    "animation_type": "none"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Notice / Announcement",
+                    "heading_tag": "h5",
+                    "heading_size": "vt-heading-h5",
+                    "heading_alignment": "text-left",
+                    "animation_type": "none"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "settings": {
+                "text": "<p>Use this callout box to share important tips, notes, or additional context with your customers.</p>",
+                "paragraph_size": "vt-paragraph-small",
+                "paragraph_alignment": "text-left",
+                "animation_type": "none"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

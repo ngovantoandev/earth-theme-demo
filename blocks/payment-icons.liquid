@@ -1,0 +1,191 @@
+{% doc %}
+  Renders secure payment badges (Amex, Diners, Discover, Mastercard, Visa, Shop Pay, Google Pay, Apple Pay).
+  Supports custom icon sizing, alignment, and spacing.
+  @example
+  {% content_for 'block', type: 'payment-icons', id: 'payment-icons' %}
+{% enddoc %}
+
+{%- liquid
+  assign alignment = block.settings.alignment | default: 'left'
+-%}
+
+<div
+  id="payment-icons-{{ block.id }}"
+  class="vt-payment-icons vt-payment-icons--align-{{ alignment }}"
+  style="
+    --vt-pi-height: {{ block.settings.icon_height }}px;
+    --vt-pi-gap: {{ block.settings.gap }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="vt-payment-icons__grid">
+    <!-- Amex -->
+    <span class="vt-payment-icons__badge" title="American Express">
+      <svg width="38" height="24" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="3" fill="#007BC1"/>
+        <path d="M7.4 16.5L9.6 11.2H12L14.2 16.5H12.4L11.9 15.2H9.7L9.2 16.5H7.4ZM10.2 13.8H11.4L10.8 12.2L10.2 13.8ZM14.4 16.5V11.2H16.4L18.1 14.5L19.8 11.2H21.8V16.5H20.2V13.1L18.7 16H17.5L16 13.1V16.5H14.4ZM22.6 16.5V11.2H27.5V12.7H24.3V13.1H27V14.5H24.3V15H27.6V16.5H22.6ZM28.5 16.5L30.8 13.8L28.7 11.2H30.9L32 12.6L33.1 11.2H35.3L33.2 13.8L35.5 16.5H33.3L32 15L30.7 16.5H28.5Z" fill="white"/>
+      </svg>
+    </span>
+
+    <!-- Diners Club -->
+    <span class="vt-payment-icons__badge" title="Diners Club">
+      <svg width="38" height="24" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="3" fill="#E8EEF5"/>
+        <circle cx="16" cy="12" r="7" fill="#0066B2"/>
+        <circle cx="22" cy="12" r="7" fill="#0079C1"/>
+        <path d="M19 8C16.8 8 15 9.8 15 12C15 14.2 16.8 16 19 16C21.2 16 23 14.2 23 12C23 9.8 21.2 8 19 8Z" fill="white"/>
+      </svg>
+    </span>
+
+    <!-- Discover -->
+    <span class="vt-payment-icons__badge" title="Discover">
+      <svg width="38" height="24" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="3" fill="#FFF2E8" stroke="#F48220" stroke-width="0.8"/>
+        <path d="M9 14.5V9.5H11.5C12.9 9.5 14 10.6 14 12C14 13.4 12.9 14.5 11.5 14.5H9ZM10.5 13.2H11.4C12.1 13.2 12.6 12.7 12.6 12C12.6 11.3 12.1 10.8 11.4 10.8H10.5V13.2ZM15 14.5V9.5H16.4V14.5H15Z" fill="#1C1815"/>
+        <circle cx="20" cy="12" r="3.2" fill="#F48220"/>
+        <path d="M24 14.5V9.5H25.4L27.6 13L29.8 9.5H31.2V14.5H29.8V11.5L28.1 14.2H27.1L25.4 11.5V14.5H24Z" fill="#1C1815"/>
+      </svg>
+    </span>
+
+    <!-- Mastercard -->
+    <span class="vt-payment-icons__badge" title="Mastercard">
+      <svg width="38" height="24" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="3" fill="#222"/>
+        <circle cx="15" cy="12" r="6" fill="#EB001B"/>
+        <circle cx="23" cy="12" r="6" fill="#F79E1B"/>
+        <path d="M19 7.8C20.3 8.9 21.1 10.4 21.1 12C21.1 13.6 20.3 15.1 19 16.2C17.7 15.1 16.9 13.6 16.9 12C16.9 10.4 17.7 8.9 19 7.8Z" fill="#FF5F00"/>
+      </svg>
+    </span>
+
+    <!-- Visa -->
+    <span class="vt-payment-icons__badge" title="Visa">
+      <svg width="38" height="24" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="3" fill="#FFFFFF" stroke="#00579F" stroke-width="0.8"/>
+        <path d="M14.5 15.5L16.2 8.5H18.3L16.6 15.5H14.5ZM23.4 8.7C23 8.5 22.4 8.3 21.6 8.3C19.7 8.3 18.4 9.3 18.4 10.7C18.4 11.8 19.4 12.4 20.1 12.8C20.9 13.2 21.2 13.4 21.2 13.8C21.2 14.4 20.5 14.6 19.8 14.6C19.1 14.6 18.6 14.5 18 14.2L17.7 15.6C18.4 15.9 19.3 16.1 20.2 16.1C22.2 16.1 23.5 15.1 23.5 13.6C23.5 12.3 22.4 11.7 21.6 11.3C20.9 10.9 20.6 10.7 20.6 10.3C20.6 9.8 21.2 9.6 21.9 9.6C22.6 9.6 23.1 9.7 23.5 9.9L23.4 8.7ZM27.8 13.4C27.9 12.9 28.6 10.9 28.6 10.9C28.6 10.9 28.8 10.3 28.9 9.8L29.1 10.7C29.3 11.6 29.8 13.4 29.8 13.4H27.8ZM30.7 8.5H29.1C28.6 8.5 28.2 8.7 28 9.2L25.3 15.5H27.5L27.9 14.4H30.5L30.7 15.5H32.7L30.7 8.5ZM13.8 8.5L11.8 13.5L11.5 12C11.3 11 10.3 9.9 9.3 9.4L11.1 15.5H13.3L16 8.5H13.8Z" fill="#00579F"/>
+      </svg>
+    </span>
+
+    <!-- Shop Pay -->
+    <span class="vt-payment-icons__badge" title="Shop Pay">
+      <svg width="38" height="24" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="3" fill="#5A31F4"/>
+        <path d="M12.5 12.5C12.5 10.5 14.1 9 16.1 9C18.1 9 19.7 10.5 19.7 12.5C19.7 14.5 18.1 16 16.1 16C14.1 16 12.5 14.5 12.5 12.5Z" fill="white"/>
+        <path d="M22 9.5H23.5V15.5H22V9.5Z" fill="white"/>
+        <path d="M25 11.5H26.5V15.5H25V11.5Z" fill="white"/>
+      </svg>
+    </span>
+
+    <!-- Google Pay -->
+    <span class="vt-payment-icons__badge" title="Google Pay">
+      <svg width="38" height="24" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="3" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="0.8"/>
+        <path d="M15.5 12.2V11.8H12V13.2H14.1C14 13.8 13.4 14.5 12 14.5C10.7 14.5 9.6 13.4 9.6 12C9.6 10.6 10.7 9.5 12 9.5C12.8 9.5 13.3 9.8 13.6 10.1L14.7 9C14 8.3 13.1 8 12 8C9.8 8 8 9.8 8 12C8 14.2 9.8 16 12 16C14.3 16 15.8 14.4 15.8 12.2C15.8 12.1 15.6 12.2 15.5 12.2Z" fill="#4285F4"/>
+        <path d="M18.5 9.5H17.2V15.5H18.5V9.5Z" fill="#5F6368"/>
+        <path d="M22.5 11.2H20.5V10.2H23V9.5H19.5V15.5H20.7V12.2H22.5V11.2Z" fill="#5F6368"/>
+        <path d="M27 9.5L25 14.5L24.8 14L23.2 9.5H21.8L24.2 15.8L23 18.5H24.5L30 9.5H27Z" fill="#5F6368"/>
+      </svg>
+    </span>
+
+    <!-- Apple Pay -->
+    <span class="vt-payment-icons__badge" title="Apple Pay">
+      <svg width="38" height="24" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="3" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="0.8"/>
+        <path d="M13.8 11.7C13.8 10.3 14.8 9.6 14.9 9.5C14.1 8.5 13 8.3 12.6 8.3C11.6 8.2 10.7 8.8 10.2 8.8C9.6 8.8 8.9 8.3 8.1 8.3C7.1 8.3 6.1 8.9 5.6 9.8C4.5 11.7 5.3 14.5 6.4 16C7 16.7 7.6 17.5 8.4 17.5C9.2 17.5 9.5 17 10.4 17C11.4 17 11.6 17.5 12.5 17.5C13.3 17.5 13.9 16.7 14.4 16C15 15.2 15.3 14.3 15.3 14.3C15.2 14.2 13.8 13.6 13.8 11.7ZM12.2 7.5C12.7 6.9 13 6 12.9 5.1C12.1 5.1 11.2 5.6 10.7 6.2C10.3 6.7 9.9 7.6 10 8.5C10.9 8.6 11.7 8.1 12.2 7.5ZM17.5 9.5H19.5C21 9.5 22.1 10.5 22.1 12C22.1 13.5 21 14.5 19.5 14.5H18.7V17.5H17.5V9.5ZM18.7 13.4H19.5C20.3 13.4 20.8 12.8 20.8 12C20.8 11.2 20.3 10.6 19.5 10.6H18.7V13.4ZM23 17.5V11.5H24.1V12.3C24.4 11.7 25.1 11.3 25.8 11.3C26.9 11.3 27.6 12.1 27.6 13.3V17.5H26.5V13.5C26.5 12.8 26.1 12.4 25.4 12.4C24.7 12.4 24.1 12.9 24.1 13.7V17.5H23ZM28.5 19.5L29.6 17.1L28 11.5H29.2L30.2 15.5L31.3 11.5H32.5L30 19.5H28.5Z" fill="#1C1815"/>
+      </svg>
+    </span>
+  </div>
+</div>
+
+{% stylesheet %}
+  .vt-payment-icons {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .vt-payment-icons--align-left {
+    justify-content: flex-start;
+  }
+
+  .vt-payment-icons--align-center {
+    justify-content: center;
+  }
+
+  .vt-payment-icons--align-right {
+    justify-content: flex-end;
+  }
+
+  .vt-payment-icons__grid {
+    display: flex;
+    align-items: center;
+    gap: var(--vt-pi-gap);
+    flex-wrap: wrap;
+  }
+
+  .vt-payment-icons__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--vt-pi-height);
+  }
+
+  .vt-payment-icons__badge svg {
+    display: block;
+    height: var(--vt-pi-height);
+    width: auto;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Payment icons",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Payment icons will appear once you [set up payment methods](/admin/settings/payments)."
+    },
+    {
+      "type": "range",
+      "id": "icon_height",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon height",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing between icons",
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Payment icons",
+      "settings": {
+        "icon_height": 24,
+        "gap": 8,
+        "alignment": "left"
+      }
+    }
+  ]
+}
+{% endschema %}

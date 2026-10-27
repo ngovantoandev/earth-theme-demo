@@ -1,0 +1,919 @@
+{%- comment -%}
+  Section: Transparency Spotlight
+  Renders sustainability commitments, material sourcing, supply chain transparency,
+  hurdles & honesty commitments, and impact verification stats.
+  Built using composable theme blocks:
+  - Column layout (responsive multi-column and swipeable carousel)
+  - Card (custom colors, gradients, background image with overlay, decorative watermark)
+  - Stack (flexible vertical and horizontal grouping)
+  - Heading group, Heading, Sub-heading, Paragraph, Badge, Button, Icons
+{%- endcomment -%}
+
+{%- liquid
+  assign make_section_page_width = section.settings.make_section_page_width
+
+  assign section_bg = section.settings.background_color
+  assign bg_style = ''
+  if section_bg != blank and section_bg != 'rgba(0,0,0,0)' and section_bg != '#00000000'
+    assign bg_style = '--vt-bg: ' | append: section_bg | append: ';'
+  endif
+
+  assign heading_color = section.settings.heading_color
+  assign heading_style = ''
+  if heading_color != blank and heading_color != 'rgba(0,0,0,0)' and heading_color != '#00000000'
+    assign heading_style = '--vt-heading-color: ' | append: heading_color | append: ';'
+  endif
+
+  assign paragraph_color = section.settings.paragraph_color
+  assign paragraph_style = ''
+  if paragraph_color != blank and paragraph_color != 'rgba(0,0,0,0)' and paragraph_color != '#00000000'
+    assign paragraph_style = '--vt-paragraph-color: ' | append: paragraph_color | append: ';'
+  endif
+
+  if section.settings.enable_custom_mobile_padding
+    assign pad_top_mobile = section.settings.padding_top_mobile
+    assign pad_bottom_mobile = section.settings.padding_bottom_mobile
+    assign pad_left_mobile = section.settings.padding_horizontal_mobile
+  else
+    assign pad_top_mobile = section.settings.padding_top | times: 0.75 | round
+    assign pad_bottom_mobile = section.settings.padding_bottom | times: 0.75 | round
+    assign pad_left_mobile = section.settings.padding_horizontal | times: 0.75 | round
+  endif
+-%}
+
+<div
+  class="vt-transparency-spotlight{% unless make_section_page_width %} vt-page-full-width{% endunless %}"
+  id="vtTransparencySpotlight-{{ section.id }}"
+  style="
+    {{ bg_style }}
+    {{ heading_style }}
+    {{ paragraph_style }}
+    --vt-pt: {% render 'fluid-clamp', min_px: pad_top_mobile, max_px: section.settings.padding_top %};
+    --vt-pb: {% render 'fluid-clamp', min_px: pad_bottom_mobile, max_px: section.settings.padding_bottom %};
+    --vt-ph: {% render 'fluid-clamp', min_px: pad_left_mobile, max_px: section.settings.padding_horizontal %};
+    --vt-ph-desktop: {{ section.settings.padding_horizontal | default: 34 }}px;
+    --vt-ph-mobile: {{ pad_left_mobile }}px;
+    --vt-page-padding: {{ section.settings.padding_horizontal | default: 34 }}px;
+    --vt-page-padding-mobile: {{ pad_left_mobile }}px;
+    --vt-block-gap: {% render 'fluid-clamp', min_px: section.settings.gap_mobile, max_px: section.settings.gap %};
+  "
+  {{ section.shopify_attributes }}
+>
+  <div class="vt-transparency-spotlight__container{% if make_section_page_width %} vt-page-width{% endif %}">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .vt-transparency-spotlight {
+    display: block;
+    width: 100%;
+    background-color: var(--vt-bg, var(--vt-background-color, var(--color-white, #F8F9DC)));
+    color: var(--vt-heading-color, var(--vt-foreground-color, var(--color-black, #003225)));
+    padding-top: var(--vt-pt, 80px);
+    padding-bottom: var(--vt-pb, 96px);
+    box-sizing: border-box;
+    overflow-x: clip;
+    position: relative;
+  }
+
+  .vt-transparency-spotlight__container {
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--vt-block-gap, 48px);
+    padding-left: var(--vt-ph, 34px);
+    padding-right: var(--vt-ph, 34px);
+  }
+
+  .vt-transparency-spotlight__container:not(.vt-page-width) {
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+    .vt-transparency-spotlight__container {
+      padding-left: var(--vt-ph-mobile, 20px);
+      padding-right: var(--vt-ph-mobile, 20px);
+    }
+  }
+
+  /* Support Theme Editor wrappers without altering block layouts or configs */
+  .vt-transparency-spotlight__container > .shopify-block,
+  .vt-transparency-spotlight__container > shopify-block {
+    display: contents;
+  }
+
+  .vt-transparency-spotlight .vt-heading {
+    color: var(--vt-heading-color, var(--vt-foreground-color, var(--color-black, #003225)));
+  }
+
+  .vt-transparency-spotlight .vt-card .vt-heading {
+    color: var(--vt-heading-color);
+  }
+
+  .vt-transparency-spotlight .vt-paragraph {
+    color: var(--vt-paragraph-color, var(--vt-color-primary, var(--color-primary, #224E09)));
+  }
+
+  .vt-transparency-spotlight .vt-card .vt-paragraph {
+    color: var(--vt-text-color);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Transparency Spotlight",
+  "tag": "section",
+  "class": "transparency-spotlight-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "make_section_page_width",
+      "label": "Apply max width",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Row gap (desktop)",
+      "min": 16,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Row gap (mobile)",
+      "min": 12,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#00000000"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#00000000"
+    },
+    {
+      "type": "color",
+      "id": "paragraph_color",
+      "label": "Paragraph",
+      "default": "#00000000"
+    },
+    {
+      "type": "header",
+      "content": "Padding desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "header",
+      "content": "Padding mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_mobile_padding",
+      "label": "Enable custom mobile padding",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48,
+      "visible_if": "{{ section.settings.enable_custom_mobile_padding == true }}"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48,
+      "visible_if": "{{ section.settings.enable_custom_mobile_padding == true }}"
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "label": "Horizontal",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 20,
+      "visible_if": "{{ section.settings.enable_custom_mobile_padding == true }}"
+    }
+  ],
+  "blocks": [
+    { "type": "column-layout" },
+    { "type": "card" },
+    { "type": "stack" },
+    { "type": "heading-group" }
+  ],
+  "presets": [
+    {
+      "name": "Transparency Spotlight",
+      "settings": {
+        "make_section_page_width": true,
+        "background_color": "#00000000",
+        "heading_color": "#00000000",
+        "paragraph_color": "#00000000",
+        "gap": 48,
+        "gap_mobile": 32,
+        "padding_top": 80,
+        "padding_bottom": 96,
+        "padding_horizontal": 34,
+        "enable_custom_mobile_padding": true,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48,
+        "padding_horizontal_mobile": 20
+      },
+      "blocks": [
+        {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 2,
+            "tablet_column_count": 1,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-7/12|58.3333",
+            "desktop_column_2_width": "lg:w-5/12|41.6667",
+            "desktop_gap_x": "lg:gap-x-8",
+            "tablet_gap_y": "md:gap-y-6",
+            "mobile_gap_y": "gap-y-6",
+            "padding_block": 0,
+            "padding_inline": 0,
+            "swipe_columns_mobile": false
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "flex-start",
+                "gap_desktop": 12,
+                "gap_mobile": 10,
+                "width": "fit"
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--horizontal",
+                    "alignment": "flex-start",
+                    "position": "center",
+                    "gap_desktop": 8,
+                    "gap_mobile": 6,
+                    "width": "fit"
+                  },
+                  "blocks": [
+                    {
+                      "type": "icons",
+                      "settings": {
+                        "icon": "sparkle",
+                        "icon_size_desktop": 16,
+                        "icon_size_mobile": 14,
+                        "icon_color": "#EAE060",
+                        "show_box": false
+                      }
+                    },
+                    {
+                      "type": "sub-heading",
+                      "settings": {
+                        "sub_heading": "Our Commitment",
+                        "subheading_tag": "h6",
+                        "subheading_alignment": "text-left"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "heading-group",
+                  "settings": {
+                    "direction": "horizontal",
+                    "alignment": "left",
+                    "vertical_alignment": "center",
+                    "gap_desktop": 14,
+                    "gap_mobile": 10,
+                    "width": "fit"
+                  },
+                  "blocks": [
+                    {
+                      "type": "icons",
+                      "settings": {
+                        "icon": "leaf",
+                        "icon_size_desktop": 38,
+                        "icon_size_mobile": 28,
+                        "icon_color": "#71CC3B",
+                        "show_box": false
+                      }
+                    },
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Transparency Spotlight",
+                        "heading_tag": "h2",
+                        "heading_size": "vt-heading-h2",
+                        "heading_alignment": "inherit"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "flex-start",
+                "gap_desktop": 0,
+                "gap_mobile": 0,
+                "width": "fit"
+              },
+              "blocks": [
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>We believe you deserve to know where your clothes come from—materials, people, and areas we're improving.</p>",
+                    "paragraph_size": "vt-paragraph-medium",
+                    "paragraph_alignment": "left",
+                    "paragraph_width": "fit",
+                    "enable_max_width": true,
+                    "paragraph_max_width": 460
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 2,
+            "tablet_column_count": 1,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/2|50",
+            "desktop_column_2_width": "lg:w-1/2|50",
+            "desktop_gap_x": "lg:gap-x-8",
+            "tablet_gap_y": "md:gap-y-6",
+            "mobile_gap_y": "gap-y-6",
+            "padding_block": 0,
+            "padding_inline": 0,
+            "vertical_alignment": "stretch",
+            "swipe_columns_mobile": false
+          },
+          "blocks": [
+            {
+              "type": "card",
+              "settings": {
+                "background_color": "#EAE060",
+                "heading_color": "#003225",
+                "text_color": "#003225",
+                "position": "space-between",
+                "alignment": "left",
+                "padding_vertical": 48,
+                "padding_horizontal": 40,
+                "enable_padding_mobile": true,
+                "padding_vertical_mobile": 36,
+                "padding_horizontal_mobile": 24,
+                "width": "fill",
+                "height": "fill",
+                "gap": 18,
+                "enable_decorative_icon": true,
+                "decorative_icon": "leaf",
+                "decorative_icon_position": "right",
+                "decorative_icon_alignment": "bottom",
+                "decorative_icon_color": "#DCD047",
+                "decorative_icon_size_desktop": 260,
+                "decorative_icon_size_mobile": 200,
+                "decorative_icon_opacity": 35
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "flex-start",
+                    "gap_desktop": 18,
+                    "gap_mobile": 14,
+                    "width": "fill"
+                  },
+                  "blocks": [
+                    {
+                  "type": "heading-group",
+                  "settings": {
+                    "direction": "horizontal",
+                    "alignment": "left",
+                    "vertical_alignment": "center",
+                    "gap_desktop": 12,
+                    "gap_mobile": 10,
+                    "width": "fit"
+                  },
+                  "blocks": [
+                    {
+                      "type": "icons",
+                      "settings": {
+                        "icon": "leaf",
+                        "icon_color": "#003225",
+                        "icon_size_desktop": 28,
+                        "icon_size_mobile": 24,
+                        "show_box": false
+                      }
+                    },
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Material Sourcing",
+                        "heading_tag": "h3",
+                        "heading_size": "vt-heading-h3",
+                        "heading_alignment": "inherit"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "sub-heading",
+                  "settings": {
+                    "sub_heading": "\"Organic & Recycled\"",
+                    "subheading_tag": "h4",
+                    "subheading_alignment": "text-left"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>We prioritize regenerative fibers that restore soil health and recycled synthetics that divert waste from our oceans. Every thread has a purpose.</p>",
+                    "paragraph_size": "vt-paragraph-small",
+                    "paragraph_alignment": "left",
+                    "enable_max_width": false
+                  }
+                },
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--horizontal",
+                    "alignment": "flex-start",
+                    "position": "center",
+                    "gap_desktop": 10,
+                    "gap_mobile": 8,
+                    "width": "fit"
+                  },
+                  "blocks": [
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "GOTS Certified",
+                        "radius": "3.125rem",
+                        "bg_color": "#003225",
+                        "text_color": "#F8F9DC",
+                        "badge_size": "vt-paragraph-extra-small"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "check-circle",
+                            "icon_color": "#71CC3B",
+                            "icon_size_desktop": 14,
+                            "icon_size_mobile": 12,
+                            "show_box": false
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Fair Trade",
+                        "radius": "3.125rem",
+                        "bg_color": "#003225",
+                        "text_color": "#F8F9DC",
+                        "badge_size": "vt-paragraph-extra-small"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "quality",
+                            "icon_color": "#71CC3B",
+                            "icon_size_desktop": 14,
+                            "icon_size_mobile": 12,
+                            "show_box": false
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                    }
+                  ]
+                },
+                {
+                  "type": "button",
+                  "settings": {
+                    "button_label": "LEARN OUR MATERIALS",
+                    "button_style": "link",
+                    "button_link": "/collections/all"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "card",
+              "settings": {
+                "background_color": "#003225",
+                "heading_color": "#FFFFFF",
+                "text_color": "#F8F9DC",
+                "position": "bottom",
+                "alignment": "left",
+                "padding_vertical": 44,
+                "padding_horizontal": 40,
+                "enable_padding_mobile": true,
+                "padding_vertical_mobile": 36,
+                "padding_horizontal_mobile": 24,
+                "width": "fill",
+                "height": "custom",
+                "min_height": 480,
+                "min_height_mobile": 420,
+                "gap": 16
+              },
+              "blocks": [
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Supply Chain",
+                    "heading_tag": "h3",
+                    "heading_size": "vt-heading-h3",
+                    "heading_alignment": "text-left"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Ethical Manufacturing: Seen from within our atelier.</p>",
+                    "paragraph_size": "vt-paragraph-small",
+                    "paragraph_alignment": "left"
+                  }
+                },
+                {
+                  "type": "button",
+                  "settings": {
+                    "button_label": "VIEW OUR PRODUCTION",
+                    "button_style": "link-light",
+                    "button_link": "/collections/all"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "card",
+          "settings": {
+            "background_color": "#224E09",
+            "heading_color": "#FFFFFF",
+            "text_color": "#F8F9DC",
+            "position": "middle",
+            "alignment": "left",
+            "padding_vertical": 56,
+            "padding_horizontal": 48,
+            "enable_padding_mobile": true,
+            "padding_vertical_mobile": 40,
+            "padding_horizontal_mobile": 24,
+            "width": "fill",
+            "gap": 24
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "space-between",
+                "gap_desktop": 48,
+                "gap_mobile": 24,
+                "width": "fill"
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "flex-start",
+                    "gap_desktop": 16,
+                    "gap_mobile": 12,
+                    "width": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "gap_desktop": 8,
+                        "gap_mobile": 6,
+                        "width": "fit"
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "sparkle",
+                            "icon_size_desktop": 16,
+                            "icon_size_mobile": 14,
+                            "icon_color": "#EAE060",
+                            "show_box": false
+                          }
+                        },
+                        {
+                          "type": "sub-heading",
+                          "settings": {
+                            "sub_heading": "The Unfiltered Truth",
+                            "subheading_tag": "h6",
+                            "subheading_alignment": "text-left"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Real Growth, Real Challenges",
+                        "heading_tag": "h2",
+                        "heading_size": "vt-heading-h2",
+                        "heading_alignment": "inherit",
+                        "heading_width": "fill"
+
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "flex-start",
+                    "gap_desktop": 24,
+                    "gap_mobile": 20,
+                    "width": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>\"True sustainability is hard. We aren't 100% there yet, but we refuse to hide our hurdles. From logistics carbon footprints to dye-house water usage, we are iterating every day.\"</p>",
+                        "paragraph_size": "vt-paragraph-small",
+                        "paragraph_alignment": "left",
+                        "paragraph_width": "fill"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "settings": {
+                        "button_label": "HONESTY COMMITMENT",
+                        "button_style": "secondary",
+                        "button_link": "/collections/all"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 4,
+            "tablet_column_count": 2,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/4|25",
+            "desktop_column_2_width": "lg:w-1/4|25",
+            "desktop_column_3_width": "lg:w-1/4|25",
+            "desktop_column_4_width": "lg:w-1/4|25",
+            "tablet_column_1_width": "md:w-1/2|50",
+            "tablet_column_2_width": "md:w-1/2|50",
+            "mobile_column_1_width": "w-4/5|80",
+            "mobile_gap_x": "gap-x-4",
+            "mobile_gap_y": "gap-y-4",
+            "tablet_gap_x": "md:gap-x-6",
+            "tablet_gap_y": "md:gap-y-6",
+            "desktop_gap_x": "lg:gap-x-8",
+            "desktop_gap_y": "lg:gap-y-8",
+            "padding_block": 0,
+            "padding_inline": 0,
+            "swipe_columns_mobile": true
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "center",
+                "gap_desktop": 8,
+                "gap_mobile": 6,
+                "width": "fit"
+              },
+              "blocks": [
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "94%",
+                    "heading_tag": "h3",
+                    "heading_size": "vt-heading-h1",
+                    "heading_alignment": "center"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Traceable Origin</p>",
+                    "paragraph_size": "vt-paragraph-small",
+                    "paragraph_alignment": "center"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "center",
+                "gap_desktop": 8,
+                "gap_mobile": 6,
+                "width": "fit"
+              },
+              "blocks": [
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "0%",
+                    "heading_tag": "h3",
+                    "heading_size": "vt-heading-h1",
+                    "heading_alignment": "center"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Plastic Packaging</p>",
+                    "paragraph_size": "vt-paragraph-small",
+                    "paragraph_alignment": "center"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "center",
+                "gap_desktop": 8,
+                "gap_mobile": 6,
+                "width": "fit"
+              },
+              "blocks": [
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "100+",
+                    "heading_tag": "h3",
+                    "heading_size": "vt-heading-h1",
+                    "heading_alignment": "center"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Fair Wage Artisans</p>",
+                    "paragraph_size": "vt-paragraph-small",
+                    "paragraph_alignment": "center"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "center",
+                "gap_desktop": 8,
+                "gap_mobile": 6,
+                "width": "fit"
+              },
+              "blocks": [
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "B-Corp",
+                    "heading_tag": "h3",
+                    "heading_size": "vt-heading-h1",
+                    "heading_alignment": "center"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Pending Status</p>",
+                    "paragraph_size": "vt-paragraph-small",
+                    "paragraph_alignment": "center"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,249 @@
+{% comment %}
+  Newsletter section.
+  Full-width or max-width banner with dark green background,
+  heading on left and email form with subtext on right.
+{% endcomment %}
+
+{%- liquid
+  assign apply_max_width = section.settings.apply_max_width
+
+  assign section_bg = section.settings.background_color
+  assign bg_style = ''
+  if section_bg != blank and section_bg != 'rgba(0,0,0,0)' and section_bg != '#00000000' and section_bg != 'transparent'
+    assign bg_style = '--vt-nl-bg: ' | append: section_bg | append: ';'
+  endif
+
+  assign section_text = section.settings.text_color
+  assign text_style = ''
+  if section_text != blank and section_text != 'rgba(0,0,0,0)' and section_text != '#00000000' and section_text != 'transparent'
+    assign text_style = '--vt-nl-color: ' | append: section_text | append: ';' | append: ' --vt-heading-color: ' | append: section_text | append: ';' | append: ' --vt-paragraph-color: ' | append: section_text | append: ';'
+  endif
+
+  assign pad_top = section.settings.padding_top | default: 48
+  assign pad_top_mobile = section.settings.padding_top_mobile | default: 32
+  assign pad_bottom = section.settings.padding_bottom | default: 48
+  assign pad_bottom_mobile = section.settings.padding_bottom_mobile | default: 32
+  assign pad_horizontal = section.settings.padding_horizontal | default: 34
+  assign pad_horizontal_mobile = section.settings.padding_horizontal_mobile | default: 20
+-%}
+
+<div
+  id="newsletter-section-{{ section.id }}"
+  class="vt-newsletter-section{% unless apply_max_width %} vt-page-full-width{% endunless %}"
+  style="
+    {{ bg_style }}
+    {{ text_style }}
+    --vt-nl-pt: {% render 'fluid-clamp', min_px: pad_top_mobile, max_px: pad_top %};
+    --vt-nl-pb: {% render 'fluid-clamp', min_px: pad_bottom_mobile, max_px: pad_bottom %};
+    --vt-nl-ph: {% render 'fluid-clamp', min_px: pad_horizontal_mobile, max_px: pad_horizontal %};
+    --vt-ph: {% render 'fluid-clamp', min_px: pad_horizontal_mobile, max_px: pad_horizontal %};
+    --vt-ph-desktop: {{ pad_horizontal }}px;
+    --vt-ph-mobile: {{ pad_horizontal_mobile }}px;
+    --vt-page-padding: {{ pad_horizontal }}px;
+    --vt-page-padding-mobile: {{ pad_horizontal_mobile }}px;
+  "
+  {{ section.shopify_attributes }}
+>
+  <div class="vt-newsletter__inner{% if apply_max_width %} vt-page-width{% endif %}">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .vt-newsletter-section {
+    background-color: var(--vt-nl-bg, var(--vt-color-primary, var(--color-primary, #224E09)));
+    color: var(--vt-nl-color, var(--vt-background-color, var(--color-white, #F8F9DC)));
+    padding-top: var(--vt-nl-pt);
+    padding-bottom: var(--vt-nl-pb);
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .vt-newsletter__inner {
+    width: 100%;
+    margin-inline: auto;
+    box-sizing: border-box;
+    padding-left: var(--vt-nl-ph, var(--vt-ph, 34px));
+    padding-right: var(--vt-nl-ph, var(--vt-ph, 34px));
+  }
+
+  .vt-newsletter__inner:not(.vt-page-width) {
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+    .vt-newsletter__inner {
+      padding-left: var(--vt-ph-mobile, 20px);
+      padding-right: var(--vt-ph-mobile, 20px);
+    }
+  }
+
+  .vt-newsletter__inner > .shopify-block,
+  .vt-newsletter__inner > shopify-block {
+    display: contents;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "section",
+  "class": "vt-newsletter",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "apply_max_width",
+      "label": "Apply max width",
+      "default": true,
+      "info": "Constrains layout to global 1200px container"
+    },
+    {
+      "type": "header",
+      "content": "Style & Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding (desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding (desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Top padding (mobile)",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding (mobile)",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Horizontal padding (desktop)",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Horizontal padding (mobile)",
+      "default": 20
+    }
+  ],
+  "blocks": [
+    { "type": "@theme" }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter",
+      "settings": {
+        "apply_max_width": true,
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "padding_top_mobile": 32,
+        "padding_bottom_mobile": 32,
+        "padding_horizontal": 34,
+        "padding_horizontal_mobile": 20
+      },
+      "blocks": [
+        {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 2,
+            "tablet_column_count": 1,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/2|50",
+            "desktop_column_2_width": "lg:w-1/2|50",
+            "mobile_column_1_width": "w-full|100",
+            "swipe_columns_mobile": false,
+            "vertical_alignment": "center",
+            "desktop_gap_x": "lg:gap-x-12",
+            "desktop_gap_y": "lg:gap-y-6",
+            "mobile_gap_x": "gap-x-0",
+            "mobile_gap_y": "gap-y-6"
+          },
+          "blocks": [
+            {
+              "type": "heading",
+              "settings": {
+                "heading": "Subscribe to our newsletter",
+                "heading_size": "vt-heading-h2",
+                "heading_tag": "h2"
+              }
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "gap_desktop": 12,
+                "gap_mobile": 10
+              },
+              "blocks": [
+                {
+                  "type": "email-signup"
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Be first to receive updates and exclusive offers</p>",
+                    "paragraph_size": "vt-paragraph-extra-small"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

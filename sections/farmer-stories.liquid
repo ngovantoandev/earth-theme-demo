@@ -1,0 +1,636 @@
+{%- comment -%}
+  Section: Farmer & Artisan Stories
+  Renders harvest stories featuring farmers and artisans cultivate materials.
+  Uses atomic theme blocks:
+  - Header: stack (heading-group with leaf icon & heading + subtitle paragraph)
+  - Cards Carousel: carousel (wrapping cards with circular slider navigation arrows)
+{%- endcomment -%}
+
+{%- liquid
+  assign make_section_page_width = section.settings.make_section_page_width
+
+  assign section_bg = section.settings.background_color
+  assign bg_style = ''
+  if section_bg != blank and section_bg != 'rgba(0,0,0,0)' and section_bg != '#00000000'
+    assign bg_style = '--vt-bg: ' | append: section_bg | append: ';'
+  endif
+
+  assign heading_color = section.settings.heading_color
+  assign heading_style = ''
+  if heading_color != blank and heading_color != 'rgba(0,0,0,0)' and heading_color != '#00000000'
+    assign heading_style = '--vt-heading-color: ' | append: heading_color | append: ';'
+  endif
+
+  assign paragraph_color = section.settings.paragraph_color
+  assign paragraph_style = ''
+  if paragraph_color != blank and paragraph_color != 'rgba(0,0,0,0)' and paragraph_color != '#00000000'
+    assign paragraph_style = '--vt-paragraph-color: ' | append: paragraph_color | append: ';'
+  endif
+
+  assign pad_top_mobile = section.settings.padding_top_mobile | default: 48
+  assign pad_bottom_mobile = section.settings.padding_bottom_mobile | default: 48
+  assign pad_left_mobile = section.settings.padding_horizontal_mobile
+  if pad_left_mobile == blank
+    assign pad_left_mobile = 20
+  endif
+-%}
+
+<div
+  class="vt-farmer-stories{% unless make_section_page_width %} vt-page-full-width{% endunless %}"
+  id="vtFarmerStories-{{ section.id }}"
+  style="
+    {{ bg_style }}
+    {{ heading_style }}
+    {{ paragraph_style }}
+    --vt-pt: {% render 'fluid-clamp', min_px: pad_top_mobile, max_px: section.settings.padding_top %};
+    --vt-pb: {% render 'fluid-clamp', min_px: pad_bottom_mobile, max_px: section.settings.padding_bottom %};
+    --vt-ph: {% render 'fluid-clamp', min_px: pad_left_mobile, max_px: section.settings.padding_horizontal %};
+    --vt-ph-desktop: {{ section.settings.padding_horizontal | default: 34 }}px;
+    --vt-ph-mobile: {{ pad_left_mobile }}px;
+    --vt-page-padding: {{ section.settings.padding_horizontal | default: 34 }}px;
+    --vt-page-padding-mobile: {{ pad_left_mobile }}px;
+    --vt-block-gap: {% render 'fluid-clamp', min_px: section.settings.block_gap_mobile, max_px: section.settings.block_gap %};
+  "
+  {{ section.shopify_attributes }}
+>
+  <div class="vt-farmer-stories__container{% if make_section_page_width %} vt-page-width{% endif %}">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .vt-farmer-stories {
+    display: block;
+    width: 100%;
+    background-color: var(--vt-bg, var(--vt-background-color));
+    color: var(--vt-heading-color, var(--vt-foreground-color));
+    padding-top: var(--vt-pt, 80px);
+    padding-bottom: var(--vt-pb, 96px);
+    box-sizing: border-box;
+    overflow-x: clip;
+    position: relative;
+  }
+
+  .vt-farmer-stories__container {
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--vt-block-gap, 48px);
+    padding-left: var(--vt-ph, 34px);
+    padding-right: var(--vt-ph, 34px);
+  }
+
+  .vt-farmer-stories__container:not(.vt-page-width) {
+    max-width: 100%;
+  }
+
+  /* Support Theme Editor wrappers without altering block layouts or configs */
+  .vt-farmer-stories__container > .shopify-block,
+  .vt-farmer-stories__container > shopify-block {
+    display: contents;
+  }
+
+  .vt-farmer-stories .vt-heading {
+    color: var(--vt-heading-color, var(--vt-foreground-color, #003225));
+  }
+
+  .vt-farmer-stories .vt-paragraph {
+    color: var(--vt-paragraph-color, var(--vt-color-primary, #224E09));
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1024px) {
+    .vt-farmer-stories__container {
+      padding-left: var(--vt-ph, 34px);
+      padding-right: var(--vt-ph, 34px);
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .vt-farmer-stories {
+      padding-top: var(--vt-pt-mobile, 48px);
+      padding-bottom: var(--vt-pb-mobile, 48px);
+    }
+
+    .vt-farmer-stories__container {
+      padding-left: var(--vt-ph-mobile, 0px);
+      padding-right: var(--vt-ph-mobile, 0px);
+      gap: var(--vt-block-gap-mobile, 32px);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Farmer stories",
+  "class": "farmer-stories-section",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "make_section_page_width",
+      "label": "Apply max width",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#00000000"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#00000000"
+    },
+    {
+      "type": "color",
+      "id": "paragraph_color",
+      "label": "Paragraph color",
+      "default": "#00000000"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "block_gap",
+      "label": "Gap",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Mobile Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "label": "Horizontal padding (mobile)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "block_gap_mobile",
+      "label": "Gap (mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    }
+  ],
+  "blocks": [
+    {"type": "stack"},
+    {"type": "card-list"}
+  ],
+  "presets": [
+    {
+      "name": "Farmer stories",
+      "settings": {
+        "make_section_page_width": true,
+        "background_color": "#00000000",
+        "heading_color": "#003225",
+        "paragraph_color": "#224E09",
+        "padding_top": 80,
+        "padding_bottom": 96,
+        "padding_horizontal": 0,
+        "block_gap": 48,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48,
+        "padding_horizontal_mobile": 0,
+        "block_gap_mobile": 32
+      },
+      "blocks": [
+        {
+          "type": "stack",
+          "settings": {
+            "layout_direction_desktop": "vt-stack--vertical",
+            "layout_direction_tablet": "vt-stack--vertical",
+            "layout_direction_mobile": "vt-stack--vertical",
+            "alignment": "flex-start",
+            "position": "flex-start",
+            "gap_desktop": 20,
+            "gap_mobile": 16,
+            "width": "fill"
+          },
+          "blocks": [
+            {
+              "type": "heading-group",
+              "settings": {
+                "direction": "vertical",
+                "alignment": "left",
+                "vertical_alignment": "top",
+                "gap_desktop": 16,
+                "gap_mobile": 12,
+                "hide_icon_mobile": false
+              },
+              "blocks": [
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "leaf",
+                    "icon_color": "#71CC3B",
+                    "icon_size_desktop": 40,
+                    "icon_size_mobile": 32
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "The hands that hold the harvest",
+                    "heading_size": "vt-hero-heading",
+                    "heading_alignment": "text-left",
+                    "heading_tag": "h2"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "settings": {
+                "text": "<p>Meet the farmers and artisans who cultivate our materials with generations of wisdom and care for the earth.</p>",
+                "paragraph_size": "vt-paragraph-large",
+                "paragraph_alignment": "text-left",
+                "enable_max_width": true,
+                "paragraph_max_width": 680
+              }
+            }
+          ]
+        },
+        {
+          "type": "card-list",
+          "settings": {
+            "columns_desktop": 3,
+            "enable_swipe_mobile": true,
+            "gap_desktop": 32,
+            "gap_mobile": 16,
+            "padding_desktop": 34,
+            "padding_mobile": 20,
+            "show_arrows": true,
+            "arrows_visibility": "always",
+            "arrows_theme": "light",
+            "arrows_offset": 0,
+            "show_arrows_mobile": false
+          },
+          "blocks": [
+            {
+              "type": "card",
+              "settings": {
+                "background_color": "#EAE060",
+                "heading_color": "#003225",
+                "text_color": "#003225",
+                "position": "top",
+                "alignment": "left",
+                "padding_vertical": 24,
+                "padding_horizontal": 24,
+                "enable_padding_mobile": true,
+                "padding_vertical_mobile": 20,
+                "padding_horizontal_mobile": 20,
+                "border": "none",
+                "border_radius": 8,
+                "width": "fill",
+                "height": "fill",
+                "gap": 20
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "stretch",
+                    "gap_desktop": 20,
+                    "gap_mobile": 16,
+                    "width": "fill",
+                    "height": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "image",
+                      "settings": {
+                        "image_aspect_ratio": "portrait",
+                        "image_corner": 4
+                      }
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>\"I grow this cotton for my children, so they may inherit a soil that is healthy and full of life.\"</p>",
+                        "paragraph_size": "vt-paragraph-large",
+                        "paragraph_alignment": "text-left"
+                      }
+                    },
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Ananya R.",
+                        "heading_size": "vt-heading-h5",
+                        "heading_tag": "h3",
+                        "heading_alignment": "text-left"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "space-between",
+                        "position": "center",
+                        "gap_desktop": 12,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Organic Farmer, Gujarat</p>",
+                            "paragraph_size": "vt-paragraph-medium",
+                            "paragraph_alignment": "text-left"
+                          }
+                        },
+                        {
+                          "type": "badge",
+                          "settings": {
+                            "text": "Regenerative Practice",
+                            "bg_color": "#003225",
+                            "text_color": "#F8F9DC",
+                            "badge_size": "vt-paragraph-extra-small",
+                            "radius": "3.125rem"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "card",
+              "settings": {
+                "background_color": "#EAE060",
+                "heading_color": "#003225",
+                "text_color": "#003225",
+                "position": "top",
+                "alignment": "left",
+                "padding_vertical": 24,
+                "padding_horizontal": 24,
+                "enable_padding_mobile": true,
+                "padding_vertical_mobile": 20,
+                "padding_horizontal_mobile": 20,
+                "border": "none",
+                "border_radius": 8,
+                "width": "fill",
+                "height": "fill",
+                "gap": 20
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "stretch",
+                    "gap_desktop": 20,
+                    "gap_mobile": 16,
+                    "width": "fill",
+                    "height": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "image",
+                      "settings": {
+                        "image_aspect_ratio": "portrait",
+                        "image_corner": 4
+                      }
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>\"Every thread is a silent conversation between my hands and the fibers of the Earth.\"</p>",
+                        "paragraph_size": "vt-paragraph-large",
+                        "paragraph_alignment": "text-left"
+                      }
+                    },
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Mateo S.",
+                        "heading_size": "vt-heading-h5",
+                        "heading_tag": "h3",
+                        "heading_alignment": "text-left"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "space-between",
+                        "position": "center",
+                        "gap_desktop": 12,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Master Weaver, Peru</p>",
+                            "paragraph_size": "vt-paragraph-medium",
+                            "paragraph_alignment": "text-left"
+                          }
+                        },
+                        {
+                          "type": "badge",
+                          "settings": {
+                            "text": "Fair Trade Certified",
+                            "bg_color": "#003225",
+                            "text_color": "#F8F9DC",
+                            "badge_size": "vt-paragraph-extra-small",
+                            "radius": "3.125rem"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "card",
+              "settings": {
+                "background_color": "#EAE060",
+                "heading_color": "#003225",
+                "text_color": "#003225",
+                "position": "top",
+                "alignment": "left",
+                "padding_vertical": 24,
+                "padding_horizontal": 24,
+                "enable_padding_mobile": true,
+                "padding_vertical_mobile": 20,
+                "padding_horizontal_mobile": 20,
+                "border": "none",
+                "border_radius": 8,
+                "width": "fill",
+                "height": "fill",
+                "gap": 20
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "stretch",
+                    "gap_desktop": 20,
+                    "gap_mobile": 16,
+                    "width": "fill",
+                    "height": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "image",
+                      "settings": {
+                        "image_aspect_ratio": "portrait",
+                        "image_corner": 4
+                      }
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>\"Sustainability is not an ambition, it is the only way we know how to treat materials respectfully.\"</p>",
+                        "paragraph_size": "vt-paragraph-large",
+                        "paragraph_alignment": "text-left"
+                      }
+                    },
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Elias K.",
+                        "heading_size": "vt-heading-h5",
+                        "heading_tag": "h3",
+                        "heading_alignment": "text-left"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "space-between",
+                        "position": "center",
+                        "gap_desktop": 12,
+                        "gap_mobile": 8,
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Flax Cultivator, Belgium</p>",
+                            "paragraph_size": "vt-paragraph-medium",
+                            "paragraph_alignment": "text-left"
+                          }
+                        },
+                        {
+                          "type": "badge",
+                          "settings": {
+                            "text": "Zero Waste Certified",
+                            "bg_color": "#003225",
+                            "text_color": "#F8F9DC",
+                            "badge_size": "vt-paragraph-extra-small",
+                            "radius": "3.125rem"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

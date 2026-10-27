@@ -1,0 +1,369 @@
+<div class="earth-hero-wrapper" id="earthHero-{{ section.id }}">
+  <!-- 1. Top Image Carousel with Mouse Drag & Navigation Buttons -->
+  <div class="earth-hero__slider-container">
+    <!-- Left Navigation Arrow -->
+    <button
+      type="button"
+      class="earth-hero__arrow earth-hero__arrow--prev"
+      id="earthHeroPrev-{{ section.id }}"
+      aria-label="Previous Slide"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+
+    <!-- Draggable Track -->
+    <div class="earth-hero__track" id="earthHeroTrack-{{ section.id }}">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          <div class="earth-hero__slide" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              {{
+                block.settings.image
+                | image_url: width: 1200
+                | image_tag: class: 'earth-hero__image', loading: 'eager', alt: block.settings.alt
+                | default: 'Earth sustainable fashion'
+              }}
+            {%- else -%}
+              {%- assign fallback_idx = forloop.index | modulo: 4 -%}
+              {%- if fallback_idx == 1 -%}
+                
+
+              {%- elsif fallback_idx == 2 -%}
+                
+
+              {%- elsif fallback_idx == 3 -%}
+                
+
+              {%- else -%}
+                
+
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <!-- Default fallback images matching screenshot -->
+        <div class="earth-hero__slide">
+          
+        </div>
+        <div class="earth-hero__slide">
+          
+        </div>
+        <div class="earth-hero__slide">
+         
+        </div>
+        <div class="earth-hero__slide">
+         
+        </div>
+        <!-- Duplicated for continuous smooth scroll -->
+        <div class="earth-hero__slide">
+          
+        </div>
+        <div class="earth-hero__slide">
+         
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- Right Navigation Arrow -->
+    <button
+      type="button"
+      class="earth-hero__arrow earth-hero__arrow--next"
+      id="earthHeroNext-{{ section.id }}"
+      aria-label="Next Slide"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ==========================================================================
+     Earth Hero Slider & Content Styles
+     ========================================================================== */
+  .earth-hero-wrapper {
+    width: 100%;
+    background-color: var(--color-white, #f8f9dc);
+    overflow: hidden;
+    position: relative;
+    user-select: none;
+    border-bottom: 1px solid var(--vt-color-primary);
+  }
+
+  /* 1. Top Image Carousel Track */
+  .earth-hero__slider-container {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: #000000;
+  }
+
+  .earth-hero__track {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
+    scrollbar-width: none; /* Firefox */
+  }
+  .earth-hero__track::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+  .earth-hero__track.is-dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+
+  .earth-hero__slide {
+    flex: 0 0 28%;
+    min-width: 435px;
+    max-width: 435px;
+    height: 435px;
+    position: relative;
+    overflow: hidden;
+    scroll-snap-align: start;
+  }
+
+  .earth-hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none; /* Prevents ghost image drag */
+    transition: transform 0.4s ease;
+  }
+  .earth-hero__slide:hover .earth-hero__image {
+    transform: scale(1.02);
+  }
+
+  /* Navigation Arrows */
+  .earth-hero__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #003225;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0.85;
+  }
+  .earth-hero__arrow:hover {
+    background: #ffffff;
+    opacity: 1;
+    transform: translateY(-50%) scale(1.08);
+  }
+  .earth-hero__arrow--prev {
+    left: 20px;
+  }
+  .earth-hero__arrow--next {
+    right: 20px;
+  }
+
+  /* 2. Bottom Content Area */
+  .earth-hero__content-area {
+    background-color: var(--color-white);
+    padding: 36px 30px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .earth-hero__content-inner {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .earth-hero__btn-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  .earth-btn,
+  .earth-hero__btn {
+    background-color: #003225;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 18px 28px;
+    display: inline-block;
+    border-radius: 2px;
+    transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+    box-shadow: 0 4px 14px rgba(0, 50, 37, 0.18);
+  }
+  .earth-btn:hover,
+  .earth-hero__btn:hover {
+    background-color: #0d4636;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 50, 37, 0.25);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .earth-hero__slide {
+      flex: 0 0 40%;
+      height: 400px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .earth-hero__slide {
+      flex: 0 0 75%;
+      min-width: 260px;
+      height: 350px;
+    }
+    .earth-hero__arrow {
+      width: 38px;
+      height: 38px;
+    }
+    .earth-hero__arrow--prev {
+      left: 12px;
+    }
+    .earth-hero__arrow--next {
+      right: 12px;
+    }
+    .earth-hero__content-area {
+      padding: 36px 30px 48px;
+    }
+
+    .earth-hero__btn {
+      padding: 14px 30px;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    function initHeroSlider() {
+      var track = document.getElementById('earthHeroTrack-{{ section.id }}');
+      var prevBtn = document.getElementById('earthHeroPrev-{{ section.id }}');
+      var nextBtn = document.getElementById('earthHeroNext-{{ section.id }}');
+
+      if (!track) return;
+
+      var isDown = false;
+      var startX;
+      var scrollLeft;
+
+      // 1. Mouse Drag Events
+      track.addEventListener('mousedown', function (e) {
+        isDown = true;
+        track.classList.add('is-dragging');
+        startX = e.pageX - track.offsetLeft;
+        scrollLeft = track.scrollLeft;
+      });
+
+      window.addEventListener('mouseup', function () {
+        if (!isDown) return;
+        isDown = false;
+        track.classList.remove('is-dragging');
+      });
+
+      track.addEventListener('mouseleave', function () {
+        if (!isDown) return;
+        isDown = false;
+        track.classList.remove('is-dragging');
+      });
+
+      track.addEventListener('mousemove', function (e) {
+        if (!isDown) return;
+        e.preventDefault();
+        var x = e.pageX - track.offsetLeft;
+        var walk = (x - startX) * 1.6; // Scroll speed factor
+        track.scrollLeft = scrollLeft - walk;
+      });
+
+      // 2. Button Navigation
+      function getScrollStep() {
+        var slide = track.querySelector('.earth-hero__slide');
+        return slide ? slide.offsetWidth : 350;
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function () {
+          track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+          track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initHeroSlider);
+    } else {
+      initHeroSlider();
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Hero Slider",
+
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Image Slide",
+      "settings": [
+        {          
+          "type": "image_picker",
+          "id": "image",
+          "label": "Slide Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt Text",
+          "default": "Earth sustainable fashion"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Slider"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,126 @@
+{% doc %}
+  Renders certification trust badges (1% For The Planet, GOTS, B-Corp, OEKO-TEX).
+  Supports custom badge height and alignment.
+  @example
+  {% content_for 'block', type: 'trust-badges', id: 'trust-badges' %}
+{% enddoc %}
+
+{%- liquid
+  assign alignment = block.settings.alignment | default: 'left'
+-%}
+
+<div
+  id="trust-badges-{{ block.id }}"
+  class="vt-trust-badges vt-trust-badges--align-{{ alignment }}"
+  style="
+    --vt-tb-height: {{ block.settings.badge_height }}px;
+    --vt-tb-gap: {{ block.settings.gap }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="vt-trust-badges__cert-grid">
+    <div class="vt-trust-badges__cert-item" title="1% For The Planet">
+      <img src="{{ 'icon-1ftp.svg' | asset_url }}" alt="1% For The Planet" width="34" height="40" loading="lazy">
+    </div>
+    <div class="vt-trust-badges__cert-item" title="GOTS Certified">
+      <img src="{{ 'icon-gots.svg' | asset_url }}" alt="GOTS Certified" width="40" height="40" loading="lazy">
+    </div>
+    <div class="vt-trust-badges__cert-item" title="Certified B Corporation">
+      <img src="{{ 'icon-B-CORP.svg' | asset_url }}" alt="Certified B Corporation" width="32" height="40" loading="lazy">
+    </div>
+    <div class="vt-trust-badges__cert-item" title="OEKO-TEX Standard 100">
+      <img src="{{ 'icon-OEKO-TEX.svg' | asset_url }}" alt="OEKO-TEX" width="40" height="40" loading="lazy">
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .vt-trust-badges {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .vt-trust-badges--align-left {
+    justify-content: flex-start;
+  }
+
+  .vt-trust-badges--align-center {
+    justify-content: center;
+  }
+
+  .vt-trust-badges--align-right {
+    justify-content: flex-end;
+  }
+
+  .vt-trust-badges__cert-grid {
+    display: flex;
+    align-items: center;
+    gap: var(--vt-tb-gap);
+    flex-wrap: wrap;
+  }
+
+  .vt-trust-badges__cert-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--vt-tb-height);
+  }
+
+  .vt-trust-badges__cert-item img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Certifications",
+  "tag": null,
+  "settings": [
+    {
+      "type": "range",
+      "id": "badge_height",
+      "min": 24,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "label": "Badge height",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing between badges",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Certifications",
+      "settings": {
+        "badge_height": 36,
+        "gap": 20,
+        "alignment": "left"
+      }
+    }
+  ]
+}
+{% endschema %}

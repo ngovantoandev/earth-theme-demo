@@ -1,0 +1,24 @@
+<div class="custom-section">
+	<div class="custom-section__content">
+		{% content_for 'blocks' %}
+	</div>
+</div>
+
+{% stylesheet %}
+	.custom-section {
+		position: relative;    
+		width: 100%;
+	}  
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.custom_section",
+  "blocks": [{ "type": "@theme" }],
+  "presets": [
+    {
+      "name": "t:general.custom_section"
+    }
+  ]
+}
+{% endschema %}

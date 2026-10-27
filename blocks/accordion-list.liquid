@@ -1,0 +1,941 @@
+{% doc %}
+  Renders an Accordion container block.
+  - Groups one or more `accordion-item` blocks.
+  - Enforces exclusive expansion (auto-closing other items) when `allow_multiple_open: false`.
+  - Configurable gaps and responsive padding.
+
+  @example
+  {% content_for 'block', type: 'accordion-list', id: 'accordion-list' %}
+{% enddoc %}
+
+{%- liquid
+  assign gap_desktop = block.settings.gap_desktop | default: 16
+  assign gap_mobile = block.settings.gap_mobile | default: 12
+-%}
+
+<vt-accordion
+  id="vt-accordion-{{ block.id }}"
+  class="vt-accordion"
+  data-allow-multiple="{{ block.settings.allow_multiple_open }}"
+  data-group-id="vt-accordion-{{ block.id }}"
+  style="
+    --vt-acc-gap: {% render 'fluid-clamp', min_px: gap_mobile, max_px: gap_desktop %};
+    --vt-acc-pad-top: {% render 'fluid-clamp', min_px: block.settings.padding_top_mobile, max_px: block.settings.padding_top_desktop %};
+    --vt-acc-pad-bottom: {% render 'fluid-clamp', min_px: block.settings.padding_bottom_mobile, max_px: block.settings.padding_bottom_desktop %};
+    --vt-acc-pad-left: {% render 'fluid-clamp', min_px: block.settings.padding_left_mobile, max_px: block.settings.padding_left_desktop %};
+    --vt-acc-pad-right: {% render 'fluid-clamp', min_px: block.settings.padding_right_mobile, max_px: block.settings.padding_right_desktop %};
+  "
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+  {%- if block.blocks.size == 0 and request.design_mode -%}
+    <div class="vt-accordion__empty-placeholder" style="display: flex; flex-direction: column; gap: 12px; width: 100%; opacity: 0.7;">
+      <div style="border: 1px dashed var(--vt-color-accent, #EAE060); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px;">
+        <span style="font-weight: 600; font-size: 15px;">Accordion (Click + to add Accordion item)</span>
+        <span style="font-size: 18px;">+</span>
+      </div>
+    </div>
+  {%- endif -%}
+</vt-accordion>
+
+{% stylesheet %}
+  .vt-accordion {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--vt-acc-gap, 16px);
+    padding-top: var(--vt-acc-pad-top, 0);
+    padding-bottom: var(--vt-acc-pad-bottom, 0);
+    padding-left: var(--vt-acc-pad-left, 0);
+    padding-right: var(--vt-acc-pad-right, 0);
+    box-sizing: border-box;
+  }
+{% endstylesheet %}
+
+<script>
+  if (!customElements.get('vt-accordion')) {
+    class VtAccordion extends HTMLElement {
+      connectedCallback() {
+        this.updateGroup();
+        this.observer = new MutationObserver(() => this.updateGroup());
+        this.observer.observe(this, { childList: true, subtree: true });
+
+        // Fallback event listener for browsers without native details[name] exclusivity
+        this.addEventListener(
+          'toggle',
+          (event) => {
+            const allowMultiple = this.dataset.allowMultiple === 'true';
+            if (allowMultiple) return;
+            if (event.target.tagName.toLowerCase() === 'details' && event.target.open) {
+              const allDetails = this.querySelectorAll('details.vt-accordion-item');
+              allDetails.forEach((d) => {
+                if (d !== event.target && d.open) {
+                  d.open = false;
+                }
+              });
+            }
+          },
+          true
+        );
+      }
+
+      disconnectedCallback() {
+        if (this.observer) this.observer.disconnect();
+      }
+
+      updateGroup() {
+        const allowMultiple = this.dataset.allowMultiple === 'true';
+        const groupId = this.dataset.groupId || `vt-accordion-${Math.random().toString(36).slice(2, 8)}`;
+        const allDetails = this.querySelectorAll('details.vt-accordion-item');
+
+        allDetails.forEach((details) => {
+          if (!allowMultiple) {
+            details.setAttribute('name', groupId);
+          } else {
+            details.removeAttribute('name');
+          }
+        });
+      }
+    }
+    customElements.define('vt-accordion', VtAccordion);
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Accordion list",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "accordion-item"
+    }
+  ],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "allow_multiple_open",
+      "label": "Allow multiple items open",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Gap"
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between items (desktop)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between items (mobile)",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Padding Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top (desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom (desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left_desktop",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding left (desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right_desktop",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding right (desktop)",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top (mobile)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom (mobile)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left_mobile",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding left (mobile)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right_mobile",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding right (mobile)",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Accordion list",
+      "blocks": [
+        {
+          "type": "accordion-item",
+          "settings": {
+            "open_by_default": true
+          },
+          "blocks": [
+            {
+              "type": "icons",
+              "id": "icon",
+              "static": true,
+              "settings": {
+                "icon": "heart",
+                "icon_color": "#003225",
+                "icon_size_desktop": 24,
+                "icon_size_mobile": 20,
+                "show_box": true,
+                "box_size_desktop": 48,
+                "box_size_mobile": 40,
+                "box_bg_color": "#EAE060",
+                "box_radius": "50%"
+              }
+            },
+            {
+              "type": "heading",
+              "id": "heading",
+              "static": true,
+              "settings": {
+                "heading": "Accordion item 1",
+                "heading_size": "vt-heading-h4",
+                "heading_tag": "h3",
+                "heading_alignment": "text-left"
+              }
+            },
+            {
+              "type": "paragraph",
+              "id": "paragraph",
+              "static": true,
+              "settings": {
+                "text": "<p>Accordion item description or subtitle</p>",
+                "paragraph_size": "vt-paragraph-small",
+                "paragraph_alignment": "text-left"
+              }
+            },
+            {
+              "type": "column-layout",
+              "settings": {
+                "desktop_column_count": 2,
+                "tablet_column_count": 2,
+                "mobile_column_count": 1,
+                "desktop_column_1_width": "lg:w-1/2|50",
+                "desktop_column_2_width": "lg:w-1/2|50",
+                "tablet_column_1_width": "md:w-1/2|50",
+                "tablet_column_2_width": "md:w-1/2|50",
+                "mobile_column_1_width": "w-full|100",
+                "swipe_columns_mobile": false,
+                "vertical_alignment": "stretch"
+              },
+              "blocks": [
+                {
+                  "type": "card",
+                  "settings": {
+                    "background_color": "#EAE060",
+                    "heading_color": "#003225",
+                    "text_color": "#003225",
+                    "border": "none",
+                    "border_radius": 0,
+                    "padding_vertical": 24,
+                    "padding_horizontal": 24,
+                    "gap": 16,
+                    "width": "fill",
+                    "position": "top",
+                    "alignment": "left"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Column 1",
+                        "heading_tag": "h4",
+                        "heading_size": "vt-heading-h5",
+                        "heading_alignment": "left"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--vertical",
+                        "layout_direction_tablet": "vt-stack--vertical",
+                        "layout_direction_mobile": "vt-stack--vertical",
+                        "gap_desktop": 12,
+                        "gap_mobile": 12,
+                        "alignment": "flex-start",
+                        "position": "flex-start",
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "flex-start",
+                            "position": "center",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8,
+                            "width": "fill"
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "x-circle",
+                                "icon_color": "#D32F2F",
+                                "icon_size_desktop": 18,
+                                "icon_size_mobile": 18,
+                                "show_box": false,
+                                "animation_type": "none"
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>Example feature description 1</p>",
+                                "paragraph_size": "vt-paragraph-small"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "flex-start",
+                            "position": "center",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8,
+                            "width": "fill"
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "x-circle",
+                                "icon_color": "#D32F2F",
+                                "icon_size_desktop": 18,
+                                "icon_size_mobile": 18,
+                                "show_box": false,
+                                "animation_type": "none"
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>Example feature description 2</p>",
+                                "paragraph_size": "vt-paragraph-small"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "flex-start",
+                            "position": "center",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8,
+                            "width": "fill"
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "x-circle",
+                                "icon_color": "#D32F2F",
+                                "icon_size_desktop": 18,
+                                "icon_size_mobile": 18,
+                                "show_box": false,
+                                "animation_type": "none"
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>Example feature description 3</p>",
+                                "paragraph_size": "vt-paragraph-small"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "flex-start",
+                            "position": "center",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8,
+                            "width": "fill"
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "x-circle",
+                                "icon_color": "#D32F2F",
+                                "icon_size_desktop": 18,
+                                "icon_size_mobile": 18,
+                                "show_box": false,
+                                "animation_type": "none"
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>Example feature description 4</p>",
+                                "paragraph_size": "vt-paragraph-small"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "background_color": "#00241A",
+                    "heading_color": "#F8F9DC",
+                    "text_color": "#F8F9DC",
+                    "border": "none",
+                    "border_radius": 0,
+                    "padding_vertical": 24,
+                    "padding_horizontal": 24,
+                    "gap": 16,
+                    "width": "fill",
+                    "position": "top",
+                    "alignment": "left"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Column 2",
+                        "heading_tag": "h4",
+                        "heading_size": "vt-heading-h5",
+                        "heading_alignment": "left"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--vertical",
+                        "layout_direction_tablet": "vt-stack--vertical",
+                        "layout_direction_mobile": "vt-stack--vertical",
+                        "gap_desktop": 12,
+                        "gap_mobile": 12,
+                        "alignment": "flex-start",
+                        "position": "flex-start",
+                        "width": "fill"
+                      },
+                      "blocks": [
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "flex-start",
+                            "position": "center",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8,
+                            "width": "fill"
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "check-circle",
+                                "icon_color": "#71CC3B",
+                                "icon_size_desktop": 18,
+                                "icon_size_mobile": 18,
+                                "show_box": false,
+                                "animation_type": "none"
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>Example benefit description 1</p>",
+                                "paragraph_size": "vt-paragraph-small"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "flex-start",
+                            "position": "center",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8,
+                            "width": "fill"
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "check-circle",
+                                "icon_color": "#71CC3B",
+                                "icon_size_desktop": 18,
+                                "icon_size_mobile": 18,
+                                "show_box": false,
+                                "animation_type": "none"
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>Example benefit description 2</p>",
+                                "paragraph_size": "vt-paragraph-small"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "flex-start",
+                            "position": "center",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8,
+                            "width": "fill"
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "check-circle",
+                                "icon_color": "#71CC3B",
+                                "icon_size_desktop": 18,
+                                "icon_size_mobile": 18,
+                                "show_box": false,
+                                "animation_type": "none"
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>Example benefit description 3</p>",
+                                "paragraph_size": "vt-paragraph-small"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "flex-start",
+                            "position": "center",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8,
+                            "width": "fill"
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "check-circle",
+                                "icon_color": "#71CC3B",
+                                "icon_size_desktop": 18,
+                                "icon_size_mobile": 18,
+                                "show_box": false,
+                                "animation_type": "none"
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>Example benefit description 4</p>",
+                                "paragraph_size": "vt-paragraph-small"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "card",
+              "settings": {
+                "background_color": "#224E09",
+                "heading_color": "#F8F9DC",
+                "text_color": "#F8F9DC",
+                "border": "solid",
+                "border_width": 1,
+                "border_color": "#71CC3B",
+                "border_radius": 0,
+                "padding_vertical": 20,
+                "padding_horizontal": 24,
+                "gap": 8,
+                "width": "fill",
+                "position": "top",
+                "alignment": "left"
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--horizontal",
+                    "alignment": "flex-start",
+                    "position": "center",
+                    "gap_desktop": 10,
+                    "gap_mobile": 8,
+                    "width": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "icons",
+                      "settings": {
+                        "icon": "info",
+                        "icon_size_desktop": 20,
+                        "icon_size_mobile": 18,
+                        "icon_color": "#F8F9DC",
+                        "show_box": false,
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Notice / Announcement",
+                        "heading_tag": "h5",
+                        "heading_size": "vt-heading-h5",
+                        "heading_alignment": "text-left",
+                        "animation_type": "none"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Use this callout box to share important tips, notes, or additional context with your customers.</p>",
+                    "paragraph_size": "vt-paragraph-small",
+                    "paragraph_alignment": "text-left",
+                    "animation_type": "none"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "accordion-item",
+          "settings": {
+            "open_by_default": false
+          },
+          "blocks": [
+            {
+              "type": "icons",
+              "id": "icon",
+              "static": true,
+              "settings": {
+                "icon": "tree",
+                "icon_color": "#003225",
+                "icon_size_desktop": 24,
+                "icon_size_mobile": 20,
+                "show_box": true,
+                "box_size_desktop": 48,
+                "box_size_mobile": 40,
+                "box_bg_color": "#EAE060",
+                "box_radius": "50%"
+              }
+            },
+            {
+              "type": "heading",
+              "id": "heading",
+              "static": true,
+              "settings": {
+                "heading": "Accordion item 2",
+                "heading_size": "vt-heading-h4",
+                "heading_tag": "h3",
+                "heading_alignment": "text-left"
+              }
+            },
+            {
+              "type": "paragraph",
+              "id": "paragraph",
+              "static": true,
+              "settings": {
+                "text": "<p>Accordion item description or subtitle</p>",
+                "paragraph_size": "vt-paragraph-small",
+                "paragraph_alignment": "text-left"
+              }
+            }
+          ]
+        },
+        {
+          "type": "accordion-item",
+          "settings": {
+            "open_by_default": false
+          },
+          "blocks": [
+            {
+              "type": "icons",
+              "id": "icon",
+              "static": true,
+              "settings": {
+                "icon": "quality",
+                "icon_color": "#003225",
+                "icon_size_desktop": 24,
+                "icon_size_mobile": 20,
+                "show_box": true,
+                "box_size_desktop": 48,
+                "box_size_mobile": 40,
+                "box_bg_color": "#EAE060",
+                "box_radius": "50%"
+              }
+            },
+            {
+              "type": "heading",
+              "id": "heading",
+              "static": true,
+              "settings": {
+                "heading": "Accordion item 3",
+                "heading_size": "vt-heading-h4",
+                "heading_tag": "h3",
+                "heading_alignment": "text-left"
+              }
+            },
+            {
+              "type": "paragraph",
+              "id": "paragraph",
+              "static": true,
+              "settings": {
+                "text": "<p>Accordion item description or subtitle</p>",
+                "paragraph_size": "vt-paragraph-small",
+                "paragraph_alignment": "text-left"
+              }
+            }
+          ]
+        },
+        {
+          "type": "accordion-item",
+          "settings": {
+            "open_by_default": false
+          },
+          "blocks": [
+            {
+              "type": "icons",
+              "id": "icon",
+              "static": true,
+              "settings": {
+                "icon": "drop",
+                "icon_color": "#003225",
+                "icon_size_desktop": 24,
+                "icon_size_mobile": 20,
+                "show_box": true,
+                "box_size_desktop": 48,
+                "box_size_mobile": 40,
+                "box_bg_color": "#EAE060",
+                "box_radius": "50%"
+              }
+            },
+            {
+              "type": "heading",
+              "id": "heading",
+              "static": true,
+              "settings": {
+                "heading": "Accordion item 4",
+                "heading_size": "vt-heading-h4",
+                "heading_tag": "h3",
+                "heading_alignment": "text-left"
+              }
+            },
+            {
+              "type": "paragraph",
+              "id": "paragraph",
+              "static": true,
+              "settings": {
+                "text": "<p>Accordion item description or subtitle</p>",
+                "paragraph_size": "vt-paragraph-small",
+                "paragraph_alignment": "text-left"
+              }
+            }
+          ]
+        },
+        {
+          "type": "accordion-item",
+          "settings": {
+            "open_by_default": false
+          },
+          "blocks": [
+            {
+              "type": "icons",
+              "id": "icon",
+              "static": true,
+              "settings": {
+                "icon": "ecology",
+                "icon_color": "#003225",
+                "icon_size_desktop": 24,
+                "icon_size_mobile": 20,
+                "show_box": true,
+                "box_size_desktop": 48,
+                "box_size_mobile": 40,
+                "box_bg_color": "#EAE060",
+                "box_radius": "50%"
+              }
+            },
+            {
+              "type": "heading",
+              "id": "heading",
+              "static": true,
+              "settings": {
+                "heading": "Accordion item 5",
+                "heading_size": "vt-heading-h4",
+                "heading_tag": "h3",
+                "heading_alignment": "text-left"
+              }
+            },
+            {
+              "type": "paragraph",
+              "id": "paragraph",
+              "static": true,
+              "settings": {
+                "text": "<p>Accordion item description or subtitle</p>",
+                "paragraph_size": "vt-paragraph-small",
+                "paragraph_alignment": "text-left"
+              }
+            }
+          ]
+        },
+        {
+          "type": "accordion-item",
+          "settings": {
+            "open_by_default": false
+          },
+          "blocks": [
+            {
+              "type": "icons",
+              "id": "icon",
+              "static": true,
+              "settings": {
+                "icon": "info",
+                "icon_color": "#003225",
+                "icon_size_desktop": 24,
+                "icon_size_mobile": 20,
+                "show_box": true,
+                "box_size_desktop": 48,
+                "box_size_mobile": 40,
+                "box_bg_color": "#EAE060",
+                "box_radius": "50%"
+              }
+            },
+            {
+              "type": "heading",
+              "id": "heading",
+              "static": true,
+              "settings": {
+                "heading": "Accordion item 6",
+                "heading_size": "vt-heading-h4",
+                "heading_tag": "h3",
+                "heading_alignment": "text-left"
+              }
+            },
+            {
+              "type": "paragraph",
+              "id": "paragraph",
+              "static": true,
+              "settings": {
+                "text": "<p>Accordion item description or subtitle</p>",
+                "paragraph_size": "vt-paragraph-small",
+                "paragraph_alignment": "text-left"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

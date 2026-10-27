@@ -1,0 +1,252 @@
+{% doc %}
+  Renders a single Value Card slide inside values-tabs.
+  - Contains a stack block which in turn contains image and card blocks.
+  - Renders a tab button used by parent values-tabs bottom navigation.
+{% enddoc %}
+
+{%- liquid
+  assign is_preview = false
+  if request.visual_preview_mode
+    assign is_preview = true
+  endif
+
+  assign tab_label = block.settings.tab_label
+  if tab_label == blank
+    assign tab_label = 'Value'
+  endif
+
+  assign tab_id = 'vt-val-tab-' | append: block.id
+  assign slide_id = 'vt-val-slide-' | append: block.id
+-%}
+
+<div
+  class="vt-value-card swiper-slide{% if is_preview %} vt-value-card--preview{% endif %}"
+  id="{{ slide_id }}"
+  data-block-id="{{ block.id }}"
+  {{ block.shopify_attributes }}
+>
+  <!-- Mountable tab button harvested by values-tabs bottom tablist -->
+  <button
+    type="button"
+    role="tab"
+    id="{{ tab_id }}"
+    class="vt-values__tab"
+    data-block-id="{{ block.id }}"
+    data-target-slide="{{ slide_id }}"
+    aria-label="{{ tab_label }}"
+  >
+    <span class="vt-values__tab-indicator" aria-hidden="true"></span>
+    <span class="vt-values__tab-text">{{ tab_label }}</span>
+  </button>
+
+  <!-- Slide Card Inner Container: Renders stack containing image and card -->
+  <div class="vt-value-card__card">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .vt-value-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    min-width: 0;
+    user-select: none;
+  }
+
+  /* Hidden tab button placeholder in slide DOM (harvested by parent values-tabs) */
+  .vt-value-card > .vt-values__tab {
+    display: none;
+  }
+
+  /* Slide Card Inner Container */
+  .vt-value-card__card {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Support Theme Editor wrappers without altering layout */
+  .vt-value-card__card > .shopify-block,
+  .vt-value-card__card > shopify-block {
+    display: contents;
+  }
+
+  /* Standalone Preview Mode */
+  .vt-value-card--preview {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Top-level stack mobile handling: prevent column blowout */
+  @media screen and (max-width: 768px) {
+    .vt-value-card__card > .vt-stack--mobile-horizontal > * {
+      flex: 1 1 50%;
+      min-width: 0;
+    }
+  }
+
+  /* Keep icons inside value card at natural size instead of stretching */
+  .vt-value-card .vt-icon {
+    flex-shrink: 0;
+    width: auto;
+  }
+
+  /* Ensure text inside value card wraps gracefully without overflowing */
+  .vt-value-card .vt-paragraph {
+    min-width: 0;
+    word-break: break-word;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Value card",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Tab Navigation"
+    },
+    {
+      "type": "text",
+      "id": "tab_label",
+      "label": "Tab label",
+      "default": "Tab title",
+      "info": "Label displayed on the bottom navigation tab"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stack"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Value card",
+      "settings": {
+        "tab_label": "Tab title"
+      },
+      "blocks": [
+        {
+          "type": "stack",
+          "settings": {
+            "layout_direction_desktop": "vt-stack--horizontal",
+            "layout_direction_tablet": "vt-stack--horizontal",
+            "layout_direction_mobile": "vt-stack--vertical",
+            "alignment": "flex-start",
+            "position": "stretch",
+            "width": "fill",
+            "height": "fill",
+            "gap_desktop": 0,
+            "gap_mobile": 0
+          },
+          "blocks": [
+            {
+              "type": "image",
+              "settings": {
+                "image_aspect_ratio": "square",
+                "image_desktop_width": "fill",
+                "image_mobile_width": "fill"
+              }
+            },
+            {
+              "type": "card",
+              "settings": {
+                "background_color": "#F8F9DC",
+                "heading_color": "#003225",
+                "text_color": "#003225",
+                "position": "middle",
+                "alignment": "left",
+                "width": "fill",
+                "height": "fill",
+                "padding_vertical": 48,
+                "padding_horizontal": 40,
+                "enable_padding_mobile": true,
+                "padding_vertical_mobile": 24,
+                "padding_horizontal_mobile": 20,
+                "gap": 16
+              },
+              "blocks": [
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Heading",
+                    "heading_size": "vt-heading-h2",
+                    "heading_alignment": "text-inherit",
+                    "heading_tag": "h3"
+                  }
+                },
+                {
+                  "type": "badge",
+                  "settings": {
+                    "text": "Badge label",
+                    "radius": "3.125rem",
+                    "badge_size": "vt-paragraph-small",
+                    "bg_color": "#003225",
+                    "text_color": "#EAE060"
+                  }
+                },
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--horizontal",
+                    "alignment": "inherit",
+                    "position": "center",
+                    "width": "fill",
+                    "height": "fit",
+                    "gap_desktop": 10,
+                    "gap_mobile": 8
+                  },
+                  "blocks": [
+                    {
+                      "type": "icons",
+                      "settings": {
+                        "icon": "leaf",
+                        "icon_color": "#003225",
+                        "icon_size_desktop": 20,
+                        "icon_size_mobile": 18
+                      }
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Feature description</p>",
+                        "paragraph_size": "vt-paragraph-small",
+                        "paragraph_alignment": "text-inherit"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Paragraph text</p>",
+                    "paragraph_size": "vt-paragraph-medium",
+                    "paragraph_alignment": "text-inherit"
+                  }
+                },
+                {
+                  "type": "button",
+                  "settings": {
+                    "button_label": "Button label",
+                    "button_link": "shopify://collections/all",
+                    "button_style": "link"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

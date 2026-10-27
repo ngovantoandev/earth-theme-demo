@@ -1,0 +1,1276 @@
+{% doc %}
+  Renders a values-tabs parent container with carousel track, navigation arrows, and bottom tab navigation.
+  - Accepts 'value-card' child blocks.
+  - Features navigation arrows toggle (show_arrows, visibility, theme, offset) matching theme standard.
+  - Hides Prev / Next navigation arrows when boundary is reached.
+  - Smoothly navigates between cards on arrow click, tab click, and touch scroll.
+{% enddoc %}
+
+{%- liquid
+  assign enable_swipe_mobile = block.settings.enable_swipe_mobile
+  if enable_swipe_mobile == nil
+    assign enable_swipe_mobile = true
+  endif
+
+  assign gap_desktop = block.settings.gap_desktop | default: 32
+  assign gap_mobile = block.settings.gap_mobile | default: 16
+  assign track_pad_desktop = block.settings.padding_desktop | default: 0
+  assign track_pad_mobile = block.settings.padding_mobile
+  if track_pad_mobile == blank
+    assign track_pad_mobile = 20
+  endif
+
+  assign menu_pad_desktop = block.settings.menu_padding_desktop
+  if menu_pad_desktop == blank
+    assign menu_pad_desktop = 34
+  endif
+  assign menu_pad_mobile = block.settings.menu_padding_mobile
+  if menu_pad_mobile == blank
+    assign menu_pad_mobile = 20
+  endif
+
+  assign tab_color = block.settings.tab_color
+  if tab_color == blank or tab_color == 'rgba(0,0,0,0)' or tab_color == '#00000000'
+    assign tab_color = 'var(--vt-heading-color, var(--vt-foreground-color, var(--color-primary, #224E09)))'
+  endif
+
+  assign tab_active_color = block.settings.tab_active_color
+  if tab_active_color == blank or tab_active_color == 'rgba(0,0,0,0)' or tab_active_color == '#00000000'
+    assign tab_active_color = 'var(--vt-color-secondary, var(--color-secondary, #71CC3B))'
+  endif
+
+  assign tab_line_color = block.settings.tab_line_color
+  if tab_line_color == blank or tab_line_color == 'rgba(0,0,0,0)' or tab_line_color == '#00000000'
+    assign tab_line_color = 'var(--vt-color-secondary, var(--color-secondary, #71CC3B))'
+  endif
+
+  assign show_arrows = block.settings.show_arrows
+  assign arrows_offset = block.settings.arrows_offset | default: 0
+-%}
+
+{%- liquid
+  assign is_preview = false
+  if request.visual_preview_mode
+    assign is_preview = true
+  endif
+
+  capture value_cards_content
+    content_for 'blocks'
+  endcapture
+
+  assign stripped_cards = value_cards_content | strip
+  assign has_cards = true
+  if stripped_cards == blank
+    assign has_cards = false
+  endif
+
+  assign show_placeholder = false
+  if is_preview
+    assign show_placeholder = true
+  elsif has_cards == false and request.design_mode
+    assign show_placeholder = true
+  endif
+
+  assign track_id = 'vtValuesTrack-' | append: block.id
+-%}
+
+<values-tabs
+  class="vt-values-tabs{% if show_placeholder %} vt-values-tabs--preview{% endif %}"
+  data-block-id="{{ block.id }}"
+  data-gap-desktop="{{ gap_desktop }}"
+  data-gap-mobile="{{ gap_mobile }}"
+  data-pad-desktop="{{ track_pad_desktop }}"
+  data-pad-mobile="{{ track_pad_mobile }}"
+  data-swipe-mobile="{{ enable_swipe_mobile }}"
+  data-show-arrows="{{ show_arrows }}"
+  data-arrows-mobile="{{ block.settings.show_arrows_mobile }}"
+  {% if show_placeholder %}data-preview="true"{% endif %}
+  style="
+    --vt-val-gap-desktop: {{ gap_desktop }}px;
+    --vt-val-gap-mobile: {{ gap_mobile }}px;
+    --vt-pad-desktop: {{ track_pad_desktop }}px;
+    --vt-pad-mobile: {{ track_pad_mobile }}px;
+    --vt-menu-ph-desktop: {{ menu_pad_desktop }}px;
+    --vt-menu-ph-mobile: {{ menu_pad_mobile }}px;
+    --vt-tab-color: {{ tab_color }};
+    --vt-tab-active-color: {{ tab_active_color }};
+    --vt-tab-line-color: {{ tab_line_color }};
+    --vt-tab-font-size: {{ block.settings.tab_font_size | default: 17 }}px;
+    --earth-nav-offset: {{ arrows_offset }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  <!-- ================= 1. Carousel Slider Track ================= -->
+  <div class="vt-values-tabs__slider-wrapper has-slider-nav">
+    <div
+      class="vt-values-tabs__track swiper"
+      id="{{ track_id }}"
+      data-slider-track
+      tabindex="0"
+    >
+      <div class="vt-values-tabs__wrapper swiper-wrapper">
+        {%- if show_placeholder -%}
+          {%- for i in (1..3) -%}
+            <!-- Placeholder Slide {{ i }} -->
+            <div class="vt-value-card swiper-slide vt-value-card--placeholder" aria-hidden="true">
+              <div class="vt-values-placeholder__card">
+                <div class="vt-values-placeholder__media">
+                  {{ 'image' | placeholder_svg_tag: 'vt-values-placeholder__svg' }}
+                </div>
+                <div class="vt-values-placeholder__content">
+                  <h3 class="vt-values-placeholder__heading">Values title</h3>
+                  <span class="vt-values-placeholder__badge">values badge</span>
+                  <div class="vt-values-placeholder__feature">
+                    <span class="vt-values-placeholder__icon">
+                      {% render 'icons', icon: 'leaf' %}
+                    </span>
+                    <span class="vt-values-placeholder__feature-text">100% worker-owned cooperatives</span>
+                  </div>
+                  <p class="vt-values-placeholder__text">Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p>
+                  <div class="vt-values-placeholder__button">
+                    <span>EXPLORE PRODUCTS</span>
+                    <span class="vt-values-placeholder__arrow-circle">
+                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path d="M3.33334 8H12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 3.33334L12.6667 8L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {{ value_cards_content }}
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Navigation Arrows Component -->
+    {%- if show_arrows -%}
+      {%- assign hover_mode = false -%}
+      {%- if block.settings.arrows_visibility == 'hover' and show_placeholder == false -%}
+        {%- assign hover_mode = true -%}
+      {%- endif -%}
+      {%- assign arrows_theme = block.settings.arrows_theme | default: 'light' -%}
+      {%- assign show_arrows_mobile = block.settings.show_arrows_mobile -%}
+      {% render 'btn-nav-slider',
+        target_id: track_id,
+        layout: 'split',
+        show_on_hover: hover_mode,
+        show_arrows_mobile: show_arrows_mobile,
+        theme: arrows_theme
+      %}
+    {%- endif -%}
+  </div>
+
+  <!-- ================= 2. Bottom Tab Navigation ================= -->
+  <div class="vt-values-tabs__tablist-container">
+    <div
+      class="vt-values-tabs__tablist"
+      role="tablist"
+      aria-label="Values navigation"
+    >
+      {%- if show_placeholder -%}
+        <button type="button" role="tab" class="vt-values__tab vt-values__tab--active" aria-selected="true">
+          <span class="vt-values__tab-indicator" aria-hidden="true"></span>
+          <span class="vt-values__tab-text">Values title</span>
+        </button>
+        <button type="button" role="tab" class="vt-values__tab" aria-selected="false">
+          <span class="vt-values__tab-indicator" aria-hidden="true"></span>
+          <span class="vt-values__tab-text">Values title</span>
+        </button>
+        <button type="button" role="tab" class="vt-values__tab" aria-selected="false">
+          <span class="vt-values__tab-indicator" aria-hidden="true"></span>
+          <span class="vt-values__tab-text">Values title</span>
+        </button>
+      {%- endif -%}
+      <!-- Dynamic Tab Buttons mounted here by ValuesTabs JavaScript element -->
+    </div>
+  </div>
+</values-tabs>
+
+{% stylesheet %}
+  values-tabs.vt-values-tabs {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    position: relative;
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: none;
+    gap: clamp(32px, 5vw, 48px);
+  }
+
+  /* ================= Track & Slider ================= */
+  .vt-values-tabs__slider-wrapper {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vt-values-tabs__track {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: var(--vt-pad-desktop, 0px);
+    padding-right: var(--vt-pad-desktop, 0px);
+    outline: none;
+    position: relative;
+  }
+
+  .vt-values-tabs__track.swiper {
+    overflow: hidden;
+  }
+
+  .vt-values-tabs__track:focus-visible {
+    outline: 2px solid var(--vt-tab-active-color, var(--vt-color-secondary, #71CC3B));
+    outline-offset: -2px;
+  }
+
+  .vt-values-tabs__track .vt-values-tabs__wrapper {
+    display: flex;
+    align-items: stretch;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  /* Fallback before Swiper initializes */
+  .vt-values-tabs__track:not(.swiper-initialized) {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-left: var(--vt-pad-desktop, 34px);
+    scroll-padding-right: var(--vt-pad-desktop, 34px);
+    overscroll-behavior-x: contain;
+  }
+
+  .vt-values-tabs__track:not(.swiper-initialized)::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vt-values-tabs__track:not(.swiper-initialized) > .vt-values-tabs__wrapper {
+    gap: var(--vt-val-gap-desktop, 32px);
+    width: max-content;
+  }
+
+  /* When Swiper initializes, spacing is managed by Swiper */
+  .vt-values-tabs__track.swiper-initialized {
+    overflow: hidden;
+  }
+
+  .vt-values-tabs__track.swiper-initialized > .vt-values-tabs__wrapper {
+    gap: 0;
+  }
+
+  /* Support Theme Editor wrappers without altering flexbox height or layout */
+  .vt-values-tabs__track .vt-values-tabs__wrapper > .shopify-block,
+  .vt-values-tabs__track .vt-values-tabs__wrapper > shopify-block {
+    display: contents;
+  }
+
+  /* Slide sizing: All cards have equal width and stretch to equal height */
+  .vt-values-tabs__track .vt-value-card {
+    width: clamp(280px, 78vw, 880px);
+    flex-shrink: 0;
+    height: auto;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  .vt-values-tabs__track:not(.swiper-initialized) .vt-value-card {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+
+  .vt-values-tabs__track:not(.swiper-initialized) .vt-value-card:last-child {
+    scroll-snap-align: start end;
+  }
+
+  /* Completely hide disabled or out-of-bounds nav buttons */
+  values-tabs .earth-slider-nav__btn:disabled,
+  values-tabs .earth-slider-nav__btn[data-hidden="true"] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* ================= Visual Preview Mode (Theme Editor Block Picker & Fallback) ================= */
+  values-tabs.vt-values-tabs--preview,
+  values-tabs[data-preview="true"] {
+    background-color: transparent;
+    padding-top: clamp(16px, 3vw, 32px);
+    padding-bottom: clamp(16px, 3vw, 32px);
+    box-sizing: border-box;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .vt-values-tabs--preview .vt-values-tabs__slider-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .vt-values-tabs--preview .vt-values-tabs__track {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    padding-left: var(--vt-pad-desktop, 34px);
+    padding-right: var(--vt-pad-desktop, 34px);
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .vt-values-tabs--preview .vt-values-tabs__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vt-values-tabs--preview .vt-values-tabs__wrapper {
+    display: flex;
+    align-items: stretch;
+    width: max-content;
+    gap: var(--vt-val-gap-desktop, 32px);
+    box-sizing: border-box;
+  }
+
+  .vt-values-tabs--preview .vt-value-card--placeholder {
+    width: clamp(280px, 78vw, 880px);
+    flex-shrink: 0;
+    box-sizing: border-box;
+    scroll-snap-align: start;
+  }
+
+  /* Placeholder Card Layout (UI default placeholder) */
+  .vt-values-placeholder__card {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(34, 78, 9, 0.12);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+  }
+
+  .vt-values-placeholder__media {
+    flex: 0 0 46%;
+    min-height: 320px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .vt-values-placeholder__svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .vt-values-placeholder__content {
+    flex: 1 1 54%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: clamp(24px, 3.5vw, 44px);
+    box-sizing: border-box;
+    gap: 16px;
+    color: var(--vt-foreground-color, var(--color-primary, #224E09));
+    background-color: var(--vt-background-color, #F8F9DC);
+    min-width: 0;
+  }
+
+  .vt-values-placeholder__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 14px;
+    border-radius: 3.125rem;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: var(--color-black, #003225);
+    color: var(--vt-color-accent, #EAE060);
+    line-height: 1.2;
+    box-sizing: border-box;
+  }
+
+  .vt-values-placeholder__heading {
+    margin: 0;
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--vt-foreground-color, var(--color-primary, #224E09));
+    word-break: break-word;
+  }
+
+  .vt-values-placeholder__feature {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--vt-foreground-color, var(--color-primary, #224E09));
+    margin: 0;
+  }
+
+  .vt-values-placeholder__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--color-secondary, #71CC3B);
+  }
+
+  .vt-values-placeholder__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .vt-values-placeholder__feature-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-black, #003225);
+    line-height: 1.3;
+  }
+
+  .vt-values-placeholder__text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-black, #003225);
+    opacity: 0.9;
+    word-break: break-word;
+  }
+
+  .vt-values-placeholder__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-black, #003225);
+    border-bottom: 1.5px solid var(--color-black, #003225);
+    padding-bottom: 3px;
+    margin-top: 4px;
+    cursor: default;
+    line-height: 1;
+  }
+
+  .vt-values-placeholder__arrow-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--color-black, #003225);
+    color: var(--vt-background-color, #F8F9DC);
+  }
+
+  .vt-values-tabs--preview .earth-slider-nav {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  @media screen and (max-width: 640px) {
+    .vt-values-placeholder__card {
+      flex-direction: column;
+    }
+
+    .vt-values-placeholder__media {
+      flex: 0 0 auto;
+      width: 100%;
+      height: 200px;
+      min-height: 200px;
+    }
+
+    .vt-values-placeholder__content {
+      padding: 24px 18px;
+      gap: 12px;
+    }
+
+    .vt-values-tabs--preview .earth-slider-nav {
+      display: none !important;
+    }
+  }
+
+  /* ================= Bottom Tablist Navigation ================= */
+  .vt-values-tabs__tablist-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    box-sizing: border-box;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: var(--vt-menu-ph-desktop, 34px);
+    padding-right: var(--vt-menu-ph-desktop, 34px);
+    scroll-padding-left: var(--vt-menu-ph-desktop, 34px);
+    scroll-padding-right: var(--vt-menu-ph-desktop, 34px);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .vt-values-tabs__tablist-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vt-values-tabs__tablist {
+    display: inline-flex;
+    align-items: flex-start;
+    position: relative;
+    gap: clamp(24px, 4vw, 56px);
+    padding: 0;
+    margin: 0 auto;
+    flex: 0 0 auto;
+    min-width: max-content;
+  }
+
+  /* Tab button */
+  .vt-values__tab {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 12px 4px 6px;
+    position: relative;
+    user-select: none;
+    outline: none;
+    white-space: nowrap;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: color 0.3s ease;
+    color: var(--vt-tab-color, var(--vt-heading-color, var(--vt-foreground-color, var(--color-primary, #224E09))));
+  }
+
+  /* Support heading block inside tab button */
+  .vt-values__tab > .shopify-block,
+  .vt-values__tab > shopify-block {
+    display: contents;
+  }
+
+  .vt-values__tab .vt-heading-wrapper {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    line-height: inherit;
+    width: auto;
+    max-width: none;
+  }
+
+  .vt-values__tab .vt-heading {
+    font-size: var(--vt-tab-font-size, 18px);
+    font-weight: 700;
+    line-height: 1.25;
+    color: inherit;
+    margin: 0;
+    transition: color 0.3s ease, opacity 0.3s ease;
+  }
+
+  .vt-values__tab-text {
+    font-size: var(--vt-tab-font-size, 17px);
+    font-weight: 700;
+    line-height: 1.25;
+    color: inherit;
+    transition: color 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Line indicator ABOVE the tab text (as shown in screenshot) */
+  .vt-values__tab-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--vt-tab-line-color, var(--vt-color-secondary, var(--color-secondary, #71CC3B)));
+    opacity: 0;
+    transform: scaleX(0.7);
+    transform-origin: left center;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* Hover state */
+  .vt-values__tab:hover {
+    color: var(--vt-tab-active-color, var(--vt-color-secondary, var(--color-secondary, #71CC3B)));
+  }
+
+  .vt-values__tab:hover .vt-heading {
+    color: var(--vt-tab-active-color, var(--vt-color-secondary, var(--color-secondary, #71CC3B)));
+  }
+
+  .vt-values__tab:hover .vt-values__tab-indicator {
+    opacity: 0.5;
+    transform: scaleX(1);
+  }
+
+  /* Active state */
+  .vt-values__tab--active {
+    color: var(--vt-tab-active-color, var(--vt-color-secondary, var(--color-secondary, #71CC3B)));
+  }
+
+  .vt-values__tab--active .vt-heading {
+    color: var(--vt-tab-active-color, var(--vt-color-secondary, var(--color-secondary, #71CC3B)));
+  }
+
+  .vt-values__tab--active .vt-values__tab-indicator {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .vt-values__tab:focus-visible {
+    outline: 1px solid var(--vt-tab-active-color, var(--vt-color-secondary, var(--color-secondary, #71CC3B)));
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  /* Mobile adjustments */
+  @media screen and (max-width: 768px) {
+    values-tabs.vt-values-tabs {
+      width: calc(100% + var(--vt-ph-mobile, var(--vt-ph, 0px)) * 2);
+      margin-left: calc(-1 * var(--vt-ph-mobile, var(--vt-ph, 0px)));
+      margin-right: calc(-1 * var(--vt-ph-mobile, var(--vt-ph, 0px)));
+      gap: 24px;
+    }
+
+    .vt-values-tabs__track {
+      padding-left: var(--vt-pad-mobile, 20px);
+      padding-right: var(--vt-pad-mobile, 20px);
+      scroll-padding-left: var(--vt-pad-mobile, 20px);
+      scroll-padding-right: var(--vt-pad-mobile, 20px);
+    }
+
+    .vt-values-tabs__track:not(.swiper-initialized) > .vt-values-tabs__wrapper {
+      gap: var(--vt-val-gap-mobile, 16px);
+    }
+
+    .vt-values-tabs__track .vt-value-card {
+      width: calc(100vw - 48px);
+      max-width: 90vw;
+    }
+
+    .vt-values-tabs__tablist-container {
+      justify-content: flex-start;
+      padding-left: var(--vt-menu-ph-mobile, 20px);
+      padding-right: var(--vt-menu-ph-mobile, 20px);
+      scroll-padding-left: var(--vt-menu-ph-mobile, 20px);
+      scroll-padding-right: var(--vt-menu-ph-mobile, 20px);
+    }
+
+    .vt-values-tabs__tablist {
+      gap: 24px;
+      margin: 0;
+    }
+
+    /* Honour the "Enable swipe on mobile" setting (programmatic scroll via tabs/arrows still works) */
+    values-tabs[data-swipe-mobile="false"] .vt-values-tabs__track {
+      overflow-x: hidden;
+      touch-action: pan-y;
+    }
+
+    .vt-values__tab-text,
+    .vt-values__tab .vt-heading {
+      font-size: clamp(14px, calc(var(--vt-tab-font-size, 17px) - 2px), var(--vt-tab-font-size, 17px));
+    }
+
+    values-tabs:not([data-arrows-mobile="true"]) earth-slider-nav,
+    values-tabs[data-arrows-mobile="false"] earth-slider-nav {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vt-values-tabs__track {
+      scroll-behavior: auto;
+    }
+
+    .vt-values__tab,
+    .vt-values__tab-indicator,
+    .vt-values__tab-text {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+<script src="{{ 'values-tabs.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Values tabs",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Slider Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_swipe_mobile",
+      "label": "Enable swipe on mobile",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "label": "Gap between slides (desktop)",
+      "min": 16,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Gap between slides (mobile)",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Card carousel track spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Horizontal padding (desktop)",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Horizontal padding (mobile)",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Navigation Arrows"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show navigation arrows",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "arrows_visibility",
+      "label": "Arrows visibility",
+      "options": [
+        {
+          "value": "hover",
+          "label": "Show on hover"
+        },
+        {
+          "value": "always",
+          "label": "Always visible"
+        }
+      ],
+      "default": "hover"
+    },
+    {
+      "type": "select",
+      "id": "arrows_theme",
+      "label": "Arrow button style",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light / Cream (Green on hover)"
+        },
+        {
+          "value": "green",
+          "label": "Solid green"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "range",
+      "id": "arrows_offset",
+      "label": "Arrow button offset",
+      "min": -20,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows_mobile",
+      "label": "Show arrows on mobile",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Bottom Navigation"
+    },
+    {
+      "type": "range",
+      "id": "menu_padding_desktop",
+      "label": "Tab menu padding (desktop)",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "menu_padding_mobile",
+      "label": "Tab menu padding (mobile)",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "tab_font_size",
+      "label": "Tab font size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 17
+    },
+    {
+      "type": "color",
+      "id": "tab_color",
+      "label": "Tab text color (Inactive)"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_color",
+      "label": "Tab text color (Active)"
+    },
+    {
+      "type": "color",
+      "id": "tab_line_color",
+      "label": "Active indicator line color"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value-card"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Values tabs",
+      "settings": {
+        "gap_desktop": 32,
+        "gap_mobile": 16,
+        "padding_desktop": 34,
+        "padding_mobile": 20,
+        "menu_padding_desktop": 34,
+        "menu_padding_mobile": 20,
+        "show_arrows": true,
+        "arrows_visibility": "hover",
+        "arrows_theme": "light",
+        "arrows_offset": 0,
+        "show_arrows_mobile": false,
+        "tab_font_size": 17
+      },
+      "blocks": [
+        {
+          "type": "value-card",
+          "settings": {
+            "tab_label": "Tab 1"
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "width": "fill",
+                "height": "fill",
+                "gap_desktop": 0,
+                "gap_mobile": 0
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "square",
+                    "image_desktop_width": "fill",
+                    "image_mobile_width": "fill"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "background_color": "#F8F9DC",
+                    "heading_color": "#003225",
+                    "text_color": "#003225",
+                    "position": "middle",
+                    "alignment": "left",
+                    "width": "fill",
+                    "height": "fill",
+                    "padding_vertical": 48,
+                    "padding_horizontal": 40,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 24,
+                    "padding_horizontal_mobile": 20,
+                    "gap": 16
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Heading",
+                        "heading_size": "vt-heading-h2",
+                        "heading_alignment": "text-inherit",
+                        "heading_tag": "h3"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Badge label",
+                        "radius": "3.125rem",
+                        "badge_size": "vt-paragraph-small",
+                        "bg_color": "#003225",
+                        "text_color": "#EAE060"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "inherit",
+                        "position": "center",
+                        "width": "fill",
+                        "height": "fit",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "leaf",
+                            "icon_color": "#003225",
+                            "icon_size_desktop": 20,
+                            "icon_size_mobile": 18
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Feature description</p>",
+                            "paragraph_size": "vt-paragraph-small",
+                            "paragraph_alignment": "text-inherit"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Paragraph text</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-inherit"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "settings": {
+                        "button_label": "Button label",
+                        "button_link": "shopify://collections/all",
+                        "button_style": "link"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "value-card",
+          "settings": {
+            "tab_label": "Tab 2"
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "width": "fill",
+                "height": "fill",
+                "gap_desktop": 0,
+                "gap_mobile": 0
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "square",
+                    "image_desktop_width": "fill",
+                    "image_mobile_width": "fill"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "background_color": "#F8F9DC",
+                    "heading_color": "#003225",
+                    "text_color": "#003225",
+                    "position": "middle",
+                    "alignment": "left",
+                    "width": "fill",
+                    "height": "fill",
+                    "padding_vertical": 48,
+                    "padding_horizontal": 40,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 24,
+                    "padding_horizontal_mobile": 20,
+                    "gap": 16
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Heading",
+                        "heading_size": "vt-heading-h2",
+                        "heading_alignment": "text-inherit",
+                        "heading_tag": "h3"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Badge label",
+                        "radius": "3.125rem",
+                        "badge_size": "vt-paragraph-small",
+                        "bg_color": "#003225",
+                        "text_color": "#EAE060"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "inherit",
+                        "position": "center",
+                        "width": "fill",
+                        "height": "fit",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "leaf",
+                            "icon_color": "#003225",
+                            "icon_size_desktop": 20,
+                            "icon_size_mobile": 18
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Feature description</p>",
+                            "paragraph_size": "vt-paragraph-small",
+                            "paragraph_alignment": "text-inherit"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Paragraph text</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-inherit"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "settings": {
+                        "button_label": "Button label",
+                        "button_link": "shopify://collections/all",
+                        "button_style": "link"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "value-card",
+          "settings": {
+            "tab_label": "Tab 3"
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "width": "fill",
+                "height": "fill",
+                "gap_desktop": 0,
+                "gap_mobile": 0
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "square",
+                    "image_desktop_width": "fill",
+                    "image_mobile_width": "fill"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "background_color": "#F8F9DC",
+                    "heading_color": "#003225",
+                    "text_color": "#003225",
+                    "position": "middle",
+                    "alignment": "left",
+                    "width": "fill",
+                    "height": "fill",
+                    "padding_vertical": 48,
+                    "padding_horizontal": 40,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 24,
+                    "padding_horizontal_mobile": 20,
+                    "gap": 16
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Heading",
+                        "heading_size": "vt-heading-h2",
+                        "heading_alignment": "text-inherit",
+                        "heading_tag": "h3"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Badge label",
+                        "radius": "3.125rem",
+                        "badge_size": "vt-paragraph-small",
+                        "bg_color": "#003225",
+                        "text_color": "#EAE060"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "inherit",
+                        "position": "center",
+                        "width": "fill",
+                        "height": "fit",
+                        "gap_desktop": 10,
+                        "gap_mobile": 8
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "leaf",
+                            "icon_color": "#003225",
+                            "icon_size_desktop": 20,
+                            "icon_size_mobile": 18
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Feature description</p>",
+                            "paragraph_size": "vt-paragraph-small",
+                            "paragraph_alignment": "text-inherit"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Paragraph text</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-inherit"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "settings": {
+                        "button_label": "Button label",
+                        "button_link": "shopify://collections/all",
+                        "button_style": "link"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

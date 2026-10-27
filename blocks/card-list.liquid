@@ -1,0 +1,737 @@
+{% doc %}
+  Renders a card list carousel container block with slider track and navigation arrows.
+  Settings matching value-tabs and collection-tabs without tab configuration.
+  
+  @example
+  {% content_for 'block', type: 'list', id: 'list' %}
+{% enddoc %}
+
+{%- liquid
+  assign col_desktop = block.settings.columns_desktop | default: 3
+  assign enable_swipe_mobile = block.settings.enable_swipe_mobile
+  if enable_swipe_mobile == nil
+    assign enable_swipe_mobile = true
+  endif
+
+  assign gap_desktop = block.settings.gap_desktop | default: 32
+  assign gap_mobile = block.settings.gap_mobile | default: 16
+
+  assign track_pad_desktop = block.settings.padding_desktop | default: 0
+  assign track_pad_mobile = block.settings.padding_mobile | default: 20
+
+  assign show_arrows = block.settings.show_arrows
+  assign arrows_offset = block.settings.arrows_offset | default: 0
+-%}
+
+<card-list 
+  class="vt-card-list plt-listing-tab w-full block box-border{% if enable_swipe_mobile %} plt-listing-tab--swipe-mobile{% else %} plt-listing-tab--stack-mobile{% endif %}{% if request.visual_preview_mode %} plt-listing-tab--preview{% endif %}"
+  data-block-id="{{ block.id }}"
+  data-col-desktop="{{ col_desktop }}"
+  data-swipe-mobile="{{ enable_swipe_mobile }}"
+  data-gap-desktop="{{ gap_desktop }}"
+  data-gap-mobile="{{ gap_mobile }}"
+  data-show-arrows="{{ block.settings.show_arrows }}"
+  data-arrows-mobile="{{ block.settings.show_arrows_mobile }}"
+  {% if request.visual_preview_mode %}data-preview="true"{% endif %}
+  style="
+    --plt-col-desktop: {{ col_desktop }};
+    --plt-gap-desktop: {{ gap_desktop }}px;
+    --plt-gap-mobile: {{ gap_mobile }}px;
+    --plt-pad-desktop: {{ track_pad_desktop }}px;
+    --plt-pad-mobile: {{ track_pad_mobile }}px;
+    --earth-nav-offset: {{ arrows_offset }}px;
+    --vt-col-desktop: {{ col_desktop }};
+    --vt-list-gap-desktop: {{ gap_desktop }}px;
+    --vt-list-gap-mobile: {{ gap_mobile }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="vt-card-list__slider-wrapper has-slider-nav relative w-full">
+    <div 
+      class="vt-card-list__track plt__track swiper" 
+      id="vtCardListTrack-{{ block.id }}" 
+      data-slider-track
+      tabindex="0"
+    >
+      <div class="swiper-wrapper">
+        {% content_for 'blocks' %}
+      </div>
+    </div>
+
+    {%- if show_arrows -%}
+      {%- assign hover_mode = false -%}
+      {%- if block.settings.arrows_visibility == 'hover' -%}
+        {%- assign hover_mode = true -%}
+      {%- endif -%}
+      {%- assign arrows_theme = block.settings.arrows_theme | default: 'light' -%}
+      {%- assign show_arrows_mobile = block.settings.show_arrows_mobile -%}
+      {%- assign track_id = 'vtCardListTrack-' | append: block.id -%}
+      {% render 'btn-nav-slider',
+        target_id: track_id,
+        layout: 'split',
+        show_on_hover: hover_mode,
+        show_arrows_mobile: show_arrows_mobile,
+        theme: arrows_theme
+      %}
+    {%- endif -%}
+  </div>
+</card-list>
+
+{% stylesheet %}
+  card-list.vt-card-list,
+  card-list.plt-listing-tab {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    position: relative;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .vt-card-list__slider-wrapper {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .vt-card-list__track.plt__track,
+  .vt-card-list__track {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: var(--plt-pad-desktop, 0px);
+    padding-right: var(--plt-pad-desktop, 0px);
+    outline: none;
+    position: relative;
+  }
+
+  .vt-card-list__track.swiper {
+    overflow: hidden;
+  }
+
+  .vt-card-list__track:focus-visible {
+    outline: 2px solid var(--vt-color-secondary, #71CC3B);
+    outline-offset: -2px;
+  }
+
+  /* Completely hide disabled or out-of-bounds nav buttons */
+  card-list .earth-slider-nav__btn:disabled,
+  card-list .earth-slider-nav__btn[data-hidden="true"] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .vt-card-list__track .swiper-wrapper {
+    display: flex;
+    align-items: stretch;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  /* Fallback before Swiper is initialized (SSR / no-JS) */
+  .vt-card-list__track:not(.swiper-initialized) {
+    display: flex;
+    align-items: stretch;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    gap: var(--plt-gap-desktop, 32px);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-padding-left: var(--plt-pad-desktop, 0px);
+    scroll-padding-right: var(--plt-pad-desktop, 0px);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .vt-card-list__track:not(.swiper-initialized)::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vt-card-list__track:not(.swiper-initialized) > .swiper-wrapper {
+    display: flex;
+    align-items: stretch;
+    gap: var(--plt-gap-desktop, 32px);
+    width: 100%;
+  }
+
+  .vt-card-list__track:not(.swiper-initialized) .swiper-wrapper > * {
+    flex: 0 0 calc((100% - (var(--plt-gap-desktop, 32px) * 1.35)) / 2.35);
+    min-width: 0;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+  }
+
+  .vt-card-list__track:not(.swiper-initialized) .swiper-wrapper > *:last-child {
+    scroll-snap-align: start end;
+  }
+
+  /* Swiper active state */
+  .vt-card-list__track.swiper-initialized {
+    overflow: hidden;
+  }
+
+  .vt-card-list__track.swiper-initialized > .swiper-wrapper {
+    gap: 0;
+  }
+
+  .vt-card-list__track.swiper-initialized .swiper-wrapper > * {
+    flex-shrink: 0;
+    height: auto;
+    box-sizing: border-box;
+  }
+
+  /* Slide card base: each direct child of swiper-wrapper */
+  .vt-card-list__track .swiper-wrapper > * {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    height: auto;
+  }
+
+  /* Support Theme Editor wrapper shopify-block */
+  .vt-card-list__track .swiper-wrapper > .shopify-block,
+  .vt-card-list__track .swiper-wrapper > shopify-block {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    box-sizing: border-box;
+  }
+
+  /* Tablet */
+  @media screen and (min-width: 769px) and (max-width: 1024px) {
+    .vt-card-list__track:not(.swiper-initialized) .swiper-wrapper > * {
+      flex: 0 0 calc((100% - var(--plt-gap-desktop, 32px)) / 2);
+    }
+  }
+
+  /* Mobile */
+  @media screen and (max-width: 768px) {
+    /* Swipeable mode */
+    card-list.plt-listing-tab--swipe-mobile {
+      width: calc(100% + var(--vt-ph-mobile, var(--vt-ph, 0px)) * 2);
+      margin-left: calc(-1 * var(--vt-ph-mobile, var(--vt-ph, 0px)));
+      margin-right: calc(-1 * var(--vt-ph-mobile, var(--vt-ph, 0px)));
+    }
+
+    .plt-listing-tab--swipe-mobile .vt-card-list__track {
+      padding-left: var(--plt-pad-mobile, 20px);
+      padding-right: var(--plt-pad-mobile, 20px);
+    }
+
+    .plt-listing-tab--swipe-mobile .vt-card-list__track:not(.swiper-initialized) {
+      gap: var(--plt-gap-mobile, 16px);
+      scroll-padding-left: var(--plt-pad-mobile, 20px);
+      scroll-padding-right: var(--plt-pad-mobile, 20px);
+    }
+
+    .plt-listing-tab--swipe-mobile .vt-card-list__track:not(.swiper-initialized) > .swiper-wrapper {
+      gap: var(--plt-gap-mobile, 16px);
+    }
+
+    .plt-listing-tab--swipe-mobile .vt-card-list__track:not(.swiper-initialized) .swiper-wrapper > * {
+      flex: 0 0 calc((100% - var(--plt-gap-mobile, 16px)) / 1.2);
+    }
+
+    /* Stack mode */
+    card-list.plt-listing-tab--stack-mobile {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .plt-listing-tab--stack-mobile .vt-card-list__track {
+      overflow: visible;
+      padding-left: 0;
+      padding-right: 0;
+      display: block;
+    }
+
+    .plt-listing-tab--stack-mobile .vt-card-list__track > .swiper-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: var(--plt-gap-mobile, 16px);
+      width: 100%;
+      transform: none;
+    }
+
+    .plt-listing-tab--stack-mobile .swiper-wrapper > * {
+      width: 100%;
+      max-width: 100%;
+      flex: 0 0 100%;
+      margin-right: 0;
+      transform: none;
+    }
+
+    .plt-listing-tab--stack-mobile earth-slider-nav {
+      display: none !important;
+    }
+
+    card-list:not([data-arrows-mobile="true"]) earth-slider-nav,
+    card-list[data-arrows-mobile="false"] earth-slider-nav {
+      display: none !important;
+    }
+  }
+
+  /* Visual Preview in Theme Editor Block Picker */
+  .plt-listing-tab--preview .swiper-wrapper,
+  card-list[data-preview="true"] .swiper-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--plt-gap-desktop, 32px);
+    overflow: hidden;
+  }
+
+  .plt-listing-tab--preview .swiper-wrapper > *,
+  card-list[data-preview="true"] .swiper-wrapper > * {
+    flex: 0 0 calc((100% - (var(--plt-col-desktop, 3) - 1) * var(--plt-gap-desktop, 32px)) / var(--plt-col-desktop, 3));
+    max-width: calc((100% - (var(--plt-col-desktop, 3) - 1) * var(--plt-gap-desktop, 32px)) / var(--plt-col-desktop, 3));
+    box-sizing: border-box;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Card list",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout & Carousel"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns (desktop)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_swipe_mobile",
+      "label": "Enable swipe on mobile",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "label": "Desktop gap",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Mobile gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Card carousel track spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Horizontal padding (desktop)",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Horizontal padding (mobile)",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Navigation arrows"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show navigation arrows",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "arrows_visibility",
+      "label": "Arrows visibility",
+      "options": [
+        {
+          "value": "hover",
+          "label": "Show on hover"
+        },
+        {
+          "value": "always",
+          "label": "Always visible"
+        }
+      ],
+      "default": "hover"
+    },
+    {
+      "type": "select",
+      "id": "arrows_theme",
+      "label": "Arrow button style",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light / Cream (Green on hover)"
+        },
+        {
+          "value": "green",
+          "label": "Solid green"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "range",
+      "id": "arrows_offset",
+      "label": "Arrow button offset",
+      "min": -20,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows_mobile",
+      "label": "Show arrows on mobile",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Card list",
+      "settings": {
+        "columns_desktop": 3,
+        "enable_swipe_mobile": true,
+        "gap_desktop": 32,
+        "gap_mobile": 16,
+        "padding_desktop": 34,
+        "padding_mobile": 20,
+        "show_arrows": true,
+        "arrows_visibility": "hover",
+        "arrows_theme": "light",
+        "arrows_offset": 0,
+        "show_arrows_mobile": false
+      },
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "background_color": "#EAE060",
+            "heading_color": "#003225",
+            "text_color": "#003225",
+            "position": "top",
+            "alignment": "left",
+            "padding_vertical": 24,
+            "padding_horizontal": 24,
+            "enable_padding_mobile": true,
+            "padding_vertical_mobile": 20,
+            "padding_horizontal_mobile": 20,
+            "border": "none",
+            "border_radius": 8,
+            "width": "fill",
+            "height": "fill",
+            "gap": 20
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "gap_desktop": 20,
+                "gap_mobile": 16,
+                "width": "fill",
+                "height": "fill"
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "portrait",
+                    "image_corner": 4
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Card description text</p>",
+                    "paragraph_size": "vt-paragraph-large",
+                    "paragraph_alignment": "text-left"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Card title",
+                    "heading_size": "vt-heading-h5",
+                    "heading_tag": "h3",
+                    "heading_alignment": "text-left"
+                  }
+                },
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--horizontal",
+                    "alignment": "space-between",
+                    "position": "center",
+                    "gap_desktop": 12,
+                    "gap_mobile": 8,
+                    "width": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Category</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-left"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Badge label",
+                        "bg_color": "#003225",
+                        "text_color": "#F8F9DC",
+                        "badge_size": "vt-paragraph-extra-small",
+                        "radius": "3.125rem"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "card",
+          "settings": {
+            "background_color": "#EAE060",
+            "heading_color": "#003225",
+            "text_color": "#003225",
+            "position": "top",
+            "alignment": "left",
+            "padding_vertical": 24,
+            "padding_horizontal": 24,
+            "enable_padding_mobile": true,
+            "padding_vertical_mobile": 20,
+            "padding_horizontal_mobile": 20,
+            "border": "none",
+            "border_radius": 8,
+            "width": "fill",
+            "height": "fill",
+            "gap": 20
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "gap_desktop": 20,
+                "gap_mobile": 16,
+                "width": "fill",
+                "height": "fill"
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "portrait",
+                    "image_corner": 4
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Card description text</p>",
+                    "paragraph_size": "vt-paragraph-large",
+                    "paragraph_alignment": "text-left"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Card title",
+                    "heading_size": "vt-heading-h5",
+                    "heading_tag": "h3",
+                    "heading_alignment": "text-left"
+                  }
+                },
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--horizontal",
+                    "alignment": "space-between",
+                    "position": "center",
+                    "gap_desktop": 12,
+                    "gap_mobile": 8,
+                    "width": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Category</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-left"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Badge label",
+                        "bg_color": "#003225",
+                        "text_color": "#F8F9DC",
+                        "badge_size": "vt-paragraph-extra-small",
+                        "radius": "3.125rem"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "card",
+          "settings": {
+            "background_color": "#EAE060",
+            "heading_color": "#003225",
+            "text_color": "#003225",
+            "position": "top",
+            "alignment": "left",
+            "padding_vertical": 24,
+            "padding_horizontal": 24,
+            "enable_padding_mobile": true,
+            "padding_vertical_mobile": 20,
+            "padding_horizontal_mobile": 20,
+            "border": "none",
+            "border_radius": 8,
+            "width": "fill",
+            "height": "fill",
+            "gap": 20
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "gap_desktop": 20,
+                "gap_mobile": 16,
+                "width": "fill",
+                "height": "fill"
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "portrait",
+                    "image_corner": 4
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>Card description text</p>",
+                    "paragraph_size": "vt-paragraph-large",
+                    "paragraph_alignment": "text-left"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Card title",
+                    "heading_size": "vt-heading-h5",
+                    "heading_tag": "h3",
+                    "heading_alignment": "text-left"
+                  }
+                },
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--horizontal",
+                    "alignment": "space-between",
+                    "position": "center",
+                    "gap_desktop": 12,
+                    "gap_mobile": 8,
+                    "width": "fill"
+                  },
+                  "blocks": [
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Category</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-left"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Badge label",
+                        "bg_color": "#003225",
+                        "text_color": "#F8F9DC",
+                        "badge_size": "vt-paragraph-extra-small",
+                        "radius": "3.125rem"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

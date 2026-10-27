@@ -1,0 +1,146 @@
+{% doc %}
+  Renders policy links (Privacy Policy, Terms of Service).
+  Automatically links to Shopify policy URLs or custom overrides.
+  @example
+  {% content_for 'block', type: 'policy-links', id: 'policy-links' %}
+{% enddoc %}
+
+{%- liquid
+  assign privacy_url = block.settings.privacy_url | default: shop.privacy_policy.url | default: '/policies/privacy-policy'
+  assign terms_url = block.settings.terms_url | default: shop.terms_of_service.url | default: '/policies/terms-of-service'
+  assign privacy_label = block.settings.privacy_label | default: 'Privacy Policy'
+  assign terms_label = block.settings.terms_label | default: 'Terms of Service'
+  assign alignment = block.settings.alignment | default: 'right'
+  assign color_setting = block.settings.color
+  if color_setting != blank and color_setting != 'rgba(0,0,0,0)' and color_setting != '#00000000' and color_setting != 'transparent'
+    assign final_color = color_setting
+  else
+    assign final_color = 'var(--vt-footer-color, var(--vt-foreground-color, #003225))'
+  endif
+-%}
+
+<div
+  id="policy-links-{{ block.id }}"
+  class="vt-policy-links vt-policy-links--align-{{ alignment }} {{ block.settings.font_size }}"
+  style="
+    --vt-pl-color: {{ final_color }};
+  "
+  {{ block.shopify_attributes }}
+>
+  <a href="{{ privacy_url }}" class="vt-policy-links__link">
+    {{ privacy_label }}
+  </a>
+  <span class="vt-policy-links__separator" aria-hidden="true">•</span>
+  <a href="{{ terms_url }}" class="vt-policy-links__link">
+    {{ terms_label }}
+  </a>
+</div>
+
+{% stylesheet %}
+  .vt-policy-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--vt-pl-color);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .vt-policy-links--align-left {
+    justify-content: flex-start;
+  }
+
+  .vt-policy-links--align-center {
+    justify-content: center;
+  }
+
+  .vt-policy-links--align-right {
+    justify-content: flex-end;
+  }
+
+  .vt-policy-links__link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .vt-policy-links__link:hover {
+    color: var(--vt-color-secondary, #71CC3B);
+    text-decoration: underline;
+  }
+
+  .vt-policy-links__separator {
+    color: inherit;
+    opacity: 0.6;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Policy links",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "privacy_label",
+      "label": "Privacy Policy label",
+      "default": "Privacy Policy"
+    },
+    {
+      "type": "url",
+      "id": "privacy_url",
+      "label": "Privacy Policy link (optional override)"
+    },
+    {
+      "type": "text",
+      "id": "terms_label",
+      "label": "Terms of Service label",
+      "default": "Terms of Service"
+    },
+    {
+      "type": "url",
+      "id": "terms_url",
+      "label": "Terms of Service link (optional override)"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "select",
+      "id": "font_size",
+      "label": "Font size",
+      "options": [
+        { "value": "vt-paragraph-extra-small", "label": "Extra Small" },
+        { "value": "vt-paragraph-small", "label": "Small" },
+        { "value": "vt-paragraph-medium", "label": "Medium" }
+      ],
+      "default": "vt-paragraph-extra-small"
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Text color",
+      "default": "#00000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Policy links",
+      "settings": {
+        "privacy_label": "Privacy Policy",
+        "terms_label": "Terms of Service",
+        "alignment": "right",
+        "font_size": "vt-paragraph-extra-small"
+      }
+    }
+  ]
+}
+{% endschema %}

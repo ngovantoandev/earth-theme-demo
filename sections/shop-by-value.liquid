@@ -1,0 +1,984 @@
+{%- comment -%}
+  Section: Shop by Values
+  Container wrapper for theme blocks (stack, heading-group, value-tabs, etc.).
+  Features an interactive carousel of brand value cards with bottom tab navigation.
+  Supports full width, theme color tokens, and responsive section padding.
+{%- endcomment -%}
+
+{%- liquid
+  assign make_section_page_width = section.settings.make_section_page_width
+
+  assign section_bg = section.settings.background_color
+  if section_bg != blank and section_bg != 'rgba(0,0,0,0)' and section_bg != '#00000000'
+    assign background_color = section_bg
+  else
+    assign background_color = 'var(--vt-foreground-color, var(--color-black, #003225))'
+  endif
+
+  assign section_heading_color = section.settings.heading_color
+  if section_heading_color != blank and section_heading_color != 'rgba(0,0,0,0)' and section_heading_color != '#00000000'
+    assign heading_color = section_heading_color
+  else
+    assign heading_color = 'var(--vt-background-color, var(--color-white, #F8F9DC))'
+  endif
+
+  assign section_paragraph_color = section.settings.paragraph_color
+  if section_paragraph_color != blank and section_paragraph_color != 'rgba(0,0,0,0)' and section_paragraph_color != '#00000000'
+    assign paragraph_color = section_paragraph_color
+  else
+    assign paragraph_color = 'var(--vt-background-color, var(--color-white, #F8F9DC))'
+  endif
+  assign pad_ph_desktop = section.settings.padding_horizontal
+  if pad_ph_desktop == blank
+    assign pad_ph_desktop = 34
+  endif
+  assign pad_ph_mobile = section.settings.padding_horizontal_mobile
+  if pad_ph_mobile == blank
+    assign pad_ph_mobile = 20
+  endif
+-%}
+
+<div
+  class="vt-shop-by-values{% unless make_section_page_width %} vt-page-full-width{% endunless %}"
+  id="vtShopByValues-{{ section.id }}"
+  style="
+    --vt-bg: {{ background_color }};
+    --vt-heading-color: {{ heading_color }};
+    --vt-paragraph-color: {{ paragraph_color }};
+    --vt-pt: {{ section.settings.padding_top | default: 80 }}px;
+    --vt-pb: {{ section.settings.padding_bottom | default: 96 }}px;
+    --vt-ph: {{ pad_ph_desktop }}px;
+    --vt-pt-mobile: {{ section.settings.padding_top_mobile | default: 48 }}px;
+    --vt-pb-mobile: {{ section.settings.padding_bottom_mobile | default: 48 }}px;
+    --vt-ph-mobile: {{ pad_ph_mobile }}px;
+    --vt-page-padding: {{ pad_ph_desktop }}px;
+    --vt-page-padding-mobile: {{ pad_ph_mobile }}px;
+    --vt-block-gap: {{ section.settings.block_gap | default: 56 }}px;
+    --vt-block-gap-mobile: {{ section.settings.block_gap_mobile | default: 36 }}px;
+  "
+  {{ section.shopify_attributes }}
+>
+  <div class="vt-shop-by-values__container{% if make_section_page_width %} vt-page-width{% endif %}">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .vt-shop-by-values {
+    width: 100%;
+    background-color: var(--vt-bg, var(--vt-foreground-color, var(--color-black, #003225)));
+    padding-top: var(--vt-pt, 80px);
+    padding-bottom: var(--vt-pb, 96px);
+    box-sizing: border-box;
+    overflow-x: hidden; /* fallback for browsers without overflow: clip */
+    overflow-x: clip;
+    position: relative;
+  }
+
+  .vt-shop-by-values__container {
+    width: 100%;
+    min-width: 0;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--vt-block-gap, 56px);
+    padding-left: var(--vt-ph, 34px);
+    padding-right: var(--vt-ph, 34px);
+  }
+
+  .vt-shop-by-values__container:not(.vt-page-width) {
+    max-width: 100%;
+  }
+
+  /* Support Theme Editor wrappers without altering layout */
+  .vt-shop-by-values__container > .shopify-block,
+  .vt-shop-by-values__container > shopify-block {
+    display: contents;
+  }
+
+  /* Scoped section heading & paragraph styling */
+  .vt-shop-by-values > .vt-shop-by-values__container > .vt-heading,
+  .vt-shop-by-values .vt-heading-group,
+  .vt-shop-by-values .vt-heading-group .vt-heading,
+  .vt-shop-by-values .vt-subheading {
+    color: var(--vt-heading-color, var(--vt-background-color, var(--color-white, #F8F9DC)));
+  }
+
+  .vt-shop-by-values .vt-heading-group .vt-heading {
+    color: inherit;
+  }
+
+  .vt-shop-by-values .vt-paragraph {
+    color: var(--vt-paragraph-color, var(--vt-background-color, var(--color-white, #F8F9DC)));
+  }
+
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    .vt-shop-by-values__container {
+      padding-left: var(--vt-ph, 34px);
+      padding-right: var(--vt-ph, 34px);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .vt-shop-by-values {
+      padding-top: var(--vt-pt-mobile, 48px);
+      padding-bottom: var(--vt-pb-mobile, 48px);
+    }
+
+    .vt-shop-by-values__container {
+      padding-left: var(--vt-ph-mobile, 0px);
+      padding-right: var(--vt-ph-mobile, 0px);
+      gap: var(--vt-block-gap-mobile, 36px);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Shop by values",
+  "tag": "section",
+  "class": "shop-by-values-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "make_section_page_width",
+      "label": "t:sections.rich_text.settings.make_section_page_width.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:sections.rich_text.settings.background_color.label"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color"
+    },
+    {
+      "type": "color",
+      "id": "paragraph_color",
+      "label": "Paragraph color"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "block_gap",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between header & carousel",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Mobile Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "block_gap_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between header & carousel",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop by values",
+      "settings": {
+        "make_section_page_width": true,
+        "padding_top": 80,
+        "padding_bottom": 96,
+        "padding_horizontal": 34,
+        "block_gap": 56,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48,
+        "padding_horizontal_mobile": 20,
+        "block_gap_mobile": 36
+      },
+      "blocks": [
+        {
+          "type": "stack",
+          "settings": {
+            "layout_direction_desktop": "vt-stack--vertical",
+            "layout_direction_tablet": "vt-stack--vertical",
+            "layout_direction_mobile": "vt-stack--vertical",
+            "alignment": "center",
+            "position": "center",
+            "wrap_content": "nowrap",
+            "width": "fit",
+            "height": "fit",
+            "position_type": "default",
+            "gap_desktop": 20,
+            "gap_mobile": 16
+          },
+          "blocks": [
+            {
+              "type": "heading-group",
+              "settings": {
+                "direction": "horizontal",
+                "alignment": "center",
+                "vertical_alignment": "center",
+                "gap_desktop": 16,
+                "gap_mobile": 12,
+                "width": "fit",
+                "max_width": 1000,
+                "hide_icon_mobile": true
+              },
+              "blocks": [
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "leaf",
+                    "icon_color": "#71CC3B",
+                    "icon_size_desktop": 36,
+                    "icon_size_mobile": 28
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Shop by Values",
+                    "heading_size": "vt-heading-h1",
+                    "heading_alignment": "text-inherit",
+                    "heading_tag": "h2",
+                    "animation_type": "slide",
+                    "animation_direction": "from-bottom",
+                    "animation_duration": 1,
+                    "animation_delay": 0.2,
+                    "animation_easing": "ease-out-sine",
+                    "animation_blur_intensity": 5
+                  }
+                },
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "leaf",
+                    "icon_color": "#71CC3B",
+                    "icon_size_desktop": 36,
+                    "icon_size_mobile": 28
+                  }
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "settings": {
+                "text": "<p>Find fashion that matches your ethics – filter by what matters most to you</p>",
+                "paragraph_size": "vt-paragraph-large",
+                "paragraph_alignment": "text-center",
+                "enable_max_width": true,
+                "paragraph_max_width": 580,
+                "animation_type": "slide",
+                "animation_direction": "from-bottom",
+                "animation_duration": 1,
+                "animation_delay": 0.4,
+                "animation_easing": "ease-out-sine",
+                "animation_blur_intensity": 5
+              }
+            }
+          ]
+        },
+        {
+          "type": "value-tabs",
+          "settings": {
+            "enable_swipe_mobile": true,
+            "gap_desktop": 32,
+            "gap_mobile": 16,
+            "show_arrows": true,
+            "arrows_visibility": "hover",
+            "arrows_theme": "light",
+            "arrows_offset": 0,
+            "show_arrows_mobile": true,
+            "tab_font_size": 17,
+            "tab_color": "#EAE060",
+            "tab_active_color": "#FFFFFF",
+            "tab_line_color": "#FFFFFF"
+          },
+          "blocks": [
+            {
+              "type": "value-card",
+              "settings": {
+                "tab_label": "Organic Cotton"
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "stretch",
+                    "width": "fill",
+                    "height": "fill",
+                    "gap_desktop": 0,
+                    "gap_mobile": 0
+                  },
+                  "blocks": [
+                    {
+                      "type": "image",
+                      "settings": {
+                        "image_aspect_ratio": "square",
+                        "image_desktop_width": "fill",
+                        "image_mobile_width": "fill"
+                      }
+                    },
+                    {
+                      "type": "card",
+                      "settings": {
+                        "background_color": "#F8F9DC",
+                        "heading_color": "#003225",
+                        "text_color": "#003225",
+                        "position": "middle",
+                        "alignment": "left",
+                        "width": "fill",
+                        "height": "fill",
+                        "padding_vertical": 48,
+                        "padding_horizontal": 40,
+                        "enable_padding_mobile": true,
+                        "padding_vertical_mobile": 24,
+                        "padding_horizontal_mobile": 20,
+                        "gap": 16
+                      },
+                      "blocks": [
+                        {
+                          "type": "heading",
+                          "settings": {
+                            "heading": "Organic Cotton",
+                            "heading_size": "vt-heading-h2",
+                            "heading_alignment": "text-inherit",
+                            "heading_tag": "h3"
+                          }
+                        },
+                        {
+                          "type": "badge",
+                          "settings": {
+                            "text": "100% GOTS Certified",
+                            "radius": "3.125rem",
+                            "badge_size": "vt-paragraph-small",
+                            "bg_color": "#003225",
+                            "text_color": "#71CC3B"
+                          }
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "inherit",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "cotton-plant",
+                                "icon_color": "#003225",
+                                "icon_size_desktop": 20,
+                                "icon_size_mobile": 18
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>Zero synthetic pesticides or GMO seeds</p>",
+                                "paragraph_size": "vt-paragraph-small",
+                                "paragraph_alignment": "text-inherit"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Grown using rainwater and natural compost, protecting soil biodiversity and farmer health across 12 farming communities.</p>",
+                            "paragraph_size": "vt-paragraph-medium",
+                            "paragraph_alignment": "text-inherit"
+                          }
+                        },
+                        {
+                          "type": "button",
+                          "settings": {
+                            "button_label": "EXPLORE PRODUCTS",
+                            "button_link": "shopify://collections/all",
+                            "button_style": "link"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "value-card",
+              "settings": {
+                "tab_label": "Recycled Materials"
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "stretch",
+                    "width": "fill",
+                    "height": "fill",
+                    "gap_desktop": 0,
+                    "gap_mobile": 0
+                  },
+                  "blocks": [
+                    {
+                      "type": "image",
+                      "settings": {
+                        "image_aspect_ratio": "square",
+                        "image_desktop_width": "fill",
+                        "image_mobile_width": "fill"
+                      }
+                    },
+                    {
+                      "type": "card",
+                      "settings": {
+                        "background_color": "#F8F9DC",
+                        "heading_color": "#003225",
+                        "text_color": "#003225",
+                        "position": "middle",
+                        "alignment": "left",
+                        "width": "fill",
+                        "height": "fill",
+                        "padding_vertical": 48,
+                        "padding_horizontal": 40,
+                        "enable_padding_mobile": true,
+                        "padding_vertical_mobile": 24,
+                        "padding_horizontal_mobile": 20,
+                        "gap": 16
+                      },
+                      "blocks": [
+                        {
+                          "type": "heading",
+                          "settings": {
+                            "heading": "Recycled Materials",
+                            "heading_size": "vt-heading-h2",
+                            "heading_alignment": "text-inherit",
+                            "heading_tag": "h3"
+                          }
+                        },
+                        {
+                          "type": "badge",
+                          "settings": {
+                            "text": "Closed-loop circularity",
+                            "radius": "3.125rem",
+                            "badge_size": "vt-paragraph-small",
+                            "bg_color": "#003225",
+                            "text_color": "#71CC3B"
+                          }
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "inherit",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "ecology",
+                                "icon_color": "#003225",
+                                "icon_size_desktop": 20,
+                                "icon_size_mobile": 18
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>Diverting 15,000+ lbs of textile waste</p>",
+                                "paragraph_size": "vt-paragraph-small",
+                                "paragraph_alignment": "text-inherit"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Transforming post-consumer garments and ocean plastic into premium, high-durability fabrics designed for longevity.</p>",
+                            "paragraph_size": "vt-paragraph-medium",
+                            "paragraph_alignment": "text-inherit"
+                          }
+                        },
+                        {
+                          "type": "button",
+                          "settings": {
+                            "button_label": "EXPLORE PRODUCTS",
+                            "button_link": "shopify://collections/all",
+                            "button_style": "link"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "value-card",
+              "settings": {
+                "tab_label": "Fair Trade"
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "stretch",
+                    "width": "fill",
+                    "height": "fill",
+                    "gap_desktop": 0,
+                    "gap_mobile": 0
+                  },
+                  "blocks": [
+                    {
+                      "type": "image",
+                      "settings": {
+                        "image_aspect_ratio": "square",
+                        "image_desktop_width": "fill",
+                        "image_mobile_width": "fill"
+                      }
+                    },
+                    {
+                      "type": "card",
+                      "settings": {
+                        "background_color": "#F8F9DC",
+                        "heading_color": "#003225",
+                        "text_color": "#003225",
+                        "position": "middle",
+                        "alignment": "left",
+                        "width": "fill",
+                        "height": "fill",
+                        "padding_vertical": 48,
+                        "padding_horizontal": 40,
+                        "enable_padding_mobile": true,
+                        "padding_vertical_mobile": 24,
+                        "padding_horizontal_mobile": 20,
+                        "gap": 16
+                      },
+                      "blocks": [
+                        {
+                          "type": "heading",
+                          "settings": {
+                            "heading": "Fair Trade",
+                            "heading_size": "vt-heading-h2",
+                            "heading_alignment": "text-inherit",
+                            "heading_tag": "h3"
+                          }
+                        },
+                        {
+                          "type": "badge",
+                          "settings": {
+                            "text": "Ethical wages guaranteed",
+                            "radius": "3.125rem",
+                            "badge_size": "vt-paragraph-small",
+                            "bg_color": "#003225",
+                            "text_color": "#71CC3B"
+                          }
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "inherit",
+                            "position": "center",
+                            "width": "fill",
+                            "height": "fit",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "quality",
+                                "icon_color": "#003225",
+                                "icon_size_desktop": 20,
+                                "icon_size_mobile": 18
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>100% worker-owned cooperatives</p>",
+                                "paragraph_size": "vt-paragraph-small",
+                                "paragraph_alignment": "text-inherit"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p>",
+                            "paragraph_size": "vt-paragraph-medium",
+                            "paragraph_alignment": "text-inherit"
+                          }
+                        },
+                        {
+                          "type": "button",
+                          "settings": {
+                            "button_label": "EXPLORE PRODUCTS",
+                            "button_link": "shopify://collections/all",
+                            "button_style": "link"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "value-card",
+              "settings": {
+                "tab_label": "Carbon Neutral"
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "stretch",
+                    "width": "fill",
+                    "height": "fill",
+                    "gap_desktop": 0,
+                    "gap_mobile": 0
+                  },
+                  "blocks": [
+                    {
+                      "type": "image",
+                      "settings": {
+                        "image_aspect_ratio": "square",
+                        "image_desktop_width": "fill",
+                        "image_mobile_width": "fill"
+                      }
+                    },
+                    {
+                      "type": "card",
+                      "settings": {
+                        "background_color": "#F8F9DC",
+                        "heading_color": "#003225",
+                        "text_color": "#003225",
+                        "position": "middle",
+                        "alignment": "left",
+                        "width": "fill",
+                        "height": "fill",
+                        "padding_vertical": 48,
+                        "padding_horizontal": 40,
+                        "enable_padding_mobile": true,
+                        "padding_vertical_mobile": 24,
+                        "padding_horizontal_mobile": 20,
+                        "gap": 16
+                      },
+                      "blocks": [
+                        {
+                          "type": "heading",
+                          "settings": {
+                            "heading": "Carbon Neutral",
+                            "heading_size": "vt-heading-h2",
+                            "heading_alignment": "text-inherit",
+                            "heading_tag": "h3"
+                          }
+                        },
+                        {
+                          "type": "badge",
+                          "settings": {
+                            "text": "Net-zero emissions",
+                            "radius": "3.125rem",
+                            "badge_size": "vt-paragraph-small",
+                            "bg_color": "#003225",
+                            "text_color": "#71CC3B"
+                          }
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "inherit",
+                            "position": "center",
+                            "width": "fill",
+                            "height": "fit",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "zero-emissions",
+                                "icon_color": "#003225",
+                                "icon_size_desktop": 20,
+                                "icon_size_mobile": 18
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>100% solar-powered logistics</p>",
+                                "paragraph_size": "vt-paragraph-small",
+                                "paragraph_alignment": "text-inherit"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Every step from weaving to delivery is fully offset through verified reforestation and solar energy projects.</p>",
+                            "paragraph_size": "vt-paragraph-medium",
+                            "paragraph_alignment": "text-inherit"
+                          }
+                        },
+                        {
+                          "type": "button",
+                          "settings": {
+                            "button_label": "EXPLORE PRODUCTS",
+                            "button_link": "shopify://collections/all",
+                            "button_style": "link"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "value-card",
+              "settings": {
+                "tab_label": "Vegan & Cruelty-Free"
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--horizontal",
+                    "layout_direction_tablet": "vt-stack--horizontal",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "flex-start",
+                    "position": "stretch",
+                    "width": "fill",
+                    "height": "fill",
+                    "gap_desktop": 0,
+                    "gap_mobile": 0
+                  },
+                  "blocks": [
+                    {
+                      "type": "image",
+                      "settings": {
+                        "image_aspect_ratio": "square",
+                        "image_desktop_width": "fill",
+                        "image_mobile_width": "fill"
+                      }
+                    },
+                    {
+                      "type": "card",
+                      "settings": {
+                        "background_color": "#F8F9DC",
+                        "heading_color": "#003225",
+                        "text_color": "#003225",
+                        "position": "middle",
+                        "alignment": "left",
+                        "width": "fill",
+                        "height": "fill",
+                        "padding_vertical": 48,
+                        "padding_horizontal": 40,
+                        "enable_padding_mobile": true,
+                        "padding_vertical_mobile": 24,
+                        "padding_horizontal_mobile": 20,
+                        "gap": 16
+                      },
+                      "blocks": [
+                        {
+                          "type": "heading",
+                          "settings": {
+                            "heading": "Vegan & Cruelty-Free",
+                            "heading_size": "vt-heading-h2",
+                            "heading_alignment": "text-inherit",
+                            "heading_tag": "h3"
+                          }
+                        },
+                        {
+                          "type": "badge",
+                          "settings": {
+                            "text": "PETA-Approved Vegan",
+                            "radius": "3.125rem",
+                            "badge_size": "vt-paragraph-small",
+                            "bg_color": "#003225",
+                            "text_color": "#71CC3B"
+                          }
+                        },
+                        {
+                          "type": "stack",
+                          "settings": {
+                            "layout_direction_desktop": "vt-stack--horizontal",
+                            "layout_direction_tablet": "vt-stack--horizontal",
+                            "layout_direction_mobile": "vt-stack--horizontal",
+                            "alignment": "inherit",
+                            "position": "center",
+                            "width": "fill",
+                            "height": "fit",
+                            "gap_desktop": 10,
+                            "gap_mobile": 8
+                          },
+                          "blocks": [
+                            {
+                              "type": "icons",
+                              "settings": {
+                                "icon": "leaf",
+                                "icon_color": "#003225",
+                                "icon_size_desktop": 20,
+                                "icon_size_mobile": 18
+                              }
+                            },
+                            {
+                              "type": "paragraph",
+                              "settings": {
+                                "text": "<p>0% animal-derived materials</p>",
+                                "paragraph_size": "vt-paragraph-small",
+                                "paragraph_alignment": "text-inherit"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Crafted exclusively with innovative plant-based fibers like apple leather, organic hemp, and bamboo silk.</p>",
+                            "paragraph_size": "vt-paragraph-medium",
+                            "paragraph_alignment": "text-inherit"
+                          }
+                        },
+                        {
+                          "type": "button",
+                          "settings": {
+                            "button_label": "EXPLORE PRODUCTS",
+                            "button_link": "shopify://collections/all",
+                            "button_style": "link"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

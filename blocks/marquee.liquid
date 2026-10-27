@@ -1,0 +1,375 @@
+{% doc %}
+  Renders a continuous scrolling Marquee container block.
+  - Hosts child blocks: heading, icons, image, paragraph, badge, button.
+  - Supports configurable speed, direction, gap, text color, pause-on-hover.
+  - Follows Earth Theme Atomic Design & visual preview standard.
+
+  @example
+  {% content_for 'block', type: 'marquee', id: 'marquee' %}
+{% enddoc %}
+
+{%- liquid
+  assign is_preview = false
+  if request.visual_preview_mode
+    assign is_preview = true
+  endif
+
+  assign speed_level = block.settings.speed | default: 3 | plus: 0
+  case speed_level
+    when 5
+      assign speed_duration = 20
+    when 4
+      assign speed_duration = 30
+    when 3
+      assign speed_duration = 45
+    when 2
+      assign speed_duration = 65
+    when 1
+      assign speed_duration = 90
+    else
+      if speed_level > 5
+        assign speed_duration = speed_level
+      else
+        assign speed_duration = 45
+      endif
+  endcase
+
+  assign gap_desktop = block.settings.gap_desktop | default: 32
+  assign gap_mobile = block.settings.gap_mobile | default: 24
+
+  assign text_color = block.settings.text_color
+  if text_color != blank and text_color != 'rgba(0,0,0,0)' and text_color != '#00000000'
+    assign marquee_color = text_color
+  else
+    assign marquee_color = 'inherit'
+  endif
+
+  assign pause_hover = block.settings.pause_on_hover | default: true
+-%}
+
+{%- capture marquee_blocks -%}
+  {% content_for 'blocks' %}
+{%- endcapture -%}
+
+{%- liquid
+  # Fallback preview content when no blocks exist or during theme editor visual preview
+  if marquee_blocks == blank or is_preview
+    capture marquee_fallback
+      echo '<div class="vt-heading-wrapper text-center"><h3 class="vt-heading vt-heading-h5">SUSTAINABLE FABRICS</h3></div>'
+      echo '<div class="vt-icon vt-icon--flower" style="--vt-icon-color: var(--color-secondary, #71CC3B); --vt-icon-size: 28px;"><span class="vt-icon__inner">'
+      render 'icons', icon: 'flower'
+      echo '</span></div>'
+      echo '<div class="vt-heading-wrapper text-center"><h3 class="vt-heading vt-heading-h5">FEEL GOOD CLOTHES</h3></div>'
+      echo '<div class="vt-icon vt-icon--flower" style="--vt-icon-color: var(--color-secondary, #71CC3B); --vt-icon-size: 28px;"><span class="vt-icon__inner">'
+      render 'icons', icon: 'flower'
+      echo '</span></div>'
+    endcapture
+    if marquee_blocks == blank
+      assign marquee_blocks = marquee_fallback
+    endif
+  endif
+
+  assign repeat_count = 8
+-%}
+
+{%- capture marquee_group_content -%}
+  {%- for j in (1..repeat_count) -%}
+    {{ marquee_blocks }}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<div
+  class="vt-marquee vt-marquee-{{ block.id }}{% if pause_hover %} vt-marquee--pause-hover{% endif %}"
+  id="vtMarquee-{{ block.id }}"
+  style="
+    --vt-marquee-duration: {{ speed_duration }}s;
+    --vt-marquee-direction: {% if block.settings.direction == 'right' %}reverse{% else %}normal{% endif %};
+    --vt-marquee-color: {{ marquee_color }};
+    --vt-marquee-gap: {{ gap_desktop }}px;
+    --vt-marquee-gap-mobile: {{ gap_mobile }}px;
+  "
+  role="region"
+  aria-label="Marquee content"
+  {{ block.shopify_attributes }}
+>
+  <div class="vt-marquee__container">
+    <div class="vt-marquee__track">
+      <div class="vt-marquee__group">
+        {{ marquee_group_content }}
+      </div>
+      <div class="vt-marquee__group" aria-hidden="true">
+        {{ marquee_group_content }}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .vt-marquee {
+    grid-column: 1 / -1;
+    overflow: hidden;
+    width: 100%;
+    user-select: none;
+    color: var(--vt-marquee-color, inherit);
+    margin: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+
+  .vt-marquee__container {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .vt-marquee__track {
+    display: flex;
+    flex-wrap: nowrap;
+    width: max-content;
+    will-change: transform;
+    animation: vtMarqueeScroll var(--vt-marquee-duration, 45s) linear infinite;
+    animation-direction: var(--vt-marquee-direction, normal);
+  }
+
+  .vt-marquee--pause-hover:hover .vt-marquee__track,
+  .vt-marquee__track:hover {
+    animation-play-state: paused;
+    cursor: default;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vt-marquee__track {
+      animation-play-state: paused;
+    }
+  }
+
+  .vt-marquee__group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    gap: var(--vt-marquee-gap, 32px);
+    padding-right: var(--vt-marquee-gap, 32px);
+  }
+
+  /* Child elements in a single continuous row */
+  .vt-marquee__group > * {
+    flex-shrink: 0;
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+
+  .vt-marquee .vt-heading-wrapper {
+    width: auto;
+    max-width: none;
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .vt-marquee .vt-heading {
+    color: var(--vt-marquee-color, inherit);
+    white-space: nowrap;
+    margin: 0;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  .vt-marquee .vt-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+
+  .vt-marquee .vt-icon svg {
+    display: block;
+    width: var(--vt-icon-size, 28px);
+    height: var(--vt-icon-size, 26px);
+    min-width: 20px;
+    min-height: 20px;
+    object-fit: contain;
+  }
+
+  .vt-marquee .vt-image {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+
+  .vt-marquee .vt-image img {
+    width: auto;
+    height: auto;
+    max-height: 36px;
+    object-fit: contain;
+    display: inline-block;
+  }
+
+  /* Disable entrance transitions inside continuous marquee track */
+  .vt-marquee .vt-animate {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  @keyframes vtMarqueeScroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .vt-marquee__group {
+      gap: var(--vt-marquee-gap-mobile, 24px);
+      padding-right: var(--vt-marquee-gap-mobile, 24px);
+    }
+
+    .vt-marquee .vt-image img {
+      max-height: 24px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Marquee",
+  "tag": null,
+  "blocks": [
+    { "type": "heading" },
+    { "type": "icons" }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Motion"
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "label": "Direction",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Speed",
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Spacing"
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "min": 12,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between items",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Mobile Spacing"
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "min": 8,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between items",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee",
+      "settings": {
+        "direction": "left",
+        "speed": 3,
+        "pause_on_hover": true,
+        "gap_desktop": 32,
+        "gap_mobile": 24
+      },
+      "blocks": [
+        {
+          "type": "heading",
+          "settings": {
+            "heading": "Heading",
+            "heading_size": "vt-heading-h5",
+            "heading_alignment": "text-center",
+            "heading_tag": "h3"
+          }
+        },
+        {
+          "type": "icons",
+          "settings": {
+            "icon": "flower",
+            "icon_color": "#71CC3B",
+            "icon_size_desktop": 28,
+            "icon_size_mobile": 22
+          }
+        },
+        {
+          "type": "heading",
+          "settings": {
+            "heading": "Heading",
+            "heading_size": "vt-heading-h5",
+            "heading_alignment": "text-center",
+            "heading_tag": "h3"
+          }
+        },
+        {
+          "type": "icons",
+          "settings": {
+            "icon": "flower",
+            "icon_color": "#71CC3B",
+            "icon_size_desktop": 28,
+            "icon_size_mobile": 22
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

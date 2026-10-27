@@ -1,0 +1,348 @@
+{% comment %}
+  Footer section wrapper.
+  Manages background color, page padding, responsive fluid spacing,
+  and renders modular theme blocks via content_for 'blocks'.
+{% endcomment %}
+
+{%- liquid
+  assign apply_max_width = section.settings.apply_max_width
+
+  assign section_bg = section.settings.background_color
+  assign bg_style = ''
+  if section_bg != blank and section_bg != 'rgba(0,0,0,0)' and section_bg != '#00000000' and section_bg != 'transparent'
+    assign bg_style = '--vt-footer-bg: ' | append: section_bg | append: ';'
+  endif
+
+  assign section_text = section.settings.text_color
+  assign text_style = ''
+  if section_text != blank and section_text != 'rgba(0,0,0,0)' and section_text != '#00000000' and section_text != 'transparent'
+    assign text_style = '--vt-footer-color: ' | append: section_text | append: ';' | append: ' --vt-heading-color: ' | append: section_text | append: ';' | append: ' --vt-paragraph-color: ' | append: section_text | append: ';'
+  endif
+
+  assign pad_top = section.settings.padding_top | default: 60
+  assign pad_top_mobile = section.settings.padding_top_mobile | default: 32
+  assign pad_bottom = section.settings.padding_bottom | default: 60
+  assign pad_bottom_mobile = section.settings.padding_bottom_mobile | default: 32
+  assign pad_horizontal = section.settings.padding_horizontal | default: 34
+  assign pad_horizontal_mobile = section.settings.padding_horizontal_mobile | default: 20
+-%}
+
+<footer
+  id="footer-{{ section.id }}"
+  class="vt-footer{% unless apply_max_width %} vt-page-full-width{% endunless %}"
+  style="
+    {{ bg_style }}
+    {{ text_style }}
+    --vt-footer-pt: {% render 'fluid-clamp', min_px: pad_top_mobile, max_px: pad_top %};
+    --vt-footer-pb: {% render 'fluid-clamp', min_px: pad_bottom_mobile, max_px: pad_bottom %};
+    --vt-footer-ph: {% render 'fluid-clamp', min_px: pad_horizontal_mobile, max_px: pad_horizontal %};
+    --vt-ph: {% render 'fluid-clamp', min_px: pad_horizontal_mobile, max_px: pad_horizontal %};
+    --vt-ph-desktop: {{ pad_horizontal }}px;
+    --vt-ph-mobile: {{ pad_horizontal_mobile }}px;
+    --vt-page-padding: {{ pad_horizontal }}px;
+    --vt-page-padding-mobile: {{ pad_horizontal_mobile }}px;
+    --vt-footer-gap: {% render 'fluid-clamp', min_px: section.settings.blocks_gap_mobile, max_px: section.settings.blocks_gap %};
+  "
+  {{ section.shopify_attributes }}
+>
+  <div class="vt-footer__inner{% if apply_max_width %} vt-page-width{% endif %}">
+    {% content_for 'blocks' %}
+  </div>
+</footer>
+
+{% stylesheet %}
+  .vt-footer {
+    background-color: var(--vt-footer-bg, var(--vt-background-color, #F8F9DC));
+    color: var(--vt-footer-color, var(--vt-foreground-color, #003225));
+    padding-top: var(--vt-footer-pt);
+    padding-bottom: var(--vt-footer-pb);
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .vt-footer__inner {
+    width: 100%;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--vt-footer-gap);
+    box-sizing: border-box;
+    padding-left: var(--vt-footer-ph, var(--vt-ph, 34px));
+    padding-right: var(--vt-footer-ph, var(--vt-ph, 34px));
+  }
+
+  .vt-footer__inner:not(.vt-page-width) {
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+    .vt-footer__inner {
+      padding-left: var(--vt-ph-mobile, 20px);
+      padding-right: var(--vt-ph-mobile, 20px);
+    }
+  }
+
+  .vt-footer__inner > .shopify-block,
+  .vt-footer__inner > shopify-block {
+    display: contents;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "div",
+  "class": "vt-footer-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "apply_max_width",
+      "label": "Apply max width",
+      "default": true,
+      "info": "Constrains layout to global 1200px container"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "info": "Mặc định sử dụng màu Global của theme"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "info": "Mặc định sử dụng màu Global của theme"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding (desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding (desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Top padding (mobile)",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding (mobile)",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Horizontal padding (desktop)",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Horizontal padding (mobile)",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Blocks Gap"
+    },
+    {
+      "type": "range",
+      "id": "blocks_gap",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between blocks (desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "blocks_gap_mobile",
+      "min": 12,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between blocks (mobile)",
+      "default": 32
+    }
+  ],
+  "blocks": [
+    { "type": "logo" },
+    { "type": "paragraph" },
+    { "type": "heading" },
+    { "type": "sub-heading" },
+    { "type": "column-layout" },
+    { "type": "stack" },
+    { "type": "menu" },
+    { "type": "divider" },
+    { "type": "social-icons" },
+    { "type": "trust-badges" },
+    { "type": "payment-icons" },
+    { "type": "localization" },
+    { "type": "policy-links" },
+    { "type": "button" },
+    { "type": "icons" },
+    { "type": "image" }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "settings": {
+        "apply_max_width": true,
+        "padding_top": 60,
+        "padding_bottom": 48,
+        "padding_top_mobile": 32,
+        "padding_bottom_mobile": 32,
+        "padding_horizontal": 34,
+        "padding_horizontal_mobile": 20,
+        "blocks_gap": 48,
+        "blocks_gap_mobile": 32
+      },
+      "blocks": [
+        {
+          "type": "logo"
+        },
+        {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Brand mission statement or tagline goes here.</p>",
+            "paragraph_size": "vt-paragraph-medium"
+          }
+        },
+        {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 4,
+            "tablet_column_count": 2,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/4|25",
+            "desktop_column_2_width": "lg:w-1/4|25",
+            "desktop_column_3_width": "lg:w-1/4|25",
+            "desktop_column_4_width": "lg:w-1/4|25",
+            "swipe_columns_mobile": false
+          },
+          "blocks": [
+            { "type": "menu", "settings": { "title": "Company" } },
+            { "type": "menu", "settings": { "title": "Shop" } },
+            { "type": "menu", "settings": { "title": "Sustainability" } },
+            { "type": "menu", "settings": { "title": "Support" } }
+          ]
+        },
+        {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 2,
+            "tablet_column_count": 2,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/2|50",
+            "desktop_column_2_width": "lg:w-1/2|50",
+            "swipe_columns_mobile": false
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "gap_desktop": 16,
+                "gap_mobile": 14
+              },
+              "blocks": [
+                { "type": "heading", "settings": { "heading": "Follow Us", "heading_size": "vt-heading-h6", "heading_tag": "h3" } },
+                { "type": "social-icons" },
+                { "type": "paragraph", "settings": { "text": "<p>Share your style with our community</p>", "paragraph_size": "vt-paragraph-small" } },
+                { "type": "localization" }
+              ]
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "gap_desktop": 16,
+                "gap_mobile": 14
+              },
+              "blocks": [
+                { "type": "heading", "settings": { "heading": "Trust & Security", "heading_size": "vt-heading-h6", "heading_tag": "h3" } },
+                { "type": "paragraph", "settings": { "text": "<p><strong>CERTIFIED BY</strong></p>", "paragraph_size": "vt-paragraph-extra-small" } },
+                { "type": "trust-badges" },
+                { "type": "paragraph", "settings": { "text": "<p><strong>SECURE PAYMENT</strong></p>", "paragraph_size": "vt-paragraph-extra-small" } },
+                { "type": "payment-icons" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "divider"
+        },
+        {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 2,
+            "tablet_column_count": 2,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/2|50",
+            "desktop_column_2_width": "lg:w-1/2|50",
+            "swipe_columns_mobile": false
+          },
+          "blocks": [
+            {
+              "type": "paragraph",
+              "settings": {
+                "text": "<p>© 2026 Earth. All rights reserved | Powered by Shopify</p>",
+                "paragraph_size": "vt-paragraph-extra-small",
+                "paragraph_alignment": "text-left"
+              }
+            },
+            {
+              "type": "policy-links",
+              "settings": {
+                "alignment": "right"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1619 @@
+{%- comment -%}
+  Section: Our Sustainability Journey
+  Renders a visual sustainability milestone timeline and a call-to-action block.
+  Built with composable atomic theme blocks:
+  - Stack (vertical & horizontal flex containers)
+  - Heading Group (heading with leaf icons)
+  - Column Layout (responsive 5-column timeline with mobile swipe carousel)
+  - Card (bordered milestone cards and container card)
+  - Heading, Sub-heading, Paragraph
+  - Button (primary and outline action buttons)
+  - Icons (vector icons with circular badge containers)
+  Includes visual preview mode for Shopify Theme Editor.
+{%- endcomment -%}
+
+{%- liquid
+  assign make_section_page_width = section.settings.make_section_page_width
+
+  assign section_bg = section.settings.background_color
+  assign bg_style = ''
+  if section_bg != blank and section_bg != 'rgba(0,0,0,0)' and section_bg != '#00000000'
+    assign bg_style = '--vt-bg: ' | append: section_bg | append: ';'
+  endif
+
+  assign heading_color = section.settings.heading_color
+  assign heading_style = ''
+  if heading_color != blank and heading_color != 'rgba(0,0,0,0)' and heading_color != '#00000000'
+    assign heading_style = '--vt-heading-color: ' | append: heading_color | append: ';'
+  endif
+
+  assign paragraph_color = section.settings.paragraph_color
+  assign paragraph_style = ''
+  if paragraph_color != blank and paragraph_color != 'rgba(0,0,0,0)' and paragraph_color != '#00000000'
+    assign paragraph_style = '--vt-paragraph-color: ' | append: paragraph_color | append: ';'
+  endif
+
+  assign border_color = section.settings.border_color
+  assign border_style = ''
+  if border_color != blank and border_color != 'rgba(0,0,0,0)' and border_color != '#00000000'
+    assign border_style = '--vt-border-color: ' | append: border_color | append: ';'
+  endif
+
+  assign pad_top_mobile = section.settings.padding_top_mobile | default: 48
+  assign pad_bottom_mobile = section.settings.padding_bottom_mobile | default: 48
+  assign pad_left_mobile = section.settings.padding_horizontal_mobile | default: 20
+
+  assign line_auto_align = section.settings.timeline_line_auto_align
+  if line_auto_align == nil
+    assign line_auto_align = true
+  endif
+  assign line_top_desktop = section.settings.timeline_line_top | default: 32
+  assign line_top_mobile = section.settings.timeline_line_top_mobile | default: 24
+  assign line_thickness = section.settings.timeline_line_thickness | default: 2
+-%}
+
+<vt-sustainability-timeline
+  class="vt-our-sustainability{% unless make_section_page_width %} vt-page-full-width{% endunless %}"
+  id="vtOurSustainability-{{ section.id }}"
+  data-auto-align="{{ line_auto_align }}"
+  style="
+    {{ bg_style }}
+    {{ heading_style }}
+    {{ paragraph_style }}
+    {{ border_style }}
+    --vt-pt: {% render 'fluid-clamp', min_px: pad_top_mobile, max_px: section.settings.padding_top %};
+    --vt-pb: {% render 'fluid-clamp', min_px: pad_bottom_mobile, max_px: section.settings.padding_bottom %};
+    --vt-ph: {% render 'fluid-clamp', min_px: pad_left_mobile, max_px: section.settings.padding_horizontal %};
+    --vt-ph-desktop: {{ section.settings.padding_horizontal | default: 34 }}px;
+    --vt-ph-mobile: {{ pad_left_mobile }}px;
+    --vt-page-padding: {{ section.settings.padding_horizontal | default: 34 }}px;
+    --vt-page-padding-mobile: {{ pad_left_mobile }}px;
+    --vt-block-gap: {% render 'fluid-clamp', min_px: section.settings.block_gap_mobile, max_px: section.settings.block_gap %};
+    --vt-timeline-line-top-desktop: {{ line_top_desktop }}px;
+    --vt-timeline-line-top-mobile: {{ line_top_mobile }}px;
+    --vt-timeline-line-height: {{ line_thickness }}px;
+  "
+  {{ section.shopify_attributes }}
+>
+  <div class="vt-our-sustainability__container{% if make_section_page_width %} vt-page-width{% endif %}">
+    {%- if section.blocks.size > 0 -%}
+      {% content_for 'blocks' %}
+    {%- elsif request.visual_preview_mode or request.design_mode -%}
+      <div class="vt-our-sustainability__preview" aria-hidden="true">
+        <!-- Header Preview -->
+        <div class="vt-our-sustainability__preview-header">
+          <div class="vt-our-sustainability__preview-heading-group">
+            <span class="vt-our-sustainability__preview-leaf vt-our-sustainability__preview-leaf--left">
+              {% render 'icons', icon: 'leaf' %}
+            </span>
+            <h2 class="vt-heading vt-heading-h2">Our Sustainability Journey</h2>
+            <span class="vt-our-sustainability__preview-leaf vt-our-sustainability__preview-leaf--right">
+              {% render 'icons', icon: 'leaf' %}
+            </span>
+          </div>
+          <p class="vt-paragraph vt-paragraph-medium vt-our-sustainability__preview-sub">
+            From a small organic farm to global impact – our story unfolds through transparent milestones and unwavering commitment to the planet
+          </p>
+        </div>
+
+        <!-- Timeline Preview -->
+        <div class="vt-our-sustainability__preview-timeline">
+          <div class="vt-our-sustainability__preview-line"></div>
+          <div class="vt-our-sustainability__preview-steps">
+            <!-- Step 1: 2018 -->
+            <div class="vt-our-sustainability__preview-step">
+              <div class="vt-our-sustainability__preview-node">
+                {% render 'icons', icon: 'quality' %}
+              </div>
+              <div class="vt-our-sustainability__preview-year">2018</div>
+              <div class="vt-our-sustainability__preview-card">
+                <h3 class="vt-heading vt-heading-h4">The Beginning</h3>
+                <p class="vt-paragraph vt-paragraph-small">
+                  Founded in Hanoi with mission to source 100% organic cotton from local farms
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 2: 2020 -->
+            <div class="vt-our-sustainability__preview-step">
+              <div class="vt-our-sustainability__preview-node">
+                {% render 'icons', icon: 'ecology' %}
+              </div>
+              <div class="vt-our-sustainability__preview-year">2020</div>
+              <div class="vt-our-sustainability__preview-card">
+                <h3 class="vt-heading vt-heading-h4">Fair Trade Partnership</h3>
+                <p class="vt-paragraph vt-paragraph-small">
+                  Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 3: 2022 -->
+            <div class="vt-our-sustainability__preview-step">
+              <div class="vt-our-sustainability__preview-node">
+                {% render 'icons', icon: 'tree' %}
+              </div>
+              <div class="vt-our-sustainability__preview-year">2022</div>
+              <div class="vt-our-sustainability__preview-card">
+                <h3 class="vt-heading vt-heading-h4">Reforestation Initiative</h3>
+                <p class="vt-paragraph vt-paragraph-small">
+                  Launched "1 Tree Per Product" – planted 50K trees in Vietnam reforestation
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 4: 2024 -->
+            <div class="vt-our-sustainability__preview-step">
+              <div class="vt-our-sustainability__preview-node">
+                {% render 'icons', icon: 'quality' %}
+              </div>
+              <div class="vt-our-sustainability__preview-year">2024</div>
+              <div class="vt-our-sustainability__preview-card">
+                <h3 class="vt-heading vt-heading-h4">Carbon Neutral</h3>
+                <p class="vt-paragraph vt-paragraph-small">
+                  Achieved B Corp certification and full carbon-neutral shipping
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 5: 2026 -->
+            <div class="vt-our-sustainability__preview-step">
+              <div class="vt-our-sustainability__preview-node">
+                {% render 'icons', icon: 'zero-emissions' %}
+              </div>
+              <div class="vt-our-sustainability__preview-year">2026</div>
+              <div class="vt-our-sustainability__preview-card">
+                <h3 class="vt-heading vt-heading-h4">Circular Economy</h3>
+                <p class="vt-paragraph vt-paragraph-small">
+                  Closed-loop recycling: turn old clothes into new collections
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom CTA Box Preview -->
+        <div class="vt-our-sustainability__preview-cta-box">
+          <h2 class="vt-heading vt-heading-h2">Be part of our story</h2>
+          <p class="vt-paragraph vt-paragraph-medium vt-our-sustainability__preview-cta-text">
+            Your choices define the future of fashion. Join a movement that celebrates beauty without compromise.
+          </p>
+          <div class="vt-our-sustainability__preview-cta-buttons">
+            <span class="vt-button vt-button--primary">SHOP COLLECTION</span>
+            <span class="vt-button vt-button--outline">EXPLORE JOURNAL</span>
+          </div>
+          <div class="vt-our-sustainability__preview-cta-badges">
+            <div class="vt-our-sustainability__preview-badge-item">
+              <div class="vt-our-sustainability__preview-badge-icon">
+                {% render 'icons', icon: 'leaf' %}
+              </div>
+              <h4 class="vt-heading vt-heading-h5">100% ORGANIC</h4>
+            </div>
+            <div class="vt-our-sustainability__preview-badge-item">
+              <div class="vt-our-sustainability__preview-badge-icon">
+                {% render 'icons', icon: 'carbon' %}
+              </div>
+              <h4 class="vt-heading vt-heading-h5">CARBON NEUTRAL</h4>
+            </div>
+            <div class="vt-our-sustainability__preview-badge-item">
+              <div class="vt-our-sustainability__preview-badge-icon">
+                {% render 'icons', icon: 'quality' %}
+              </div>
+              <h4 class="vt-heading vt-heading-h5">FAIR WAGES</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</vt-sustainability-timeline>
+
+{% stylesheet %}
+  vt-sustainability-timeline,
+  .vt-our-sustainability {
+    display: block;
+    width: 100%;
+    background-color: var(--vt-bg, var(--vt-background-color));
+    color: var(--vt-heading-color, var(--vt-foreground-color));
+    padding-top: var(--vt-pt, 80px);
+    padding-bottom: var(--vt-pb, 96px);
+    box-sizing: border-box;
+    overflow-x: clip;
+    position: relative;
+  }
+
+  .vt-our-sustainability__container {
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--vt-block-gap, 24px);
+    padding-left: var(--vt-ph, 34px);
+    padding-right: var(--vt-ph, 34px);
+  }
+
+  .vt-our-sustainability__container:not(.vt-page-width) {
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+    .vt-our-sustainability__container {
+      padding-left: var(--vt-ph-mobile, 20px);
+      padding-right: var(--vt-ph-mobile, 20px);
+    }
+  }
+
+  .vt-our-sustainability__container > .shopify-block,
+  .vt-our-sustainability__container > shopify-block {
+    display: contents;
+  }
+
+  /* Section global-first variable defaults */
+  .vt-our-sustainability {
+    --vt-border-color: var(--vt-foreground-color);
+  }
+
+  /* Timeline enhancements for column-layout block inside this section */
+  .vt-our-sustainability .vt-column-layout {
+    position: relative;
+    width: 100%;
+  }
+
+  .vt-our-sustainability .vt-column-layout__viewport {
+    overflow: visible;
+  }
+
+  .vt-our-sustainability .vt-column-layout__list {
+    position: relative;
+    width: 100%;
+  }
+
+  /* Continuous horizontal line running through the timeline */
+  .vt-our-sustainability .vt-column-layout__list::before {
+    content: '';
+    position: absolute;
+    top: var(--vt-timeline-line-top, var(--vt-timeline-line-top-desktop, 32px));
+    left: 0;
+    right: 0;
+    height: var(--vt-timeline-line-height, 2px);
+    background-color: var(--vt-border-color, var(--vt-foreground-color));
+    transform: translateY(-50%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  @media (max-width: 1023px) {
+    .vt-our-sustainability .vt-column-layout__viewport {
+      overflow: hidden;
+      padding-top: 12px;
+      margin-top: -12px;
+    }
+
+    .vt-our-sustainability .vt-column-layout__list::before {
+      top: var(--vt-timeline-line-top, var(--vt-timeline-line-top-mobile, 24px));
+      left: 0;
+      width: 1600px;
+    }
+  }
+
+  /* Ensure milestone circle icons sit above the continuous horizontal line */
+  .vt-our-sustainability .vt-column-layout__list .vt-icon {
+    position: relative;
+    z-index: 1;
+    transition: margin-top 0.2s ease-out;
+  }
+
+  /* Preview mode styles */
+  .vt-our-sustainability__preview {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .vt-our-sustainability__preview-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 720px;
+    margin: 0 auto 12px auto;
+  }
+
+  .vt-our-sustainability__preview-heading-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .vt-our-sustainability__preview-leaf {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vt-color-secondary, #71CC3B);
+  }
+
+  .vt-our-sustainability__preview-leaf svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  @media (max-width: 768px) {
+    .vt-our-sustainability__preview-leaf {
+      display: none;
+    }
+  }
+
+  .vt-our-sustainability__preview-sub {
+    max-width: 680px;
+    margin: 0 auto;
+    color: var(--vt-paragraph-color, var(--vt-color-primary, #224E09));
+  }
+
+  /* Timeline preview */
+  .vt-our-sustainability__preview-timeline {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+
+  .vt-our-sustainability__preview-line {
+    position: absolute;
+    top: 32px;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background-color: var(--vt-border-color, var(--vt-foreground-color, #003225));
+    z-index: 0;
+  }
+
+  .vt-our-sustainability__preview-steps {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  @media (max-width: 1023px) {
+    .vt-our-sustainability__preview-steps {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 0 16px;
+      gap: 16px;
+    }
+
+    .vt-our-sustainability__preview-step {
+      flex: 0 0 240px;
+      scroll-snap-align: start;
+    }
+
+    .vt-our-sustainability__preview-line {
+      top: 24px;
+      left: 0;
+      width: 1200px;
+    }
+  }
+
+  .vt-our-sustainability__preview-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .vt-our-sustainability__preview-node {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--vt-foreground-color, #003225);
+    color: var(--vt-background-color, #F8F9DC);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .vt-our-sustainability__preview-node svg {
+    width: 28px;
+    height: 28px;
+    color: var(--vt-background-color, #F8F9DC);
+  }
+
+  @media (max-width: 1023px) {
+    .vt-our-sustainability__preview-node {
+      width: 48px;
+      height: 48px;
+    }
+
+    .vt-our-sustainability__preview-node svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .vt-our-sustainability__preview-year {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--vt-heading-color, var(--vt-foreground-color, #003225));
+  }
+
+  .vt-our-sustainability__preview-card {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 24px 18px;
+    border: 1px solid var(--vt-border-color, var(--vt-foreground-color, #003225));
+    border-radius: 0;
+    background-color: transparent;
+    text-align: center;
+    box-sizing: border-box;
+    min-height: 190px;
+  }
+
+  @media (min-width: 1024px) {
+    .vt-our-sustainability__preview-step + .vt-our-sustainability__preview-step .vt-our-sustainability__preview-card {
+      border-left: none;
+    }
+  }
+
+  .vt-our-sustainability__preview-card .vt-heading {
+    margin: 0;
+    line-height: 1.3;
+    color: var(--vt-heading-color, var(--vt-foreground-color, #003225));
+  }
+
+  .vt-our-sustainability__preview-card .vt-paragraph {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--vt-paragraph-color, var(--vt-color-primary, #224E09));
+  }
+
+  /* Bottom CTA box preview */
+  .vt-our-sustainability__preview-cta-box {
+    width: 100%;
+    border: 1px solid var(--vt-border-color, var(--vt-foreground-color, #003225));
+    border-radius: 0;
+    padding: 48px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    box-sizing: border-box;
+    background-color: transparent;
+  }
+
+  .vt-our-sustainability__preview-cta-box .vt-heading {
+    margin: 0;
+  }
+
+  .vt-our-sustainability__preview-cta-text {
+    max-width: 580px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .vt-our-sustainability__preview-cta-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .vt-our-sustainability__preview-cta-badges {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 16px;
+  }
+
+  .vt-our-sustainability__preview-badge-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .vt-our-sustainability__preview-badge-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background-color: var(--vt-color-secondary, #71CC3B);
+    color: var(--vt-foreground-color, #003225);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .vt-our-sustainability__preview-badge-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .vt-our-sustainability__preview-badge-item .vt-heading {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--vt-heading-color, var(--vt-foreground-color, #003225));
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .vt-our-sustainability__preview-cta-box {
+      padding: 36px 20px;
+      gap: 20px;
+    }
+
+    .vt-our-sustainability__preview-cta-buttons {
+      flex-direction: column;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .vt-our-sustainability__preview-cta-buttons .vt-button {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+    }
+
+    .vt-our-sustainability__preview-cta-badges {
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  if (!customElements.get('vt-sustainability-timeline')) {
+    class VtSustainabilityTimeline extends HTMLElement {
+      static get observedAttributes() {
+        return ['data-auto-align'];
+      }
+
+      constructor() {
+        super();
+        this.updateTimelineLine = this.updateTimelineLine.bind(this);
+        this.resizeObserver = null;
+        this.mutationObserver = null;
+        this.isUpdating = false;
+      }
+
+      connectedCallback() {
+        this.init();
+      }
+
+      attributeChangedCallback(name, oldValue, newValue) {
+        if (oldValue !== newValue) {
+          this.updateTimelineLine();
+        }
+      }
+
+      disconnectedCallback() {
+        if (this.resizeObserver) {
+          this.resizeObserver.disconnect();
+          this.resizeObserver = null;
+        }
+        if (this.mutationObserver) {
+          this.mutationObserver.disconnect();
+          this.mutationObserver = null;
+        }
+        window.removeEventListener('resize', this.updateTimelineLine);
+        document.removeEventListener('shopify:section:load', this.updateTimelineLine);
+      }
+
+      init() {
+        this.updateTimelineLine();
+
+        if (typeof ResizeObserver !== 'undefined') {
+          this.resizeObserver = new ResizeObserver(() => {
+            this.updateTimelineLine();
+          });
+          const list = this.querySelector('.vt-column-layout__list');
+          if (list) {
+            this.resizeObserver.observe(list);
+            const icons = list.querySelectorAll('.vt-icon');
+            icons.forEach(icon => this.resizeObserver.observe(icon));
+          }
+        }
+
+        if (typeof MutationObserver !== 'undefined') {
+          this.mutationObserver = new MutationObserver(() => {
+            this.updateTimelineLine();
+          });
+          const list = this.querySelector('.vt-column-layout__list');
+          if (list) {
+            this.mutationObserver.observe(list, {
+              childList: true,
+              subtree: true,
+              attributes: true,
+              attributeFilter: ['style', 'class']
+            });
+          }
+        }
+
+        window.addEventListener('resize', this.updateTimelineLine, { passive: true });
+        document.addEventListener('shopify:section:load', this.updateTimelineLine);
+
+        requestAnimationFrame(() => this.updateTimelineLine());
+      }
+
+      updateTimelineLine() {
+        if (this.isUpdating) return;
+
+        const isAutoAlign = this.getAttribute('data-auto-align') !== 'false';
+        const list = this.querySelector('.vt-column-layout__list');
+        if (!list) return;
+
+        if (!isAutoAlign) {
+          list.style.removeProperty('--vt-timeline-line-top');
+          const icons = list.querySelectorAll('.vt-icon');
+          icons.forEach(icon => {
+            icon.style.removeProperty('margin-top');
+          });
+          return;
+        }
+
+        // Auto-align mode:
+        // Find milestone icons (top icon in each milestone column)
+        const columns = Array.from(list.children).map(child => {
+          if (child.tagName === 'SHOPIFY-BLOCK' || child.classList.contains('shopify-block')) {
+            return child.firstElementChild || child;
+          }
+          return child;
+        });
+
+        let milestoneIcons = columns.map(col => col.querySelector('.vt-icon.has-box')).filter(Boolean);
+        if (milestoneIcons.length === 0) {
+          milestoneIcons = columns.map(col => col.querySelector('.vt-icon')).filter(Boolean);
+        }
+        if (milestoneIcons.length === 0) {
+          milestoneIcons = Array.from(list.querySelectorAll('.vt-icon'));
+        }
+        if (milestoneIcons.length === 0) return;
+
+        const iconHeights = milestoneIcons.map(icon => icon.offsetHeight).filter(h => h > 0);
+        if (iconHeights.length === 0) return;
+
+        const maxHeight = Math.max(...iconHeights);
+        const targetLineTop = Math.round(maxHeight / 2);
+
+        this.isUpdating = true;
+
+        const currentLineTop = list.style.getPropertyValue('--vt-timeline-line-top');
+        const newLineTop = `${targetLineTop}px`;
+        if (currentLineTop !== newLineTop) {
+          list.style.setProperty('--vt-timeline-line-top', newLineTop);
+        }
+
+        milestoneIcons.forEach(icon => {
+          const h = icon.offsetHeight;
+          if (h > 0) {
+            const offset = Math.round(targetLineTop - (h / 2));
+            const newMargin = `${offset}px`;
+            if (icon.style.marginTop !== newMargin) {
+              icon.style.marginTop = newMargin;
+            }
+          }
+        });
+
+        requestAnimationFrame(() => {
+          this.isUpdating = false;
+        });
+      }
+    }
+
+    customElements.define('vt-sustainability-timeline', VtSustainabilityTimeline);
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Our Sustainability",
+  "tag": "section",
+  "class": "our-sustainability-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "make_section_page_width",
+      "label": "Apply max width",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Color"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#00000000"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#00000000"
+    },
+    {
+      "type": "color",
+      "id": "paragraph_color",
+      "label": "Paragraph color",
+      "default": "#00000000"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Line color",
+      "default": "#00000000"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "block_gap",
+      "label": "Block gap",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Mobile Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "label": "Horizontal padding (mobile)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "block_gap_mobile",
+      "label": "Block gap (mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Timeline Line"
+    },
+    {
+      "type": "checkbox",
+      "id": "timeline_line_auto_align",
+      "label": "Timeline line auto align",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "timeline_line_top",
+      "label": "Timeline line top",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "timeline_line_top_mobile",
+      "label": "Timeline line top (mobile)",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "timeline_line_thickness",
+      "label": "Timeline line thickness",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    }
+  ],
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "Our Sustainability",
+      "settings": {
+        "make_section_page_width": true,
+        "background_color": "#00000000",
+        "heading_color": "#00000000",
+        "paragraph_color": "#00000000",
+        "border_color": "#00000000",
+        "padding_top": 80,
+        "padding_bottom": 96,
+        "padding_horizontal": 34,
+        "block_gap": 20,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48,
+        "padding_horizontal_mobile": 20,
+        "block_gap_mobile": 20,
+        "timeline_line_auto_align": true,
+        "timeline_line_top": 32,
+        "timeline_line_top_mobile": 24,
+        "timeline_line_thickness": 2
+      },
+      "blocks": [
+        {
+          "type": "stack",
+          "settings": {
+            "layout_direction_desktop": "vt-stack--vertical",
+            "layout_direction_tablet": "vt-stack--vertical",
+            "layout_direction_mobile": "vt-stack--vertical",
+            "alignment": "center",
+            "position": "flex-start",
+            "gap_desktop": 16,
+            "gap_mobile": 12,
+            "width": "fill"
+          },
+          "blocks": [
+            {
+              "type": "heading-group",
+              "settings": {
+                "direction": "horizontal",
+                "alignment": "center",
+                "vertical_alignment": "center",
+                "gap_desktop": 16,
+                "gap_mobile": 10,
+                "width": "fit",
+                "hide_icon_mobile": true
+              },
+              "blocks": [
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "leaf",
+                    "icon_color": "#71CC3B",
+                    "icon_size_desktop": 36,
+                    "icon_size_mobile": 28,
+                    "show_box": false
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Our Sustainability Journey",
+                    "heading_tag": "h2",
+                    "heading_size": "vt-heading-h2",
+                    "heading_alignment": "center"
+                  }
+                },
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "leaf",
+                    "icon_color": "#71CC3B",
+                    "icon_size_desktop": 36,
+                    "icon_size_mobile": 28,
+                    "show_box": false
+                  }
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "settings": {
+                "text": "<p>From a small organic farm to global impact – our story unfolds through transparent milestones and unwavering commitment to the planet</p>",
+                "paragraph_size": "vt-paragraph-medium",
+                "paragraph_alignment": "center",
+                "paragraph_width": "fit",
+                "enable_max_width": true,
+                "paragraph_max_width": 680
+              }
+            }
+          ]
+        },
+        {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 5,
+            "desktop_column_1_width": "lg:w-1/5|20",
+            "desktop_column_2_width": "lg:w-1/5|20",
+            "desktop_column_3_width": "lg:w-1/5|20",
+            "desktop_column_4_width": "lg:w-1/5|20",
+            "desktop_column_5_width": "lg:w-1/5|20",
+            "tablet_column_count": 3,
+            "tablet_column_1_width": "md:w-1/3|33.3333",
+            "tablet_column_2_width": "md:w-1/3|33.3333",
+            "tablet_column_3_width": "md:w-1/3|33.3333",
+            "mobile_column_count": 1,
+            "mobile_column_1_width": "w-full|100",
+            "swipe_columns_mobile": true,
+            "desktop_gap_x": "lg:gap-x-0",
+            "desktop_gap_y": "lg:gap-y-0",
+            "tablet_gap_x": "md:gap-x-0",
+            "tablet_gap_y": "md:gap-y-0",
+            "mobile_gap_x": "gap-x-4",
+            "mobile_gap_y": "gap-y-4",
+            "vertical_alignment": "stretch",
+            "padding_block": 0,
+            "padding_inline": 0
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "flex-start",
+                "gap_desktop": 14,
+                "gap_mobile": 12,
+                "width": "fill"
+              },
+              "blocks": [
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "sparkle",
+                    "icon_color": "#F8F9DC",
+                    "icon_size_desktop": 28,
+                    "icon_size_mobile": 22,
+                    "show_box": true,
+                    "box_bg_color": "#003225",
+                    "box_size_desktop": 64,
+                    "box_size_mobile": 48,
+                    "box_radius": "50%"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "2018",
+                    "heading_tag": "h3",
+                    "heading_size": "vt-heading-h4",
+                    "heading_alignment": "center"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "heading_color": "#003225",
+                    "text_color": "#224E09",
+                    "border": "solid",
+                    "border_color": "#003225",
+                    "border_width": 1,
+                    "border_radius": 0,
+                    "background_color": "#00000000",
+                    "padding_vertical": 24,
+                    "padding_horizontal": 18,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 20,
+                    "padding_horizontal_mobile": 16,
+                    "width": "fill",
+                    "height": "fill",
+                    "gap": 10,
+                    "alignment": "center"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "The Beginning",
+                        "heading_tag": "h4",
+                        "heading_size": "vt-heading-h4",
+                        "heading_alignment": "center"
+                      }
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Founded in Hanoi with mission to source 100% organic cotton from local farms</p>",
+                        "paragraph_size": "vt-paragraph-small",
+                        "paragraph_alignment": "center"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "flex-start",
+                "gap_desktop": 14,
+                "gap_mobile": 12,
+                "width": "fill"
+              },
+              "blocks": [
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "ecology",
+                    "icon_color": "#F8F9DC",
+                    "icon_size_desktop": 28,
+                    "icon_size_mobile": 22,
+                    "show_box": true,
+                    "box_bg_color": "#003225",
+                    "box_size_desktop": 64,
+                    "box_size_mobile": 48,
+                    "box_radius": "50%"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "2020",
+                    "heading_tag": "h3",
+                    "heading_size": "vt-heading-h4",
+                    "heading_alignment": "center"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "heading_color": "#003225",
+                    "text_color": "#224E09",
+                    "border": "solid",
+                    "border_color": "#003225",
+                    "border_width": 1,
+                    "border_radius": 0,
+                    "background_color": "#00000000",
+                    "padding_vertical": 24,
+                    "padding_horizontal": 18,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 20,
+                    "padding_horizontal_mobile": 16,
+                    "width": "fill",
+                    "height": "fill",
+                    "gap": 10,
+                    "alignment": "center"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Fair Trade Partnership",
+                        "heading_tag": "h4",
+                        "heading_size": "vt-heading-h4",
+                        "heading_alignment": "center"
+                      }
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Partnered with first Fair Trade factories, ensuring ethical labor for 500 artisans</p>",
+                        "paragraph_size": "vt-paragraph-small",
+                        "paragraph_alignment": "center"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "flex-start",
+                "gap_desktop": 14,
+                "gap_mobile": 12,
+                "width": "fill"
+              },
+              "blocks": [
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "tree",
+                    "icon_color": "#F8F9DC",
+                    "icon_size_desktop": 28,
+                    "icon_size_mobile": 22,
+                    "show_box": true,
+                    "box_bg_color": "#003225",
+                    "box_size_desktop": 64,
+                    "box_size_mobile": 48,
+                    "box_radius": "50%"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "2022",
+                    "heading_tag": "h3",
+                    "heading_size": "vt-heading-h4",
+                    "heading_alignment": "center"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "heading_color": "#003225",
+                    "text_color": "#224E09",
+                    "border": "solid",
+                    "border_color": "#003225",
+                    "border_width": 1,
+                    "border_radius": 0,
+                    "background_color": "#00000000",
+                    "padding_vertical": 24,
+                    "padding_horizontal": 18,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 20,
+                    "padding_horizontal_mobile": 16,
+                    "width": "fill",
+                    "height": "fill",
+                    "gap": 10,
+                    "alignment": "center"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Reforestation Initiative",
+                        "heading_tag": "h4",
+                        "heading_size": "vt-heading-h4",
+                        "heading_alignment": "center"
+                      }
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Launched \"1 Tree Per Product\" – planted 50K trees in Vietnam reforestation</p>",
+                        "paragraph_size": "vt-paragraph-small",
+                        "paragraph_alignment": "center"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "flex-start",
+                "gap_desktop": 14,
+                "gap_mobile": 12,
+                "width": "fill"
+              },
+              "blocks": [
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "quality",
+                    "icon_color": "#F8F9DC",
+                    "icon_size_desktop": 28,
+                    "icon_size_mobile": 22,
+                    "show_box": true,
+                    "box_bg_color": "#003225",
+                    "box_size_desktop": 64,
+                    "box_size_mobile": 48,
+                    "box_radius": "50%"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "2024",
+                    "heading_tag": "h3",
+                    "heading_size": "vt-heading-h4",
+                    "heading_alignment": "center"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "heading_color": "#003225",
+                    "text_color": "#224E09",
+                    "border": "solid",
+                    "border_color": "#003225",
+                    "border_width": 1,
+                    "border_radius": 0,
+                    "background_color": "#00000000",
+                    "padding_vertical": 24,
+                    "padding_horizontal": 18,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 20,
+                    "padding_horizontal_mobile": 16,
+                    "width": "fill",
+                    "height": "fill",
+                    "gap": 10,
+                    "alignment": "center"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Carbon Neutral",
+                        "heading_tag": "h4",
+                        "heading_size": "vt-heading-h4",
+                        "heading_alignment": "center"
+                      }
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Achieved B Corp certification and full carbon-neutral shipping</p>",
+                        "paragraph_size": "vt-paragraph-small",
+                        "paragraph_alignment": "center"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "flex-start",
+                "gap_desktop": 14,
+                "gap_mobile": 12,
+                "width": "fill"
+              },
+              "blocks": [
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "zero-emissions",
+                    "icon_color": "#F8F9DC",
+                    "icon_size_desktop": 28,
+                    "icon_size_mobile": 22,
+                    "show_box": true,
+                    "box_bg_color": "#003225",
+                    "box_size_desktop": 64,
+                    "box_size_mobile": 48,
+                    "box_radius": "50%"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "2026",
+                    "heading_tag": "h3",
+                    "heading_size": "vt-heading-h4",
+                    "heading_alignment": "center"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "heading_color": "#003225",
+                    "text_color": "#224E09",
+                    "border": "solid",
+                    "border_color": "#003225",
+                    "border_width": 1,
+                    "border_radius": 0,
+                    "background_color": "#00000000",
+                    "padding_vertical": 24,
+                    "padding_horizontal": 18,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 20,
+                    "padding_horizontal_mobile": 16,
+                    "width": "fill",
+                    "height": "fill",
+                    "gap": 10,
+                    "alignment": "center"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Circular Economy",
+                        "heading_tag": "h4",
+                        "heading_size": "vt-heading-h4",
+                        "heading_alignment": "center"
+                      }
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Closed-loop recycling: turn old clothes into new collections</p>",
+                        "paragraph_size": "vt-paragraph-small",
+                        "paragraph_alignment": "center"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "card",
+          "settings": {
+            "heading_color": "#003225",
+            "text_color": "#224E09",
+            "border": "solid",
+            "border_color": "#003225",
+            "border_width": 1,
+            "border_radius": 0,
+            "background_color": "#00000000",
+            "padding_vertical": 56,
+            "padding_horizontal": 36,
+            "enable_padding_mobile": true,
+            "padding_vertical_mobile": 36,
+            "padding_horizontal_mobile": 20,
+            "width": "fill",
+            "gap": 24,
+            "alignment": "center"
+          },
+          "blocks": [
+            {
+              "type": "heading",
+              "settings": {
+                "heading": "Be part of our story",
+                "heading_tag": "h2",
+                "heading_size": "vt-heading-h2",
+                "heading_alignment": "center"
+              }
+            },
+            {
+              "type": "paragraph",
+              "settings": {
+                "text": "<p>Your choices define the future of fashion. Join a movement that celebrates beauty without compromise.</p>",
+                "paragraph_size": "vt-paragraph-medium",
+                "paragraph_alignment": "center",
+                "enable_max_width": true,
+                "paragraph_max_width": 580
+              }
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "center",
+                "gap_desktop": 16,
+                "gap_mobile": 12,
+                "width": "fit"
+              },
+              "blocks": [
+                {
+                  "type": "button",
+                  "settings": {
+                    "button_label": "SHOP COLLECTION",
+                    "button_link": "/collections/all",
+                    "button_style": "primary"
+                  }
+                },
+                {
+                  "type": "button",
+                  "settings": {
+                    "button_label": "EXPLORE JOURNAL",
+                    "button_link": "/blogs/news",
+                    "button_style": "outline"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "center",
+                "position": "center",
+                "gap_desktop": 48,
+                "gap_mobile": 24,
+                "width": "fit"
+              },
+              "blocks": [
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "center",
+                    "position": "center",
+                    "gap_desktop": 10,
+                    "gap_mobile": 8,
+                    "width": "fit"
+                  },
+                  "blocks": [
+                    {
+                      "type": "icons",
+                      "settings": {
+                        "icon": "leaf",
+                        "icon_color": "#003225",
+                        "icon_size_desktop": 26,
+                        "icon_size_mobile": 22,
+                        "show_box": true,
+                        "box_bg_color": "#71CC3B",
+                        "box_size_desktop": 54,
+                        "box_size_mobile": 44,
+                        "box_radius": "50%"
+                      }
+                    },
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "100% ORGANIC",
+                        "heading_tag": "h4",
+                        "heading_size": "vt-heading-h5",
+                        "heading_alignment": "text-center"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "center",
+                    "position": "center",
+                    "gap_desktop": 10,
+                    "gap_mobile": 8,
+                    "width": "fit"
+                  },
+                  "blocks": [
+                    {
+                      "type": "icons",
+                      "settings": {
+                        "icon": "carbon",
+                        "icon_color": "#003225",
+                        "icon_size_desktop": 26,
+                        "icon_size_mobile": 22,
+                        "show_box": true,
+                        "box_bg_color": "#71CC3B",
+                        "box_size_desktop": 54,
+                        "box_size_mobile": 44,
+                        "box_radius": "50%"
+                      }
+                    },
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "CARBON NEUTRAL",
+                        "heading_tag": "h4",
+                        "heading_size": "vt-heading-h5",
+                        "heading_alignment": "text-center"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "stack",
+                  "settings": {
+                    "layout_direction_desktop": "vt-stack--vertical",
+                    "layout_direction_tablet": "vt-stack--vertical",
+                    "layout_direction_mobile": "vt-stack--vertical",
+                    "alignment": "center",
+                    "position": "center",
+                    "gap_desktop": 10,
+                    "gap_mobile": 8,
+                    "width": "fit"
+                  },
+                  "blocks": [
+                    {
+                      "type": "icons",
+                      "settings": {
+                        "icon": "quality",
+                        "icon_color": "#003225",
+                        "icon_size_desktop": 26,
+                        "icon_size_mobile": 22,
+                        "show_box": true,
+                        "box_bg_color": "#71CC3B",
+                        "box_size_desktop": 54,
+                        "box_size_mobile": 44,
+                        "box_radius": "50%"
+                      }
+                    },
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "FAIR WAGES",
+                        "heading_tag": "h4",
+                        "heading_size": "vt-heading-h5",
+                        "heading_alignment": "text-center"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

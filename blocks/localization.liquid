@@ -1,0 +1,171 @@
+{% doc %}
+  Renders Shopify country/currency and language localization selectors.
+  Supports responsive flex wrap and custom styled chevron dropdowns.
+  @example
+  {% content_for 'block', type: 'localization', id: 'localization' %}
+{% enddoc %}
+
+{%- liquid
+  assign color_setting = block.settings.text_color
+  if color_setting != blank and color_setting != 'rgba(0,0,0,0)' and color_setting != '#00000000' and color_setting != 'transparent'
+    assign final_color = color_setting
+  else
+    assign final_color = 'var(--vt-footer-color, var(--vt-foreground-color, #003225))'
+  endif
+-%}
+
+<div
+  id="localization-{{ block.id }}"
+  class="vt-localization-block"
+  style="
+    --vt-loc-color: {{ final_color }};
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- form 'localization', id: 'FooterLocalizationForm', class: 'vt-localization-block__form' -%}
+    {%- if block.settings.enable_country_selector -%}
+      <div class="vt-localization-block__select-wrapper">
+        <select name="country_code" class="vt-localization-block__select" aria-label="Select Country/Currency" onchange="this.form.submit()">
+          {%- if localization.available_countries.size > 0 -%}
+            {%- for country in localization.available_countries -%}
+              <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
+                {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+              </option>
+            {%- endfor -%}
+          {%- else -%}
+            <option value="US" selected>United States (USD $)</option>
+            <option value="CA">Canada (CAD $)</option>
+            <option value="GB">United Kingdom (GBP £)</option>
+            <option value="EU">European Union (EUR €)</option>
+          {%- endif -%}
+        </select>
+        <span class="vt-localization-block__chevron" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </span>
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.enable_language_selector -%}
+      <div class="vt-localization-block__select-wrapper">
+        <select name="locale_code" class="vt-localization-block__select" aria-label="Select Language" onchange="this.form.submit()">
+          {%- if localization.available_languages.size > 0 -%}
+            {%- for language in localization.available_languages -%}
+              <option value="{{ language.iso_code }}" {% if language.iso_code == localization.language.iso_code %}selected{% endif %}>
+                {{ language.endonym_name | capitalize }}
+              </option>
+            {%- endfor -%}
+          {%- else -%}
+            <option value="en" selected>English</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+          {%- endif -%}
+        </select>
+        <span class="vt-localization-block__chevron" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </span>
+      </div>
+    {%- endif -%}
+  {%- endform -%}
+</div>
+
+{% stylesheet %}
+  .vt-localization-block {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .vt-localization-block__form {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0;
+  }
+
+  .vt-localization-block__select-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 140px;
+    max-width: 200px;
+  }
+
+  @media screen and (max-width: 480px) {
+    .vt-localization-block__select-wrapper {
+      max-width: 100%;
+    }
+  }
+
+  .vt-localization-block__select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: transparent;
+    border: 1px solid rgba(0, 50, 37, 0.4);
+    border-radius: 4px;
+    padding: 0.625rem 2rem 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--vt-loc-color);
+    cursor: pointer;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .vt-localization-block__select:focus-visible {
+    border-color: var(--vt-color-secondary, #71CC3B);
+    outline: 1px solid var(--vt-color-secondary, #71CC3B);
+  }
+
+  .vt-localization-block__chevron {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    color: var(--vt-loc-color);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Localization",
+  "tag": null,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "label": "Enable country/currency selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language_selector",
+      "label": "Enable language selector",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#00000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Localization",
+      "settings": {
+        "enable_country_selector": true,
+        "enable_language_selector": true
+      }
+    }
+  ]
+}
+{% endschema %}

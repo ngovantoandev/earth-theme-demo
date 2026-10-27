@@ -1,0 +1,854 @@
+{% comment %}
+  Renders a video with text overlay section.
+  Supports Shopify-hosted video and YouTube/Vimeo embed,
+  responsive heights, custom colors, overlay opacity, alignment,
+  and child blocks (heading, paragraph, button).
+{% endcomment %}
+
+{%- liquid
+  assign video = section.settings.video
+  assign video_url = section.settings.video_url
+  assign cover_image = section.settings.cover_image
+  assign autoplay = section.settings.enable_video_autoplay
+  assign loop = section.settings.enable_video_looping
+  assign apply_max_width = section.settings.apply_max_width
+
+  assign desktop_height = section.settings.desktop_height
+  assign mobile_height = section.settings.mobile_height | default: '500px'
+  assign content_pos = section.settings.desktop_content_position
+  assign content_align = section.settings.desktop_content_alignment
+
+  assign has_media = false
+  if video != blank or video_url != blank or cover_image != blank
+    assign has_media = true
+  endif
+
+  # Calculate overlay opacity decimal
+  assign overlay_opacity_decimal = section.settings.overlay_opacity | divided_by: 100.0
+
+  assign pad_top_mobile = section.settings.padding_top_mobile | default: 0
+  assign pad_bottom_mobile = section.settings.padding_bottom_mobile | default: 0
+  assign pad_horizontal_mobile = section.settings.padding_horizontal_mobile | default: 0
+-%}
+
+<div
+  id="video-overlay-section-{{ section.id }}"
+  class="vt-video-overlay-section{% unless apply_max_width %} vt-page-full-width{% endunless %}"
+  style="
+    --vt-pt: {% render 'fluid-clamp', min_px: pad_top_mobile, max_px: section.settings.padding_top %};
+    --vt-pb: {% render 'fluid-clamp', min_px: pad_bottom_mobile, max_px: section.settings.padding_bottom %};
+    --vt-ph: {% render 'fluid-clamp', min_px: pad_horizontal_mobile, max_px: section.settings.padding_horizontal %};
+    --vt-ph-desktop: {{ section.settings.padding_horizontal | default: 0 }}px;
+    --vt-ph-mobile: {{ pad_horizontal_mobile }}px;
+    --vt-page-padding: {{ section.settings.padding_horizontal | default: 0 }}px;
+    --vt-page-padding-mobile: {{ pad_horizontal_mobile }}px;
+    --vt-bg-color: {{ section.settings.background_gradient | default: section.settings.background_color | default: 'transparent' }};
+  "
+  {{ section.shopify_attributes }}
+>
+  <div class="vt-video-overlay__container{% if apply_max_width %} vt-page-width{% endif %}">
+    <vt-video-overlay
+      class="vt-video-overlay vt-video-overlay--{{ desktop_height }}"
+      data-autoplay="{{ autoplay }}"
+      style="
+        --vt-desktop-height: {{ desktop_height }};
+        --vt-mobile-height: {{ mobile_height }};
+        --vt-text-color: {{ section.settings.text_color | default: '#FFFFFF' }};
+        --vt-overlay-color: {{ section.settings.overlay_color | default: '#171717' }};
+        --vt-overlay-opacity: {{ overlay_opacity_decimal }};
+      "
+    >
+      <!-- Background Video / Media Container -->
+      <div class="vt-video-overlay__media-wrapper">
+        <!-- Video Layer -->
+        {%- if video != blank -%}
+          {{
+            video
+            | video_tag:
+              image_size: '2000x',
+              autoplay: autoplay,
+              loop: loop,
+              muted: true,
+              controls: false,
+              playsinline: true,
+              class: 'vt-video-overlay__video'
+          }}
+        {%- elsif video_url != blank -%}
+          {%- if video_url.type == 'youtube' -%}
+            <iframe
+              src="https://www.youtube.com/embed/{{ video_url.id }}?enablejsapi=1&playsinline=1&mute=1{% if autoplay %}&autoplay=1{% endif %}{% if loop %}&loop=1&playlist={{ video_url.id }}{% endif %}"
+              class="vt-video-overlay__iframe"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              title="{{ section.settings.video_alt_text | default: 'Video' | escape }}"
+            ></iframe>
+          {%- elsif video_url.type == 'vimeo' -%}
+            <iframe
+              src="https://player.vimeo.com/video/{{ video_url.id }}?muted=1{% if autoplay %}&autoplay=1{% endif %}{% if loop %}loop=1{% endif %}"
+              class="vt-video-overlay__iframe"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowfullscreen
+              title="{{ section.settings.video_alt_text | default: 'Video' | escape }}"
+            ></iframe>
+          {%- endif -%}
+        {%- endif -%}
+
+        <!-- Cover Image (displayed when video is not playing or while loading) -->
+        {%- if cover_image != blank -%}
+          {{
+            cover_image
+            | image_url: width: 2400
+            | image_tag:
+              loading: 'lazy',
+              class: 'vt-video-overlay__media-cover',
+              alt: section.settings.video_alt_text | default: cover_image.alt | default: 'Video cover'
+          }}
+        {%- elsif has_media == false or request.visual_preview_mode -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'vt-video-overlay__media-cover vt-video-overlay__media-cover--fallback' }}
+        {%- endif -%}
+
+        <!-- Dark Tint Scrim / Overlay (ALWAYS remains covering in front of video) -->
+        <div class="vt-video-overlay__scrim" aria-hidden="true"></div>
+      </div>
+
+      <!-- Overlay Content Area (ALWAYS remains visible over video) -->
+      <div class="vt-video-overlay__content vt-pos-{{ content_pos }} vt-desktop-pos-{{ content_pos }}">
+        <div class="vt-video-overlay__content-box vt-align-{{ content_align }} vt-desktop-align-{{ content_align }}">
+          {%- if section.blocks.size > 0 -%}
+            {% content_for 'blocks' %}
+          {%- elsif request.visual_preview_mode or request.design_mode -%}
+            <div class="vt-heading-wrapper text-inherit">
+              <h2 class="vt-heading vt-heading-h1">
+                From organic farms to your wardrobe
+              </h2>
+            </div>
+            <div class="vt-paragraph vt-paragraph-small text-inherit">
+              <p>WATCH THE 30S ORIGIN STORY</p>
+            </div>
+          {%- endif -%}
+
+          <!-- Centered Play / Pause Button (Positioned between Heading and Subtitle via CSS order) -->
+          <div class="vt-video-overlay__play-btn-wrapper">
+            <button
+              type="button"
+              class="vt-video-overlay__play-btn"
+              aria-label="Play or pause video"
+            >
+              <!-- Play Triangle Icon -->
+              <svg
+                class="vt-video-overlay__play-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              <!-- Pause Bars Icon -->
+              <svg
+                class="vt-video-overlay__pause-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </vt-video-overlay>
+  </div>
+</div>
+
+<script src="{{ 'video-with-text-overlay.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  /* ==========================================================================
+     Video with Text Overlay Section Styles
+     ========================================================================== */
+
+  .vt-video-overlay-section {
+    width: 100%;
+    background: var(--vt-bg-color, transparent);
+    padding-top: var(--vt-pt, 0px);
+    padding-bottom: var(--vt-pb, 0px);
+    box-sizing: border-box;
+  }
+
+  .vt-video-overlay__container {
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding-left: var(--vt-ph, 0px);
+    padding-right: var(--vt-ph, 0px);
+  }
+
+  .vt-video-overlay__container:not(.vt-page-width) {
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+    .vt-video-overlay__container {
+      padding-left: var(--vt-ph-mobile, 0px);
+      padding-right: var(--vt-ph-mobile, 0px);
+    }
+  }
+
+  /* Custom Element Container */
+  .vt-video-overlay {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-height: var(--vt-desktop-height, 750px);
+    overflow: hidden;
+    color: var(--vt-text-color, #FFFFFF);
+    background-color: #001f17;
+    contain: layout paint;
+  }
+
+  /* -------------------------------------------------------------------------
+     Media & Video Layer
+     ------------------------------------------------------------------------- */
+  .vt-video-overlay__media-wrapper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .vt-video-overlay.is-playing .vt-video-overlay__media-wrapper {
+    pointer-events: auto;
+  }
+
+  .vt-video-overlay__video,
+  .vt-video-overlay__iframe,
+  .vt-video-overlay__media-cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border: none;
+  }
+
+  .vt-video-overlay__media-cover--fallback {
+    filter: brightness(0.9);
+  }
+
+  .vt-video-overlay.is-playing .vt-video-overlay__media-cover {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  /* Scrim Tint Overlay - ALWAYS remains covering in front of video */
+  .vt-video-overlay__scrim {
+    position: absolute;
+    inset: 0;
+    background-color: var(--vt-overlay-color, #171717);
+    opacity: var(--vt-overlay-opacity, 0.3);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* -------------------------------------------------------------------------
+     Content Layout & Positioning
+     ------------------------------------------------------------------------- */
+  .vt-video-overlay__content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    box-sizing: border-box;
+    padding-block: clamp(32px, 6vw, 64px);
+    padding-inline: var(--container-padding-desktop, 34px);
+  }
+
+  @media screen and (max-width: 1024px) {
+    .vt-video-overlay__content {
+      padding-inline: var(--container-padding-tablet, 28px);
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .vt-video-overlay {
+      min-height: var(--vt-mobile-height, 500px);
+    }
+
+    .vt-video-overlay__content {
+      padding-block: clamp(28px, 5vw, 48px);
+      padding-inline: var(--container-padding-mobile, 20px);
+    }
+  }
+
+  /* Content Positions */
+  .vt-pos-top-left, .vt-desktop-pos-top-left { justify-content: flex-start; align-items: flex-start; }
+  .vt-pos-top-center, .vt-desktop-pos-top-center { justify-content: center; align-items: flex-start; }
+  .vt-pos-top-right, .vt-desktop-pos-top-right { justify-content: flex-end; align-items: flex-start; }
+
+  .vt-pos-middle-left, .vt-desktop-pos-middle-left { justify-content: flex-start; align-items: center; }
+  .vt-pos-middle-center, .vt-desktop-pos-middle-center { justify-content: center; align-items: center; }
+  .vt-pos-middle-right, .vt-desktop-pos-middle-right { justify-content: flex-end; align-items: center; }
+
+  .vt-pos-bottom-left, .vt-desktop-pos-bottom-left { justify-content: flex-start; align-items: flex-end; }
+  .vt-pos-bottom-center, .vt-desktop-pos-bottom-center { justify-content: center; align-items: flex-end; }
+  .vt-pos-bottom-right, .vt-desktop-pos-bottom-right { justify-content: flex-end; align-items: flex-end; }
+
+  /* Content Box */
+  .vt-video-overlay__content-box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    gap: clamp(18px, 2.8vw, 32px);
+    color: var(--vt-text-color, #FFFFFF);
+  }
+
+  /* -------------------------------------------------------------------------
+     Content Alignments
+     ------------------------------------------------------------------------- */
+  .vt-align-left, .vt-desktop-align-left {
+    text-align: left;
+    align-items: flex-start;
+  }
+  .vt-align-center, .vt-desktop-align-center {
+    text-align: center;
+    align-items: center;
+  }
+  .vt-align-right, .vt-desktop-align-right {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .vt-align-left .vt-video-overlay__play-btn-wrapper,
+  .vt-desktop-align-left .vt-video-overlay__play-btn-wrapper {
+    justify-content: flex-start;
+  }
+  .vt-align-center .vt-video-overlay__play-btn-wrapper,
+  .vt-desktop-align-center .vt-video-overlay__play-btn-wrapper {
+    justify-content: center;
+  }
+  .vt-align-right .vt-video-overlay__play-btn-wrapper,
+  .vt-desktop-align-right .vt-video-overlay__play-btn-wrapper {
+    justify-content: flex-end;
+  }
+
+  .vt-align-left .vt-buttons,
+  .vt-desktop-align-left .vt-buttons {
+    justify-content: flex-start;
+  }
+  .vt-align-center .vt-buttons,
+  .vt-desktop-align-center .vt-buttons {
+    justify-content: center;
+  }
+  .vt-align-right .vt-buttons,
+  .vt-desktop-align-right .vt-buttons {
+    justify-content: flex-end;
+  }
+
+  .vt-align-left .vt-heading-wrapper.text-inherit,
+  .vt-align-left .vt-paragraph.text-inherit,
+  .vt-desktop-align-left .vt-heading-wrapper.text-inherit,
+  .vt-desktop-align-left .vt-paragraph.text-inherit {
+    text-align: left;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-inline-start: 0;
+    margin-inline-end: auto;
+  }
+  .vt-align-left .vt-heading-wrapper.text-inherit .vt-heading,
+  .vt-align-left .vt-paragraph.text-inherit p,
+  .vt-desktop-align-left .vt-heading-wrapper.text-inherit .vt-heading,
+  .vt-desktop-align-left .vt-paragraph.text-inherit p {
+    text-align: left;
+    justify-content: flex-start;
+  }
+
+  .vt-align-center .vt-heading-wrapper.text-inherit,
+  .vt-align-center .vt-paragraph.text-inherit,
+  .vt-desktop-align-center .vt-heading-wrapper.text-inherit,
+  .vt-desktop-align-center .vt-paragraph.text-inherit {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-inline: auto;
+  }
+  .vt-align-center .vt-heading-wrapper.text-inherit .vt-heading,
+  .vt-align-center .vt-paragraph.text-inherit p,
+  .vt-desktop-align-center .vt-heading-wrapper.text-inherit .vt-heading,
+  .vt-desktop-align-center .vt-paragraph.text-inherit p {
+    text-align: center;
+    justify-content: center;
+  }
+
+  .vt-align-right .vt-heading-wrapper.text-inherit,
+  .vt-align-right .vt-paragraph.text-inherit,
+  .vt-desktop-align-right .vt-heading-wrapper.text-inherit,
+  .vt-desktop-align-right .vt-paragraph.text-inherit {
+    text-align: right;
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+  }
+  .vt-align-right .vt-heading-wrapper.text-inherit .vt-heading,
+  .vt-align-right .vt-paragraph.text-inherit p,
+  .vt-desktop-align-right .vt-heading-wrapper.text-inherit .vt-heading,
+  .vt-desktop-align-right .vt-paragraph.text-inherit p {
+    text-align: right;
+    justify-content: flex-end;
+  }
+
+  /* Re-ordering child elements: Heading (1) -> Play Button (2) -> Paragraph (3) -> Button (4) */
+  .vt-video-overlay__content-box > .vt-heading-wrapper {
+    order: 1;
+  }
+
+  .vt-video-overlay__play-btn-wrapper {
+    order: 2;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-block: 6px;
+    z-index: 5;
+    pointer-events: auto;
+  }
+
+  .vt-video-overlay__content-box > .vt-paragraph {
+    order: 3;
+  }
+
+  .vt-video-overlay__content-box > .vt-buttons {
+    order: 4;
+  }
+
+  /* -------------------------------------------------------------------------
+     Circular Play Button & Micro-Animation
+     ------------------------------------------------------------------------- */
+  .vt-video-overlay__play-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(62px, 8vw, 76px);
+    height: clamp(62px, 8vw, 76px);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: var(--color-secondary, #71CC3B);
+    color: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, background 0.25s ease;
+    z-index: 10;
+    pointer-events: auto;
+  }
+
+  .vt-video-overlay__play-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 32px rgba(113, 204, 59, 0.45);
+  }
+
+  .vt-video-overlay__play-btn:active {
+    transform: scale(0.96);
+  }
+
+  .vt-video-overlay__play-btn:focus-visible {
+    outline: 3px solid #FFFFFF;
+    outline-offset: 3px;
+  }
+
+  .vt-video-overlay__play-icon,
+  .vt-video-overlay__pause-icon {
+    width: clamp(22px, 3vw, 28px);
+    height: clamp(22px, 3vw, 28px);
+    transition: transform 0.25s ease;
+    pointer-events: none;
+  }
+
+  .vt-video-overlay__play-icon {
+    margin-inline-start: 3px; /* Optically center triangle in circle */
+  }
+
+  .vt-video-overlay__pause-icon {
+    display: none;
+  }
+
+  .vt-video-overlay.is-playing .vt-video-overlay__play-icon {
+    display: none;
+  }
+
+  .vt-video-overlay.is-playing .vt-video-overlay__pause-icon {
+    display: block;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Video with text overlay",
+  "tag": "section",
+  "class": "video-with-text-overlay-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Shopify-hosted video"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video"
+    },
+    {
+      "type": "header",
+      "content": "Or embed video from URL"
+    },
+    {
+      "type": "paragraph",
+      "content": "Shows when no Shopify-hosted video is selected."
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "URL",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ],
+      "placeholder": "https://www.youtube.com/watch?v=kipnRsLYRuM&list=RDkipnRsLYRuM&start_radio=1",
+      "default": "https://www.youtube.com/watch?v=kipnRsLYRuM&list=RDkipnRsLYRuM&start_radio=1",
+      "info": "Use a YouTube or Vimeo URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "cover_image",
+      "label": "Cover image"
+    },
+    {
+      "type": "text",
+      "id": "video_alt_text",
+      "label": "Video alt text",
+      "info": "Describe the video for customers using screen readers. Learn more"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_autoplay",
+      "label": "Enable video autoplay",
+      "info": "Video are muted automatically to allow autoplay.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_looping",
+      "label": "Enable video looping",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "options": [
+        {
+          "value": "450px",
+          "label": "450px"
+        },
+        {
+          "value": "550px",
+          "label": "550px"
+        },
+        {
+          "value": "650px",
+          "label": "650px"
+        },
+        {
+          "value": "750px",
+          "label": "750px"
+        },
+        {
+          "value": "100vh",
+          "label": "Full screen"
+        }
+      ],
+      "default": "750px"
+    },
+    {
+      "type": "select",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "options": [
+        {
+          "value": "300px",
+          "label": "300px"
+        },
+        {
+          "value": "350px",
+          "label": "350px"
+        },
+        {
+          "value": "400px",
+          "label": "400px"
+        },
+        {
+          "value": "450px",
+          "label": "450px"
+        },
+        {
+          "value": "500px",
+          "label": "500px"
+        },
+        {
+          "value": "600px",
+          "label": "600px"
+        },
+        {
+          "value": "100vh",
+          "label": "Full screen"
+        }
+      ],
+      "default": "500px"
+    },
+    {
+      "type": "select",
+      "id": "desktop_content_position",
+      "label": "Desktop content position",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "Top Left"
+        },
+        {
+          "value": "top-center",
+          "label": "Top Center"
+        },
+        {
+          "value": "top-right",
+          "label": "Top Right"
+        },
+        {
+          "value": "middle-left",
+          "label": "Middle Left"
+        },
+        {
+          "value": "middle-center",
+          "label": "Middle Center"
+        },
+        {
+          "value": "middle-right",
+          "label": "Middle Right"
+        },
+        {
+          "value": "bottom-left",
+          "label": "Bottom Left"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Bottom Center"
+        },
+        {
+          "value": "bottom-right",
+          "label": "Bottom Right"
+        }
+      ],
+      "default": "middle-center"
+    },
+    {
+      "type": "text_alignment",
+      "id": "desktop_content_alignment",
+      "label": "Desktop content alignment",
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "paragraph",
+      "content": "Gradient replaces solid colors when set."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay",
+      "default": "#171717"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "apply_max_width",
+      "label": "Apply max width",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Desktop Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Mobile Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "label": "Horizontal padding (mobile)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading"
+    },
+    {
+      "type": "paragraph"
+    },
+    {
+      "type": "button"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video with text overlay",
+      "settings": {
+        "video_url": "https://www.youtube.com/watch?v=kipnRsLYRuM&list=RDkipnRsLYRuM&start_radio=1",
+        "enable_video_autoplay": false,
+        "enable_video_looping": false,
+        "desktop_height": "750px",
+        "mobile_height": "500px",
+        "desktop_content_position": "middle-center",
+        "desktop_content_alignment": "center",
+        "text_color": "#FFFFFF",
+        "overlay_color": "#171717",
+        "overlay_opacity": 30,
+        "apply_max_width": true,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "padding_horizontal": 0,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0,
+        "padding_horizontal_mobile": 0
+      },
+      "blocks": [
+        {
+          "type": "heading",
+          "settings": {
+            "heading": "Discover a better way to shop",
+            "heading_size": "vt-heading-h1",
+            "heading_alignment": "text-inherit",
+            "heading_tag": "h2",
+            "heading_width": "fill",
+            "enable_max_width": true,
+            "heading_max_width": 900,
+            "animation_type": "slide",
+            "animation_direction": "from-bottom",
+            "animation_duration": 1.2,
+            "animation_delay": 0.2,
+            "animation_easing": "ease-out-sine"
+          }
+        },
+        {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>WATCH THE 30S ORIGIN STORY</p>",
+            "paragraph_size": "vt-paragraph-small",
+            "paragraph_alignment": "text-inherit",
+            "paragraph_width": "fill",
+            "enable_max_width": true,
+            "paragraph_max_width": 600,
+            "animation_type": "slide",
+            "animation_direction": "from-bottom",
+            "animation_duration": 1.2,
+            "animation_delay": 0.3,
+            "animation_easing": "ease-out-sine"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

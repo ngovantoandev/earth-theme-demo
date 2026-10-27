@@ -1,0 +1,400 @@
+{% doc %}
+  Renders a footer menu column with link_list data binding.
+  Supports desktop column view and mobile accordion with arrow indicator,
+  optional contact info (email, phone, address), and theme color tokens.
+  @example
+  {% content_for 'block', type: 'menu', id: 'menu' %}
+{% enddoc %}
+
+{%- liquid
+  assign menu_handle = block.settings.menu
+  assign link_list = linklists[menu_handle]
+  assign title_override = block.settings.title
+  assign show_contact = block.settings.show_contact_info
+
+  # Determine display title
+  assign display_title = title_override
+  if display_title == blank and link_list != blank and link_list.title != blank
+    assign display_title = link_list.title
+  endif
+  if display_title == blank
+    assign display_title = 'Menu Title'
+  endif
+
+  # Fallback links if menu is empty
+  assign has_links = false
+  if link_list != blank and link_list.links.size > 0
+    assign has_links = true
+  endif
+
+  # Contextual fallback based on handle or title
+  assign handle_lower = menu_handle | downcase
+  assign title_lower = display_title | downcase
+  assign title_setting = block.settings.title_color
+  if title_setting != blank and title_setting != 'rgba(0,0,0,0)' and title_setting != '#00000000' and title_setting != 'transparent'
+    assign final_title_color = title_setting
+  else
+    assign final_title_color = 'var(--vt-footer-color, var(--vt-foreground-color, #003225))'
+  endif
+
+  assign link_setting = block.settings.link_color
+  if link_setting != blank and link_setting != 'rgba(0,0,0,0)' and link_setting != '#00000000' and link_setting != 'transparent'
+    assign final_link_color = link_setting
+  else
+    assign final_link_color = 'var(--vt-footer-color, var(--vt-foreground-color, #003225))'
+  endif
+-%}
+
+<div
+  id="menu-block-{{ block.id }}"
+  class="vt-footer-menu"
+  style="
+    --vt-menu-title-color: {{ final_title_color }};
+    --vt-menu-link-color: {{ final_link_color }};
+    --vt-menu-link-gap: {{ block.settings.link_gap }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  <details class="vt-footer-menu__details" open>
+    <summary class="vt-footer-menu__summary">
+      <span class="vt-footer-menu__title">{{ display_title }}</span>
+      <span class="vt-footer-menu__arrow" aria-hidden="true">
+        <svg class="vt-footer-menu__arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="7" y1="7" x2="17" y2="17"></line>
+          <polyline points="17 7 17 17 7 17"></polyline>
+        </svg>
+      </span>
+    </summary>
+
+    <div class="vt-footer-menu__content">
+      <ul class="vt-footer-menu__list" role="list">
+        {%- if has_links -%}
+          {%- for link in link_list.links -%}
+            <li class="vt-footer-menu__item">
+              <a href="{{ link.url }}" class="vt-footer-menu__link{% if link.active %} vt-footer-menu__link--active{% endif %}">
+                {{ link.title }}
+              </a>
+            </li>
+          {%- endfor -%}
+        {%- else -%}
+          {%- comment -%} Contextual mock data fallbacks for preview / dev {%- endcomment -%}
+          {%- if handle_lower contains 'company' or title_lower contains 'company' -%}
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">About Us</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Our Story</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Sustainability Journey</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Careers</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Blog</a></li>
+          {%- elsif handle_lower contains 'shop' or title_lower contains 'shop' -%}
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">New Arrivals</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Women's</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Men's</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Essentials</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Limited Edition</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Sale</a></li>
+          {%- elsif handle_lower contains 'sustain' or title_lower contains 'sustain' -%}
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Impact Tracker</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Transparency</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Carbon Footprint</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Supply Chain</a></li>
+          {%- elsif handle_lower contains 'support' or title_lower contains 'support' -%}
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Contact Us</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Shipping & Returns</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Size Guide</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">FAQ</a></li>
+          {%- else -%}
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Menu item 1</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Menu item 2</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Menu item 3</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Menu item 4</a></li>
+          {%- endif -%}
+        {%- endif -%}
+      </ul>
+
+      {%- if show_contact -%}
+        <div class="vt-footer-menu__contact">
+          <hr class="vt-footer-menu__contact-divider">
+          <ul class="vt-footer-menu__contact-list" role="list">
+            {%- if block.settings.contact_email != blank -%}
+              <li class="vt-footer-menu__contact-item">
+                <a href="mailto:{{ block.settings.contact_email }}" class="vt-footer-menu__contact-link">
+                  <span class="vt-footer-menu__contact-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                      <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                  </span>
+                  <span>{{ block.settings.contact_email }}</span>
+                </a>
+              </li>
+            {%- endif -%}
+
+            {%- if block.settings.contact_phone != blank -%}
+              <li class="vt-footer-menu__contact-item">
+                <a href="tel:{{ block.settings.contact_phone | replace: ' ', '' | replace: '(', '' | replace: ')', '' | replace: '-', '' }}" class="vt-footer-menu__contact-link">
+                  <span class="vt-footer-menu__contact-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                  </span>
+                  <span>{{ block.settings.contact_phone }}</span>
+                </a>
+              </li>
+            {%- endif -%}
+
+            {%- if block.settings.contact_address != blank -%}
+              <li class="vt-footer-menu__contact-item">
+                <div class="vt-footer-menu__contact-link">
+                  <span class="vt-footer-menu__contact-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                  </span>
+                  <span>{{ block.settings.contact_address }}</span>
+                </div>
+              </li>
+            {%- endif -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+  </details>
+</div>
+
+{% stylesheet %}
+  .vt-footer-menu {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .vt-footer-menu__details {
+    width: 100%;
+    border-bottom: 1px solid rgba(0, 50, 37, 0.25);
+    padding-bottom: 0.75rem;
+  }
+
+  @media screen and (min-width: 769px) {
+    .vt-footer-menu__details {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  .vt-footer-menu__summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    list-style: none;
+    padding-block: 0.75rem;
+    user-select: none;
+  }
+
+  .vt-footer-menu__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  @media screen and (min-width: 769px) {
+    .vt-footer-menu__summary {
+      cursor: default;
+      pointer-events: none;
+      padding-block: 0 1.25rem;
+    }
+  }
+
+  .vt-footer-menu__title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--vt-menu-title-color);
+    margin: 0;
+  }
+
+  .vt-footer-menu__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vt-menu-title-color);
+    transition: transform 0.25s ease;
+  }
+
+  @media screen and (min-width: 769px) {
+    .vt-footer-menu__arrow {
+      display: none;
+    }
+  }
+
+  /* Rotate arrow when open on mobile: ↘ becomes ↗ */
+  .vt-footer-menu__details[open] .vt-footer-menu__arrow {
+    transform: rotate(-90deg);
+  }
+
+  .vt-footer-menu__content {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0.75rem;
+  }
+
+  @media screen and (min-width: 769px) {
+    .vt-footer-menu__content {
+      padding-bottom: 0;
+    }
+  }
+
+  .vt-footer-menu__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--vt-menu-link-gap);
+  }
+
+  .vt-footer-menu__item {
+    margin: 0;
+    padding: 0;
+  }
+
+  .vt-footer-menu__link {
+    display: inline-block;
+    color: var(--vt-menu-link-color);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    line-height: 1.4;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  .vt-footer-menu__link:hover {
+    color: var(--vt-color-secondary, #71CC3B);
+    transform: translateX(2px);
+  }
+
+  .vt-footer-menu__contact {
+    margin-top: 1.25rem;
+  }
+
+  .vt-footer-menu__contact-divider {
+    border: 0;
+    height: 1px;
+    background-color: rgba(0, 50, 37, 0.2);
+    margin: 0 0 1rem 0;
+  }
+
+  .vt-footer-menu__contact-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .vt-footer-menu__contact-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  .vt-footer-menu__contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--vt-menu-link-color);
+    font-size: 0.875rem;
+    text-decoration: none;
+    line-height: 1.4;
+  }
+
+  .vt-footer-menu__contact-link:hover {
+    color: var(--vt-color-secondary, #71CC3B);
+  }
+
+  .vt-footer-menu__contact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vt-menu-title-color);
+    flex-shrink: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Menu",
+  "tag": null,
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation Menu"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Title override",
+      "info": "Leave empty to use the menu's own title"
+    },
+    {
+      "type": "header",
+      "content": "Style & Colors"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#00000000"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#00000000"
+    },
+    {
+      "type": "range",
+      "id": "link_gap",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing between links",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Contact details (Optional)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_contact_info",
+      "label": "Show contact details",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "contact_email",
+      "label": "Contact email"
+    },
+    {
+      "type": "text",
+      "id": "contact_phone",
+      "label": "Contact phone"
+    },
+    {
+      "type": "text",
+      "id": "contact_address",
+      "label": "Contact address"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menu",
+      "settings": {
+        "title": "Menu Title",
+        "link_gap": 12
+      }
+    }
+  ]
+}
+{% endschema %}

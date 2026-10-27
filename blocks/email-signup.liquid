@@ -1,0 +1,231 @@
+{% doc %}
+  Renders an email newsletter input form and submit button.
+  Compact atomic block matching mockup style with responsive widths and CSS variables.
+  @example
+  {% content_for 'block', type: 'email-signup', id: 'email-signup' %}
+{% enddoc %}
+
+{%- liquid
+  assign input_setting = block.settings.input_bg_color
+  if input_setting != blank and input_setting != 'rgba(0,0,0,0)' and input_setting != '#00000000' and input_setting != 'transparent'
+    assign final_input_bg = input_setting
+  else
+    assign final_input_bg = 'var(--vt-background-color, #F8F9DC)'
+  endif
+
+  assign btn_setting = block.settings.button_bg_color
+  if btn_setting != blank and btn_setting != 'rgba(0,0,0,0)' and btn_setting != '#00000000' and btn_setting != 'transparent'
+    assign final_btn_bg = btn_setting
+  else
+    assign final_btn_bg = 'var(--vt-color-secondary, #71CC3B)'
+  endif
+-%}
+
+<div
+  id="email-signup-{{ block.id }}"
+  class="vt-email-signup-block"
+  style="
+    --vt-esb-input-bg: {{ final_input_bg }};
+    --vt-esb-btn-bg: {{ final_btn_bg }};
+    --vt-esb-radius: {{ block.settings.border_radius }}px;
+    --vt-esb-max-w: {{ block.settings.max_width }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% form 'customer', class: 'vt-email-signup-block__form', id: 'email-signup-form' %}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+
+    {%- if form.posted_successfully? -%}
+      <p class="vt-email-signup-block__success" tabindex="-1" autofocus>
+        Thank you for subscribing!
+      </p>
+    {%- else -%}
+      <div class="vt-email-signup-block__input-group">
+        <input
+          id="NewsletterInput-{{ block.id }}"
+          type="email"
+          name="contact[email]"
+          class="vt-email-signup-block__input"
+          value="{{ form.email }}"
+          aria-required="true"
+          autocorrect="off"
+          autocapitalize="off"
+          autocomplete="email"
+          {% if form.errors %}
+            autofocus
+            aria-invalid="true"
+            aria-describedby="NewsletterError-{{ block.id }}"
+          {% endif %}
+          placeholder="{{ block.settings.placeholder | default: 'Enter your email address' }}"
+          required
+        >
+        <button
+          type="submit"
+          class="vt-email-signup-block__button"
+          name="commit"
+          id="NewsletterSubmit-{{ block.id }}"
+          aria-label="Subscribe"
+        >
+          {%- if block.settings.button_label != blank -%}
+            <span>{{ block.settings.button_label }}</span>
+          {%- endif -%}
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 5.58409H10.0464L6.4503 9.35022L7.0415 9.96017C7.09039 10.0125 7.13927 10.0125 7.1893 9.96017L11.9638 5.12574C12.0115 5.0752 12.0115 4.97414 11.9638 4.92301L7.18988 0.0392367C7.13984 -0.0130789 7.09039 -0.0130789 7.04208 0.0392367L6.45088 0.70091L10.143 4.46644H0" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+
+      {%- if form.errors -%}
+        <p class="vt-email-signup-block__error" id="NewsletterError-{{ block.id }}">
+          {{ form.errors.translated_fields.email | capitalize }}
+          {{ form.errors.messages.email }}
+        </p>
+      {%- endif -%}
+    {%- endif -%}
+  {% endform %}
+</div>
+
+{% stylesheet %}
+  .vt-email-signup-block {
+    width: 100%;
+    max-width: var(--vt-esb-max-w);
+    box-sizing: border-box;
+  }
+
+  .vt-email-signup-block__form {
+    width: 100%;
+    margin: 0;
+  }
+
+  .vt-email-signup-block__input-group {
+    display: flex;
+    align-items: stretch;
+    background-color: var(--vt-esb-input-bg);
+    border-radius: var(--vt-esb-radius);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 50, 37, 0.12);
+  }
+
+  .vt-email-signup-block__input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+    color: var(--vt-foreground-color, #003225);
+    outline: none;
+    font-family: inherit;
+    min-width: 0;
+  }
+
+  .vt-email-signup-block__input::placeholder {
+    color: #4A5568;
+    opacity: 0.85;
+  }
+
+  .vt-email-signup-block__input:focus-visible {
+    outline: 2px solid var(--vt-esb-btn-bg);
+    outline-offset: -2px;
+  }
+
+  .vt-email-signup-block__button {
+    background-color: var(--vt-esb-btn-bg);
+    color: var(--vt-foreground-color, #003225);
+    border: none;
+    padding: 0 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: filter 0.2s ease, transform 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .vt-email-signup-block__button:hover {
+    filter: brightness(1.08);
+  }
+
+  .vt-email-signup-block__button:active {
+    transform: scale(0.97);
+  }
+
+  .vt-email-signup-block__icon {
+    display: block;
+  }
+
+  .vt-email-signup-block__success {
+    margin: 0;
+    color: var(--vt-color-secondary, #71CC3B);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .vt-email-signup-block__error {
+    margin: 0.375rem 0 0;
+    color: #FFB4B4;
+    font-size: 0.875rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Email signup",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Input placeholder",
+      "default": "Enter your email address"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button text label (optional)"
+    },
+    {
+      "type": "color",
+      "id": "input_bg_color",
+      "label": "Input background color",
+      "default": "#00000000"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background color",
+      "default": "#00000000"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 480
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Email signup",
+      "settings": {
+        "placeholder": "Enter your email address",
+        "max_width": 480,
+        "border_radius": 4
+      }
+    }
+  ]
+}
+{% endschema %}
