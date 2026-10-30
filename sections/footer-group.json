@@ -2,117 +2,34 @@
   "type": "footer",
   "name": "t:general.footer",
   "sections": {
-    "newsletter": {
-      "type": "newsletter",
-      "blocks": {
-        "newsletter_columns": {
-          "type": "column-layout",
-          "settings": {
-            "desktop_column_count": 2,
-            "tablet_column_count": 1,
-            "mobile_column_count": 1,
-            "desktop_column_1_width": "lg:w-1/2|50",
-            "desktop_column_2_width": "lg:w-1/2|50",
-            "tablet_column_1_width": "md:w-full|100",
-            "mobile_column_1_width": "w-full|100",
-            "swipe_columns_mobile": false,
-            "vertical_alignment": "center",
-            "desktop_gap_x": "lg:gap-x-12",
-            "desktop_gap_y": "lg:gap-y-6",
-            "tablet_gap_x": "md:gap-x-0",
-            "tablet_gap_y": "md:gap-y-6",
-            "mobile_gap_x": "gap-x-0",
-            "mobile_gap_y": "gap-y-6"
-          },
-          "blocks": {
-            "newsletter_heading": {
-              "type": "heading",
-              "settings": {
-                "heading": "Join 50,000+ Eco-Conscious Fashion Lovers",
-                "heading_size": "vt-heading-h2",
-                "heading_tag": "h2",
-                "heading_width": "fill",
-                "enable_max_width": false
-              }
-            },
-            "newsletter_stack": {
-              "type": "stack",
-              "settings": {
-                "layout_direction_desktop": "vt-stack--vertical",
-                "layout_direction_tablet": "vt-stack--vertical",
-                "layout_direction_mobile": "vt-stack--vertical",
-                "alignment": "flex-start",
-                "position": "flex-start",
-                "wrap_content": "wrap",
-                "width": "fill",
-                "height": "fit",
-                "position_type": "default",
-                "gap_desktop": 10,
-                "gap_mobile": 8
-              },
-              "blocks": {
-                "newsletter_form": {
-                  "type": "email-signup",
-                  "settings": {
-                    "placeholder": "Enter your email address",
-                    "max_width": 500,
-                    "border_radius": 4
-                  }
-                },
-                "newsletter_subtext": {
-                  "type": "paragraph",
-                  "settings": {
-                    "text": "<p>✨ Be first to wear change – exclusive drops + 10% off</p>",
-                    "paragraph_size": "vt-paragraph-extra-small"
-                  }
-                }
-              },
-              "block_order": [
-                "newsletter_form",
-                "newsletter_subtext"
-              ]
-            }
-          },
-          "block_order": [
-            "newsletter_heading",
-            "newsletter_stack"
-          ]
-        }
-      },
-      "block_order": [
-        "newsletter_columns"
-      ],
-      "settings": {
-        "apply_max_width": true,
-        "background_color": "",
-        "text_color": "",
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "padding_top_mobile": 32,
-        "padding_bottom_mobile": 32,
-        "padding_horizontal": 34,
-        "padding_horizontal_mobile": 20
-      }
-    },
     "footer": {
       "type": "footer",
       "blocks": {
-        "logo_block": {
-          "type": "logo",
+        "stack_logo": {
+          "type": "stack",
           "settings": {
-            "logo_width_desktop": 1100,
-            "logo_width_mobile": 300,
-            "alignment": "left"
-          }
-        },
-        "tagline_block": {
-          "type": "paragraph",
-          "settings": {
-            "text": "<p>Redefining fashion through sustainable practices, transparent supply chains, and timeless design.</p>",
-            "paragraph_size": "vt-paragraph-medium",
-            "enable_max_width": false,
-            "paragraph_width": "fill"
-          }
+            "layout_direction_desktop": "vt-stack--vertical",
+            "layout_direction_tablet": "vt-stack--vertical",
+            "layout_direction_mobile": "vt-stack--vertical",
+            "gap_desktop": 20,
+            "gap_mobile": 14
+          },
+          "blocks": {
+            "logo": {
+              "type": "logo"
+            },
+            "paragraph": {
+              "type": "paragraph",
+              "settings": {
+                "text": "<p>Redefining fashion through sustainable practices, transparent supply chains, and timeless design.</p>",
+                "paragraph_size": "vt-paragraph-medium"
+              }
+            }
+          },
+          "block_order": [
+            "logo",
+            "paragraph"
+          ]
         },
         "menus_column_layout": {
           "type": "column-layout",
@@ -310,10 +227,10 @@
           "settings": {
             "height": 1,
             "style": "solid",
-            "margin_top_desktop": 16,
-            "margin_bottom_desktop": 24,
-            "margin_top_mobile": 16,
-            "margin_bottom_mobile": 20
+            "margin_top_desktop": 0,
+            "margin_bottom_desktop": 0,
+            "margin_top_mobile": 0,
+            "margin_bottom_mobile": 0
           }
         },
         "bottom_column_layout": {
@@ -355,8 +272,7 @@
         }
       },
       "block_order": [
-        "logo_block",
-        "tagline_block",
+        "stack_logo",
         "menus_column_layout",
         "middle_column_layout",
         "divider_block",
@@ -378,7 +294,6 @@
     }
   },
   "order": [
-    "newsletter",
     "footer"
   ]
 }

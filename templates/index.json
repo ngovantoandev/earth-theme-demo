@@ -2156,8 +2156,6 @@
             "tab_sale"                
         ]            
     },
-
-
     "text-marquee": {
       "type": "text-marquee",
       "settings": {
@@ -2236,14 +2234,17 @@
     "shop-by-value": {
       "type": "shop-by-value",
       "settings": {
-        "make_section_page_width": true,
-        "padding_top": 80,
-        "padding_bottom": 96,
-        "padding_horizontal": 0,
-        "block_gap": 56,
+        "padding_top_desktop": 80,
+        "padding_bottom_desktop": 100,
+        "padding_left_desktop": 0,
+        "padding_right_desktop": 0,
+        "enable_custom_mobile_padding": true,
         "padding_top_mobile": 48,
         "padding_bottom_mobile": 48,
-        "padding_horizontal_mobile": 0,
+        "padding_left_mobile": 0,
+        "padding_right_mobile": 0,
+        "make_section_page_width": true,
+        "block_gap": 56,
         "block_gap_mobile": 36
       },
       "blocks": {
@@ -3080,22 +3081,17 @@
       "type": "video-with-text-overlay",
       "settings": {
         "video_url": "https://www.youtube.com/watch?v=kipnRsLYRuM&list=RDkipnRsLYRuM&start_radio=1",
-        "enable_video_autoplay": false,
-        "enable_video_looping": false,
-        "desktop_height": "750px",
-        "mobile_height": "500px",
-        "desktop_content_position": "middle-center",
-        "desktop_content_alignment": "center",
-        "text_color": "#FFFFFF",
-        "overlay_color": "#171717",
         "overlay_opacity": 30,
-        "padding_top": 0,
-        "padding_bottom": 0,
-        "padding_horizontal": 0,
+        "padding_top_desktop": 0,
+        "padding_bottom_desktop": 0,
+        "padding_left_desktop": 0,
+        "padding_right_desktop": 0,
+        "enable_custom_mobile_padding": true,
         "padding_top_mobile": 0,
         "padding_bottom_mobile": 0,
-        "padding_horizontal_mobile": 0,
-        "apply_max_width": true
+        "padding_left_mobile": 20,
+        "padding_right_mobile": 20,
+        "make_section_page_width": true
       },
       "blocks": {
         "video_heading_block": {
@@ -6507,6 +6503,98 @@
         "transparency_spotlight_challenges_card",
         "transparency_spotlight_stats_grid"
       ]
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "blocks": {
+        "newsletter_columns": {
+          "type": "column-layout",
+          "settings": {
+            "desktop_column_count": 2,
+            "tablet_column_count": 1,
+            "mobile_column_count": 1,
+            "desktop_column_1_width": "lg:w-1/2|50",
+            "desktop_column_2_width": "lg:w-1/2|50",
+            "tablet_column_1_width": "md:w-full|100",
+            "mobile_column_1_width": "w-full|100",
+            "swipe_columns_mobile": false,
+            "vertical_alignment": "center",
+            "desktop_gap_x": "lg:gap-x-12",
+            "desktop_gap_y": "lg:gap-y-6",
+            "tablet_gap_x": "md:gap-x-0",
+            "tablet_gap_y": "md:gap-y-6",
+            "mobile_gap_x": "gap-x-0",
+            "mobile_gap_y": "gap-y-6"
+          },
+          "blocks": {
+            "newsletter_heading": {
+              "type": "heading",
+              "settings": {
+                "heading": "Join 50,000+ Eco-Conscious Fashion Lovers",
+                "heading_size": "vt-heading-h2",
+                "heading_tag": "h2",
+                "heading_width": "fill",
+                "enable_max_width": false
+              }
+            },
+            "newsletter_stack": {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--vertical",
+                "layout_direction_tablet": "vt-stack--vertical",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "flex-start",
+                "wrap_content": "wrap",
+                "width": "fill",
+                "height": "fit",
+                "position_type": "default",
+                "gap_desktop": 10,
+                "gap_mobile": 8
+              },
+              "blocks": {
+                "newsletter_form": {
+                  "type": "email-signup",
+                  "settings": {
+                    "placeholder": "Enter your email address",
+                    "max_width": 500,
+                    "border_radius": 4
+                  }
+                },
+                "newsletter_subtext": {
+                  "type": "paragraph",
+                  "settings": {
+                    "text": "<p>✨ Be first to wear change – exclusive drops + 10% off</p>",
+                    "paragraph_size": "vt-paragraph-extra-small"
+                  }
+                }
+              },
+              "block_order": [
+                "newsletter_form",
+                "newsletter_subtext"
+              ]
+            }
+          },
+          "block_order": [
+            "newsletter_heading",
+            "newsletter_stack"
+          ]
+        }
+      },
+      "block_order": [
+        "newsletter_columns"
+      ],
+      "settings": {
+        "apply_max_width": true,
+        "background_color": "",
+        "text_color": "",
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "padding_top_mobile": 32,
+        "padding_bottom_mobile": 32,
+        "padding_horizontal": 34,
+        "padding_horizontal_mobile": 20
+      }
     }
   },
   "order": [
@@ -6524,6 +6612,7 @@
     "impact-proof",
     "our-sustainability",
     "educational-teaser",
-    "transparency-spotlight"
+    "transparency-spotlight",
+    "newsletter"  
   ]
 }

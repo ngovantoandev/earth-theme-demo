@@ -99,20 +99,17 @@
       "type": "checkbox",
       "id": "apply_max_width",
       "label": "Apply max width",
-      "default": true,
-      "info": "Constrains layout to global 1200px container"
+      "default": true
     },
     {
       "type": "color",
       "id": "background_color",
-      "label": "Background color",
-      "info": "Mặc định sử dụng màu Global của theme"
+      "label": "Background color"
     },
     {
       "type": "color",
       "id": "text_color",
-      "label": "Text color",
-      "info": "Mặc định sử dụng màu Global của theme"
+      "label": "Text color"
     },
     {
       "type": "header",
@@ -237,14 +234,26 @@
       },
       "blocks": [
         {
-          "type": "logo"
-        },
-        {
-          "type": "paragraph",
+          "type": "stack",
           "settings": {
-            "text": "<p>Brand mission statement or tagline goes here.</p>",
-            "paragraph_size": "vt-paragraph-medium"
-          }
+            "layout_direction_desktop": "vt-stack--vertical",
+            "layout_direction_tablet": "vt-stack--vertical",
+            "layout_direction_mobile": "vt-stack--vertical",
+            "gap_desktop": 20,
+            "gap_mobile": 14
+          },
+          "blocks": [
+            {
+              "type": "logo"
+            },
+            {
+              "type": "paragraph",
+              "settings": {
+                "text": "<p>Brand mission statement or tagline goes here.</p>",
+                "paragraph_size": "vt-paragraph-medium"
+              }
+            }
+          ]
         },
         {
           "type": "column-layout",
