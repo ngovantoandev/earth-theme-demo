@@ -457,6 +457,9 @@
   .text-right {
     text-align: right;
   }
+  .text-wrap {
+    text-wrap: wrap;
+  }
   .text-inherit {
     color: inherit;
   }

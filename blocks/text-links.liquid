@@ -1,0 +1,321 @@
+{% doc %}
+  Renders text styled with the heading block settings and optionally linked.
+
+  @example
+  {% content_for 'block', type: 'text-links', id: 'text-links' %}
+{% enddoc %}
+
+{%- if block.settings.heading != blank -%}
+  {%- assign animation_type = block.settings.animation_type -%}
+
+  {%- assign vt_anim_classes = '' -%}
+  {%- unless animation_type == 'none' or request.visual_preview_mode -%}
+    {%- assign vt_anim_classes = 'vt-animate vt-animate--' | append: animation_type -%}
+    {%- if animation_type == 'slide' or animation_type == 'float' -%}
+      {%- assign vt_anim_classes = vt_anim_classes
+        | append: ' vt-animate--dir-'
+        | append: block.settings.animation_direction
+      -%}
+    {%- endif -%}
+  {%- endunless -%}
+
+  {%- capture text_link_class -%}
+    vt-heading
+    {{ block.settings.heading_size }}
+    {{ vt_anim_classes }}
+    vt-text-links__link
+  {%- endcapture -%}
+  {%- assign text_link_class = text_link_class | strip -%}
+
+  {%- assign vt_style = '' -%}
+  {%- unless animation_type == 'none' or request.visual_preview_mode -%}
+    {%- assign vt_style = vt_style
+      | append: '--vt-duration: '
+      | append: block.settings.animation_duration
+      | append: 's;'
+    -%}
+    {%- assign vt_style = vt_style | append: ' --vt-delay: ' | append: block.settings.animation_delay | append: 's;' -%}
+
+    {%- if animation_type == 'slide' or animation_type == 'float' or animation_type == 'blur' -%}
+      {%- case block.settings.animation_easing -%}
+        {%- when 'linear' -%}
+          {%- assign vt_easing_value = 'linear' -%}
+        {%- when 'ease-out-sine' -%}
+          {%- assign vt_easing_value = 'cubic-bezier(0.61, 1, 0.88, 1)' -%}
+        {%- when 'ease-in-sine' -%}
+          {%- assign vt_easing_value = 'cubic-bezier(0.12, 0, 0.39, 0)' -%}
+        {%- when 'ease-in-out-sine' -%}
+          {%- assign vt_easing_value = 'cubic-bezier(0.37, 0, 0.63, 1)' -%}
+        {%- when 'ease-in-cubic' -%}
+          {%- assign vt_easing_value = 'cubic-bezier(0.32, 0, 0.67, 0)' -%}
+        {%- when 'ease-out-cubic' -%}
+          {%- assign vt_easing_value = 'cubic-bezier(0.33, 1, 0.68, 1)' -%}
+        {%- when 'ease-in-out-cubic' -%}
+          {%- assign vt_easing_value = 'cubic-bezier(0.65, 0, 0.35, 1)' -%}
+        {%- else -%}
+          {%- assign vt_easing_value = 'cubic-bezier(0.61, 1, 0.88, 1)' -%}
+      {%- endcase -%}
+      {%- assign vt_style = vt_style | append: ' --vt-easing: ' | append: vt_easing_value | append: ';' -%}
+    {%- endif -%}
+
+    {%- if animation_type == 'blur' -%}
+      {%- assign vt_style = vt_style
+        | append: ' --vt-blur: '
+        | append: block.settings.animation_blur_intensity
+        | append: 'px;'
+      -%}
+    {%- endif -%}
+  {%- endunless -%}
+
+  {%- assign vt_wrapper_class = 'vt-heading-wrapper '
+    | append: block.settings.heading_alignment
+    | append: ' vt-heading-wrapper--width-'
+    | append: block.settings.heading_width
+    | append: ' vt-text-links'
+  -%}
+
+  <div
+    class="{{ vt_wrapper_class }}"
+    style="
+      {%- if block.settings.heading_width == 'custom' %}--vt-heading-width: {{ block.settings.width_custom }}%;{% endif -%}
+      {%- if block.settings.enable_max_width %}--vt-heading-max-width: {% render 'fluid-clamp', min_px: block.settings.heading_max_width, max_px: block.settings.heading_max_width %};{% endif -%}
+    "
+  >
+    {%- if block.settings.image_link != blank -%}
+      <a
+        href="{{ block.settings.image_link }}"
+        class="{{ text_link_class }}"
+        {% if block.settings.open_in_new_tab %}
+          target="_blank" rel="noopener noreferrer"
+        {% endif %}
+        {% if vt_style != blank %}
+          style="{{ vt_style | strip }}"
+        {% endif %}
+        {{ block.shopify_attributes }}
+      >
+        {{ block.settings.heading }}
+      </a>
+    {%- else -%}
+      <span
+        class="{{ text_link_class }}"
+        {% if vt_style != blank %}
+          style="{{ vt_style | strip }}"
+        {% endif %}
+        {{ block.shopify_attributes }}
+      >
+        {{ block.settings.heading }}
+      </span>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .vt-text-links__link {
+    color: inherit;
+    text-decoration: none;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Text links",
+  "tag": null,
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "t:blocks.heading.settings.heading.default",
+      "label": "t:blocks.heading.settings.heading.label"
+    },
+    {
+      "type": "url",
+      "id": "image_link",
+      "label": "Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open link in new tab",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "options": [
+        { "value": "text-left", "label": "t:blocks.heading.settings.heading_alignment.options__1.label" },
+        { "value": "text-center", "label": "t:blocks.heading.settings.heading_alignment.options__2.label" },
+        { "value": "text-right", "label": "t:blocks.heading.settings.heading_alignment.options__3.label" },
+        { "value": "text-inherit", "label": "Inherit" }
+      ],
+      "default": "text-inherit",
+      "label": "t:blocks.heading.settings.heading_alignment.label"
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "vt-hero-heading", "label": "t:blocks.heading.settings.heading_size.options__1.label" },
+        { "value": "vt-heading-h1", "label": "t:blocks.heading.settings.heading_size.options__2.label" },
+        { "value": "vt-heading-h2", "label": "t:blocks.heading.settings.heading_size.options__3.label" },
+        { "value": "vt-heading-h3", "label": "t:blocks.heading.settings.heading_size.options__4.label" },
+        { "value": "vt-heading-h4", "label": "t:blocks.heading.settings.heading_size.options__5.label" },
+        { "value": "vt-heading-h5", "label": "t:blocks.heading.settings.heading_size.options__6.label" },
+        { "value": "vt-heading-h6", "label": "t:blocks.heading.settings.heading_size.options__7.label" }
+      ],
+      "default": "vt-heading-h3",
+      "label": "t:blocks.heading.settings.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_width",
+      "label": "Width",
+      "options": [
+        { "value": "fit", "label": "Fit" },
+        { "value": "fill", "label": "Fill" },
+        { "value": "max-content", "label": "Max content" },
+        { "value": "min-content", "label": "Min content" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "fit"
+    },
+    {
+      "type": "range",
+      "id": "width_custom",
+      "label": "Custom width",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.heading_width == 'custom' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_max_width",
+      "label": "Width limit",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "heading_max_width",
+      "min": 100,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 600,
+      "label": "Max width",
+      "visible_if": "{{ block.settings.enable_max_width == true }}"
+    },
+    {
+      "type": "header",
+      "content": "t:blocks.heading.settings.header_animation.content"
+    },
+    {
+      "type": "select",
+      "id": "animation_type",
+      "options": [
+        { "value": "none", "label": "t:blocks.heading.settings.animation_type.options__1.label" },
+        { "value": "fade", "label": "t:blocks.heading.settings.animation_type.options__2.label" },
+        { "value": "slide", "label": "t:blocks.heading.settings.animation_type.options__3.label" },
+        { "value": "float", "label": "t:blocks.heading.settings.animation_type.options__4.label" },
+        { "value": "blur", "label": "t:blocks.heading.settings.animation_type.options__5.label" }
+      ],
+      "default": "none",
+      "label": "t:blocks.heading.settings.animation_type.label"
+    },
+    {
+      "type": "select",
+      "id": "animation_direction",
+      "options": [
+        { "value": "from-left", "label": "t:blocks.heading.settings.animation_direction.options__1.label" },
+        { "value": "from-right", "label": "t:blocks.heading.settings.animation_direction.options__2.label" },
+        { "value": "from-top", "label": "t:blocks.heading.settings.animation_direction.options__3.label" },
+        { "value": "from-bottom", "label": "t:blocks.heading.settings.animation_direction.options__4.label" }
+      ],
+      "default": "from-bottom",
+      "label": "t:blocks.heading.settings.animation_direction.label",
+      "visible_if": "{{ block.settings.animation_type == 'slide' or block.settings.animation_type == 'float' }}"
+    },
+    {
+      "type": "range",
+      "id": "animation_duration",
+      "min": 0.1,
+      "max": 3,
+      "step": 0.1,
+      "unit": "s",
+      "default": 1.2,
+      "label": "t:blocks.heading.settings.animation_duration.label",
+      "visible_if": "{{ block.settings.animation_type != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "animation_delay",
+      "min": 0,
+      "max": 2,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0.2,
+      "label": "t:blocks.heading.settings.animation_delay.label",
+      "visible_if": "{{ block.settings.animation_type != 'none' }}"
+    },
+    {
+      "type": "select",
+      "id": "animation_easing",
+      "options": [
+        { "value": "linear", "label": "t:blocks.heading.settings.animation_easing.options__1.label" },
+        { "value": "ease-out-sine", "label": "t:blocks.heading.settings.animation_easing.options__2.label" },
+        { "value": "ease-in-sine", "label": "t:blocks.heading.settings.animation_easing.options__3.label" },
+        { "value": "ease-in-out-sine", "label": "t:blocks.heading.settings.animation_easing.options__4.label" },
+        { "value": "ease-in-cubic", "label": "t:blocks.heading.settings.animation_easing.options__5.label" },
+        { "value": "ease-out-cubic", "label": "t:blocks.heading.settings.animation_easing.options__6.label" },
+        { "value": "ease-in-out-cubic", "label": "t:blocks.heading.settings.animation_easing.options__7.label" }
+      ],
+      "default": "ease-out-sine",
+      "label": "t:blocks.heading.settings.animation_easing.label",
+      "visible_if": "{{ block.settings.animation_type == 'slide' or block.settings.animation_type == 'float' or block.settings.animation_type == 'blur' }}"
+    },
+    {
+      "type": "range",
+      "id": "animation_blur_intensity",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "t:blocks.heading.settings.animation_blur_intensity.label",
+      "visible_if": "{{ block.settings.animation_type == 'blur' }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Text links",
+      "category": "t:general.categories.basic",
+      "settings": {
+        "heading": "Text link",
+        "heading_size": "vt-heading-h5",
+        "heading_alignment": "text-inherit",
+        "heading_width": "fit",
+        "width_custom": 100,
+        "enable_max_width": false,
+        "heading_max_width": 600,
+        "image_link": "",
+        "open_in_new_tab": false,
+        "animation_type": "none",
+        "animation_direction": "from-bottom",
+        "animation_duration": 1.2,
+        "animation_delay": 0.2,
+        "animation_easing": "ease-out-sine",
+        "animation_blur_intensity": 5
+      }
+    }
+  ]
+}
+{% endschema %}
