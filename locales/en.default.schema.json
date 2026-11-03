@@ -1273,8 +1273,21 @@
 						"label": "X circle"
 					},
 					"options__16": {
-						"label": "Info"
-					}
+						"label": "info"
+					},
+					"options__17": {
+						"label": "handshake"
+					},
+					"options__18": {
+						"label": "organic-cotton"
+					},
+					"options__19": {
+						"label": "recycled-materials"
+					},
+					"options__20": {
+						"label": "vegan-cruelty-free"
+					},
+
 				},
 				"icon_size_desktop": {
 					"label": "Icon size desktop"

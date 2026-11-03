@@ -1,0 +1,48 @@
+{%- doc -%}
+  One slide of the slideshow section. Its "Tab label" (setting id: title, so the theme editor shows it in the block list) names the matching tab
+  the section renders under the carousel, so tabs always follow the slides'
+  order and count. Slide content comes from its child blocks (stack, card…).
+
+  @example
+  {% content_for 'block', type: 'slideshow-slide', id: 'slide' %}
+{%- enddoc -%}
+
+<div
+  id="Slide-{{ block.id }}"
+  class="swiper-slide vt-slideshow__slide"
+  data-tab-label="{{ block.settings.title | escape }}"
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</div>
+
+{% schema %}
+{
+  "name": "Slide",
+  "tag": null,
+  "settings": [    
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Tab label",
+      "default": "Slide",
+      "info": "Shown in the tabs under the slideshow"
+    }
+  ],
+  "blocks": [
+    { "type": "stack" },
+    { "type": "card" },
+    { "type": "image" }
+  ],
+  "presets": [
+    {
+      "name": "Slide",
+      "settings": {
+        "title": "Slide"
+      }
+    }
+  ]
+}
+{% endschema %}
+
+

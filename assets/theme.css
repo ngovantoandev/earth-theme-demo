@@ -588,14 +588,57 @@ body {
 }
 
 /* ============================================================
+  SLIDER ARROWS  
+  ============================================================ */
+
+.vt-swiper-btn {
+  --vt-swiper-btn-inset: 1rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;  
+}
+
+.vt-swiper-btn--prev {
+  left: calc(var(--vt-swiper-offset, 0px) + var(--vt-swiper-btn-inset));
+}
+
+.vt-swiper-btn--next {
+  right: calc(var(--vt-swiper-offset, 0px) + var(--vt-swiper-btn-inset));
+}
+
+.vt-swiper-btn:disabled,
+.vt-swiper-btn[aria-disabled="true"] {
+  pointer-events: none;
+}
+
+/* Hover-only arrows: shown while the pointer or focus is inside the carousel */
+.vt-swiper-btn--hover-only {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.swiper:is(:hover, :focus-within) .vt-swiper-btn--hover-only {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Keep the disabled fade when hover reveals the arrows */
+.swiper:is(:hover, :focus-within) .vt-swiper-btn--hover-only:is(:disabled, [aria-disabled="true"]) {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 749px) {
+  .vt-swiper-btn {
+    --vt-swiper-btn-inset: 0.5rem;
+  }
+}
+
+/* ============================================================
   RICH TEXT
   ============================================================ */
 
-/* The alignment settings arrive as Tailwind justify-* classes on the inner
-   (mobile class, plus an md: class for desktop). The inner is a flex column, so
-   justify-content can't move content sideways: each class also sets
-   align-items, text-align and the --vt-align-* variables that heading,
-   paragraph and buttons read when set to Inherit. */
 .vt-rich-text .justify-start {
   align-items: flex-start;
   text-align: left;

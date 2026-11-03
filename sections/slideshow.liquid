@@ -1,0 +1,1735 @@
+{%- comment -%}
+  Section: Slideshow
+  - Static intro stack (heading, paragraph...) above the carousel
+  - Slide blocks (slideshow-slide) in a Swiper carousel (assets/theme-slider.js)
+  - Tabs under the carousel, one per slide, built from each slide's "Tab label"
+{%- endcomment -%}
+
+{%- liquid
+  assign make_section_page_width = section.settings.make_section_page_width
+
+  # Outer class list
+  assign section_classes = 'vt-section vt-slideshow'
+  if section.settings.slide_style == 'offset'
+    assign section_classes = section_classes | append: ' vt-slideshow--offset'
+  endif
+
+  # Inner class list
+  assign inner_classes = 'vt-section__inner'
+  if make_section_page_width
+    assign inner_classes = inner_classes | append: ' vt-page-width'
+  endif
+
+  # Slide width (%) -> slides per view, e.g. 65% shows a third of the next slide
+  assign slide_width = section.settings.slide_width_desktop | default: 100
+  assign slides_desktop = 100.0 | divided_by: slide_width | round: 4
+  assign slide_width_tablet = section.settings.slide_width_tablet | default: 88
+  assign slides_tablet = 100.0 | divided_by: slide_width_tablet | round: 4
+  assign slide_width_mobile = section.settings.slide_width_mobile | default: 90
+  assign slides_mobile = 100.0 | divided_by: slide_width_mobile | round: 4
+
+  # Slides: the section only accepts slideshow-slide blocks, and section.blocks leaves out
+  # the static intro. section.blocks only holds '@theme' placeholders (no settings, other
+  # ids), so it is used for the count; the tabs are built in JS from each slide's data-tab-label
+  assign slides = section.blocks
+  assign autoplay_delay = section.settings.autoplay_delay | default: 5 | times: 1000
+-%}
+
+{%- comment -%} Reusable section CSS variables (padding, gap, colors) {%- endcomment -%}
+{% render 'section-styles', section: section %}
+
+<div
+  id="vt-slideshow-{{ section.id }}"
+  class="{{ section_classes }}"
+  data-autoplay="{{ section.settings.autoplay }}"
+  style="
+    --vt-slideshow-gap: {% render 'fluid-clamp', min_px: section.settings.slide_gap_mobile, max_px: section.settings.slide_gap_desktop %};
+    --vt-slideshow-slides-desktop: {{ slides_desktop }};
+    --vt-slideshow-slides-tablet: {{ slides_tablet }};
+    --vt-slideshow-slides-mobile: {{ slides_mobile }};
+    --vt-slideshow-offset: {{ section.settings.slide_offset | default: 0 }};
+    --vt-slideshow-tab-color: {{ section.settings.tab_color | default: 'var(--vt-color-secondary)' }};
+    --vt-slideshow-tab-active-color: {{ section.settings.tab_active_color | default: 'var(--vt-section-color, var(--vt-foreground-color))' }};
+  "
+  {{ section.shopify_attributes }}
+>
+  <div class="{{ inner_classes }}">
+    {% content_for 'block', type: 'stack', id: 'slideshow-intro' %}
+
+    <div
+      class="swiper vt-slideshow__swiper{% if section.settings.slide_style == 'offset' %} vt-slideshow__swiper--offset{% endif %}"
+      data-swiper
+      data-slideshow-swiper
+      data-slides-desktop="{{ slides_desktop }}"
+      data-slide-style="{{ section.settings.slide_style | default: 'standard' }}"
+      data-slide-offset="{{ section.settings.slide_offset | default: 15 }}"
+      data-slides-tablet="{{ slides_tablet }}"
+      data-slides-mobile="{{ slides_mobile }}"
+      data-loop="{{ section.settings.loop }}"
+      data-autoplay="{{ section.settings.autoplay }}"
+      data-autoplay-delay="{{ autoplay_delay }}"
+    >
+      <div class="swiper-wrapper">
+        {% content_for 'blocks' %}
+      </div>
+
+      {%- if section.settings.show_arrows and slides.size > 1 -%}
+        {%- liquid
+          assign vt_arrow_style = section.settings.arrows_style | default: 'primary'
+          assign vt_arrow_class = 'vt-arrow vt-arrow--' | append: vt_arrow_style
+          if settings.arrows_hover_effect == 'standard'
+            assign vt_arrow_class = vt_arrow_class | append: ' vt-arrow--hover-standard'
+          endif
+          assign vt_arrow_class = vt_arrow_class | append: ' vt-swiper-btn'
+          if section.settings.arrows_on_hover
+            assign vt_arrow_class = vt_arrow_class | append: ' vt-swiper-btn--hover-only'
+          endif
+        -%}
+        <button
+          type="button"
+          class="{{ vt_arrow_class }} vt-swiper-btn--prev"
+          aria-label="{{ 'content.pagination.previous' | t }}"
+          data-swiper-prev
+        >
+          <span class="vt-arrow__icon vt-arrow__icon--previous" aria-hidden="true">{% render 'icons', icon: 'arrow-previous' %}</span>
+        </button>
+        <button
+          type="button"
+          class="{{ vt_arrow_class }} vt-swiper-btn--next"
+          aria-label="{{ 'content.pagination.next' | t }}"
+          data-swiper-next
+        >
+          <span class="vt-arrow__icon vt-arrow__icon--next" aria-hidden="true">{% render 'icons', icon: 'arrow-next' %}</span>
+        </button>
+      {%- endif -%}
+    </div>
+
+    {%- if slides.size > 1 -%}
+      {%- comment -%} Swipe area for the tabs, used whenever they don't fit the row {%- endcomment -%}
+      <div class="vt-slideshow__tabs-scroller" data-tabs-scroller>
+        {%- comment -%} Tab buttons are added by JS, one per slide (see initSection) {%- endcomment -%}
+        <div
+          class="vt-slideshow__tabs"
+          role="group"
+          aria-label="{{ 'accessibility.slideshow_tabs' | t }}"
+          data-slideshow-tabs
+          data-tab-class="{{ section.settings.tab_font_size }}"
+          data-fallback-label="{{ 'accessibility.slideshow_slide' | t: number: '[number]' }}"
+        ></div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  /* Carousel: Swiper and arrows come from theme-slider.js and theme.css (SLIDER ARROWS) */
+  .vt-slideshow__swiper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    /* No layout effect on a block box; theme-slider.js reads it as the resolved px gap */    
+    column-gap: var(--vt-slideshow-gap);
+  }
+
+  .vt-slideshow__swiper .swiper-wrapper {
+    display: flex;
+  }
+
+  /* Slides in a row share the tallest slide's height; the content fills it */
+  .vt-slideshow__slide {
+    display: flex;
+    height: auto;
+    box-sizing: border-box;
+  }
+
+  .vt-slideshow__slide > * {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /*
+    Image beside the card (slide stack in a row): the image takes the row's
+    full height, so a tall card never leaves an empty gap under it. Its ratio
+    stays as the minimum height (it sets the row height when the card is
+    shorter); the photo is cropped with object-fit, never stretched.
+    Stacked layouts (image above the card) keep the image block's own ratio.
+  */
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    .vt-slideshow__slide > .vt-stack--tablet-horizontal > .vt-image {
+      position: relative;
+      align-self: stretch;
+      min-width: 0;
+    }
+
+    /* Minimum height from the image ratio; unlike aspect-ratio, it never widens the image */
+    .vt-slideshow__slide > .vt-stack--tablet-horizontal > .vt-image::before {
+      content: "";
+      display: block;
+      padding-top: calc(100% / (var(--vt-aspect-ratio)));
+    }
+
+    /* Out of the flow, so the photo's own proportions can't make the row taller */
+    .vt-slideshow__slide > .vt-stack--tablet-horizontal > .vt-image :is(.vt-image__link, .vt-image__media) {
+      position: absolute;
+      inset: 0;
+      aspect-ratio: auto;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .vt-slideshow__slide > .vt-stack--desktop-horizontal > .vt-image {
+      position: relative;
+      align-self: stretch;
+      min-width: 0;
+    }
+
+    .vt-slideshow__slide > .vt-stack--desktop-horizontal > .vt-image::before {
+      content: "";
+      display: block;
+      padding-top: calc(100% / (var(--vt-aspect-ratio)));
+    }
+
+    .vt-slideshow__slide > .vt-stack--desktop-horizontal > .vt-image :is(.vt-image__link, .vt-image__media) {
+      position: absolute;
+      inset: 0;
+      aspect-ratio: auto;
+    }
+  }
+
+  /* Before Swiper starts: same layout as the carousel, so nothing jumps */
+  .vt-slideshow__swiper:not(.swiper-initialized) .swiper-wrapper {
+    gap: var(--vt-slideshow-gap);
+  }
+
+  .vt-slideshow__swiper:not(.swiper-initialized) .vt-slideshow__slide {
+    flex-shrink: 0;
+    width: calc((100% - var(--vt-slideshow-gap) * (var(--vt-slideshow-slides) - 1)) / var(--vt-slideshow-slides));
+  }
+
+  /* Offset: the arrow on the side with no more slides is hidden, not faded */
+  .vt-slideshow__swiper--offset .vt-swiper-btn:is(:disabled, [aria-disabled="true"]),
+  .vt-slideshow__swiper--offset:is(:hover, :focus-within) .vt-swiper-btn--hover-only:is(:disabled, [aria-disabled="true"]) {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /*
+    Tabs: spread across the row while they fit. When there are more than fit,
+    the row scrolls sideways (every screen size) and fades the cut-off edge;
+    JS keeps the current tab in view as the slides change.
+  */
+  .vt-slideshow__tabs-scroller {
+    --vt-tabs-fade: 3rem;
+    box-sizing: border-box;
+    /* Room for the focus outline, which the scroll box would otherwise clip */
+    padding-block: 0.5rem;
+    margin-block: -0.5rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(      
+      to right,
+      transparent 0,
+      #000 var(--vt-tabs-fade-start, 0px),
+      #000 calc(100% - var(--vt-tabs-fade-end, 0px)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--vt-tabs-fade-start, 0px),
+      #000 calc(100% - var(--vt-tabs-fade-end, 0px)),
+      transparent 100%
+    );
+  }
+
+  .vt-slideshow__tabs-scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vt-slideshow__tabs-scroller.has-overflow-start {
+    --vt-tabs-fade-start: var(--vt-tabs-fade);
+  }
+
+  .vt-slideshow__tabs-scroller.has-overflow-end {
+    --vt-tabs-fade-end: var(--vt-tabs-fade);
+  }
+
+  /* At least as wide as the row (tabs spread out), wider when they don't fit (row scrolls) */
+  .vt-slideshow__tabs {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .vt-slideshow__tab {
+    position: relative;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 1.25rem 0 0;
+    border: 0;
+    background: none;
+    color: var(--vt-slideshow-tab-color);
+    text-align: start;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .vt-slideshow__tab:hover,
+  .vt-slideshow__tab[aria-current="true"] {
+    color: var(--vt-slideshow-tab-active-color);
+  }
+
+  /* Line over the current tab; with autoplay it fills up until the next slide */
+  .vt-slideshow__tab::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: 0.063rem;
+    background-color: var(--vt-slideshow-tab-active-color);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  .vt-slideshow__tab[aria-current="true"]::before {
+    transform: scaleX(var(--vt-progress, 1));
+  }
+
+  .vt-slideshow[data-autoplay="true"] .vt-slideshow__tab[aria-current="true"]::before {
+    transform: scaleX(var(--vt-progress, 0));
+  }
+
+  .vt-slideshow__tab:focus-visible {
+    outline: 0.125rem solid var(--vt-slideshow-tab-active-color);
+    outline-offset: 0.25rem;
+  }
+
+  @media screen and (max-width: 989px) {
+    .vt-slideshow {
+      /* Side gutters to bleed through: section padding, or the page width padding */
+      --vt-slideshow-bleed-start: var(--vt-section-padding-inline-start, 0px);
+      --vt-slideshow-bleed-end: var(--vt-section-padding-inline-end, 0px);
+      --vt-slideshow-slides: var(--vt-slideshow-slides-tablet, 1.25);
+    }
+
+    .vt-slideshow .vt-page-width {
+      --vt-slideshow-bleed-start: var(--vt-page-padding, 0px);
+      --vt-slideshow-bleed-end: var(--vt-page-padding, 0px);
+    }
+
+    .vt-slideshow__swiper {
+      width: auto;
+      margin-inline: calc(var(--vt-slideshow-bleed-start) * -1) calc(var(--vt-slideshow-bleed-end) * -1);
+    }
+
+    /* Before Swiper starts: first slide already on the left margin */
+    .vt-slideshow__swiper:not(.swiper-initialized) .swiper-wrapper {
+      box-sizing: content-box;
+      padding-inline-start: var(--vt-slideshow-bleed-start);
+    }
+
+    /* Swipe only: no arrows on touch-sized screens */
+    .vt-slideshow__swiper .vt-swiper-btn {
+      display: none;
+    }
+
+    /* Tabs bleed to the screen edges like the slides, and start on the page margin */
+    .vt-slideshow__tabs-scroller {
+      margin-inline: calc(var(--vt-slideshow-bleed-start) * -1) calc(var(--vt-slideshow-bleed-end) * -1);
+      padding-inline: var(--vt-slideshow-bleed-start) var(--vt-slideshow-bleed-end);
+    }
+
+    .vt-slideshow__tabs {
+      justify-content: flex-start;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .vt-slideshow {
+      --vt-slideshow-slides: var(--vt-slideshow-slides-mobile, 1.12);
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .vt-slideshow {
+      --vt-slideshow-slides: var(--vt-slideshow-slides-desktop, 1);
+    }
+
+    /*
+      Offset: theme-slider.js keeps the same offset at both ends of the carousel,
+      so the tabs do too: the first tab lines up with the first slide, the last tab
+      with the last slide. A % padding resolves against the same width as the
+      carousel, so it matches that offset (% of the carousel width) at every screen size.
+    */
+    .vt-slideshow--offset .vt-slideshow__tabs-scroller {
+      padding-inline: calc(var(--vt-slideshow-offset, 0) * 1%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vt-slideshow__tab {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    if (window.vtSlideshowInit) return;
+    window.vtSlideshowInit = true;
+
+    const initSection = (sectionEl) => {
+      const swiperEl = sectionEl.querySelector('[data-slideshow-swiper]');
+      if (!swiperEl || !window.vtSlider) return;
+
+      // One tab per slide, in slide order: built before Swiper starts (loop mode
+      // reorders slides in the DOM). Each slide carries its own label in data-tab-label.
+      const tabsEl = sectionEl.querySelector('[data-slideshow-tabs]');
+      if (tabsEl && !tabsEl.children.length) {
+        swiperEl.querySelectorAll('.vt-slideshow__slide').forEach((slide, i) => {
+          const tab = document.createElement('button');
+          tab.type = 'button';
+          tab.className = `vt-slideshow__tab ${tabsEl.dataset.tabClass || ''}`.trim();
+          tab.setAttribute('aria-controls', slide.id);
+          tab.dataset.slideIndex = i;
+          tab.textContent = slide.dataset.tabLabel || (tabsEl.dataset.fallbackLabel || '').replace('[number]', i + 1);
+          tabsEl.appendChild(tab);
+        });
+      }
+
+      window.vtSlider.destroy(swiperEl);
+      const swiper = window.vtSlider.init(swiperEl);
+      if (!swiper) return;
+
+      const tabs = Array.from(sectionEl.querySelectorAll('[data-slide-index]'));
+      const last = tabs.length - 1;
+      let current = 0;
+      // Index chosen by a tab click or the theme editor, kept until the slide moves:
+      // with a peek of the next slide the last slides share one end position, so
+      // the carousel alone can't tell which of them was asked for
+      let pending = null;
+
+      // Tab swipe (any screen size, once the tabs don't fit): fade the edge where tabs are cut off, and bring the
+      // current tab fully into view (horizontal scroll only, never the page)
+      const scroller = sectionEl.querySelector('[data-tabs-scroller]');
+      const updateTabsFade = () => {
+        if (!scroller) return;
+        const max = scroller.scrollWidth - scroller.clientWidth;
+        const pos = Math.abs(scroller.scrollLeft);
+        scroller.classList.toggle('has-overflow-start', max > 1 && pos > 1);
+        scroller.classList.toggle('has-overflow-end', max > 1 && pos < max - 1);
+      };
+      const scrollTabIntoView = (tab) => {
+        if (!scroller || scroller.scrollWidth <= scroller.clientWidth) return;
+        const style = getComputedStyle(scroller);
+        const box = scroller.getBoundingClientRect();
+        const rect = tab.getBoundingClientRect();
+        const start = box.left + (parseFloat(style.paddingLeft) || 0);
+        const end = box.right - (parseFloat(style.paddingRight) || 0);
+        let delta = 0;
+        if (rect.left < start) delta = rect.left - start;
+        else if (rect.right > end) delta = rect.right - end;
+        if (delta) scroller.scrollBy({ left: delta, behavior: 'smooth' });
+      };
+      if (scroller) {
+        scroller.addEventListener('scroll', updateTabsFade, { passive: true });
+        // Also catches the tabs changing width (web fonts loading, font size setting)
+        if ('ResizeObserver' in window) {
+          const observer = new ResizeObserver(updateTabsFade);
+          observer.observe(scroller);
+          if (tabsEl) observer.observe(tabsEl);
+        } else {
+          window.addEventListener('resize', updateTabsFade);
+        }
+        updateTabsFade();
+      }
+
+      const setCurrent = (index) => {
+        current = index;
+        tabs.forEach((tab, i) => {
+          tab.style.removeProperty('--vt-progress');
+          if (i === index) tab.setAttribute('aria-current', 'true');
+          else tab.removeAttribute('aria-current');
+        });
+        if (tabs[index]) scrollTabIntoView(tabs[index]);
+      };
+
+      // At the end of a non-looping carousel the last slide is the one fully in view
+      const indexFromSwiper = () => (swiper.isEnd && !swiper.params.loop ? last : swiper.realIndex);
+
+      const goTo = (index) => {
+        pending = index;
+        setCurrent(index);
+        if (swiper.params.loop) swiper.slideToLoop(index);
+        else swiper.slideTo(index);
+      };
+
+      swiper.on('slideChange', () => {
+        setCurrent(pending ?? indexFromSwiper());
+        pending = null;
+      });
+      // Swipes, arrows and autoplay move on from whatever a tab asked for
+      ['touchStart', 'navigationNext', 'navigationPrev', 'autoplay'].forEach((name) => {
+        swiper.on(name, () => {
+          pending = null;
+        });
+      });
+      // progress runs 1 -> 0 until the next slide
+      swiper.on('autoplayTimeLeft', (s, timeLeft, progress) => {
+        tabs[current]?.style.setProperty('--vt-progress', 1 - progress);
+      });
+
+      tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => goTo(i));
+      });
+
+      setCurrent(indexFromSwiper());
+
+      // Theme editor: show a slide when its block is selected, and hold it there
+      sectionEl._vtSlideshow = {
+        select(slideEl) {
+          const index = Number(slideEl.dataset.swiperSlideIndex ?? swiper.slides.indexOf(slideEl));
+          if (Number.isNaN(index) || index < 0) return;
+          swiper.autoplay?.stop();
+          goTo(index);
+        },
+        deselect() {
+          if (swiper.params.autoplay?.enabled) swiper.autoplay.start();
+        },
+        destroy() {
+          window.vtSlider.destroy(swiperEl);
+        },
+      };
+    };
+
+    const boot = (root = document) => {
+      root.querySelectorAll('.vt-slideshow').forEach(initSection);
+    };    
+
+    // theme-slider.js loads deferred; wait for it when this runs first
+    const start = () => (window.vtSlider ? boot() : window.addEventListener('load', () => boot(), { once: true }));
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start);
+    } else {
+      start();
+    }
+
+    const sectionOf = (event) => event.target.closest?.('.vt-slideshow') || event.target.querySelector?.('.vt-slideshow');
+
+    document.addEventListener('shopify:section:load', (event) => {
+      const sectionEl = sectionOf(event);
+      if (sectionEl) initSection(sectionEl);      
+    });
+
+    document.addEventListener('shopify:section:unload', (event) => {
+      sectionOf(event)?._vtSlideshow?.destroy();
+    });
+
+    document.addEventListener('shopify:block:select', (event) => {
+      const slideEl = event.target.closest?.('.vt-slideshow__slide');
+      const sectionEl = slideEl?.closest('.vt-slideshow');
+      if (sectionEl?._vtSlideshow) sectionEl._vtSlideshow.select(slideEl);
+    });
+
+    document.addEventListener('shopify:block:deselect', (event) => {
+      const sectionEl = event.target.closest?.('.vt-slideshow');
+      sectionEl?._vtSlideshow?.deselect();
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Slideshow",
+  "tag": "section",
+  "class": "slideshow-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Gap"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 64,
+      "label": "Gap (desktop)"
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 40,
+      "label": "Gap (mobile)"
+    },
+    {
+      "type": "header",
+      "content": "Slideshow"
+    },
+    {
+      "type": "range",
+      "id": "slide_width_desktop",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 50,
+      "label": "Slide width (desktop)",
+      "info": "Below 100%, part of the next slide shows."
+    },
+    {
+      "type": "range",
+      "id": "slide_width_tablet",
+      "min": 70,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 88,
+      "label": "Slide width (tablet)"
+    },
+    {
+      "type": "range",
+      "id": "slide_width_mobile",
+      "min": 70,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 90,
+      "label": "Slide width (mobile)"
+    },
+    {
+      "type": "select",
+      "id": "slide_style",
+      "label": "Slide style",
+      "options": [
+        { "value": "standard", "label": "Standard" },
+        { "value": "offset", "label": "Offset" }
+      ],
+      "default": "standard",
+      "info": "Offset keeps the current slide a set distance from the left edge, with part of the previous slide showing"
+    },
+    {
+      "type": "range",
+      "id": "slide_offset",
+      "label": "Offset from edge",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "unit": "%",
+      "default": 15,
+      "info": "Percentage of the carousel width, on desktop. On mobile and tablet the slideshow swipes, with the first slide on the page margin.",
+      "visible_if": "{{ section.settings.slide_style == 'offset' }}"
+    },
+    {
+      "type": "range",
+      "id": "slide_gap_desktop",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 30,
+      "label": "Space between slides (desktop)"
+    },
+    {    
+      "type": "range",
+      "id": "slide_gap_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 15,
+      "label": "Space between slides (mobile)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "default": true,
+      "label": "Show arrows",
+      "info": "Desktop only. Mobile and tablet use swipe."
+    },
+    {
+      "type": "select",
+      "id": "arrows_style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary"
+        }
+      ],
+      "default": "primary",
+      "label": "Arrows style",
+      "visible_if": "{{ section.settings.show_arrows }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "arrows_on_hover",
+      "default": true,
+      "label": "Show arrows on hover only",
+      "visible_if": "{{ section.settings.show_arrows }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "default": false,
+      "label": "Loop slides"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "default": false,
+      "label": "Autoplay",
+      "info": "The line above the current tab shows the time until the next slide"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5,
+      "label": "Change slides every",
+      "visible_if": "{{ section.settings.autoplay }}"
+    },
+    {
+      "type": "header",
+      "content": "Tabs"
+    },
+    {
+      "type": "select",
+      "id": "tab_font_size",
+      "options": [
+        {
+          "value": "vt-heading-h4",
+          "label": "t:blocks.heading.settings.heading_size.options__5.label"
+        },
+        {
+          "value": "vt-heading-h5",
+          "label": "t:blocks.heading.settings.heading_size.options__6.label"
+        },
+        {
+          "value": "vt-heading-h6",
+          "label": "t:blocks.heading.settings.heading_size.options__7.label"
+        }
+      ],
+      "default": "vt-heading-h6",
+      "label": "Font size"
+    },    
+    {      
+      "type": "color",
+      "id": "tab_color",
+      "label": "Tab color",
+      "info": "Leave blank to inherit from color palette"
+    },
+    {
+      "type": "color",      
+      "id": "tab_active_color",
+      "label": "Current tab color",
+      "info": "Also the line above the current tab. Leave blank to inherit from color palette"
+    },
+    {
+      "type": "header",
+      "content": "Color"      
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "label": "Background",
+      "options": [
+        {
+          "value": "solid",
+          "label": "Solid"
+        },
+        {
+          "value": "gradient",
+          "label": "Gradient"
+        }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "info": "Leave blank to inherit from color palette",
+      "visible_if": "{{ section.settings.background_style == 'solid' }}"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient",
+      "default": "linear-gradient(135deg, #EAE060 0%, #71CC3B 100%)",
+      "visible_if": "{{ section.settings.background_style == 'gradient' }}"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "info": "Leave blank to inherit from color palette"
+    },
+    {
+      "type": "color",
+      "id": "paragraph_color",
+      "label": "Paragraph",
+      "info": "Leave blank to inherit from color palette"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 110,
+      "label": "Top (desktop)"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 110,
+      "label": "Bottom (desktop)"
+    },
+    {
+      "type": "range",
+      "id": "padding_left_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "label": "Left (desktop)"
+    },
+    {
+      "type": "range",
+      "id": "padding_right_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "label": "Right (desktop)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_mobile_padding",
+      "default": true,
+      "label": "Custom for mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 80,
+      "label": "Top (mobile)",
+      "visible_if": "{{ section.settings.enable_custom_mobile_padding }}"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 80,
+      "label": "Bottom (mobile)",
+      "visible_if": "{{ section.settings.enable_custom_mobile_padding }}"
+    },
+    {
+      "type": "range",
+      "id": "padding_left_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Left (mobile)",
+      "visible_if": "{{ section.settings.enable_custom_mobile_padding }}"
+    },
+    {
+      "type": "range",
+      "id": "padding_right_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Right (mobile)",
+      "visible_if": "{{ section.settings.enable_custom_mobile_padding }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "make_section_page_width",
+      "default": true,
+      "label": "Apply max width"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slideshow-slide"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Slideshow",
+      "settings": {
+        "gap": 64,
+        "gap_mobile": 40,
+        "background_style": "solid",
+        "background_color": "#224E09",
+        "heading_color": "#F8F9DC",
+        "paragraph_color": "#F8F9DC",
+        "padding_top_desktop": 110,
+        "padding_bottom_desktop": 110,
+        "padding_left_desktop": 0,
+        "padding_right_desktop": 0,
+        "enable_custom_mobile_padding": true,
+        "padding_top_mobile": 80,
+        "padding_bottom_mobile": 80,
+        "padding_left_mobile": 20,
+        "padding_right_mobile": 20,
+        "make_section_page_width": false,
+        "slide_width_desktop": 50,
+        "slide_width_tablet": 88,
+        "slide_width_mobile": 90,
+        "slide_style": "offset",
+        "slide_offset": 15,
+        "slide_gap_desktop": 30,
+        "slide_gap_mobile": 15,
+        "show_arrows": true,
+        "arrows_style": "secondary",
+        "arrows_on_hover": true,
+        "loop": false,
+        "autoplay": false,
+        "autoplay_delay": 5,
+        "tab_font_size": "vt-heading-h6",
+        "tab_color": "#EAE060",
+        "tab_active_color": "#F8F9DC"
+      },
+      "blocks": [
+        {
+          "type": "stack",
+          "id": "slideshow-intro",
+          "static": true,
+          "settings": {
+            "layout_direction_desktop": "vt-stack--vertical",
+            "layout_direction_tablet": "vt-stack--vertical",
+            "layout_direction_mobile": "vt-stack--vertical",
+            "alignment": "center",
+            "position": "center",
+            "wrap_content": "nowrap",
+            "width": "fill",
+            "height": "fit",
+            "position_type": "default",
+            "gap_desktop": 20,
+            "gap_mobile": 16
+          },
+          "blocks": [
+            {
+              "type": "heading-group",
+              "settings": {
+                "direction": "horizontal",
+                "alignment": "center",
+                "vertical_alignment": "center",
+                "gap_desktop": 16,
+                "gap_mobile": 12,
+                "width": "fit",
+                "hide_icon_mobile": true
+              },
+              "blocks": [
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "leaf",
+                    "icon_color": "#EAE060",
+                    "icon_size_desktop": 36,
+                    "icon_size_mobile": 28
+                  }
+                },
+                {
+                  "type": "heading",
+                  "settings": {
+                    "heading": "Shop by Values",
+                    "heading_size": "vt-heading-h2",
+                    "heading_alignment": "text-inherit",
+                    "heading_tag": "h2",
+                    "animation_type": "slide",
+                    "animation_direction": "from-bottom",
+                    "animation_duration": 1,
+                    "animation_delay": 0.2,
+                    "animation_easing": "ease-out-sine",
+                    "animation_blur_intensity": 5
+                  }
+                },
+                {
+                  "type": "icons",
+                  "settings": {
+                    "icon": "leaf",
+                    "icon_color": "#EAE060",
+                    "icon_size_desktop": 36,
+                    "icon_size_mobile": 28
+                  }
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "settings": {
+                "text": "<p>Find fashion that matches your ethics - filter by what matters most to you</p>",
+                "paragraph_size": "vt-paragraph-large",
+                "paragraph_alignment": "text-center",
+                "enable_max_width": true,
+                "paragraph_max_width": 580,
+                "animation_type": "slide",
+                "animation_direction": "from-bottom",
+                "animation_duration": 1,
+                "animation_delay": 0.4,
+                "animation_easing": "ease-out-sine",
+                "animation_blur_intensity": 5
+              }
+            }
+          ]
+        },
+        {
+          "type": "slideshow-slide",
+          "settings": {
+            "title": "Organic Cotton"
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "position_type": "default",
+                "wrap_content": "nowrap",
+                "width": "fill",
+                "height": "fill",
+                "gap_desktop": 0,
+                "gap_mobile": 0,
+                "enable_padding": false
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "square",
+                    "image_mobile_max_width": 800,
+                    "image_desktop_max_width": 1000,
+                    "image_desktop_width": "fill",
+                    "image_mobile_width": "fill",
+                    "animation_type": "none"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "background_color": "#F8F9DC",
+                    "heading_color": "#003225",
+                    "text_color": "#224E09",
+                    "position": "middle",
+                    "alignment": "left",
+                    "enable_decorative_icon": false,
+                    "padding_vertical": 40,
+                    "padding_horizontal": 40,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 30,
+                    "padding_horizontal_mobile": 20,
+                    "width": "fill",
+                    "height": "fill",
+                    "gap": 20,
+                    "enable_gap_mobile": true,
+                    "gap_mobile": 14,
+                    "border": "none",
+                    "border_radius": 0,
+                    "animation_type": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Organic Cotton",
+                        "heading_size": "vt-heading-h3",
+                        "heading_alignment": "text-inherit",
+                        "heading_tag": "h3",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "GOTS certified farms",
+                        "badge_size": "vt-paragraph-extra-small",
+                        "radius": "3.125rem",
+                        "width": "fit",
+                        "bg_color": "#003225",
+                        "text_color": "#EAE060",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "position_type": "default",
+                        "wrap_content": "nowrap",
+                        "width": "fit",
+                        "height": "fit",
+                        "gap_desktop": 8,
+                        "gap_mobile": 6,
+                        "enable_padding": false
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "organic-cotton",
+                            "icon_color": "#224E09",
+                            "icon_size_desktop": 20,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Saves 91% water vs conventional cotton</p>",
+                            "paragraph_size": "vt-paragraph-small",
+                            "paragraph_alignment": "text-inherit",
+                            "animation_type": "none"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Every thread sourced from organic farms in India and Turkey, certified by Global Organic Textile Standard.</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-inherit",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "settings": {
+                        "button_label": "Explore products",
+                        "button_link": "/collections/all",
+                        "button_style": "link",
+                        "animation_type": "none"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "slideshow-slide",
+          "settings": {
+            "title": "Recycled Materials"
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "position_type": "default",
+                "wrap_content": "nowrap",
+                "width": "fill",
+                "height": "fill",
+                "gap_desktop": 0,
+                "gap_mobile": 0,
+                "enable_padding": false
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "square",
+                    "image_mobile_max_width": 800,
+                    "image_desktop_max_width": 1000,
+                    "image_desktop_width": "fill",
+                    "image_mobile_width": "fill",
+                    "animation_type": "none"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "background_color": "#F8F9DC",
+                    "heading_color": "#003225",
+                    "text_color": "#224E09",
+                    "position": "middle",
+                    "alignment": "left",
+                    "enable_decorative_icon": false,
+                    "padding_vertical": 40,
+                    "padding_horizontal": 40,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 30,
+                    "padding_horizontal_mobile": 20,
+                    "width": "fill",
+                    "height": "fill",
+                    "gap": 20,
+                    "enable_gap_mobile": true,
+                    "gap_mobile": 14,
+                    "border": "none",
+                    "border_radius": 0,
+                    "animation_type": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Recycled Materials",
+                        "heading_size": "vt-heading-h3",
+                        "heading_alignment": "text-inherit",
+                        "heading_tag": "h3",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Ocean plastic reborn",
+                        "badge_size": "vt-paragraph-extra-small",
+                        "radius": "3.125rem",
+                        "width": "fit",
+                        "bg_color": "#003225",
+                        "text_color": "#EAE060",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "position_type": "default",
+                        "wrap_content": "nowrap",
+                        "width": "fit",
+                        "height": "fit",
+                        "gap_desktop": 8,
+                        "gap_mobile": 6,
+                        "enable_padding": false
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "recycled-materials",
+                            "icon_color": "#224E09",
+                            "icon_size_desktop": 20,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Diverts 5 tons of plastic from oceans monthly</p>",
+                            "paragraph_size": "vt-paragraph-small",
+                            "paragraph_alignment": "text-inherit",
+                            "animation_type": "none"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Fishing nets and plastic bottles transformed into premium fabrics through innovative recycling technology.</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-inherit",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "settings": {
+                        "button_label": "Explore products",
+                        "button_link": "/collections/all",
+                        "button_style": "link",
+                        "animation_type": "none"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "slideshow-slide",
+          "settings": {
+            "title": "Fair Trade"
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "position_type": "default",
+                "wrap_content": "nowrap",
+                "width": "fill",
+                "height": "fill",
+                "gap_desktop": 0,
+                "gap_mobile": 0,
+                "enable_padding": false
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "square",
+                    "image_mobile_max_width": 800,
+                    "image_desktop_max_width": 1000,
+                    "image_desktop_width": "fill",
+                    "image_mobile_width": "fill",
+                    "animation_type": "none"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "background_color": "#F8F9DC",
+                    "heading_color": "#003225",
+                    "text_color": "#224E09",
+                    "position": "middle",
+                    "alignment": "left",
+                    "enable_decorative_icon": false,
+                    "padding_vertical": 40,
+                    "padding_horizontal": 40,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 30,
+                    "padding_horizontal_mobile": 20,
+                    "width": "fill",
+                    "height": "fill",
+                    "gap": 20,
+                    "enable_gap_mobile": true,
+                    "gap_mobile": 14,
+                    "border": "none",
+                    "border_radius": 0,
+                    "animation_type": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Fair Trade",
+                        "heading_size": "vt-heading-h3",
+                        "heading_alignment": "text-inherit",
+                        "heading_tag": "h3",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Ethical wages guaranteed",
+                        "badge_size": "vt-paragraph-extra-small",
+                        "radius": "3.125rem",
+                        "width": "fit",
+                        "bg_color": "#003225",
+                        "text_color": "#EAE060",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "position_type": "default",
+                        "wrap_content": "nowrap",
+                        "width": "fit",
+                        "height": "fit",
+                        "gap_desktop": 8,
+                        "gap_mobile": 6,
+                        "enable_padding": false
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "handshake",
+                            "icon_color": "#224E09",
+                            "icon_size_desktop": 20,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>100% worker-owned cooperatives</p>",
+                            "paragraph_size": "vt-paragraph-small",
+                            "paragraph_alignment": "text-inherit",
+                            "animation_type": "none"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Partnering with Fair Trade certified factories ensuring safe conditions and living wages for 2,500+ artisans.</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-inherit",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "settings": {
+                        "button_label": "Explore products",
+                        "button_link": "/collections/all",
+                        "button_style": "link",
+                        "animation_type": "none"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "slideshow-slide",
+          "settings": {
+            "title": "Carbon Neutral"
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "position_type": "default",
+                "wrap_content": "nowrap",
+                "width": "fill",
+                "height": "fill",
+                "gap_desktop": 0,
+                "gap_mobile": 0,
+                "enable_padding": false
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "square",
+                    "image_mobile_max_width": 800,
+                    "image_desktop_max_width": 1000,
+                    "image_desktop_width": "fill",
+                    "image_mobile_width": "fill",
+                    "animation_type": "none"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "background_color": "#F8F9DC",
+                    "heading_color": "#003225",
+                    "text_color": "#224E09",
+                    "position": "middle",
+                    "alignment": "left",
+                    "enable_decorative_icon": false,
+                    "padding_vertical": 40,
+                    "padding_horizontal": 40,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 30,
+                    "padding_horizontal_mobile": 20,
+                    "width": "fill",
+                    "height": "fill",
+                    "gap": 20,
+                    "enable_gap_mobile": true,
+                    "gap_mobile": 14,
+                    "border": "none",
+                    "border_radius": 0,
+                    "animation_type": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Carbon Neutral",
+                        "heading_size": "vt-heading-h3",
+                        "heading_alignment": "text-inherit",
+                        "heading_tag": "h3",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Climate positive shipping",
+                        "badge_size": "vt-paragraph-extra-small",
+                        "radius": "3.125rem",
+                        "width": "fit",
+                        "bg_color": "#003225",
+                        "text_color": "#EAE060",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "position_type": "default",
+                        "wrap_content": "nowrap",
+                        "width": "fit",
+                        "height": "fit",
+                        "gap_desktop": 8,
+                        "gap_mobile": 6,
+                        "enable_padding": false
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "handshake",
+                            "icon_color": "#224E09",
+                            "icon_size_desktop": 20,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>Net negative since 2024</p>",
+                            "paragraph_size": "vt-paragraph-small",
+                            "paragraph_alignment": "text-inherit",
+                            "animation_type": "none"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Offset 150% of our carbon emissions through verified reforestation and renewable energy projects.</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-inherit",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "settings": {
+                        "button_label": "Explore products",
+                        "button_link": "/collections/all",
+                        "button_style": "link",
+                        "animation_type": "none"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "slideshow-slide",
+          "settings": {
+            "title": "Vegan & Cruelty-Free"
+          },
+          "blocks": [
+            {
+              "type": "stack",
+              "settings": {
+                "layout_direction_desktop": "vt-stack--horizontal",
+                "layout_direction_tablet": "vt-stack--horizontal",
+                "layout_direction_mobile": "vt-stack--vertical",
+                "alignment": "flex-start",
+                "position": "stretch",
+                "position_type": "default",
+                "wrap_content": "nowrap",
+                "width": "fill",
+                "height": "fill",
+                "gap_desktop": 0,
+                "gap_mobile": 0,
+                "enable_padding": false
+              },
+              "blocks": [
+                {
+                  "type": "image",
+                  "settings": {
+                    "image_aspect_ratio": "square",
+                    "image_mobile_max_width": 800,
+                    "image_desktop_max_width": 1000,
+                    "image_desktop_width": "fill",
+                    "image_mobile_width": "fill",
+                    "animation_type": "none"
+                  }
+                },
+                {
+                  "type": "card",
+                  "settings": {
+                    "background_color": "#F8F9DC",
+                    "heading_color": "#003225",
+                    "text_color": "#224E09",
+                    "position": "middle",
+                    "alignment": "left",
+                    "enable_decorative_icon": false,
+                    "padding_vertical": 40,
+                    "padding_horizontal": 40,
+                    "enable_padding_mobile": true,
+                    "padding_vertical_mobile": 30,
+                    "padding_horizontal_mobile": 20,
+                    "width": "fill",
+                    "height": "fill",
+                    "gap": 20,
+                    "enable_gap_mobile": true,
+                    "gap_mobile": 14,
+                    "border": "none",
+                    "border_radius": 0,
+                    "animation_type": "none"
+                  },
+                  "blocks": [
+                    {
+                      "type": "heading",
+                      "settings": {
+                        "heading": "Vegan & Cruelty-Free",
+                        "heading_size": "vt-heading-h3",
+                        "heading_alignment": "text-inherit",
+                        "heading_tag": "h3",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "badge",
+                      "settings": {
+                        "text": "Animal-free fashion",
+                        "badge_size": "vt-paragraph-extra-small",
+                        "radius": "3.125rem",
+                        "width": "fit",
+                        "bg_color": "#003225",
+                        "text_color": "#EAE060",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "stack",
+                      "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "flex-start",
+                        "position": "center",
+                        "position_type": "default",
+                        "wrap_content": "nowrap",
+                        "width": "fit",
+                        "height": "fit",
+                        "gap_desktop": 8,
+                        "gap_mobile": 6,
+                        "enable_padding": false
+                      },
+                      "blocks": [
+                        {
+                          "type": "icons",
+                          "settings": {
+                            "icon": "vegan-cruelty-free",
+                            "icon_color": "#224E09",
+                            "icon_size_desktop": 20,
+                            "icon_size_mobile": 18,
+                            "show_box": false,
+                            "animation_type": "none"
+                          }
+                        },
+                        {
+                          "type": "paragraph",
+                          "settings": {
+                            "text": "<p>PETA-approved vegan certification</p>",
+                            "paragraph_size": "vt-paragraph-small",
+                            "paragraph_alignment": "text-inherit",
+                            "animation_type": "none"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "settings": {
+                        "text": "<p>Zero animal-derived materials. Plant-based alternatives that never compromise on style or quality.</p>",
+                        "paragraph_size": "vt-paragraph-medium",
+                        "paragraph_alignment": "text-inherit",
+                        "animation_type": "none"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "settings": {
+                        "button_label": "Explore products",
+                        "button_link": "/collections/all",
+                        "button_style": "link",
+                        "animation_type": "none"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

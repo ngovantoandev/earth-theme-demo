@@ -1,7 +1,7 @@
 {% doc %}
   Renders a footer menu column with link_list data binding.
   Supports desktop column view and mobile accordion with arrow indicator,
-  optional contact info (email, phone, address), and theme color tokens.
+  optional contact info (email, phone, address), interactive hover effects, and theme color tokens.
   @example
   {% content_for 'block', type: 'menu', id: 'menu' %}
 {% enddoc %}
@@ -43,15 +43,35 @@
   else
     assign final_link_color = 'var(--vt-footer-color, var(--vt-foreground-color, #003225))'
   endif
+
+  # Hover effect & color configuration (matches breadcrumbs.liquid)
+  assign hover_effect = block.settings.hover_effect | default: 'underline'
+  assign hover_color_setting = block.settings.hover_color
+  assign hover_color = ''
+  if hover_color_setting != blank and hover_color_setting != 'rgba(0,0,0,0)' and hover_color_setting != '#00000000' and hover_color_setting != 'transparent'
+    assign hover_color = hover_color_setting
+  endif
+
+  # For wave fade: avoid identical colors so the wave remains vibrant
+  assign hover_color_wave = ''
+  if hover_color != blank and hover_color != final_link_color
+    assign hover_color_wave = hover_color
+  endif
 -%}
 
 <div
   id="menu-block-{{ block.id }}"
-  class="vt-footer-menu"
+  class="vt-footer-menu vt-footer-menu--hover-{{ hover_effect }}"
   style="
     --vt-menu-title-color: {{ final_title_color }};
     --vt-menu-link-color: {{ final_link_color }};
     --vt-menu-link-gap: {{ block.settings.link_gap }}px;
+    {%- if hover_color != blank -%}
+      --vt-menu-hover-color: {{ hover_color }};
+    {%- endif -%}
+    {%- if hover_color_wave != blank -%}
+      --vt-menu-hover-color-wave: {{ hover_color_wave }};
+    {%- endif -%}
   "
   {{ block.shopify_attributes }}
 >
@@ -72,40 +92,40 @@
           {%- for link in link_list.links -%}
             <li class="vt-footer-menu__item">
               <a href="{{ link.url }}" class="vt-footer-menu__link{% if link.active %} vt-footer-menu__link--active{% endif %}">
-                {{ link.title }}
+                <span class="vt-footer-menu__label">{{ link.title }}</span>
               </a>
             </li>
           {%- endfor -%}
         {%- else -%}
           {%- comment -%} Contextual mock data fallbacks for preview / dev {%- endcomment -%}
           {%- if handle_lower contains 'company' or title_lower contains 'company' -%}
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">About Us</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Our Story</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Sustainability Journey</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Careers</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Blog</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">About Us</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Our Story</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Sustainability Journey</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Careers</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Blog</span></a></li>
           {%- elsif handle_lower contains 'shop' or title_lower contains 'shop' -%}
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">New Arrivals</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Women's</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Men's</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Essentials</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Limited Edition</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Sale</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">New Arrivals</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Women's</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Men's</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Essentials</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Limited Edition</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Sale</span></a></li>
           {%- elsif handle_lower contains 'sustain' or title_lower contains 'sustain' -%}
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Impact Tracker</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Transparency</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Carbon Footprint</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Supply Chain</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Impact Tracker</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Transparency</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Carbon Footprint</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Supply Chain</span></a></li>
           {%- elsif handle_lower contains 'support' or title_lower contains 'support' -%}
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Contact Us</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Shipping & Returns</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Size Guide</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">FAQ</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Contact Us</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Shipping & Returns</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Size Guide</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">FAQ</span></a></li>
           {%- else -%}
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Menu item 1</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Menu item 2</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Menu item 3</a></li>
-            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link">Menu item 4</a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Menu item 1</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Menu item 2</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Menu item 3</span></a></li>
+            <li class="vt-footer-menu__item"><a href="#" class="vt-footer-menu__link"><span class="vt-footer-menu__label">Menu item 4</span></a></li>
           {%- endif -%}
         {%- endif -%}
       </ul>
@@ -123,7 +143,7 @@
                       <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
                   </span>
-                  <span>{{ block.settings.contact_email }}</span>
+                  <span class="vt-footer-menu__label">{{ block.settings.contact_email }}</span>
                 </a>
               </li>
             {%- endif -%}
@@ -136,7 +156,7 @@
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                     </svg>
                   </span>
-                  <span>{{ block.settings.contact_phone }}</span>
+                  <span class="vt-footer-menu__label">{{ block.settings.contact_phone }}</span>
                 </a>
               </li>
             {%- endif -%}
@@ -150,7 +170,7 @@
                       <circle cx="12" cy="10" r="3"></circle>
                     </svg>
                   </span>
-                  <span>{{ block.settings.contact_address }}</span>
+                  <span class="vt-footer-menu__label">{{ block.settings.contact_address }}</span>
                 </div>
               </li>
             {%- endif -%}
@@ -165,6 +185,7 @@
   .vt-footer-menu {
     width: 100%;
     box-sizing: border-box;
+    --vt-menu-transition: 0.25s ease-out;
   }
 
   .vt-footer-menu__details {
@@ -254,21 +275,206 @@
   .vt-footer-menu__item {
     margin: 0;
     padding: 0;
+    position: relative;
   }
 
   .vt-footer-menu__link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    z-index: 1;
     color: var(--vt-menu-link-color);
     font-size: 0.9375rem;
     font-weight: 500;
     text-decoration: none;
     line-height: 1.4;
-    transition: color 0.15s ease, transform 0.15s ease;
+    cursor: pointer;
+    transition: color var(--vt-menu-transition);
   }
 
-  .vt-footer-menu__link:hover {
-    color: var(--vt-color-secondary, #71CC3B);
-    transform: translateX(2px);
+  .vt-footer-menu__label {
+    display: inline-block;
+  }
+
+  /* ------------------------------------------------------------- */
+  /* Hover effect 1: Sliding underline                             */
+  /* ------------------------------------------------------------- */
+  .vt-footer-menu--hover-underline .vt-footer-menu__label {
+    position: relative;
+    padding-block-end: 0.15em;
+  }
+
+  .vt-footer-menu--hover-underline .vt-footer-menu__label::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--vt-menu-hover-color, currentColor);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--vt-menu-transition);
+  }
+
+  .vt-footer-menu--hover-underline .vt-footer-menu__item:hover .vt-footer-menu__label::after,
+  .vt-footer-menu--hover-underline .vt-footer-menu__item:focus-within .vt-footer-menu__label::after,
+  .vt-footer-menu--hover-underline .vt-footer-menu__link:hover .vt-footer-menu__label::after,
+  .vt-footer-menu--hover-underline .vt-footer-menu__link:focus-visible .vt-footer-menu__label::after,
+  .vt-footer-menu--hover-underline .vt-footer-menu__link:is(:hover, :focus-visible) .vt-footer-menu__label::after,
+  .vt-footer-menu--hover-underline .vt-footer-menu__contact-link:hover .vt-footer-menu__label::after,
+  .vt-footer-menu--hover-underline .vt-footer-menu__contact-link:focus-visible .vt-footer-menu__label::after,
+  .vt-footer-menu--hover-underline .vt-footer-menu__contact-link:is(:hover, :focus-visible) .vt-footer-menu__label::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  [dir='rtl'] .vt-footer-menu--hover-underline .vt-footer-menu__label::after {
+    transform-origin: left;
+  }
+
+  [dir='rtl'] .vt-footer-menu--hover-underline .vt-footer-menu__item:hover .vt-footer-menu__label::after,
+  [dir='rtl'] .vt-footer-menu--hover-underline .vt-footer-menu__item:focus-within .vt-footer-menu__label::after,
+  [dir='rtl'] .vt-footer-menu--hover-underline .vt-footer-menu__link:hover .vt-footer-menu__label::after,
+  [dir='rtl'] .vt-footer-menu--hover-underline .vt-footer-menu__link:focus-visible .vt-footer-menu__label::after,
+  [dir='rtl'] .vt-footer-menu--hover-underline .vt-footer-menu__link:is(:hover, :focus-visible) .vt-footer-menu__label::after,
+  [dir='rtl'] .vt-footer-menu--hover-underline .vt-footer-menu__contact-link:hover .vt-footer-menu__label::after,
+  [dir='rtl'] .vt-footer-menu--hover-underline .vt-footer-menu__contact-link:focus-visible .vt-footer-menu__label::after,
+  [dir='rtl'] .vt-footer-menu--hover-underline .vt-footer-menu__contact-link:is(:hover, :focus-visible) .vt-footer-menu__label::after {
+    transform: scaleX(1);
+    transform-origin: right;
+  }
+
+  /* ------------------------------------------------------------- */
+  /* Hover effect 2: Sliding border (Matches breadcrumbs.liquid)   */
+  /* A sharp vertical bar slides in before the text                 */
+  /* ------------------------------------------------------------- */
+  .vt-footer-menu--hover-border .vt-footer-menu__label {
+    position: relative;
+    padding-inline-start: 0.65em;
+    transition: transform var(--vt-menu-transition);
+  }
+
+  .vt-footer-menu--hover-border .vt-footer-menu__label::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 50%;
+    height: 1em;
+    width: 2px;
+    background: var(--vt-menu-hover-color, currentColor);
+    opacity: 0;
+    transform: translate(0, -10%);
+    transition:
+      opacity var(--vt-menu-transition),
+      transform var(--vt-menu-transition);
+  }
+
+  .vt-footer-menu--hover-border .vt-footer-menu__item:hover .vt-footer-menu__label,
+  .vt-footer-menu--hover-border .vt-footer-menu__item:focus-within .vt-footer-menu__label,
+  .vt-footer-menu--hover-border .vt-footer-menu__link:hover .vt-footer-menu__label,
+  .vt-footer-menu--hover-border .vt-footer-menu__link:focus-visible .vt-footer-menu__label,
+  .vt-footer-menu--hover-border .vt-footer-menu__link:is(:hover, :focus-visible) .vt-footer-menu__label,
+  .vt-footer-menu--hover-border .vt-footer-menu__contact-link:hover .vt-footer-menu__label,
+  .vt-footer-menu--hover-border .vt-footer-menu__contact-link:focus-visible .vt-footer-menu__label,
+  .vt-footer-menu--hover-border .vt-footer-menu__contact-link:is(:hover, :focus-visible) .vt-footer-menu__label {
+    transform: translateX(4px);
+  }
+
+  /* Bar cancels the text shift, so it stays exactly before the text's start */
+  .vt-footer-menu--hover-border .vt-footer-menu__item:hover .vt-footer-menu__label::before,
+  .vt-footer-menu--hover-border .vt-footer-menu__item:focus-within .vt-footer-menu__label::before,
+  .vt-footer-menu--hover-border .vt-footer-menu__link:hover .vt-footer-menu__label::before,
+  .vt-footer-menu--hover-border .vt-footer-menu__link:focus-visible .vt-footer-menu__label::before,
+  .vt-footer-menu--hover-border .vt-footer-menu__link:is(:hover, :focus-visible) .vt-footer-menu__label::before,
+  .vt-footer-menu--hover-border .vt-footer-menu__contact-link:hover .vt-footer-menu__label::before,
+  .vt-footer-menu--hover-border .vt-footer-menu__contact-link:focus-visible .vt-footer-menu__label::before,
+  .vt-footer-menu--hover-border .vt-footer-menu__contact-link:is(:hover, :focus-visible) .vt-footer-menu__label::before {
+    opacity: 1;
+    transform: translate(-4px, -50%);
+  }
+
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__item:hover .vt-footer-menu__label,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__item:focus-within .vt-footer-menu__label,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__link:hover .vt-footer-menu__label,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__link:focus-visible .vt-footer-menu__label,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__link:is(:hover, :focus-visible) .vt-footer-menu__label,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__contact-link:hover .vt-footer-menu__label,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__contact-link:focus-visible .vt-footer-menu__label {
+    transform: translateX(-4px);
+  }
+
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__item:hover .vt-footer-menu__label::before,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__item:focus-within .vt-footer-menu__label::before,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__link:hover .vt-footer-menu__label::before,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__link:focus-visible .vt-footer-menu__label::before,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__link:is(:hover, :focus-visible) .vt-footer-menu__label::before,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__contact-link:hover .vt-footer-menu__label::before,
+  [dir='rtl'] .vt-footer-menu--hover-border .vt-footer-menu__contact-link:focus-visible .vt-footer-menu__label::before {
+    transform: translate(4px, -50%);
+  }
+
+  /* ------------------------------------------------------------- */
+  /* Hover effect 3: Wave fade (Matches breadcrumbs.liquid)        */
+  /* A second color sweeps across the text                         */
+  /* ------------------------------------------------------------- */
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) and (color: color-mix(in srgb, red, blue)) {
+    .vt-footer-menu--hover-wave_fade .vt-footer-menu__label {
+      background-image: linear-gradient(
+        90deg,
+        var(--vt-menu-hover-color-wave, color-mix(in srgb, var(--vt-menu-link-color, currentColor) 50%, transparent)) 35%,
+        var(--vt-menu-link-color, currentColor) 65%
+      );
+      background-size: 300% 100%;
+      background-position: 100% 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: background-position var(--vt-menu-transition);
+    }
+
+    .vt-footer-menu--hover-wave_fade .vt-footer-menu__item:hover .vt-footer-menu__label,
+    .vt-footer-menu--hover-wave_fade .vt-footer-menu__item:focus-within .vt-footer-menu__label,
+    .vt-footer-menu--hover-wave_fade .vt-footer-menu__link:hover .vt-footer-menu__label,
+    .vt-footer-menu--hover-wave_fade .vt-footer-menu__link:focus-visible .vt-footer-menu__label,
+    .vt-footer-menu--hover-wave_fade .vt-footer-menu__link:is(:hover, :focus-visible) .vt-footer-menu__label,
+    .vt-footer-menu--hover-wave_fade .vt-footer-menu__contact-link:hover .vt-footer-menu__label,
+    .vt-footer-menu--hover-wave_fade .vt-footer-menu__contact-link:focus-visible .vt-footer-menu__label {
+      background-position: 0 0;
+    }
+
+    [dir='rtl'] .vt-footer-menu--hover-wave_fade .vt-footer-menu__label {
+      background-image: linear-gradient(
+        270deg,
+        var(--vt-menu-hover-color-wave, color-mix(in srgb, var(--vt-menu-link-color, currentColor) 50%, transparent)) 35%,
+        var(--vt-menu-link-color, currentColor) 65%
+      );
+      background-position: 0 0;
+    }
+
+    [dir='rtl'] .vt-footer-menu--hover-wave_fade .vt-footer-menu__item:hover .vt-footer-menu__label,
+    [dir='rtl'] .vt-footer-menu--hover-wave_fade .vt-footer-menu__item:focus-within .vt-footer-menu__label,
+    [dir='rtl'] .vt-footer-menu--hover-wave_fade .vt-footer-menu__link:hover .vt-footer-menu__label,
+    [dir='rtl'] .vt-footer-menu--hover-wave_fade .vt-footer-menu__link:focus-visible .vt-footer-menu__label,
+    [dir='rtl'] .vt-footer-menu--hover-wave_fade .vt-footer-menu__link:is(:hover, :focus-visible) .vt-footer-menu__label,
+    [dir='rtl'] .vt-footer-menu--hover-wave_fade .vt-footer-menu__contact-link:hover .vt-footer-menu__label,
+    [dir='rtl'] .vt-footer-menu--hover-wave_fade .vt-footer-menu__contact-link:focus-visible .vt-footer-menu__label {
+      background-position: 100% 0;
+    }
+  }
+  
+
+  @media (forced-colors: active) {
+    .vt-footer-menu--hover-wave_fade .vt-footer-menu__label {
+      background: none;
+      -webkit-text-fill-color: currentColor;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vt-footer-menu {
+      --vt-menu-transition: 0s;
+    }
   }
 
   .vt-footer-menu__contact {
@@ -304,10 +510,7 @@
     font-size: 0.875rem;
     text-decoration: none;
     line-height: 1.4;
-  }
-
-  .vt-footer-menu__contact-link:hover {
-    color: var(--vt-color-secondary, #71CC3B);
+    transition: color var(--vt-menu-transition);
   }
 
   .vt-footer-menu__contact-icon {
@@ -363,6 +566,37 @@
     },
     {
       "type": "header",
+      "content": "Hover"
+    },
+    {
+      "type": "select",
+      "id": "hover_effect",
+      "label": "Hover effects",
+      "options": [
+        {
+          "value": "underline",
+          "label": "Sliding underline"
+        },
+        {
+          "value": "border",
+          "label": "Sliding border"
+        },
+        {
+          "value": "wave_fade",
+          "label": "Wave fade"
+        }
+      ],
+      "default": "underline"
+    },
+    {
+      "type": "color",
+      "id": "hover_color",
+      "label": "Hover color",
+      "default": "#003225",
+      "info": "Used for the line, bar and wave. Uses a lighter text color when empty."
+    },
+    {
+      "type": "header",
       "content": "Contact details (Optional)"
     },
     {
@@ -392,7 +626,9 @@
       "name": "Menu",
       "settings": {
         "title": "Menu Title",
-        "link_gap": 12
+        "link_gap": 12,
+        "hover_effect": "underline",
+        "hover_color": "#003225"
       }
     }
   ]

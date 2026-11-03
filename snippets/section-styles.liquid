@@ -21,7 +21,7 @@
     --vt-section-color
     --vt-section-paragraph-color
     --vt-section-padding-block-start / -end
-    --vt-section-padding-inline-start / -end
+    --vt-section-padding-inline-start / -end (mobile value below 990px, desktop value from 990px)
     --vt-section-gap
 {%- endcomment -%}
 
@@ -71,8 +71,16 @@
     --vt-section-paragraph-color: {{ paragraph_color | default: 'var(--vt-color-primary)' }};
     --vt-section-padding-block-start: {% render 'fluid-clamp', min_px: pad_top_mobile, max_px: pad_top %};
     --vt-section-padding-block-end: {% render 'fluid-clamp', min_px: pad_bottom_mobile, max_px: pad_bottom %};
-    --vt-section-padding-inline-start: {% render 'fluid-clamp', min_px: pad_left_mobile, max_px: pad_left %};
-    --vt-section-padding-inline-end: {% render 'fluid-clamp', min_px: pad_right_mobile, max_px: pad_right %};
+    /* Side gutters: mobile value below 990px, desktop value from 990px (no fluid ramp) */
+    --vt-section-padding-inline-start: {{ pad_left_mobile | divided_by: 16.0 }}rem;
+    --vt-section-padding-inline-end: {{ pad_right_mobile | divided_by: 16.0 }}rem;
     --vt-section-gap: {% render 'fluid-clamp', min_px: gap_mobile, max_px: gap %};
+  }
+
+  @media screen and (min-width: 990px) {
+    #shopify-section-{{ section.id }} {
+      --vt-section-padding-inline-start: {{ pad_left | divided_by: 16.0 }}rem;
+      --vt-section-padding-inline-end: {{ pad_right | divided_by: 16.0 }}rem;
+    }
   }
 {%- endstyle -%}

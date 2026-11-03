@@ -11,6 +11,7 @@
   assign privacy_label = block.settings.privacy_label | default: 'Privacy Policy'
   assign terms_label = block.settings.terms_label | default: 'Terms of Service'
   assign alignment = block.settings.alignment | default: 'right'
+  assign alignment_mobile = block.settings.alignment_mobile | default: 'left'
   assign color_setting = block.settings.color
   if color_setting != blank and color_setting != 'rgba(0,0,0,0)' and color_setting != '#00000000' and color_setting != 'transparent'
     assign final_color = color_setting
@@ -21,7 +22,7 @@
 
 <div
   id="policy-links-{{ block.id }}"
-  class="vt-policy-links vt-policy-links--align-{{ alignment }} {{ block.settings.font_size }}"
+  class="vt-policy-links vt-policy-links--align-{{ alignment }} vt-policy-links--align-mobile-{{ alignment_mobile }} {{ block.settings.font_size }}"
   style="
     --vt-pl-color: {{ final_color }};
   "
@@ -40,6 +41,7 @@
   .vt-policy-links {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 0.5rem;
     color: var(--vt-pl-color);
     width: 100%;
@@ -56,6 +58,20 @@
 
   .vt-policy-links--align-right {
     justify-content: flex-end;
+  }
+
+  @media screen and (max-width: 768px) {
+    .vt-policy-links.vt-policy-links--align-mobile-left {
+      justify-content: flex-start;
+    }
+
+    .vt-policy-links.vt-policy-links--align-mobile-center {
+      justify-content: center;
+    }
+
+    .vt-policy-links.vt-policy-links--align-mobile-right {
+      justify-content: flex-end;
+    }
   }
 
   .vt-policy-links__link {
@@ -105,13 +121,24 @@
     {
       "type": "select",
       "id": "alignment",
-      "label": "Alignment",
+      "label": "Alignment (desktop)",
       "options": [
         { "value": "left", "label": "Left" },
         { "value": "center", "label": "Center" },
         { "value": "right", "label": "Right" }
       ],
       "default": "right"
+    },
+    {
+      "type": "select",
+      "id": "alignment_mobile",
+      "label": "Alignment (mobile)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
     },
     {
       "type": "select",
@@ -138,6 +165,7 @@
         "privacy_label": "Privacy Policy",
         "terms_label": "Terms of Service",
         "alignment": "right",
+        "alignment_mobile": "left",
         "font_size": "vt-paragraph-extra-small"
       }
     }

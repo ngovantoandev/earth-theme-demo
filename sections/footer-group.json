@@ -58,7 +58,8 @@
               "settings": {
                 "menu": "footer-company",
                 "title": "COMPANY",
-                "link_gap": 12
+                "link_gap": 12,
+                "hover_effect": "underline"
               }
             },
             "menu_shop": {
@@ -66,7 +67,8 @@
               "settings": {
                 "menu": "footer-shop",
                 "title": "SHOP",
-                "link_gap": 12
+                "link_gap": 12,
+                "hover_effect": "underline"
               }
             },
             "menu_sustainability": {
@@ -74,7 +76,8 @@
               "settings": {
                 "menu": "footer-sustainability",
                 "title": "SUSTAINABILITY",
-                "link_gap": 12
+                "link_gap": 12,
+                "hover_effect": "underline"
               }
             },
             "menu_support": {
@@ -83,6 +86,7 @@
                 "menu": "footer-support",
                 "title": "SUPPORT",
                 "link_gap": 12,
+                "hover_effect": "underline",
                 "show_contact_info": true,
                 "contact_email": "hello@earthecoshop.com",
                 "contact_phone": "(555) 123-4567",
@@ -261,7 +265,8 @@
               "settings": {
                 "privacy_label": "Privacy Policy",
                 "terms_label": "Terms of Service",
-                "alignment": "right"
+                "alignment": "right",
+                "alignment_mobile": "left"
               }
             }
           },
@@ -280,16 +285,17 @@
       ],
       "settings": {
         "apply_max_width": true,
-        "background_color": "#F8F9DC",
-        "text_color": "#003225",
-        "padding_top": 60,
-        "padding_bottom": 48,
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 48,
+        "padding_left_desktop": 34,
+        "padding_right_desktop": 34,
+        "enable_custom_mobile_padding": true,
         "padding_top_mobile": 32,
         "padding_bottom_mobile": 32,
-        "padding_horizontal": 34,
-        "padding_horizontal_mobile": 20,
-        "blocks_gap": 48,
-        "blocks_gap_mobile": 32
+        "padding_left_mobile": 20,
+        "padding_right_mobile": 20,
+        "gap": 36,
+        "gap_mobile": 32
       }
     }
   },

@@ -299,64 +299,13 @@
     }
   }
 
-  /* Navigation arrows */
-  /* Arrow look comes from the shared .vt-arrow (theme.css); this only positions it */
-  .vt-swiper-btn {
-    --vt-swiper-btn-inset: 1rem;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-  }
-
-  /*
-    --vt-swiper-offset is 0 in Standard. In Offset, JS sets it to the slide
-    offset in px, so the arrows sit on the first and last fully visible
-    product instead of the empty edge area.
-  */
-  .vt-swiper-btn--prev {
-    left: calc(var(--vt-swiper-offset, 0px) + var(--vt-swiper-btn-inset));
-  }
-
-  .vt-swiper-btn--next {
-    right: calc(var(--vt-swiper-offset, 0px) + var(--vt-swiper-btn-inset));
-  }
-
-  .vt-swiper-btn:disabled,
-  .vt-swiper-btn[aria-disabled="true"] {
-    pointer-events: none;
-  }
-
-  /* Hover-only arrows */
-  .vt-swiper-btn--hover-only {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .vt-products-swiper:hover .vt-swiper-btn--hover-only,
-  .vt-products-swiper:focus-within .vt-swiper-btn--hover-only {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  /* Keep the disabled fade when hover reveals the arrows */
-  .vt-products-swiper:hover .vt-swiper-btn--hover-only:is(:disabled, [aria-disabled="true"]),
-  .vt-products-swiper:focus-within .vt-swiper-btn--hover-only:is(:disabled, [aria-disabled="true"]) {
-    opacity: 0.35;
-    pointer-events: none;
-  }
+  /* Navigation arrows: position and hover-only behaviour are shared (theme.css, SLIDER ARROWS) */
 
   /* Offset: the arrow on the side with no more products is hidden, not faded */
   .vt-products-swiper--offset .vt-swiper-btn:is(:disabled, [aria-disabled="true"]),
   .vt-products-swiper--offset:is(:hover, :focus-within) .vt-swiper-btn--hover-only:is(:disabled, [aria-disabled="true"]) {
     opacity: 0;
     visibility: hidden;
-  }
-
-  @media screen and (max-width: 749px) {
-    .vt-swiper-btn {
-      --vt-swiper-btn-inset: 0.5rem;
-    }
   }
 {% endstylesheet %}
 
