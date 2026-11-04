@@ -2231,7 +2231,7 @@
         "text_marquee_marquee_block"
       ]
     },
-   "slideshow_section": {
+    "slideshow_section": {
     "type": "slideshow",
     "settings": {
         "gap": 64,
@@ -3177,7 +3177,7 @@
         "slide_four",
         "slide_five"
     ]
-},
+    },
     "video-with-text-overlay": {
       "type": "video-with-text-overlay",
       "settings": {
@@ -6674,7 +6674,8 @@
                   "type": "email-signup",
                   "settings": {
                     "placeholder": "Enter your email address",
-                    "max_width": 500,
+                    "success_message": "Thank you for subscribing!",
+                    "max_width": 480,
                     "border_radius": 4
                   }
                 },
