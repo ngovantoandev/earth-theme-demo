@@ -1,6 +1,7 @@
 {% doc %}
   Renders an individual Accordion Item container block.
-  - Header uses static child blocks: `icons`, `heading`, `paragraph`.
+  - Header has built-in icon (with optional circular box badge), title, subtitle, and dynamic arrow indicator.
+  - Border settings allow selecting top, bottom, left, and right borders individually.
   - Content uses dynamic child blocks (`content_for 'blocks'`).
   - Smooth expansion with grid-template-rows (0fr -> 1fr).
   - Background: cactus-green when open, primary when closed.
@@ -23,6 +24,40 @@
   assign gap_desktop = block.settings.gap_desktop | default: 32
   assign gap_mobile = block.settings.gap_mobile | default: 20
 
+  # Header content
+  assign display_title = block.settings.title
+  if display_title == blank and request.visual_preview_mode
+    assign display_title = 'Why Sustainable Fashion?'
+  endif
+  assign title_size = block.settings.title_size | default: 'vt-heading-h4'
+
+  assign display_subtitle = block.settings.subtitle
+  if display_subtitle == blank and request.visual_preview_mode
+    assign display_subtitle = 'Understanding the real cost of fast fashion'
+  endif
+  assign subtitle_size = block.settings.subtitle_size | default: 'vt-paragraph-small'
+
+  # Icon settings
+  assign show_icon = block.settings.show_icon
+  if show_icon == nil
+    assign show_icon = true
+  endif
+  assign icon = block.settings.icon | default: 'heart'
+  assign icon_color = block.settings.icon_color | default: '#003225'
+  assign icon_size_desktop = block.settings.icon_size_desktop | default: 24
+  assign icon_size_mobile = block.settings.icon_size_mobile | default: 20
+
+  assign show_icon_box = block.settings.show_icon_box
+  if show_icon_box == nil
+    assign show_icon_box = true
+  endif
+  assign icon_box_bg = block.settings.icon_box_bg_color | default: '#EAE060'
+  assign icon_box_size_desktop = block.settings.icon_box_size_desktop | default: 48
+  assign icon_box_size_mobile = block.settings.icon_box_size_mobile | default: 40
+  assign icon_box_radius = block.settings.icon_box_radius | default: '50%'
+  assign header_gap = block.settings.header_gap | default: 20
+
+  # Header Colors
   assign title_color = block.settings.title_color
   assign title_color_style = ''
   if title_color != blank and title_color != 'rgba(0,0,0,0)' and title_color != '#00000000'
@@ -35,10 +70,20 @@
     assign subtitle_color_style = '--vt-acc-subtitle-color: ' | append: subtitle_color | append: ';'
   endif
 
-  assign arrow_color = block.settings.arrow_color
+  # Arrow settings
+  assign show_arrow = block.settings.show_arrow
+  if show_arrow == nil
+    assign show_arrow = true
+  endif
+  assign arrow_size_desktop = block.settings.arrow_size_desktop | default: 18
+  assign arrow_size_mobile = block.settings.arrow_size_mobile | default: 16
+
+  assign arrow_color = block.settings.arrow_color | default: '#EAE060'
   assign arrow_color_style = ''
   if arrow_color != blank and arrow_color != 'rgba(0,0,0,0)' and arrow_color != '#00000000'
     assign arrow_color_style = '--vt-acc-arrow-color: ' | append: arrow_color | append: ';'
+  else
+    assign arrow_color_style = '--vt-acc-arrow-color: #EAE060;'
   endif
 
   assign bg_color = block.settings.background_color
@@ -53,6 +98,86 @@
     assign bg_open_color_style = '--vt-acc-bg-open: ' | append: bg_open_color | append: ';'
   endif
 
+  # Borders (condensed: all, top_bottom, bottom, top, left_right, none, or custom)
+  assign border_sides = block.settings.border_sides | default: 'all'
+  assign border_top = false
+  assign border_bottom = false
+  assign border_left = false
+  assign border_right = false
+
+  case border_sides
+    when 'all'
+      assign border_top = true
+      assign border_bottom = true
+      assign border_left = true
+      assign border_right = true
+    when 'top_bottom'
+      assign border_top = true
+      assign border_bottom = true
+    when 'top'
+      assign border_top = true
+    when 'bottom'
+      assign border_bottom = true
+    when 'left_right'
+      assign border_left = true
+      assign border_right = true
+    when 'none'
+      # no borders
+    when 'custom'
+      assign border_top = block.settings.border_top
+      if border_top == nil
+        assign border_top = true
+      endif
+      assign border_bottom = block.settings.border_bottom
+      if border_bottom == nil
+        assign border_bottom = true
+      endif
+      assign border_left = block.settings.border_left
+      if border_left == nil
+        assign border_left = true
+      endif
+      assign border_right = block.settings.border_right
+      if border_right == nil
+        assign border_right = true
+      endif
+    else
+      if block.settings.border_top or block.settings.border_bottom or block.settings.border_left or block.settings.border_right
+        assign border_top = block.settings.border_top
+        assign border_bottom = block.settings.border_bottom
+        assign border_left = block.settings.border_left
+        assign border_right = block.settings.border_right
+      else
+        assign border_top = true
+        assign border_bottom = true
+        assign border_left = true
+        assign border_right = true
+      endif
+  endcase
+
+  assign border_width = block.settings.border_width | default: 1
+  assign border_top_width = 0
+  assign border_bottom_width = 0
+  assign border_left_width = 0
+  assign border_right_width = 0
+  assign has_any_border = false
+
+  if border_top
+    assign border_top_width = border_width
+    assign has_any_border = true
+  endif
+  if border_bottom
+    assign border_bottom_width = border_width
+    assign has_any_border = true
+  endif
+  if border_left
+    assign border_left_width = border_width
+    assign has_any_border = true
+  endif
+  if border_right
+    assign border_right_width = border_width
+    assign has_any_border = true
+  endif
+
   assign border_color = block.settings.border_color
   assign border_color_style = ''
   if border_color != blank and border_color != 'rgba(0,0,0,0)' and border_color != '#00000000'
@@ -64,90 +189,91 @@
   if divider_color != blank and divider_color != 'rgba(0,0,0,0)' and divider_color != '#00000000'
     assign divider_color_style = '--vt-accordion-divider-color: ' | append: divider_color | append: ';'
   endif
-
-  assign animation_type = block.settings.animation_type
-  assign vt_anim_classes = ''
-  unless animation_type == 'none' or request.visual_preview_mode
-    assign vt_anim_classes = 'vt-animate vt-animate--' | append: animation_type
-    if animation_type == 'slide' or animation_type == 'float'
-      assign vt_anim_classes = vt_anim_classes | append: ' vt-animate--dir-' | append: block.settings.animation_direction
-    endif
-  endunless
-
-  assign vt_easing_value = 'cubic-bezier(0.61, 1, 0.88, 1)'
-  case block.settings.animation_easing
-    when 'linear'
-      assign vt_easing_value = 'linear'
-    when 'ease-out-sine'
-      assign vt_easing_value = 'cubic-bezier(0.61, 1, 0.88, 1)'
-    when 'ease-in-sine'
-      assign vt_easing_value = 'cubic-bezier(0.12, 0, 0.39, 0)'
-    when 'ease-in-out-sine'
-      assign vt_easing_value = 'cubic-bezier(0.37, 0, 0.63, 1)'
-    when 'ease-in-cubic'
-      assign vt_easing_value = 'cubic-bezier(0.32, 0, 0.67, 0)'
-    when 'ease-out-cubic'
-      assign vt_easing_value = 'cubic-bezier(0.33, 1, 0.68, 1)'
-    when 'ease-in-out-cubic'
-      assign vt_easing_value = 'cubic-bezier(0.65, 0, 0.35, 1)'
-  endcase
 -%}
 
 <vt-accordion-item
-  class="vt-accordion-item-wrapper block w-full{% if vt_anim_classes != blank %} {{ vt_anim_classes }}{% endif %}"
+  class="vt-accordion-item-wrapper block w-full"
   style="
     --vt-accordion-pad: {{ pad_desktop }}px;
     --vt-accordion-pad-mobile: {{ pad_mobile }}px;
     --vt-accordion-gap: {{ gap_desktop }}px;
     --vt-accordion-gap-mobile: {{ gap_mobile }}px;
-    --vt-accordion-border-width: {{ block.settings.border_width | default: 1 }}px;
+    --vt-acc-header-gap: {{ header_gap }}px;
+    --vt-acc-arrow-size: {% render 'fluid-clamp', min_px: arrow_size_mobile, max_px: arrow_size_desktop %};
+    --vt-acc-icon-size: {% render 'fluid-clamp', min_px: icon_size_mobile, max_px: icon_size_desktop %};
+    {%- if icon_color != blank and icon_color != 'rgba(0,0,0,0)' and icon_color != '#00000000' %}
+    --vt-acc-icon-color: {{ icon_color }};
+    {%- endif %}
+    {%- if show_icon_box %}
+    --vt-acc-box-size: {% render 'fluid-clamp', min_px: icon_box_size_mobile, max_px: icon_box_size_desktop %};
+    {%- if icon_box_bg != blank and icon_box_bg != 'rgba(0,0,0,0)' and icon_box_bg != '#00000000' %}
+    --vt-acc-box-bg: {{ icon_box_bg }};
+    {%- endif %}
+    --vt-acc-box-radius: {{ icon_box_radius }};
+    {%- endif %}
+    --vt-border-top-width: {{ border_top_width }}px;
+    --vt-border-bottom-width: {{ border_bottom_width }}px;
+    --vt-border-left-width: {{ border_left_width }}px;
+    --vt-border-right-width: {{ border_right_width }}px;
     --vt-accordion-border-opacity: {{ block.settings.border_opacity | default: 100 }}%;
     --vt-accordion-border-radius: {{ block.settings.border_radius | default: 0 }}px;
     --vt-accordion-divider-width: {{ block.settings.divider_width | default: 1 }}px;
-    --vt-accordion-divider-opacity: {{ block.settings.divider_opacity | default: 100 }}%;
-    {{ title_color_style }}
+        {{ title_color_style }}
     {{ subtitle_color_style }}
     {{ arrow_color_style }}
     {{ bg_color_style }}
     {{ bg_open_color_style }}
     {{ border_color_style }}
     {{ divider_color_style }}
-    {%- if vt_anim_classes != blank %}
-    --vt-duration: {{ block.settings.animation_duration }}s;
-    --vt-delay: {{ block.settings.animation_delay }}s;
-    {%- endif %}
-    {%- if animation_type == 'slide' or animation_type == 'float' or animation_type == 'blur' %}
-    --vt-easing: {{ vt_easing_value }};
-    {%- endif %}
-    {%- if animation_type == 'blur' %}
-    --vt-blur: {{ block.settings.animation_blur_intensity }}px;
-    {%- endif %}
   "
   {{ block.shopify_attributes }}
 >
   <details
-    class="vt-accordion-item{% if block.settings.show_border %} vt-accordion-item--has-border{% endif %}{% if block.settings.show_divider %} vt-accordion-item--has-divider{% endif %}"
+    class="vt-accordion-item{% if has_any_border %} vt-accordion-item--has-border{% endif %}{% if block.settings.show_divider %} vt-accordion-item--has-divider{% endif %}"
     {% if is_open %}open{% endif %}
   >
     <summary class="vt-accordion-item__summary">
       <div class="vt-accordion-item__summary-left">
-        {% content_for 'block', type: 'icons', id: 'icon' %}
+        {%- if show_icon and icon != blank and icon != 'none' -%}
+          <div
+            class="vt-accordion-item__icon{% if show_icon_box %} vt-accordion-item__icon--has-box{% endif %}"
+            aria-hidden="true"
+          >
+            {% render 'icons', icon: icon %}
+          </div>
+        {%- endif -%}
+
         <div class="vt-accordion-item__header-text">
-          {% content_for 'block', type: 'heading', id: 'heading' %}
-          {% content_for 'block', type: 'paragraph', id: 'paragraph' %}
+          {%- if display_title != blank -%}
+            <h3 class="vt-accordion-item__title {{ title_size }}">
+              {{ display_title }}
+            </h3>
+          {%- endif -%}
+          {%- if display_subtitle != blank -%}
+            <div class="vt-accordion-item__subtitle {{ subtitle_size }}">
+              {{ display_subtitle }}
+            </div>
+          {%- endif -%}
         </div>
       </div>
-      <span class="vt-accordion-item__arrow" aria-hidden="true">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-          <path d="M0.238921 0V1.81557H11.8999L0 13.7155L1.28332 15L13.1844 3.10006V14.7611H15V0H0.238921Z" fill="currentColor"/>
-        </svg>
-      </span>
+      {%- if show_arrow -%}
+        <span class="vt-accordion-item__arrow" aria-hidden="true">
+          <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <path d="M0.238921 0V1.81557H11.8999L0 13.7155L1.28332 15L13.1844 3.10006V14.7611H15V0H0.238921Z" fill="currentColor"/>
+          </svg>
+        </span>
+      {%- endif -%}
     </summary>
 
     <div class="vt-accordion-item__grid">
       <div class="vt-accordion-item__inner">
         <div class="vt-accordion-item__content">
           {% content_for 'blocks' %}
+          {%- if block.blocks.size == 0 and request.visual_preview_mode -%}
+            <div class="vt-accordion-item__preview-placeholder" style="padding: 16px; border: 1px dashed var(--vt-color-accent, #EAE060); border-radius: 4px; opacity: 0.8;">
+              <p style="margin: 0; font-size: 14px;">Content area (Add cards, columns, or text blocks here)</p>
+            </div>
+          {%- endif -%}
         </div>
       </div>
     </div>
@@ -243,7 +369,10 @@
 
   .vt-accordion-item--has-border {
     border-style: solid;
-    border-width: var(--vt-accordion-border-width, 1px);
+    border-top-width: var(--vt-border-top-width, 0px);
+    border-bottom-width: var(--vt-border-bottom-width, 0px);
+    border-left-width: var(--vt-border-left-width, 0px);
+    border-right-width: var(--vt-border-right-width, 0px);
     border-color: color-mix(
       in srgb,
       var(--vt-accordion-border-color, var(--vt-color-accent, #EAE060)) var(--vt-accordion-border-opacity, 100%),
@@ -281,13 +410,30 @@
   .vt-accordion-item__summary-left {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: var(--vt-acc-header-gap, 20px);
     min-width: 0;
     flex: 1 1 auto;
   }
 
-  .vt-accordion-item__summary-left > .shopify-block {
-    display: contents;
+  .vt-accordion-item__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .vt-accordion-item__icon svg {
+    width: var(--vt-acc-icon-size, 24px);
+    height: var(--vt-acc-icon-size, 24px);
+    color: var(--vt-acc-icon-color, #003225);
+    display: block;
+  }
+
+  .vt-accordion-item__icon--has-box {
+    width: var(--vt-acc-box-size, 48px);
+    height: var(--vt-acc-box-size, 48px);
+    background-color: var(--vt-acc-box-bg, var(--vt-color-accent, #EAE060));
+    border-radius: var(--vt-acc-box-radius, 50%);
   }
 
   .vt-accordion-item__header-text {
@@ -297,27 +443,16 @@
     min-width: 0;
   }
 
-  .vt-accordion-item__header-text > .shopify-block {
-    display: contents;
-  }
-
-  .vt-accordion-item__summary .vt-heading,
-  .vt-accordion-item__summary .vt-heading h1,
-  .vt-accordion-item__summary .vt-heading h2,
-  .vt-accordion-item__summary .vt-heading h3,
-  .vt-accordion-item__summary .vt-heading h4,
-  .vt-accordion-item__summary .vt-heading h5,
-  .vt-accordion-item__summary .vt-heading h6 {
+  .vt-accordion-item__title {
     margin: 0;
-    color: var(--vt-acc-title-color, #F8F9DC);
+    color: var(--vt-acc-title-color, var(--color-white, #F8F9DC));
     line-height: 1.3;
     letter-spacing: -0.01em;
   }
 
-  .vt-accordion-item__summary .vt-paragraph,
-  .vt-accordion-item__summary .vt-paragraph p {
+  .vt-accordion-item__subtitle {
     margin: 0;
-    color: var(--vt-acc-subtitle-color, #F8F9DC);
+    color: var(--vt-acc-subtitle-color, var(--color-white, #F8F9DC));
     line-height: 1.45;
   }
 
@@ -330,14 +465,14 @@
     height: 32px;
     min-width: 32px;
     flex-shrink: 0;
-    color: var(--vt-acc-arrow-color, var(--vt-color-accent, #EAE060));
+    color: var(--vt-acc-arrow-color, #EAE060);
     transition: transform 0.35s ease;
     transform: rotate(90deg);
   }
 
   .vt-accordion-item__arrow svg {
-    width: 18px;
-    height: 18px;
+    width: var(--vt-acc-arrow-size, 18px);
+    height: var(--vt-acc-arrow-size, 18px);
     display: block;
   }
 
@@ -375,11 +510,7 @@
   .vt-accordion-item--has-divider .vt-accordion-item__content {
     border-top-style: solid;
     border-top-width: var(--vt-accordion-divider-width, 1px);
-    border-top-color: color-mix(
-      in srgb,
-      var(--vt-accordion-divider-color, var(--vt-accordion-border-color, var(--vt-color-accent, #EAE060))) var(--vt-accordion-divider-opacity, 100%),
-      transparent
-    );
+    border-top-color: var(--vt-accordion-divider-color, var(--vt-accordion-border-color, var(--vt-color-accent, #EAE060)));
   }
 
   @media (max-width: 768px) {
@@ -412,28 +543,335 @@
   "settings": [
     {
       "type": "header",
-      "content": "Header Colors"
+      "content": "Header Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "Why Sustainable Fashion?"
+    },
+    {
+      "type": "select",
+      "id": "title_size",
+      "label": "Title size",
+      "options": [
+        {
+          "value": "vt-hero-heading",
+          "label": "Hero"
+        },
+        {
+          "value": "vt-heading-h1",
+          "label": "Heading 1"
+        },
+        {
+          "value": "vt-heading-h2",
+          "label": "Heading 2"
+        },
+        {
+          "value": "vt-heading-h3",
+          "label": "Heading 3"
+        },
+        {
+          "value": "vt-heading-h4",
+          "label": "Heading 4"
+        },
+        {
+          "value": "vt-heading-h5",
+          "label": "Heading 5"
+        },
+        {
+          "value": "vt-heading-h6",
+          "label": "Heading 6"
+        }
+      ],
+      "default": "vt-heading-h4"
     },
     {
       "type": "color",
       "id": "title_color",
       "label": "Title color",
       "default": "#00000000",
-      "info": "Mặc định sử dụng màu kem (#F8F9DC) của theme. Chọn màu nếu muốn tùy biến riêng."
+      "info": "Mặc định sử dụng màu kem (#F8F9DC) của theme."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Understanding the real cost of fast fashion"
+    },
+    {
+      "type": "select",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "options": [
+        {
+          "value": "vt-paragraph-large",
+          "label": "Large"
+        },
+        {
+          "value": "vt-paragraph-medium",
+          "label": "Medium"
+        },
+        {
+          "value": "vt-paragraph-small",
+          "label": "Small"
+        },
+        {
+          "value": "vt-paragraph-extra-small",
+          "label": "Extra Small"
+        }
+      ],
+      "default": "vt-paragraph-small"
     },
     {
       "type": "color",
       "id": "subtitle_color",
       "label": "Subtitle color",
       "default": "#00000000",
-      "info": "Mặc định sử dụng màu kem (#F8F9DC) của theme. Chọn màu nếu muốn tùy biến riêng."
+      "info": "Mặc định sử dụng màu kem (#F8F9DC) của theme."
+    },
+    {
+      "type": "range",
+      "id": "header_gap",
+      "label": "Header elements gap",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Icon Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Show icon",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "leaf",
+          "label": "Leaf"
+        },
+        {
+          "value": "carbon",
+          "label": "Carbon"
+        },
+        {
+          "value": "cotton-plant",
+          "label": "Cotton plant"
+        },
+        {
+          "value": "tree",
+          "label": "Tree"
+        },
+        {
+          "value": "zero-emissions",
+          "label": "Zero emissions"
+        },
+        {
+          "value": "quality",
+          "label": "Quality"
+        },
+        {
+          "value": "drop",
+          "label": "Drop"
+        },
+        {
+          "value": "ecology",
+          "label": "Ecology"
+        },
+        {
+          "value": "flower",
+          "label": "Flower"
+        },
+        {
+          "value": "sparkle",
+          "label": "Sparkle"
+        },
+        {
+          "value": "heart",
+          "label": "Heart"
+        },
+        {
+          "value": "check-circle",
+          "label": "Check circle"
+        },
+        {
+          "value": "x-circle",
+          "label": "X circle"
+        },
+        {
+          "value": "info",
+          "label": "Info"
+        },
+        {
+          "value": "handshake",
+          "label": "Handshake"
+        },
+        {
+          "value": "organic-cotton",
+          "label": "Organic cotton"
+        },
+        {
+          "value": "recycled-materials",
+          "label": "Recycled materials"
+        },
+        {
+          "value": "vegan-cruelty-free",
+          "label": "Vegan cruelty free"
+        },
+        {
+          "value": "eco-friendly",
+          "label": "Eco friendly"
+        },
+        {
+          "value": "calculator",
+          "label": "Calculator"
+        }
+      ],
+      "default": "heart",
+      "visible_if": "{{ block.settings.show_icon == true }}"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#003225",
+      "visible_if": "{{ block.settings.show_icon == true }}"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_desktop",
+      "label": "Icon size (desktop)",
+      "min": 12,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 24,
+      "visible_if": "{{ block.settings.show_icon == true }}"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_mobile",
+      "label": "Icon size (mobile)",
+      "min": 12,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 20,
+      "visible_if": "{{ block.settings.show_icon == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon_box",
+      "label": "Show icon box",
+      "default": true,
+      "visible_if": "{{ block.settings.show_icon == true }}"
+    },
+    {
+      "type": "color",
+      "id": "icon_box_bg_color",
+      "label": "Box background",
+      "default": "#EAE060",
+      "visible_if": "{{ block.settings.show_icon == true and block.settings.show_icon_box == true }}"
+    },
+    {
+      "type": "range",
+      "id": "icon_box_size_desktop",
+      "label": "Box size (desktop)",
+      "min": 24,
+      "max": 96,
+      "step": 2,
+      "unit": "px",
+      "default": 48,
+      "visible_if": "{{ block.settings.show_icon == true and block.settings.show_icon_box == true }}"
+    },
+    {
+      "type": "range",
+      "id": "icon_box_size_mobile",
+      "label": "Box size (mobile)",
+      "min": 24,
+      "max": 96,
+      "step": 2,
+      "unit": "px",
+      "default": 40,
+      "visible_if": "{{ block.settings.show_icon == true and block.settings.show_icon_box == true }}"
+    },
+    {
+      "type": "select",
+      "id": "icon_box_radius",
+      "label": "Box corner radius",
+      "options": [
+        {
+          "value": "50%",
+          "label": "Circle"
+        },
+        {
+          "value": "0",
+          "label": "Square"
+        },
+        {
+          "value": "0.25rem",
+          "label": "Small rounded"
+        },
+        {
+          "value": "0.5rem",
+          "label": "Rounded"
+        },
+        {
+          "value": "0.75rem",
+          "label": "Large rounded"
+        }
+      ],
+      "default": "50%",
+      "visible_if": "{{ block.settings.show_icon == true and block.settings.show_icon_box == true }}"
+    },
+    {
+      "type": "header",
+      "content": "Arrow Indicator"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrow",
+      "label": "Show arrow indicator",
+      "default": true
     },
     {
       "type": "color",
       "id": "arrow_color",
       "label": "Arrow color",
-      "default": "#00000000",
-      "info": "Mặc định sử dụng màu Accent của theme."
+      "default": "#EAE060",
+      "visible_if": "{{ block.settings.show_arrow == true }}"
+    },
+    {
+      "type": "range",
+      "id": "arrow_size_desktop",
+      "label": "Arrow size (desktop)",
+      "min": 12,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "default": 18,
+      "visible_if": "{{ block.settings.show_arrow == true }}"
+    },
+    {
+      "type": "range",
+      "id": "arrow_size_mobile",
+      "label": "Arrow size (mobile)",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16,
+      "visible_if": "{{ block.settings.show_arrow == true }}"
     },
     {
       "type": "header",
@@ -468,10 +906,36 @@
       "content": "Border"
     },
     {
-      "type": "checkbox",
-      "id": "show_border",
-      "label": "Show border",
-      "default": true
+      "type": "select",
+      "id": "border_sides",
+      "label": "Borders",
+      "options": [
+        {
+          "value": "all",
+          "label": "All borders"
+        },
+        {
+          "value": "top_bottom",
+          "label": "Top & bottom"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom only"
+        },
+        {
+          "value": "top",
+          "label": "Top only"
+        },
+        {
+          "value": "left_right",
+          "label": "Left & right"
+        },
+        {
+          "value": "none",
+          "label": "None"
+        }
+      ],
+      "default": "all"
     },
     {
       "type": "color",
@@ -479,7 +943,7 @@
       "label": "Border color",
       "default": "#00000000",
       "info": "Mặc định sử dụng màu Accent của theme.",
-      "visible_if": "{{ block.settings.show_border == true }}"
+      "visible_if": "{{ block.settings.border_sides != 'none' }}"
     },
     {
       "type": "range",
@@ -490,7 +954,7 @@
       "step": 1,
       "unit": "px",
       "default": 1,
-      "visible_if": "{{ block.settings.show_border == true }}"
+      "visible_if": "{{ block.settings.border_sides != 'none' }}"
     },
     {
       "type": "range",
@@ -501,7 +965,7 @@
       "step": 1,
       "unit": "%",
       "default": 100,
-      "visible_if": "{{ block.settings.show_border == true }}"
+      "visible_if": "{{ block.settings.border_sides != 'none' }}"
     },
     {
       "type": "range",
@@ -512,7 +976,7 @@
       "step": 1,
       "unit": "px",
       "default": 0,
-      "visible_if": "{{ block.settings.show_border == true }}"
+      "visible_if": "{{ block.settings.border_sides != 'none' }}"
     },
     {
       "type": "header",
@@ -542,17 +1006,6 @@
       "step": 1,
       "unit": "px",
       "default": 1,
-      "visible_if": "{{ block.settings.show_divider == true }}"
-    },
-    {
-      "type": "range",
-      "id": "divider_opacity",
-      "label": "Divider opacity",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "%",
-      "default": 100,
       "visible_if": "{{ block.settings.show_divider == true }}"
     },
     {
@@ -598,148 +1051,9 @@
       "step": 2,
       "unit": "px",
       "default": 20
-    },
-    {
-      "type": "header",
-      "content": "t:blocks.heading.settings.header_animation.content"
-    },
-    {
-      "type": "select",
-      "id": "animation_type",
-      "options": [
-        {
-          "value": "none",
-          "label": "t:blocks.heading.settings.animation_type.options__1.label"
-        },
-        {
-          "value": "fade",
-          "label": "t:blocks.heading.settings.animation_type.options__2.label"
-        },
-        {
-          "value": "slide",
-          "label": "t:blocks.heading.settings.animation_type.options__3.label"
-        },
-        {
-          "value": "float",
-          "label": "t:blocks.heading.settings.animation_type.options__4.label"
-        },
-        {
-          "value": "blur",
-          "label": "t:blocks.heading.settings.animation_type.options__5.label"
-        }
-      ],
-      "default": "none",
-      "label": "t:blocks.heading.settings.animation_type.label"
-    },
-    {
-      "type": "select",
-      "id": "animation_direction",
-      "options": [
-        {
-          "value": "from-left",
-          "label": "t:blocks.heading.settings.animation_direction.options__1.label"
-        },
-        {
-          "value": "from-right",
-          "label": "t:blocks.heading.settings.animation_direction.options__2.label"
-        },
-        {
-          "value": "from-top",
-          "label": "t:blocks.heading.settings.animation_direction.options__3.label"
-        },
-        {
-          "value": "from-bottom",
-          "label": "t:blocks.heading.settings.animation_direction.options__4.label"
-        }
-      ],
-      "default": "from-bottom",
-      "label": "t:blocks.heading.settings.animation_direction.label",
-      "visible_if": "{{ block.settings.animation_type == 'slide' or block.settings.animation_type == 'float' }}"
-    },
-    {
-      "type": "range",
-      "id": "animation_duration",
-      "min": 0.1,
-      "max": 3,
-      "step": 0.1,
-      "unit": "s",
-      "default": 1.2,
-      "label": "t:blocks.heading.settings.animation_duration.label",
-      "visible_if": "{{ block.settings.animation_type != 'none' }}"
-    },
-    {
-      "type": "range",
-      "id": "animation_delay",
-      "min": 0,
-      "max": 2,
-      "step": 0.1,
-      "unit": "s",
-      "default": 0.2,
-      "label": "t:blocks.heading.settings.animation_delay.label",
-      "visible_if": "{{ block.settings.animation_type != 'none' }}"
-    },
-    {
-      "type": "select",
-      "id": "animation_easing",
-      "options": [
-        {
-          "value": "linear",
-          "label": "t:blocks.heading.settings.animation_easing.options__1.label"
-        },
-        {
-          "value": "ease-out-sine",
-          "label": "t:blocks.heading.settings.animation_easing.options__2.label"
-        },
-        {
-          "value": "ease-in-sine",
-          "label": "t:blocks.heading.settings.animation_easing.options__3.label"
-        },
-        {
-          "value": "ease-in-out-sine",
-          "label": "t:blocks.heading.settings.animation_easing.options__4.label"
-        },
-        {
-          "value": "ease-in-cubic",
-          "label": "t:blocks.heading.settings.animation_easing.options__5.label"
-        },
-        {
-          "value": "ease-out-cubic",
-          "label": "t:blocks.heading.settings.animation_easing.options__6.label"
-        },
-        {
-          "value": "ease-in-out-cubic",
-          "label": "t:blocks.heading.settings.animation_easing.options__7.label"
-        }
-      ],
-      "default": "ease-out-sine",
-      "label": "t:blocks.heading.settings.animation_easing.label",
-      "visible_if": "{{ block.settings.animation_type == 'slide' or block.settings.animation_type == 'float' or block.settings.animation_type == 'blur' }}"
-    },
-    {
-      "type": "range",
-      "id": "animation_blur_intensity",
-      "min": 5,
-      "max": 50,
-      "step": 1,
-      "unit": "px",
-      "default": 5,
-      "label": "t:blocks.heading.settings.animation_blur_intensity.label",
-      "visible_if": "{{ block.settings.animation_type == 'blur' }}"
     }
   ],
   "blocks": [
-    {
-      "type": "icons"
-    },
-    {
-      "type": "heading"
-    },
-    {
-      "type": "paragraph"
-    },
-    {
-      "type": "sub-heading"
-    },
     {
       "type": "column-layout"
     },
@@ -748,6 +1062,18 @@
     },
     {
       "type": "stack"
+    },
+    {
+      "type": "heading"
+    },
+    {
+      "type": "sub-heading"
+    },
+    {
+      "type": "paragraph"
+    },
+    {
+      "type": "icons"
     },
     {
       "type": "image"
@@ -760,57 +1086,35 @@
     {
       "name": "Accordion item",
       "settings": {
+        "title": "Why Sustainable Fashion?",
+        "subtitle": "Understanding the real cost of fast fashion",
+        "icon": "heart",
+        "show_icon": true,
+        "icon_color": "#003225",
+        "show_icon_box": true,
+        "icon_box_bg_color": "#EAE060",
+        "icon_box_size_desktop": 48,
+        "icon_box_size_mobile": 40,
+        "icon_size_desktop": 24,
+        "icon_size_mobile": 20,
+        "icon_box_radius": "50%",
         "open_by_default": true,
-        "show_border": true,
+        "border_sides": "all",
         "border_width": 1,
         "border_opacity": 100,
         "border_radius": 0,
         "show_divider": true,
         "divider_width": 1,
-        "divider_opacity": 100,
         "padding_desktop": 36,
         "padding_mobile": 20,
         "gap_desktop": 32,
-        "gap_mobile": 20
+        "gap_mobile": 20,
+        "show_arrow": true,
+        "arrow_color": "#EAE060",
+        "arrow_size_desktop": 18,
+        "arrow_size_mobile": 16
       },
       "blocks": [
-        {
-          "type": "icons",
-          "id": "icon",
-          "static": true,
-          "settings": {
-            "icon": "heart",
-            "icon_color": "#003225",
-            "icon_size_desktop": 24,
-            "icon_size_mobile": 20,
-            "show_box": true,
-            "box_size_desktop": 48,
-            "box_size_mobile": 40,
-            "box_bg_color": "#EAE060",
-            "box_radius": "50%"
-          }
-        },
-        {
-          "type": "heading",
-          "id": "heading",
-          "static": true,
-          "settings": {
-            "heading": "Accordion item title",
-            "heading_size": "vt-heading-h4",
-            "heading_tag": "h3",
-            "heading_alignment": "text-left"
-          }
-        },
-        {
-          "type": "paragraph",
-          "id": "paragraph",
-          "static": true,
-          "settings": {
-            "text": "<p>Accordion item description or subtitle</p>",
-            "paragraph_size": "vt-paragraph-small",
-            "paragraph_alignment": "text-left"
-          }
-        },
         {
           "type": "column-layout",
           "settings": {
@@ -929,72 +1233,6 @@
                           }
                         }
                       ]
-                    },
-                    {
-                      "type": "stack",
-                      "settings": {
-                        "layout_direction_desktop": "vt-stack--horizontal",
-                        "layout_direction_tablet": "vt-stack--horizontal",
-                        "layout_direction_mobile": "vt-stack--horizontal",
-                        "alignment": "flex-start",
-                        "position": "center",
-                        "gap_desktop": 10,
-                        "gap_mobile": 8,
-                        "width": "fill"
-                      },
-                      "blocks": [
-                        {
-                          "type": "icons",
-                          "settings": {
-                            "icon": "x-circle",
-                            "icon_color": "#D32F2F",
-                            "icon_size_desktop": 18,
-                            "icon_size_mobile": 18,
-                            "show_box": false,
-                            "animation_type": "none"
-                          }
-                        },
-                        {
-                          "type": "paragraph",
-                          "settings": {
-                            "text": "<p>Example feature description 3</p>",
-                            "paragraph_size": "vt-paragraph-small"
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "type": "stack",
-                      "settings": {
-                        "layout_direction_desktop": "vt-stack--horizontal",
-                        "layout_direction_tablet": "vt-stack--horizontal",
-                        "layout_direction_mobile": "vt-stack--horizontal",
-                        "alignment": "flex-start",
-                        "position": "center",
-                        "gap_desktop": 10,
-                        "gap_mobile": 8,
-                        "width": "fill"
-                      },
-                      "blocks": [
-                        {
-                          "type": "icons",
-                          "settings": {
-                            "icon": "x-circle",
-                            "icon_color": "#D32F2F",
-                            "icon_size_desktop": 18,
-                            "icon_size_mobile": 18,
-                            "show_box": false,
-                            "animation_type": "none"
-                          }
-                        },
-                        {
-                          "type": "paragraph",
-                          "settings": {
-                            "text": "<p>Example feature description 4</p>",
-                            "paragraph_size": "vt-paragraph-small"
-                          }
-                        }
-                      ]
                     }
                   ]
                 }
@@ -1103,141 +1341,10 @@
                           }
                         }
                       ]
-                    },
-                    {
-                      "type": "stack",
-                      "settings": {
-                        "layout_direction_desktop": "vt-stack--horizontal",
-                        "layout_direction_tablet": "vt-stack--horizontal",
-                        "layout_direction_mobile": "vt-stack--horizontal",
-                        "alignment": "flex-start",
-                        "position": "center",
-                        "gap_desktop": 10,
-                        "gap_mobile": 8,
-                        "width": "fill"
-                      },
-                      "blocks": [
-                        {
-                          "type": "icons",
-                          "settings": {
-                            "icon": "check-circle",
-                            "icon_color": "#71CC3B",
-                            "icon_size_desktop": 18,
-                            "icon_size_mobile": 18,
-                            "show_box": false,
-                            "animation_type": "none"
-                          }
-                        },
-                        {
-                          "type": "paragraph",
-                          "settings": {
-                            "text": "<p>Example benefit description 3</p>",
-                            "paragraph_size": "vt-paragraph-small"
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "type": "stack",
-                      "settings": {
-                        "layout_direction_desktop": "vt-stack--horizontal",
-                        "layout_direction_tablet": "vt-stack--horizontal",
-                        "layout_direction_mobile": "vt-stack--horizontal",
-                        "alignment": "flex-start",
-                        "position": "center",
-                        "gap_desktop": 10,
-                        "gap_mobile": 8,
-                        "width": "fill"
-                      },
-                      "blocks": [
-                        {
-                          "type": "icons",
-                          "settings": {
-                            "icon": "check-circle",
-                            "icon_color": "#71CC3B",
-                            "icon_size_desktop": 18,
-                            "icon_size_mobile": 18,
-                            "show_box": false,
-                            "animation_type": "none"
-                          }
-                        },
-                        {
-                          "type": "paragraph",
-                          "settings": {
-                            "text": "<p>Example benefit description 4</p>",
-                            "paragraph_size": "vt-paragraph-small"
-                          }
-                        }
-                      ]
                     }
                   ]
                 }
               ]
-            }
-          ]
-        },
-        {
-          "type": "card",
-          "settings": {
-            "background_color": "#224E09",
-            "heading_color": "#F8F9DC",
-            "text_color": "#F8F9DC",
-            "border": "solid",
-            "border_width": 1,
-            "border_color": "#71CC3B",
-            "border_radius": 0,
-            "padding_vertical": 20,
-            "padding_horizontal": 24,
-            "gap": 8,
-            "width": "fill",
-            "position": "top",
-            "alignment": "left"
-          },
-          "blocks": [
-            {
-              "type": "stack",
-              "settings": {
-                "layout_direction_desktop": "vt-stack--horizontal",
-                "layout_direction_tablet": "vt-stack--horizontal",
-                "layout_direction_mobile": "vt-stack--horizontal",
-                "alignment": "flex-start",
-                "position": "center",
-                "gap_desktop": 10,
-                "gap_mobile": 8,
-                "width": "fill"
-              },
-              "blocks": [
-                {
-                  "type": "icons",
-                  "settings": {
-                    "icon": "info",
-                    "icon_size_desktop": 20,
-                    "icon_size_mobile": 18,
-                    "icon_color": "#F8F9DC",
-                    "show_box": false,
-                    "animation_type": "none"
-                  }
-                },
-                {
-                  "type": "heading",
-                  "settings": {
-                    "heading": "Notice / Announcement",
-                    "heading_tag": "h5",
-                    "heading_size": "vt-heading-h5",
-                    "heading_alignment": "text-left",
-                    "animation_type": "none"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "settings": {
-                "text": "<p>Use this callout box to share important tips, notes, or additional context with your customers.</p>",
-                "paragraph_size": "vt-paragraph-small",
-                "paragraph_alignment": "text-left",
-                "animation_type": "none"
-              }
             }
           ]
         }

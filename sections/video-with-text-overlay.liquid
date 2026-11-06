@@ -6,9 +6,13 @@
 {% endcomment %}
 
 {%- liquid
+  assign video_source = section.settings.video_source | default: 'uploaded'
+  if section.settings.video_source == blank and section.settings.video == blank and section.settings.video_url != blank
+    assign video_source = 'external'
+  endif
+
   assign video = section.settings.video
   assign video_url = section.settings.video_url
-  assign cover_image = section.settings.cover_image
   assign autoplay = section.settings.enable_video_autoplay
   assign loop = section.settings.enable_video_looping
   assign make_section_page_width = section.settings.make_section_page_width
@@ -19,7 +23,9 @@
   assign content_align = section.settings.desktop_content_alignment
 
   assign has_media = false
-  if video != blank or video_url != blank or cover_image != blank
+  if video_source == 'uploaded' and video != blank
+    assign has_media = true
+  elsif video_source == 'external' and video_url != blank
     assign has_media = true
   endif
 
@@ -79,49 +85,43 @@
       <!-- Background Video / Media Container -->
       <div class="vt-video-overlay__media-wrapper">
         <!-- Video Layer -->
-        {%- if video != blank -%}
-          {{
-            video
-            | video_tag:
-              image_size: '2000x',
-              autoplay: autoplay,
-              loop: loop,
-              muted: true,
-              controls: false,
-              playsinline: true,
-              class: 'vt-video-overlay__video'
-          }}
-        {%- elsif video_url != blank -%}
-          {%- if video_url.type == 'youtube' -%}
-            <iframe
-              src="https://www.youtube.com/embed/{{ video_url.id }}?enablejsapi=1&playsinline=1&mute=1{% if autoplay %}&autoplay=1{% endif %}{% if loop %}&loop=1&playlist={{ video_url.id }}{% endif %}"
-              class="vt-video-overlay__iframe"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-              title="{{ section.settings.video_alt_text | default: 'Video' | escape }}"
-            ></iframe>
-          {%- elsif video_url.type == 'vimeo' -%}
-            <iframe
-              src="https://player.vimeo.com/video/{{ video_url.id }}?muted=1{% if autoplay %}&autoplay=1{% endif %}{% if loop %}loop=1{% endif %}"
-              class="vt-video-overlay__iframe"
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowfullscreen
-              title="{{ section.settings.video_alt_text | default: 'Video' | escape }}"
-            ></iframe>
+        {%- if video_source == 'uploaded' -%}
+          {%- if video != blank -%}
+            {{
+              video
+              | video_tag:
+                image_size: '2000x',
+                autoplay: autoplay,
+                loop: loop,
+                muted: true,
+                controls: false,
+                playsinline: true,
+                class: 'vt-video-overlay__video'
+            }}
+          {%- endif -%}
+        {%- elsif video_source == 'external' -%}
+          {%- if video_url != blank -%}
+            {%- if video_url.type == 'youtube' -%}
+              <iframe
+                src="https://www.youtube.com/embed/{{ video_url.id }}?enablejsapi=1&playsinline=1&mute=1{% if autoplay %}&autoplay=1{% endif %}{% if loop %}&loop=1&playlist={{ video_url.id }}{% endif %}"
+                class="vt-video-overlay__iframe"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                title="{{ section.settings.video_alt_text | default: 'Video' | escape }}"
+              ></iframe>
+            {%- elsif video_url.type == 'vimeo' -%}
+              <iframe
+                src="https://player.vimeo.com/video/{{ video_url.id }}?muted=1{% if autoplay %}&autoplay=1{% endif %}{% if loop %}loop=1{% endif %}"
+                class="vt-video-overlay__iframe"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen
+                title="{{ section.settings.video_alt_text | default: 'Video' | escape }}"
+              ></iframe>
+            {%- endif -%}
           {%- endif -%}
         {%- endif -%}
 
-        <!-- Cover Image (displayed when video is not playing or while loading) -->
-        {%- if cover_image != blank -%}
-          {{
-            cover_image
-            | image_url: width: 2400
-            | image_tag:
-              loading: 'lazy',
-              class: 'vt-video-overlay__media-cover',
-              alt: section.settings.video_alt_text | default: cover_image.alt | default: 'Video cover'
-          }}
-        {%- elsif has_media == false or request.visual_preview_mode -%}
+        {%- if has_media == false or request.visual_preview_mode -%}
           {{ 'lifestyle-2' | placeholder_svg_tag: 'vt-video-overlay__media-cover vt-video-overlay__media-cover--fallback' }}
         {%- endif -%}
 
@@ -524,43 +524,48 @@
   "settings": [
     {
       "type": "header",
-      "content": "Shopify-hosted video"
+      "content": "Video"
+    },
+    {
+      "type": "select",
+      "id": "video_source",
+      "label": "Source",
+      "options": [
+        {
+          "value": "uploaded",
+          "label": "Uploaded"
+        },
+        {
+          "value": "external",
+          "label": "External URL"
+        }
+      ],
+      "default": "uploaded"
     },
     {
       "type": "video",
       "id": "video",
-      "label": "Video"
-    },
-    {
-      "type": "header",
-      "content": "Or embed video from URL"
-    },
-    {
-      "type": "paragraph",
-      "content": "Shows when no Shopify-hosted video is selected."
+      "label": "Video",
+      "visible_if": "{{ section.settings.video_source == 'uploaded' }}"
     },
     {
       "type": "video_url",
       "id": "video_url",
-      "label": "URL",
+      "label": "Video URL",
       "accept": [
         "youtube",
         "vimeo"
       ],
-      "placeholder": "https://www.youtube.com/watch?v=kipnRsLYRuM&list=RDkipnRsLYRuM&start_radio=1",
+      "placeholder": "https://www.youtube.com/watch?v=...",
       "default": "https://www.youtube.com/watch?v=kipnRsLYRuM&list=RDkipnRsLYRuM&start_radio=1",
-      "info": "Use a YouTube or Vimeo URL"
-    },
-    {
-      "type": "image_picker",
-      "id": "cover_image",
-      "label": "Cover image"
+      "info": "Use a YouTube or Vimeo URL",
+      "visible_if": "{{ section.settings.video_source == 'external' }}"
     },
     {
       "type": "text",
       "id": "video_alt_text",
       "label": "Video alt text",
-      "info": "Describe the video for customers using screen readers. Learn more"
+      "info": "Describe the video for customers using screen readers."
     },
     {
       "type": "checkbox",
@@ -873,6 +878,7 @@
     {
       "name": "Video with text overlay",
       "settings": {
+        "video_source": "external",
         "video_url": "https://www.youtube.com/watch?v=kipnRsLYRuM&list=RDkipnRsLYRuM&start_radio=1",
         "enable_video_autoplay": false,
         "enable_video_looping": false,
