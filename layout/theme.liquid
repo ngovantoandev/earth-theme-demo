@@ -10,6 +10,7 @@
       2. Preload only the critical font variant (base weight)
       3. Additional variants load on-demand via @font-face
     {% endcomment %}
+    
     {% unless settings.type_body_font.system? %}
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
 
@@ -32,20 +33,26 @@
     {% # Collection card CSS (collections section and collection-* blocks); after the base CSS so it keeps priority %}
     {{ 'collection-card.css' | asset_url | stylesheet_tag: preload: true }}
 
+    {% # Header CSS (header section and its blocks) %}
+    {{ 'theme-header.css' | asset_url | stylesheet_tag: preload: true }}
+
     {% # Load and preload the swiperjs %}
 
     <script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer="defer"></script>
 
     {% # Shared carousel built on Swiper (sections and blocks reuse it) %}
     <script src="{{ 'theme-slider.js' | asset_url }}" defer="defer"></script>
-<script src="{{ 'video-with-text-overlay.js' | asset_url }}" defer="defer"></script>	
+
+    {% # Tabs row that swipes when it doesn't fit (products-tab-carousel, slideshow) %}
+    <script src="{{ 'theme-tabs-scroller.js' | asset_url }}" defer="defer"></script>
+
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
     
     {{ content_for_header }}
-  </head>
+  </head>  
 
-  <body class="template-{{ request.page_type | handleize }}">
+  <body class="template-{{ request.page_type | handleize }} vt-link-hover--{{ settings.link_hover_effect }}">
     <a class="skip-to-content-link visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>

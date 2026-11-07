@@ -13,42 +13,14 @@
 			{
 				"type": "image_picker",
 				"id": "logo",
-				"label": "Default logo"
-			},
-			{
-				"type": "image_picker",
-				"id": "transparent_logo",
-				"label": "Transparent logo"
+				"label": "Logo",
+				"info": "Set the width in the Logo block of each section"
 			},
 			{
 				"type": "image_picker",
 				"id": "favicon",
 				"label": "Favicon",
-				"info": "Display at 32x32px"
-			},
-			{
-				"type": "header",
-				"content": "Logo width"
-			},
-			{
-				"type": "range",
-				"id": "logo_width",
-				"min": 40,
-				"max": 300,
-				"step": 5,
-				"unit": "px",
-				"label": "Desktop logo width",
-				"default": 85
-			},
-			{
-				"type": "range",
-				"id": "mobile_logo_width",
-				"min": 30,
-				"max": 200,
-				"step": 5,
-				"unit": "px",
-				"label": "Mobile logo width",
-				"default": 70
+				"info": "32 x 32px .png recommended"
 			}
 		]
 	},
@@ -1210,6 +1182,42 @@
 				"id": "product_grid_capitalize",
 				"default": false,
 				"label": "t:general.typography.accent.product_grid.capitalize.label"
+			},
+			{
+				"type": "header",
+				"content": "Links"
+			},
+			{
+				"type": "select",
+				"id": "link_hover_effect",
+				"label": "Link hover effect",
+				"info": "Used by the main menu, breadcrumbs and country and language selectors",
+				"options": [
+					{
+						"value": "underline",
+						"label": "Sliding underline"
+					},
+					{
+						"value": "border",
+						"label": "Sliding border"
+					},
+					{
+						"value": "wave_fade",
+						"label": "Wave fade"
+					}
+				],
+				"default": "underline"
+			},
+			{
+				"type": "range",
+				"id": "link_underline_thickness",
+				"label": "Underline thickness",
+				"min": 1,
+				"max": 3,
+				"step": 0.5,
+				"unit": "px",
+				"default": 1.5,
+				"visible_if": "{{ settings.link_hover_effect == 'underline' }}"
 			}
 		]
 	},

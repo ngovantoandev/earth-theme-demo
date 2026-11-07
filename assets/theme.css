@@ -25,7 +25,7 @@ img,
 picture,
 video,
 canvas,
-svg {
+svg {  
   display: block;
   max-width: 100%;
   height: auto;      
@@ -195,6 +195,156 @@ body {
 .shopify-section {
   position: relative;    
   width: 100%;      
+}
+
+.vt-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Text links: the effect comes from the Link hover effect theme setting (class on body).
+   Markup: .vt-link on the interactive element, .vt-link-label on its text. */
+
+:root {
+  --vt-link-transition: 0.25s ease-out;
+}
+
+.vt-link-label {
+  position: relative;
+  display: inline-block;
+  /* Even on both sides, so the text stays vertically centered */
+  padding-block: 0.15em;
+}
+
+/* Sliding underline */
+.vt-link-hover--underline .vt-link-label::after,
+.vt-link:is([aria-current='page'], [aria-current='true']) .vt-link-label::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: var(--vt-link-underline-thickness);
+  background: var(--vt-link-hover-color, currentColor);
+}
+
+.vt-link-hover--underline .vt-link-label::after {
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--vt-link-transition);
+}
+
+.vt-link-hover--underline .vt-link:is(:hover, :focus-visible) .vt-link-label::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+[dir='rtl'] .vt-link-hover--underline .vt-link-label::after {
+  transform-origin: left;
+}
+
+[dir='rtl'] .vt-link-hover--underline .vt-link:is(:hover, :focus-visible) .vt-link-label::after {
+  transform-origin: right;
+}
+
+/* The current page keeps its underline whichever effect is chosen */
+.vt-link:is([aria-current='page'], [aria-current='true']) .vt-link-label::after {
+  transform: none;
+}
+
+/* Sliding border: a thin bar fades in before the text */
+.vt-link-hover--border .vt-link-label {
+  /* Space reserved for the bar, so neighbors never jump */
+  padding-inline-start: 0.6em;
+  transition: transform var(--vt-link-transition);
+}
+
+.vt-link-hover--border .vt-link-label::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  /* Centered on the text, fixed height so it lines up on every item */
+  top: 50%;
+  height: 1em;
+  width: 0.0938rem;
+  background: var(--vt-link-hover-color, currentColor);
+  opacity: 0;
+  transform: translate(0, -10%);
+  transition:
+    opacity var(--vt-link-transition),
+    transform var(--vt-link-transition);
+}
+
+.vt-link-hover--border .vt-link:is(:hover, :focus-visible) .vt-link-label {
+  transform: translateX(0.25em);
+}
+
+/* Bar cancels the text shift, so it stays exactly before the text's start */
+.vt-link-hover--border .vt-link:is(:hover, :focus-visible) .vt-link-label::before {
+  opacity: 1;
+  transform: translate(-0.25em, -50%);
+}
+
+[dir='rtl'] .vt-link-hover--border .vt-link:is(:hover, :focus-visible) .vt-link-label {
+  transform: translateX(-0.25em);
+}
+
+[dir='rtl'] .vt-link-hover--border .vt-link:is(:hover, :focus-visible) .vt-link-label::before {
+  transform: translate(0.25em, -50%);
+}
+
+/* Wave fade: a second color sweeps across the text.
+   Guarded so text never turns invisible on unsupported browsers. */
+@supports ((background-clip: text) or (-webkit-background-clip: text)) and (color: color-mix(in srgb, red, blue)) {
+  .vt-link-hover--wave_fade .vt-link-label {
+    background-image: linear-gradient(
+      90deg,
+      var(--vt-link-hover-color, color-mix(in srgb, currentColor 60%, transparent)) 35%,
+      currentColor 65%
+    );
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: background-position var(--vt-link-transition);
+  }
+
+  .vt-link-hover--wave_fade .vt-link:is(:hover, :focus-visible) .vt-link-label {
+    background-position: 0 0;
+  }
+
+  /* RTL: the color enters from the right */
+  [dir='rtl'] .vt-link-hover--wave_fade .vt-link-label {
+    background-image: linear-gradient(
+      270deg,
+      var(--vt-link-hover-color, color-mix(in srgb, currentColor 60%, transparent)) 35%,
+      currentColor 65%
+    );
+    background-position: 0 0;
+  }
+
+  [dir='rtl'] .vt-link-hover--wave_fade .vt-link:is(:hover, :focus-visible) .vt-link-label {
+    background-position: 100% 0;
+  }
+}
+
+/* Windows high contrast: plain system text */
+@media (forced-colors: active) {
+  .vt-link-hover--wave_fade .vt-link-label {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --vt-link-transition: 0s;
+  }
 }
 
 .vt-page-width {
@@ -511,6 +661,11 @@ body {
   height: 100%;
 }
 
+.vt-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
 .vt-arrow:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
@@ -588,6 +743,52 @@ body {
 }
 
 /* ============================================================
+  TABS SCROLLER  
+  ============================================================ */
+
+.vt-tabs-scroller {
+  --vt-tabs-fade: 3rem;
+  box-sizing: border-box;  
+  overflow-x: auto;
+  overscroll-behavior-x: contain;  
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--vt-tabs-fade-start, 0px),
+    #000 calc(100% - var(--vt-tabs-fade-end, 0px)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--vt-tabs-fade-start, 0px),
+    #000 calc(100% - var(--vt-tabs-fade-end, 0px)),
+    transparent 100%
+  );
+}
+
+.vt-tabs-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.vt-tabs-scroller.has-overflow-start {
+  --vt-tabs-fade-start: var(--vt-tabs-fade);
+}
+
+.vt-tabs-scroller.has-overflow-end {
+  --vt-tabs-fade-end: var(--vt-tabs-fade);
+}
+
+@media screen and (min-width: 751px) {
+  .vt-tabs-scroller--mobile {
+    overflow: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+/* ============================================================
   SLIDER ARROWS  
   ============================================================ */
 
@@ -639,19 +840,19 @@ body {
   RICH TEXT
   ============================================================ */
 
-.vt-rich-text .justify-start {
+:is(.vt-rich-text, .vt-image-overlay, .vt-video-overlay, .vt-page-section) .justify-start {
   align-items: flex-start;
   text-align: left;
   --vt-align-justify: flex-start;
   --vt-align-margin: 0 auto;
 }
-.vt-rich-text .justify-center {
+:is(.vt-rich-text, .vt-image-overlay, .vt-video-overlay, .vt-page-section) .justify-center {
   align-items: center;
   text-align: center;
   --vt-align-justify: center;
   --vt-align-margin: auto;
 }
-.vt-rich-text .justify-end {
+:is(.vt-rich-text, .vt-image-overlay, .vt-video-overlay, .vt-page-section) .justify-end {
   align-items: flex-end;
   text-align: right;
   --vt-align-justify: flex-end;
@@ -659,19 +860,19 @@ body {
 }
 
 @media screen and (min-width: 750px) {
-  .vt-rich-text .md\:justify-start {
+  :is(.vt-rich-text, .vt-image-overlay, .vt-video-overlay, .vt-page-section) .md\:justify-start {
     align-items: flex-start;
     text-align: left;
     --vt-align-justify: flex-start;
     --vt-align-margin: 0 auto;
   }
-  .vt-rich-text .md\:justify-center {
+  :is(.vt-rich-text, .vt-image-overlay, .vt-video-overlay, .vt-page-section) .md\:justify-center {
     align-items: center;
     text-align: center;
     --vt-align-justify: center;
     --vt-align-margin: auto;
   }
-  .vt-rich-text .md\:justify-end {
+  :is(.vt-rich-text, .vt-image-overlay, .vt-video-overlay, .vt-page-section) .md\:justify-end {
     align-items: flex-end;
     text-align: right;
     --vt-align-justify: flex-end;
@@ -969,6 +1170,14 @@ body {
   border-width: var(--vt-badge-border-width, 0);
   border-color: var(--vt-badge-border-color, var(--vt-color-accent));
   box-sizing: border-box;
+}
+
+/* In a card the badge sits in the text flow: wrap instead of spilling out of the card */
+.vt-card .vt-badge {
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+  text-wrap: balance;
 }
 
 .vt-badge-group {

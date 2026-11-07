@@ -63,7 +63,7 @@
       -%}
 
       {%- comment -%} Mobile and tablet: horizontal swipe area for the tabs {%- endcomment -%}
-      <div class="vt-products-tab-carousel__tabs-scroller {{ tabs_alignment }}" data-tabs-scroller>
+      <div class="vt-products-tab-carousel__tabs-scroller vt-tabs-scroller vt-tabs-scroller--mobile {{ tabs_alignment }}" data-tabs-scroller>
         <div
           class="vt-products-tab-carousel__tabs {{ tabs_alignment }}"
           style="--vt-tabs-line-color: {{ vt_tabs_line_color }};"
@@ -231,42 +231,13 @@
   }
 
   @media screen and (max-width: 750px) {
+    /* Swipe and edge fade: .vt-tabs-scroller (theme.css, TABS SCROLLER) */
     .vt-products-tab-carousel__tabs-scroller {
-      --vt-tabs-fade: 3rem;
       display: block;
       width: auto;
       align-self: stretch;
       margin-inline: calc(var(--vt-products-bleed-start) * -1) calc(var(--vt-products-bleed-end) * -1);
       padding-inline: var(--vt-products-bleed-start) var(--vt-products-bleed-end);
-      overflow-x: auto;
-      overscroll-behavior-x: contain;
-      scrollbar-width: none;
-      -webkit-mask-image: linear-gradient(
-        to right,
-        transparent 0,
-        #000 var(--vt-tabs-fade-start, 0px),
-        #000 calc(100% - var(--vt-tabs-fade-end, 0px)),
-        transparent 100%
-      );
-      mask-image: linear-gradient(
-        to right,
-        transparent 0,
-        #000 var(--vt-tabs-fade-start, 0px),
-        #000 calc(100% - var(--vt-tabs-fade-end, 0px)),
-        transparent 100%
-      );
-    }
-
-    .vt-products-tab-carousel__tabs-scroller::-webkit-scrollbar {
-      display: none;
-    }
-
-    .vt-products-tab-carousel__tabs-scroller.has-overflow-start {
-      --vt-tabs-fade-start: var(--vt-tabs-fade);
-    }
-
-    .vt-products-tab-carousel__tabs-scroller.has-overflow-end {
-      --vt-tabs-fade-end: var(--vt-tabs-fade);
     }
 
     /* One row as wide as the tabs, so the line under them spans first to last tab */
@@ -359,7 +330,7 @@
         tabs.forEach((t) => {
           const selected = t === tab;
           t.setAttribute('aria-selected', selected ? 'true' : 'false');
-          t.classList.toggle('is-active', selected);
+          t.classList.toggle('is-active', selected);          
           // Roving tabindex: only the selected tab is reachable with Tab
           t.tabIndex = selected ? 0 : -1;
         });
@@ -388,33 +359,9 @@
         });
       };
 
-      // Mobile and tablet tab swipe: fade the edge where tabs are cut off, and bring a
-      // selected tab fully into view (horizontal scroll only, never the page)
-      const scroller = sectionEl.querySelector('[data-tabs-scroller]');
-      const updateTabsFade = () => {
-        if (!scroller) return;
-        const max = scroller.scrollWidth - scroller.clientWidth;
-        const pos = Math.abs(scroller.scrollLeft);
-        scroller.classList.toggle('has-overflow-start', max > 1 && pos > 1);
-        scroller.classList.toggle('has-overflow-end', max > 1 && pos < max - 1);
-      };
-      const scrollTabIntoView = (tab) => {
-        if (!scroller || scroller.scrollWidth <= scroller.clientWidth) return;
-        const style = getComputedStyle(scroller);
-        const box = scroller.getBoundingClientRect();
-        const rect = tab.getBoundingClientRect();
-        const start = box.left + (parseFloat(style.paddingLeft) || 0);
-        const end = box.right - (parseFloat(style.paddingRight) || 0);
-        let delta = 0;
-        if (rect.left < start) delta = rect.left - start;
-        else if (rect.right > end) delta = rect.right - end;
-        if (delta) scroller.scrollBy({ left: delta, behavior: 'smooth' });
-      };
-      if (scroller) {
-        scroller.addEventListener('scroll', updateTabsFade, { passive: true });
-        window.addEventListener('resize', updateTabsFade);
-        updateTabsFade();
-      }
+      // Mobile tab swipe: edge fade and keeping the chosen tab in view (assets/theme-tabs-scroller.js)
+      const tabsScroller = window.vtTabsScroller?.init(sectionEl.querySelector('[data-tabs-scroller]'), tablist);
+      const scrollTabIntoView = (tab) => tabsScroller?.scrollIntoView(tab);
 
       tabs.forEach((tab) => {
         tab.addEventListener('click', () => {
@@ -608,12 +555,12 @@
       "type": "checkbox",
       "id": "show_arrows",
       "label": "Show navigation arrows",
-      "default": true
+      "default": true      
     },
     {
       "type": "select",
-      "id": "arrows_style",
-      "options": [
+      "id": "arrows_style",      
+      "options": [        
         {
           "value": "primary",
           "label": "Primary"
@@ -736,7 +683,7 @@
       "type": "color_background",
       "id": "background_gradient",
       "label": "Background gradient",
-      "default": "linear-gradient(135deg, #EAE060 0%, #71CC3B 100%)",
+      "info": "Leave blank to use colors from the color palette",
       "visible_if": "{{ section.settings.background_style == 'gradient' }}"
     },
     {
@@ -938,7 +885,7 @@
                     "icon_size_mobile": 24,
                     "show_box": false,
                     "box_bg_color": "#F8F9DC",
-                    "box_size_desktop": 56,
+                    "box_size_desktop": 56,                    
                     "box_size_mobile": 40,
                     "box_radius": "50%",
                     "animation_type": "slide",

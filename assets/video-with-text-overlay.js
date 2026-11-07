@@ -1,146 +1,145 @@
 /**
- * Earth Theme - Video With Text Overlay Component
- * Custom Element: <vt-video-overlay>
- * Handles responsive video playback (desktop & mobile) and play/pause button state.
- * Preserves scrim overlay and text content over video at all times.
+ * Video With Text Overlay Component
+ * Starts the visible player (desktop or mobile) only when it is needed, keeps the
+ * poster until the video really plays, and syncs the play / pause button.
  */
 
 if (!customElements.get('vt-video-overlay')) {
   class VtVideoOverlay extends HTMLElement {
-    constructor() {
-      super();
-    }
-
     connectedCallback() {
-      // Delay initialization slightly to ensure all child nodes are parsed
-      requestAnimationFrame(() => {
-        this.init();
-      });
-    }
+      this.players = Array.from(this.querySelectorAll('[data-video-player]'));
+      if (!this.players.length) return;
 
-    getActiveVideo() {
-      const videos = Array.from(this.querySelectorAll('video'));
-      return videos.find((v) => v.offsetParent !== null) || videos[0];
-    }
+      this.controller = new AbortController();
+      const { signal } = this.controller;
 
-    getActiveIframe() {
-      const iframes = Array.from(this.querySelectorAll('iframe'));
-      return iframes.find((f) => f.offsetParent !== null) || iframes[0];
-    }
+      // Reduced motion: stay on the poster until the visitor presses play
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      this.resumeInView = this.dataset.autoplay === 'true' && !reducedMotion;
+      this.pausedByVisitor = false;
 
-    init() {
-      this.isAutoplay = this.dataset.autoplay === 'true';
+      this.addEventListener(
+        'click',
+        (event) => {
+          if (!event.target.closest('.vt-video-overlay__toggle, .vt-video-overlay__play-btn')) return;
+          this.pausedByVisitor = this.isPlaying;
+          this.isPlaying ? this.pause() : this.play();
+        },
+        { signal }
+      );
 
-      // Event delegation for play/pause button click (works regardless of DOM timing)
-      if (!this._hasBoundClick) {
-        this._hasBoundClick = true;
-
-        this.addEventListener('click', (e) => {
-          const btn = e.target.closest('.vt-video-overlay__play-btn');
-          if (btn) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.togglePlay();
-          }
-        });
-      }
-
-      // Handle HTML5 video events for all video tags
-      const videos = this.querySelectorAll('video');
-      videos.forEach((video) => {
-        if (!video._hasBoundEvents) {
-          video._hasBoundEvents = true;
-
-          video.addEventListener('ended', () => {
-            this.classList.remove('is-playing');
+      this.players.filter((player) => player.tagName === 'VIDEO').forEach((video) => {
+        video.addEventListener(
+          'playing',
+          () => {
+            video.classList.add('is-started');
+            this.setPlaying(true);
+          },
+          { signal }
+        );
+        video.addEventListener(
+          'pause',
+          () => {
+            if (video === this.activePlayer) this.setPlaying(false);
+          },
+          { signal }
+        );
+        video.addEventListener(
+          'ended',
+          () => {
+            video.classList.remove('is-started');
             video.currentTime = 0;
-          });
+          },
+          { signal }
+        );
+      });
 
-          video.addEventListener('pause', () => {
-            if (!video.seeking && !this.isAutoplay) {
-              this.classList.remove('is-playing');
-            }
-          });
+      // Crossing the breakpoint hands playback over to the other player
+      window.matchMedia('(max-width: 749px)').addEventListener(
+        'change',
+        () => {
+          const wasPlaying = this.isPlaying;
+          this.players.forEach((player) => this.pause(player));
+          if (wasPlaying) this.play();
+        },
+        { signal }
+      );
 
-          video.addEventListener('play', () => {
-            if (!this.isAutoplay) {
-              this.classList.add('is-playing');
-            }
-          });
-        }
+      this.observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            if (this.resumeInView && !this.pausedByVisitor) this.play();
+          } else if (this.isPlaying) {
+            this.resumeInView = true;
+            this.pause();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      this.observer.observe(this);
+    }
+
+    disconnectedCallback() {
+      this.controller?.abort();
+      this.observer?.disconnect();
+    }
+
+    get isPlaying() {
+      return this.classList.contains('is-playing');
+    }
+
+    get activePlayer() {
+      return this.players.find((player) => getComputedStyle(player).display !== 'none');
+    }
+
+    setPlaying(playing) {
+      this.classList.toggle('is-playing', playing);
+      this.querySelectorAll('.vt-video-overlay__toggle, .vt-video-overlay__play-btn').forEach((button) => {
+        button.setAttribute('aria-label', playing ? button.dataset.labelPause : button.dataset.labelPlay);
       });
     }
 
-    togglePlay() {
-      if (this.classList.contains('is-playing')) {
-        this.pauseVideo();
-      } else {
-        this.playVideo();
+    play(player = this.activePlayer) {
+      if (!player) return;
+
+      if (player.tagName === 'VIDEO') {
+        // Rejected in low power mode: the poster and the play button stay
+        player.play()?.catch(() => this.setPlaying(false));
+        return;
       }
+
+      this.setPlaying(true);
+      if (player.getAttribute('src')) {
+        this.sendCommand(player, 'play');
+        return;
+      }
+
+      // The short wait hides the title bar the provider shows while loading
+      player.addEventListener('load', () => setTimeout(() => player.classList.add('is-started'), 800), { once: true });
+      player.setAttribute('src', player.dataset.src);
     }
 
-    playVideo() {
-      this.classList.add('is-playing');
+    pause(player = this.activePlayer) {
+      if (!player) return;
 
-      const video = this.getActiveVideo();
-      const iframe = this.getActiveIframe();
-
-      if (video) {
-        video.muted = true;
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((err) => {
-            console.warn('Video play was restricted:', err);
-            video.muted = true;
-            video.play();
-          });
-        }
-      } else if (iframe) {
-        let src = iframe.getAttribute('src');
-        if (src) {
-          if (!src.includes('autoplay=1')) {
-            src += (src.includes('?') ? '&' : '?') + 'autoplay=1&mute=1';
-            iframe.setAttribute('src', src);
-          } else if (iframe.contentWindow) {
-            if (src.includes('youtube.com')) {
-              iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'mute', args: [] }), '*');
-              iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
-            } else if (src.includes('vimeo.com')) {
-              iframe.contentWindow.postMessage(JSON.stringify({ method: 'setVolume', value: 0 }), '*');
-              iframe.contentWindow.postMessage(JSON.stringify({ method: 'play' }), '*');
-            }
-          }
-        }
+      if (player.tagName === 'VIDEO') {
+        player.pause();
+        return;
       }
+
+      if (player === this.activePlayer) this.setPlaying(false);
+      if (player.getAttribute('src')) this.sendCommand(player, 'pause');
     }
 
-    pauseVideo() {
-      this.classList.remove('is-playing');
-
-      const video = this.getActiveVideo();
-      const iframe = this.getActiveIframe();
-
-      if (video) {
-        video.pause();
-      } else if (iframe && iframe.contentWindow) {
-        const src = iframe.getAttribute('src') || '';
-        if (src.includes('youtube.com')) {
-          iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
-        } else if (src.includes('vimeo.com')) {
-          iframe.contentWindow.postMessage(JSON.stringify({ method: 'pause' }), '*');
-        }
-      }
+    sendCommand(iframe, command) {
+      // The players always end up on https, even if the page is on http (local preview)
+      const { hostname } = new URL(iframe.src);
+      const message = hostname.includes('vimeo')
+        ? { method: command }
+        : { event: 'command', func: `${command}Video`, args: [] };
+      iframe.contentWindow?.postMessage(JSON.stringify(message), `https://${hostname}`);
     }
   }
 
   customElements.define('vt-video-overlay', VtVideoOverlay);
-
-  // Support Shopify Theme Editor reloads
-  document.addEventListener('shopify:section:load', (event) => {
-    const overlay = event.target.querySelector('vt-video-overlay');
-    if (overlay && typeof overlay.init === 'function') {
-      overlay.init();
-    }
-  });
 }
-

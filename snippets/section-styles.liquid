@@ -51,9 +51,9 @@
   assign gap = s.gap | default: 0
   assign gap_mobile = s.gap_mobile | default: gap
 
-  # Background: gradient overrides solid when both are set
-  if s.background_style == 'gradient' and s.background_gradient != blank
-    assign section_bg = s.background_gradient
+  # Background: a blank gradient follows the color palette
+  if s.background_style == 'gradient'
+    assign section_bg = s.background_gradient | default: 'linear-gradient(135deg, var(--vt-color-accent) 0%, var(--vt-color-secondary) 100%)'
   else
     assign section_bg = s.background_color
   endif

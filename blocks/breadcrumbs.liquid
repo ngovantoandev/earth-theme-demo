@@ -132,9 +132,6 @@
   # -----------------------------------------------------------------
   assign vt_class_list = 'vt-breadcrumbs ' | append: block.settings.text_size
 
-  # Hover effect modifier (underline | border | wave_fade)
-  assign vt_class_list = vt_class_list | append: ' vt-breadcrumbs--hover-' | append: block.settings.hover_effect
-
   if vt_anim_classes != blank
     assign vt_class_list = vt_class_list | append: ' ' | append: vt_anim_classes
   endif
@@ -149,7 +146,7 @@
       --vt-breadcrumbs-icon-size: {% render 'fluid-clamp', min_px: block.settings.icon_size, max_px: block.settings.icon_size, unit: 'rem' %};
       --vt-breadcrumbs-color: {{ vt_text_color }};
       {%- if block.settings.hover_color != blank -%}
-        --vt-breadcrumbs-hover-color: {{ block.settings.hover_color }};
+        --vt-link-hover-color: {{ block.settings.hover_color }};
       {%- endif -%}
       {%- if vt_truncate_style != 'none' -%}
         --vt-breadcrumbs-max-mobile: {% render 'fluid-clamp', min_px: block.settings.max_width_mobile, max_px: block.settings.max_width_mobile, unit: 'rem' %};
@@ -191,7 +188,7 @@
             >{{ vt_label | escape }}</span>
           {%- else -%}
             <a
-              class="vt-breadcrumbs__link"
+              class="vt-breadcrumbs__link vt-link"
               href="{{ vt_urls[forloop.index0] | default: routes.root_url }}"
               itemprop="item"
               {% if vt_truncate_style != 'none' %}title="{{ vt_label | escape }}"{% endif %}
@@ -199,7 +196,7 @@
               {%- if forloop.first and vt_show_previous -%}
                 {% render 'breadcrumb-icon', icon: block.settings.previous_icon, direction: 'previous' %}
               {%- endif -%}
-              <span class="vt-breadcrumbs__label {{ vt_truncate_classes }}" itemprop="name">{{ vt_label | escape }}</span>
+              <span class="vt-breadcrumbs__label vt-link-label {{ vt_truncate_classes }}" itemprop="name">{{ vt_label | escape }}</span>
             </a>
           {%- endif -%}
 
@@ -221,8 +218,6 @@
     min-width: 0;
     /* Block color first, then the color palette */
     color: var(--vt-breadcrumbs-color, var(--vt-foreground-color));
-    /* Shared hover timing (0.2s - 0.3s, ease-out) */
-    --vt-breadcrumbs-transition: 0.25s ease-out;
   }
 
   .vt-breadcrumbs__list {
@@ -252,132 +247,9 @@
     text-decoration: none;
   }
 
-
-  /* 1. Sliding underline */
-  .vt-breadcrumbs--hover-underline .vt-breadcrumbs__label {
-    position: relative;    
-    padding-block-end: 0.15em;
-  }
-
-  .vt-breadcrumbs--hover-underline .vt-breadcrumbs__label::after {
-    content: '';
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0;
-    height: 1px;
-    background: var(--vt-breadcrumbs-hover-color, currentColor);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform var(--vt-breadcrumbs-transition);
-  }
-
-  .vt-breadcrumbs--hover-underline .vt-breadcrumbs__link:is(:hover, :focus-visible) .vt-breadcrumbs__label::after {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-
-  [dir='rtl'] .vt-breadcrumbs--hover-underline .vt-breadcrumbs__label::after {
-    transform-origin: left;
-  }
-
-  [dir='rtl'] .vt-breadcrumbs--hover-underline .vt-breadcrumbs__link:is(:hover, :focus-visible) .vt-breadcrumbs__label::after {
-    transform-origin: right;
-  }
-
-  /* 2. Sliding border: a thin bar fades in before the text */
-  .vt-breadcrumbs--hover-border .vt-breadcrumbs__label,
-  .vt-breadcrumbs--hover-border .vt-breadcrumbs__current {
-    position: relative;
-    /* Space reserved for the bar, so neighbors never jump */
+  /* Keeps the current page in line with the links when the bar effect reserves space */
+  .vt-link-hover--border .vt-breadcrumbs__current {
     padding-inline-start: 0.6em;
-  }
-
-  .vt-breadcrumbs--hover-border .vt-breadcrumbs__label {
-    transition: transform var(--vt-breadcrumbs-transition);
-  }
-
-  .vt-breadcrumbs--hover-border .vt-breadcrumbs__label::before {
-    content: '';
-    position: absolute;
-    inset-inline-start: 0;
-    /* Centered on the text, fixed height so it lines up on every item */
-    top: 50%;
-    height: 1em;
-    width: 0.0938rem;
-    background: var(--vt-breadcrumbs-hover-color, currentColor);
-    opacity: 0;
-    transform: translate(0, -10%);
-    transition:
-      opacity var(--vt-breadcrumbs-transition),
-      transform var(--vt-breadcrumbs-transition);
-  }
-
-  .vt-breadcrumbs--hover-border .vt-breadcrumbs__link:is(:hover, :focus-visible) .vt-breadcrumbs__label {
-    transform: translateX(0.25em);
-  }
-
-  /* Bar cancels the text shift, so it stays exactly before the text's start */
-  .vt-breadcrumbs--hover-border .vt-breadcrumbs__link:is(:hover, :focus-visible) .vt-breadcrumbs__label::before {
-    opacity: 1;
-    transform: translate(-0.25em, -50%);
-  }
-
-  [dir='rtl'] .vt-breadcrumbs--hover-border .vt-breadcrumbs__link:is(:hover, :focus-visible) .vt-breadcrumbs__label {
-    transform: translateX(-0.25em);
-  }
-
-  [dir='rtl'] .vt-breadcrumbs--hover-border .vt-breadcrumbs__link:is(:hover, :focus-visible) .vt-breadcrumbs__label::before {
-    transform: translate(0.25em, -50%);
-  }
-
-  /* 3. Wave fade: a second color sweeps across the text.
-        Guarded so text never turns invisible on unsupported browsers. */
-  @supports ((background-clip: text) or (-webkit-background-clip: text)) and (color: color-mix(in srgb, red, blue)) {
-    .vt-breadcrumbs--hover-wave_fade .vt-breadcrumbs__label {
-      background-image: linear-gradient(
-        90deg,
-        var(--vt-breadcrumbs-hover-color, color-mix(in srgb, var(--vt-breadcrumbs-color) 60%, transparent)) 35%,
-        var(--vt-breadcrumbs-color) 65%
-      );
-      background-size: 300% 100%;
-      background-position: 100% 0;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      transition: background-position var(--vt-breadcrumbs-transition);
-    }
-
-    .vt-breadcrumbs--hover-wave_fade .vt-breadcrumbs__link:is(:hover, :focus-visible) .vt-breadcrumbs__label {
-      background-position: 0 0;
-    }
-
-    /* RTL: the color enters from the right */
-    [dir='rtl'] .vt-breadcrumbs--hover-wave_fade .vt-breadcrumbs__label {
-      background-image: linear-gradient(
-        270deg,
-        var(--vt-breadcrumbs-hover-color, color-mix(in srgb, var(--vt-breadcrumbs-color) 60%, transparent)) 35%,
-        var(--vt-breadcrumbs-color) 65%
-      );
-      background-position: 0 0;
-    }
-
-    [dir='rtl'] .vt-breadcrumbs--hover-wave_fade .vt-breadcrumbs__link:is(:hover, :focus-visible) .vt-breadcrumbs__label {
-      background-position: 100% 0;
-    }
-  }
-
-  /* Windows high contrast: plain system text */
-  @media (forced-colors: active) {
-    .vt-breadcrumbs--hover-wave_fade .vt-breadcrumbs__label {
-      background: none;
-      -webkit-text-fill-color: currentColor;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .vt-breadcrumbs {
-      --vt-breadcrumbs-transition: 0s;
-    }
   }
 
   .vt-breadcrumbs__link:focus-visible {
@@ -580,26 +452,6 @@
       "content": "Hover"
     },
     {
-      "type": "select",
-      "id": "hover_effect",
-      "label": "Hover effects",
-      "options": [
-        {
-          "value": "underline",
-          "label": "Sliding underline"
-        },
-        {
-          "value": "border",
-          "label": "Sliding border"
-        },
-        {
-          "value": "wave_fade",
-          "label": "Wave fade"
-        }
-      ],
-      "default": "underline"
-    },
-    {
       "type": "color",
       "id": "hover_color",
       "label": "Hover color",
@@ -751,7 +603,6 @@
         "truncate_style": "mobile",
         "max_width_mobile": 250,
         "max_width_desktop": 600,
-        "hover_effect": "underline",
         "animation_type": "slide",
         "animation_direction": "from-bottom",
         "animation_duration": 1.2,

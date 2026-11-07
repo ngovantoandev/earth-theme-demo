@@ -16,6 +16,14 @@
   {% content_for 'blocks' %}
 </div>
 
+{% stylesheet %}
+  .vt-slideshow__slide {
+    display: flex;
+    height: auto;
+    box-sizing: border-box;
+  }
+{% endstylesheet %}
+
 {% schema %}
 {
   "name": "Slide",

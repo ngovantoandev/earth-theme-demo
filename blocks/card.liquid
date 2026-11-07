@@ -34,6 +34,8 @@
       assign vt_justify = 'flex-start'
     when 'bottom'
       assign vt_justify = 'flex-end'
+    when 'between'
+      assign vt_justify = 'space-between'
     else
       assign vt_justify = 'center'
   endcase
@@ -253,7 +255,9 @@
     position: relative;
     z-index: 1;
     display: flex;
+    flex: 1 1 auto;
     flex-direction: column;
+    justify-content: inherit;
     align-items: inherit;
     gap: inherit;
     width: 100%;
@@ -337,6 +341,10 @@
         {
           "value": "bottom",
           "label": "Bottom"
+        },
+        {
+          "value": "between",
+          "label": "Between"
         }
       ],
       "default": "middle"
@@ -351,14 +359,14 @@
           "label": "Left"
         },
         {
-          "value": "center",
+          "value": "center",          
           "label": "Center"
         },
         {
           "value": "right",
           "label": "Right"
         }
-      ],
+      ],      
       "default": "center"
     },
     {
@@ -381,11 +389,7 @@
         { "value": "ecology", "label": "t:blocks.icon.settings.icon.options__7.label" },
         { "value": "arrow-left", "label": "t:blocks.icon.settings.icon.options__8.label" },
         { "value": "arrow-right", "label": "t:blocks.icon.settings.icon.options__9.label" },
-        { "value": "close", "label": "t:blocks.icon.settings.icon.options__10.label" },
-        { "value": "heart", "label": "t:blocks.icon.settings.icon.options__13.label" },
-        { "value": "check-circle", "label": "t:blocks.icon.settings.icon.options__14.label" },
-        { "value": "x-circle", "label": "t:blocks.icon.settings.icon.options__15.label" },
-        { "value": "info", "label": "t:blocks.icon.settings.icon.options__16.label" }
+        { "value": "close", "label": "t:blocks.icon.settings.icon.options__10.label" }
       ],
       "default": "cotton-plant",
       "label": "t:blocks.icon.settings.icon.label",

@@ -68,72 +68,19 @@
         | append: block.settings.animation_blur_intensity
         | append: 'px;'
       -%}
-    {%- endif -%}
+    {%- endif -%}    
   {%- endunless -%}
 
   <div class="vt-sub-heading">
-    {%- case sub_heading_tag -%}
-      {%- when 'h1' -%}
-        <h1
-          class="{{ subheading_class }}"
-          {% if vt_style != '' %}
-            style="{{ vt_style | strip }}"
-          {% endif %}
-          {{ block.shopify_attributes }}
-        >
-          {{ block.settings.sub_heading }}
-        </h1>
-      {%- when 'h2' -%}
-        <h2
-          class="{{ subheading_class }}"
-          {% if vt_style != '' %}
-            style="{{ vt_style | strip }}"
-          {% endif %}
-          {{ block.shopify_attributes }}
-        >
-          {{ block.settings.sub_heading }}
-        </h2>
-      {%- when 'h3' -%}
-        <h3
-          class="{{ subheading_class }}"
-          {% if vt_style != '' %}
-            style="{{ vt_style | strip }}"
-          {% endif %}
-          {{ block.shopify_attributes }}
-        >
-          {{ block.settings.sub_heading }}
-        </h3>
-      {%- when 'h4' -%}
-        <h4
-          class="{{ subheading_class }}"
-          {% if vt_style != '' %}
-            style="{{ vt_style | strip }}"
-          {% endif %}
-          {{ block.shopify_attributes }}
-        >
-          {{ block.settings.sub_heading }}
-        </h4>
-      {%- when 'h5' -%}
-        <h5
-          class="{{ subheading_class }}"
-          {% if vt_style != '' %}
-            style="{{ vt_style | strip }}"
-          {% endif %}
-          {{ block.shopify_attributes }}
-        >
-          {{ block.settings.sub_heading }}
-        </h5>
-      {%- when 'h6' -%}
-        <h6
-          class="{{ subheading_class }}"
-          {% if vt_style != '' %}
-            style="{{ vt_style | strip }}"
-          {% endif %}
-          {{ block.shopify_attributes }}
-        >
-          {{ block.settings.sub_heading }}
-        </h6>
-    {%- endcase -%}    
+    <{{ sub_heading_tag }}
+      class="{{ subheading_class }}"
+      {% if vt_style != '' %}
+        style="{{ vt_style | strip }}"
+      {% endif %}
+      {{ block.shopify_attributes }}
+    >
+      {{ block.settings.sub_heading }}
+    </{{ sub_heading_tag }}>
   </div>
 {%- endif -%}
 
@@ -167,7 +114,7 @@
     margin-right: auto;
   }
 
-  .vt-subheading.text-right {
+  .vt-subheading.text-right {    
     text-align: right;
     margin-left: auto;
     margin-right: 0;
@@ -195,7 +142,8 @@
         { "value": "h3", "label": "H3" },
         { "value": "h4", "label": "H4" },
         { "value": "h5", "label": "H5" },
-        { "value": "h6", "label": "H6" }
+        { "value": "h6", "label": "H6" },
+        { "value": "p", "label": "Paragraph" }
       ],
       "default": "h3",
       "label": "t:options.heading_tag.label",

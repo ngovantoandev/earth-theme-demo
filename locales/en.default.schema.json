@@ -186,7 +186,7 @@
 				}
 			},
 			"sub_heading": {
-				"header": "Sub heading",
+				"header": "Subheading",
 				"font_size_desktop": {
 					"label": "Font size (desktop)"
 				},
@@ -593,14 +593,8 @@
 	},
 	"sections": {
 		"announcement_bar": {
-			"name": "Announcement Bar",
+			"name": "Announcement bar",
 			"settings": {
-				"general": {
-					"content": "General"
-				},
-				"enable_announcement_bar": {
-					"label": "Show announcement bar"
-				},
 				"appearance": {
 					"content": "Appearance"
 				},
@@ -610,17 +604,8 @@
 				"text_color": {
 					"label": "Text color"
 				},
-				"height": {
-					"label": "Height"
-				},
 				"typography": {
 					"content": "Typography"
-				},
-				"font_size_desktop": {
-					"label": "Desktop font size"
-				},
-				"font_size_mobile": {
-					"label": "Mobile font size"
 				},
 				"rotation": {
 					"content": "Rotation"
@@ -665,9 +650,6 @@
 				"announcement": {
 					"name": "Announcement",
 					"settings": {
-						"enable": {
-							"label": "Enable announcement"
-						},
 						"text": {
 							"label": "Announcement text"
 						},
@@ -678,7 +660,7 @@
 				}
 			},
 			"presets": {
-				"name": "Announcement Bar"
+				"name": "Announcement bar"
 			}
 		},
 		"collection": {
@@ -895,14 +877,14 @@
 			}
 		},
 		"sub_heading": {
-			"name": "Sub heading",
+			"name": "Subheading",
 			"settings": {
 				"text": {
-					"label": "Sub heading",
-					"default": "Sub Heading"
+					"label": "Subheading",
+					"default": "Subheading"
 				},
 				"sub_heading_size": {
-					"label": "Sub heading size",
+					"label": "Subheading size",
 					"options__1": {
 						"label": "Extra Small"
 					},
@@ -999,7 +981,7 @@
 				}
 			},
 			"presets": {
-				"name": "Sub heading"
+				"name": "Subheading"
 			}
 		},
 		"paragraph": {
@@ -1303,7 +1285,7 @@
 				},
 				"show_box": {
 					"label": "Show box icon"
-				},
+				},				
 				"box_bg_color": {
 					"label": "Background"
 				},
@@ -1409,6 +1391,9 @@
 		},
 		"products_list": {
 			"name": "Products list",
+			"categories": {
+				"product": "Products"
+			},
 			"settings": {
 				"source_info": { "content": "On the collection page, products and pagination come from the section. The settings below are used when the block isn't given products by its section." },
 				"collection": {

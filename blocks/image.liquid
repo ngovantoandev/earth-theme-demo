@@ -24,21 +24,29 @@
   # ---------------------------------------------------------------
   # Aspect ratio (CSS aspect-ratio value)
   # ---------------------------------------------------------------
+  # frame_ratio: width / height of the frame, used for sizes="auto" below
+  assign frame_ratio = 100
   case block.settings.image_aspect_ratio
     when 'square'
       assign aspect_ratio = '1/1'
+      assign frame_ratio = 1.0
     when 'landscape'
       assign aspect_ratio = '4/3'
+      assign frame_ratio = 1.3333
     when 'portrait'
       assign aspect_ratio = '3/4'
+      assign frame_ratio = 0.75
     when 'wide'
       assign aspect_ratio = '16/9'
+      assign frame_ratio = 1.7778
     when 'classic_portrait'
       assign aspect_ratio = '2/3'
+      assign frame_ratio = 0.6667
     when 'ultra_wide'
       assign aspect_ratio = '21/9'
+      assign frame_ratio = 2.3333
     else
-      assign aspect_ratio = 'auto'      
+      assign aspect_ratio = 'auto'
   endcase
 
   # ---------------------------------------------------------------
@@ -65,13 +73,40 @@
   endcase
 
   assign desktop_max_active = false
-  if block.settings.image_desktop_width == 'fill' or block.settings.image_desktop_width == 'custom'
+  if block.settings.enable_desktop_max_width and block.settings.image_desktop_width != 'fit'
     assign desktop_max_active = true
   endif
 
   assign mobile_max_active = false
-  if block.settings.image_mobile_width == 'fill' or block.settings.image_mobile_width == 'custom'
+  if block.settings.enable_mobile_max_width and block.settings.image_mobile_width != 'fit'
     assign mobile_max_active = true
+  endif
+
+  # Rendered width hint for srcset: the limit when on, otherwise the viewport share
+  assign desktop_sizes = '100vw'
+  if desktop_max_active
+    assign desktop_sizes = block.settings.image_desktop_max_width | append: 'px'
+  elsif block.settings.image_desktop_width == 'custom'
+    assign desktop_sizes = block.settings.image_desktop_width_custom | append: 'vw'
+  endif
+
+  assign mobile_sizes = '100vw'
+  if mobile_max_active
+    assign mobile_sizes = block.settings.image_mobile_max_width | append: 'px'
+  elsif block.settings.image_mobile_width == 'custom'
+    assign mobile_sizes = block.settings.image_mobile_width_custom | append: 'vw'
+  endif
+
+  # sizes="auto" asks the browser for the frame's real width. An image wider than its frame
+  # is cropped by object-fit and needs more pixels than that, so it keeps the estimate.
+  assign desktop_auto = ''
+  if image.aspect_ratio <= frame_ratio
+    assign desktop_auto = 'auto, '
+  endif
+
+  assign mobile_auto = ''
+  if image_mobile.aspect_ratio <= frame_ratio
+    assign mobile_auto = 'auto, '
   endif
 
   # ---------------------------------------------------------------
@@ -119,11 +154,23 @@
   endif
 -%}
 
-{%- # Fluid max-width shared by both breakpoints, e.g. clamp(18.75rem, ...rem + ...vw, 31.25rem) -%}
+{%- # Both limits on: one fluid value between them. One limit on: its fixed value. -%}
 {%- capture fluid_max_width -%}
   {%- render 'fluid-clamp', min_px: block.settings.image_mobile_max_width, max_px: block.settings.image_desktop_max_width -%}
 {%- endcapture -%}
-{%- assign fluid_max_width = fluid_max_width | strip_newlines | strip -%}
+{%- liquid
+  assign fluid_max_width = fluid_max_width | strip_newlines | strip
+  assign desktop_max_css = 'none'
+  assign mobile_max_css = 'none'
+  if desktop_max_active and mobile_max_active
+    assign desktop_max_css = fluid_max_width
+    assign mobile_max_css = fluid_max_width
+  elsif desktop_max_active
+    assign desktop_max_css = block.settings.image_desktop_max_width | divided_by: 16.0 | append: 'rem'
+  elsif mobile_max_active
+    assign mobile_max_css = block.settings.image_mobile_max_width | divided_by: 16.0 | append: 'rem'
+  endif
+-%}
 
 <div
   class="vt-image {{ animate_class }}"
@@ -132,8 +179,12 @@
     --vt-aspect-ratio: {{ aspect_ratio }};
     --vt-mobile-width: {{ mobile_width_css }};
     --vt-desktop-width: {{ desktop_width_css }};
-    --vt-mobile-max-width: {% if mobile_max_active %}{{ fluid_max_width }}{% else %}none{% endif %};
-    --vt-desktop-max-width: {% if desktop_max_active %}{{ fluid_max_width }}{% else %}none{% endif %};
+    --vt-mobile-max-width: {{ mobile_max_css }};
+    --vt-desktop-max-width: {{ desktop_max_css }};
+    {%- if has_image %}
+    --vt-image-focal: {{ image.presentation.focal_point }};
+    --vt-image-focal-mobile: {{ image_mobile.presentation.focal_point | default: image.presentation.focal_point }};
+    {%- endif %}
     --vt-radius: {{ block.settings.image_corner }}px;
     --vt-border-width: {% if has_border %}{{ block.settings.image_border_size }}px{% else %}0px{% endif %};
     --vt-border-opacity: {{ block.settings.image_border_opacity }}%;
@@ -146,7 +197,12 @@
   {%- if has_image == false -%}
     {%- # Merchant hasn't picked an image yet: render Shopify's placeholder art -%}
     <div class="vt-image__media vt-image__media--placeholder" aria-hidden="true">
-      {{ 'image' | placeholder_svg_tag: 'vt-image__placeholder' }}
+      {%- # Theme Store: slideshows use the Lifestyle placeholder (only slideshow sections have these settings) -%}
+      {%- if section.settings.slide_style != blank or section.settings.slide_position != blank -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'vt-image__placeholder' }}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag: 'vt-image__placeholder' }}
+      {%- endif -%}
     </div>
   {%- else -%}
     {%- if has_link -%}
@@ -167,7 +223,7 @@
         <source
           media="(max-width: 749px)"
           srcset="{% for w in widths_arr %}{{ image_mobile | image_url: width: w }} {{ w }}w{% unless forloop.last %}, {% endunless %}{% endfor %}"
-          sizes="{% if mobile_max_active %}{{ block.settings.image_mobile_max_width }}px{% else %}{{ mobile_width_css }}{% endif %}"
+          sizes="{{ mobile_auto }}{{ mobile_sizes }}"
           width="{{ image_mobile.width }}"
           height="{{ image_mobile.height }}"
         >
@@ -176,7 +232,7 @@
       <img
         src="{{ image | image_url: width: 1024 }}"
         srcset="{% for w in widths_arr %}{{ image | image_url: width: w }} {{ w }}w{% unless forloop.last %}, {% endunless %}{% endfor %}"
-        sizes="(max-width: 749px) {{ block.settings.image_mobile_max_width }}px, {{ block.settings.image_desktop_max_width }}px"
+        sizes="{{ desktop_auto }}(max-width: 749px) {{ mobile_sizes }}, {{ desktop_sizes }}"
         width="{{ image.width }}"
         height="{{ image.height }}"
         alt="{{ alt_text }}"
@@ -226,6 +282,16 @@
     width: 100%;
     aspect-ratio: var(--vt-aspect-ratio, 4 / 3);
     background: rgba(0, 0, 0, 0.08);
+  }
+
+  .vt-image__img {
+    object-position: var(--vt-image-focal-mobile, center);
+  }
+
+  @media (min-width: 750px) {
+    .vt-image__img {
+      object-position: var(--vt-image-focal, center);
+    }
   }
 
   .vt-image__placeholder,
@@ -339,6 +405,13 @@
       "visible_if": "{{ block.settings.image_desktop_width == 'custom' and block.settings.image_device == 'desktop' }}"
     },
     {
+      "type": "checkbox",
+      "id": "enable_desktop_max_width",
+      "label": "Width limit (desktop)",
+      "default": false,
+      "visible_if": "{{ block.settings.image_device == 'desktop' and block.settings.image_desktop_width != 'fit' }}"
+    },
+    {
       "type": "range",
       "id": "image_desktop_max_width",
       "min": 50,
@@ -346,12 +419,12 @@
       "step": 10,
       "unit": "px",
       "label": "Max width (desktop)",
-      "default": 500,            
-      "visible_if": "{{ block.settings.image_device == 'desktop' and block.settings.image_desktop_width == 'custom' or block.settings.image_device == 'desktop' and block.settings.image_desktop_width == 'fill' }}"
-    },  
-    {
+      "default": 500,
+      "visible_if": "{{ block.settings.image_device == 'desktop' and block.settings.image_desktop_width != 'fit' and block.settings.enable_desktop_max_width }}"
+    },
+    {      
       "type": "select",
-      "id": "image_mobile_width",
+      "id": "image_mobile_width",      
       "label": "Width (mobile)",
       "options": [
         { "value": "fit", "label": "Fit" },
@@ -373,6 +446,13 @@
       "visible_if": "{{ block.settings.image_mobile_width == 'custom' and block.settings.image_device == 'mobile' }}"
     },
     {
+      "type": "checkbox",
+      "id": "enable_mobile_max_width",
+      "label": "Width limit (mobile)",
+      "default": false,
+      "visible_if": "{{ block.settings.image_device == 'mobile' and block.settings.image_mobile_width != 'fit' }}"
+    },
+    {
       "type": "range",
       "id": "image_mobile_max_width",
       "min": 50,
@@ -380,8 +460,8 @@
       "step": 10,
       "unit": "px",
       "label": "Max width (mobile)",
-      "default": 300,                  
-      "visible_if": "{{ block.settings.image_device == 'mobile' and block.settings.image_mobile_width == 'custom' or block.settings.image_device == 'mobile' and block.settings.image_mobile_width == 'fill' }}"
+      "default": 300,
+      "visible_if": "{{ block.settings.image_device == 'mobile' and block.settings.image_mobile_width != 'fit' and block.settings.enable_mobile_max_width }}"
     },
     {
       "type": "header",

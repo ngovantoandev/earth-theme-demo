@@ -6,7 +6,7 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
+ */ 
 {
   "accessibility": {
     "announcement_bar": "Announcements",
@@ -21,6 +21,18 @@
     "items_with_count": "{{ count }} items",
     "slideshow_tabs": "Choose a slide",
     "slideshow_slide": "Slide {{ number }}",
+    "pause_slideshow": "Pause slideshow",
+    "play_slideshow": "Play slideshow",
+    "play_video": "Play video",
+    "pause_video": "Pause video",
+    "background_video": "Background video",
+    "main_menu": "Main menu",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
+    "search": "Search",
+    "cart": "Cart",
+    "country_selector": "Country/region",
+    "language_selector": "Language",
     "column_layout":{
       "column_label": "Column {{ number }}",
       "aria_label": "Column layout",

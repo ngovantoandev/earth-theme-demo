@@ -10,13 +10,175 @@
 {
     "sections": {
         "main": {
-            "type": "about-page",
+            "type": "page",
+            "disabled": true,
             "settings": {
-
+                "show_title": true
             }
+        },
+        "image_with_text_overlay_section": {
+            "type": "image-with-text-overlay",
+            "settings": {
+                "image_radius": 0,
+                "section_height": "scale",
+                "image_ratio_desktop": "wide",
+                "image_ratio_mobile": "classic_portrait",
+                "overlay_color": "#000000",
+                "overlay_opacity": 10,
+                "content_position": "center",
+                "desktop_content_alignment": "justify-center",
+                "mobile_content_alignment": "justify-center",
+                "gap": 30,
+                "gap_mobile": 20,
+                "heading_color": "#F8F9DC",
+                "paragraph_color": "#F8F9DC"
+            },
+            "blocks": {                
+                "stack_block": {
+                    "type": "stack",
+                    "settings": {
+                        "layout_direction_desktop": "vt-stack--horizontal",
+                        "layout_direction_tablet": "vt-stack--horizontal",
+                        "layout_direction_mobile": "vt-stack--horizontal",
+                        "alignment": "center",
+                        "position": "center",                        
+                        "position_type": "default",
+                        "wrap_content": "nowrap",
+                        "width": "fit",
+                        "height": "fit",
+                        "gap_desktop": 8,
+                        "gap_mobile": 8,
+                        "enable_padding": false
+                    },
+                    "blocks": {
+                        "sparkle_icon": {
+                            "type": "icons",                            
+                            "settings": {
+                                "icon": "sparkle",
+                                "icon_color": "#EAE060",
+                                "icon_size_desktop": 16,
+                                "icon_size_mobile": 16,
+                                "show_box": false,
+                                "animation_type": "slide",
+                                "animation_direction": "from-bottom",
+                                "animation_duration": 1,
+                                "animation_delay": 0.2,
+                                "animation_easing": "ease-out-sine"
+                            }
+                        },
+                        "eyebrow_text": {
+                            "type": "sub-heading",
+                            "settings": {
+                                "sub_heading": "About us",
+                                "subheading_tag": "p",
+                                "subheading_alignment": "text-center",
+                                "animation_type": "slide",
+                                "animation_direction": "from-bottom",
+                                "animation_duration": 1,
+                                "animation_delay": 0.2,
+                                "animation_easing": "ease-out-sine"
+                            }
+                        }
+                    },
+                    "block_order": [
+                        "sparkle_icon",
+                        "eyebrow_text"
+                    ]
+                },
+                "heading_block": {
+                    "type": "heading",
+                    "settings": {
+                        "heading": "Making clothes with a purpose",
+                        "heading_size": "vt-heading-h1",
+                        "heading_alignment": "text-inherit",
+                        "heading_tag": "h1",
+                        "enable_max_width": true,
+                        "heading_max_width": 560,
+                        "animation_type": "slide",
+                        "animation_direction": "from-bottom",
+                        "animation_duration": 1,
+                        "animation_delay": 0.4,
+                        "animation_easing": "ease-out-sine"
+                    }
+                },
+                "button_block": {
+                    "type": "button",
+                    "settings": {
+                        "button_label": "Explore journal",
+                        "button_style": "link-light",
+                        "animation_type": "slide",
+                        "animation_direction": "from-bottom",
+                        "animation_duration": 1,
+                        "animation_delay": 0.6,
+                        "animation_easing": "ease-out-sine"
+                    }
+                }
+            },
+            "block_order": [
+                "stack_block",
+                "heading_block",
+                "button_block"
+            ]
+        },        
+        "video_with_text_overlay_section": {
+            "type": "video-with-text-overlay",
+            "settings": {
+                "video_source": "shopify",
+                "autoplay": true,
+                "loop": true,
+                "ratio_desktop": "16 / 9",
+                "ratio_mobile": "9 / 16",
+                "overlay_color": "#000000",
+                "overlay_opacity": 20,
+                "content_position": "center",
+                "desktop_content_alignment": "justify-center",
+                "mobile_content_alignment": "justify-center",
+                "text_alignment": "center",
+                "gap": 26,
+                "gap_mobile": 16,
+                "heading_color": "#F8F9DC",
+                "paragraph_color": "#F8F9DC"
+            },
+            "blocks": {
+                "heading_block": {
+                    "type": "heading",
+                    "settings": {
+                        "heading": "From organic farms to your wardrobe",
+                        "heading_size": "vt-heading-h1",
+                        "heading_alignment": "text-inherit",
+                        "heading_tag": "h2",
+                        "enable_max_width": true,
+                        "heading_max_width": 800,
+                        "animation_type": "slide",
+                        "animation_direction": "from-bottom",
+                        "animation_duration": 1,
+                        "animation_delay": 0.2,
+                        "animation_easing": "ease-out-sine"
+                    }
+                },
+                "sub_heading_block": {
+                    "type": "sub-heading",
+                    "settings": {
+                        "sub_heading": "The journey behind every piece",
+                        "subheading_tag": "h3",
+                        "subheading_alignment": "text-center",
+                        "animation_type": "slide",
+                        "animation_direction": "from-bottom",
+                        "animation_duration": 1,
+                        "animation_delay": 0.6,
+                        "animation_easing": "ease-out-sine"                        
+                    }
+                }
+            },
+            "block_order": [
+                "heading_block",
+                "sub_heading_block"
+            ]
         }
     },
     "order": [
-        "main"
+        "main",
+        "image_with_text_overlay_section",        
+        "video_with_text_overlay_section"
     ]
 }
